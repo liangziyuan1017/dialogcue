@@ -1,3 +1,7 @@
+"""
+round 1: script to clean ASR noises while preserving the emotional texture and spoken language style of the original call transcripts.
+"""
+
 import json
 import os
 import re
