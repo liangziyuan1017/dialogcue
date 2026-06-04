@@ -1,6 +1,6 @@
 # Debt Collection Call Data Pipeline
 
-A multi-stage data pipeline for parsing, cleaning, and correcting ASR-transcribed debt collection call records from China Merchants Bank (招商银行).
+A multi-stage LLM pipeline for cleaning and correcting ASR-transcribed debt collection call records from China Merchants Bank (招商银行).
 
 ## Data Overview
 
@@ -11,27 +11,21 @@ A multi-stage data pipeline for parsing, cleaning, and correcting ASR-transcribe
 ## Pipeline Stages
 
 ```
-data_0520.txt
-    │
-    ▼  data_parser.py  (parse raw text → structured JSON)
 data_0520.json
     │
-    ▼  (basic) data_clean.py  (rule-based cleaning)
-(basic) data_0520.json
-    │
-    ├─── (llm) data_clean.py   (LLM two-pass correction — first record only)
-    │          └── output.py
-    │
-    ├─── (llm) data_clean_1.py (LLM operations-based correction — first record only)
-    │          └── output_1.py
-    │
-    └─── (llm) data_clean_2.py (LLM emotion-preserving rewrite — all 31 records)
-               └── output_2.py
+    ▼  (llm) data_clean_2.py  (LLM emotion-preserving rewrite — all 31 records)
+    └── output_2.py
+            │
+            ▼  (llm) data_logic.py  (LLM 催收员 logic repair — all 31 records)
+            └── output_logic.py
+                    │
+                    ▼  (llm) data_complete.py  (LLM dialogue reconstruction — all 31 records)
+                    └── output_complete.py
 ```
 
-### Stage 1: Parse — `data_parser.py`
+### Stage 0: Parse — `data_parser.py`
 
-Converts raw text data into structured JSON with typed Python dataclasses.
+Loads structured JSON into typed Python dataclasses and provides query helpers.
 
 | Class | Fields |
 |-------|--------|
@@ -46,53 +40,7 @@ Converts raw text data into structured JSON with typed Python dataclasses.
 - `filter_by_date()`, `filter_by_user()`, `search_dialog()` — query helpers
 - `summary()` — aggregate statistics
 
-### Stage 2: Basic Clean — `(basic) data_clean.py`
-
-Rule-based cleaning that preserves original speech content.
-
-1. **Fix truncated role labels** — `催收:` → `催收员:`
-2. **Normalize punctuation** — Chinese → English (`，→,` `。→.` `？→?` `；→;` `：→:` etc.)
-3. **Re-parse dialog** — re-segment with normalized separators
-4. **Rebuild dialog_raw** — reconstruct from cleaned turns
-5. **Clean planevaluation** — strip markdown artifacts (backticks, `---`, excess whitespace)
-6. **Normalize planevaluation punctuation** — same CN→EN mapping
-7. **Re-parse planevaluation** — extract structured fields from cleaned text
-
-### Stage 3: LLM Correction — Three Approaches
-
-#### 3a. Two-Pass Correction — `(llm) data_clean.py`
-
-Original approach using DeepSeek V4 in two passes:
-
-- **Pass 1:** Fix ASR transcription errors (homophones, garbled text, number formatting, role label bleed)
-- **Pass 2:** Logical turn alignment (merge fragmented turns, insert missing short responses, reorder misplaced turns)
-- **Safety net:** Programmatic regex-based known ASR fixes + role label splitting
-- **Scope:** First record only
-- **Output:** `output.py`
-
-**Known issue:** LLM sometimes lists corrections in notes but doesn't apply them to the text.
-
-#### 3b. Operations-Based Correction — `(llm) data_clean_1.py`
-
-Improved architecture where the LLM outputs **operation lists** instead of full dialogs:
-
-1. **Pre-processing** — normalize punctuation, fix known ASR patterns via regex, split role labels
-2. **LLM Identify Structural Issues** — output list of `operations` (merge/insert/reorder) with indices
-3. **Apply Structural Changes** — programmatically apply operations in order
-4. **LLM Identify Remaining ASR Errors** — output list of `corrections` (index, from, to, reason)
-5. **Apply ASR Corrections** — programmatically apply with validation
-6. **Verify & Safety Net** — re-apply known patterns, validate conversational flow
-
-**Advantages:**
-- LLM outputs small lists, not entire dialogs (avoids token limits)
-- Programmatic application ensures changes are actually made
-- Validation step catches missed corrections
-- Lower token usage and cost
-
-**Scope:** First record only  
-**Output:** `output_1.py`
-
-#### 3c. Emotion-Preserving Rewrite — `(llm) data_clean_2.py`
+### Stage 1: Emotion-Preserving Rewrite — `(llm) data_clean_2.py`
 
 Single-pass LLM approach that processes **all 31 records** while preserving emotional authenticity:
 
@@ -103,21 +51,42 @@ Single-pass LLM approach that processes **all 31 records** while preserving emot
 **Scope:** All 31 records  
 **Output:** `output_2.py`
 
+### Stage 2: 催收员 Logic Repair — `(llm) data_logic.py`
+
+LLM correction that targets **催收员 turns only** while leaving 客户 turns untouched:
+
+- **Goal:** Repair ASR corruption in collector speech so negotiation logic, financial terms, and amounts are accurate
+- **Preserves:** Customer turns exactly as-is (no modification), spoken-language style, emotional pacing, hesitation/fillers
+- **Aggressively repairs:** Corrupted ASR phrases, malformed numbers, broken wording, semantically broken spans, duplicated garbage tokens
+- **Input:** `output_2.py` (emotion-preserved output)
+- **Scope:** All 31 records
+- **Output:** `output_logic.py`
+
+### Stage 3: Dialogue Reconstruction — `(llm) data_complete.py`
+
+Dialogue-level reconstruction that goes beyond sentence-level repair to fix conversational flow:
+
+- **Goal:** Reconstruct the most likely natural conversation from corrupted ASR transcripts
+- **May:** Merge fragmented turns, split wrongly merged turns, reorder misplaced turns, rewrite corrupted spans, infer omitted transitions, insert missing replies, remove duplicated garbage
+- **Should:** Reduce unnatural consecutive 催收员 monologues, restore back-and-forth rhythm, infer customer reactions, reconstruct hidden adjacency pairs
+- **Must preserve:** Original intent, repayment negotiation logic, emotional pressure, hesitation, spoken-language style
+- **Generated turns:** Marked with `"label": "1"` to distinguish from original turns
+- **Input:** `output_logic.py`
+- **Scope:** All 31 records
+- **Output:** `output_complete.py`
+
 ## Files
 
 | File | Description |
 |------|-------------|
-| `data_0520.txt` | Raw concatenated source data |
 | `data_0520.json` | Parsed JSON (31 records) |
 | `data_parser.py` | Parser, dataclasses, query functions |
-| `(basic) data_clean.py` | Rule-based cleaning pipeline |
-| `(basic) data_0520.json` | Cleaned JSON (CN→EN punctuation, fixed labels, no markdown artifacts) |
-| `(llm) data_clean.py` | LLM two-pass correction (original approach, 1st record) |
-| `(llm) data_clean_1.py` | LLM operations-based correction (improved approach, 1st record) |
 | `(llm) data_clean_2.py` | LLM emotion-preserving rewrite (all 31 records) |
-| `output.py` | LLM two-pass output for first record |
-| `output_1.py` | LLM operations-based output for first record |
 | `output_2.py` | LLM emotion-preserving output for all records |
+| `(llm) data_logic.py` | LLM 催收员 logic repair (all 31 records) |
+| `output_logic.py` | LLM logic-repair output for all records |
+| `(llm) data_complete.py` | LLM dialogue reconstruction (all 31 records) |
+| `output_complete.py` | LLM dialogue reconstruction output for all records |
 
 ## Setup
 
@@ -130,23 +99,17 @@ pip install openai
 ## Usage
 
 ```bash
-# Parse
-python3 data_parser.py
-
-# Basic clean
-python3 "(basic) data_clean.py"
-
-# LLM correction (requires DEEPSEEK_API_KEY)
-export DEEPSEEK_API_KEY=your_key
-
-# Original two-pass approach (1st record)
-.venv/bin/python "(llm) data_clean.py"
-
-# Operations-based approach (1st record)
-.venv/bin/python "(llm) data_clean_1.py"
+# LLM correction (requires DEEPSEEK_API_KEY in .env)
+source .venv/bin/activate
 
 # Emotion-preserving rewrite (all 31 records)
-.venv/bin/python "(llm) data_clean_2.py"
+python "(llm) data_clean_2.py"
+
+# 催收员 logic repair (all 31 records)
+python "(llm) data_logic.py"
+
+# Dialogue reconstruction (all 31 records)
+python "(llm) data_complete.py"
 ```
 
 ## ASR Error Types Addressed
@@ -156,10 +119,10 @@ export DEEPSEEK_API_KEY=your_key
 - **Number formatting** — 1000千292→一千二百九十二, 102.钟→10点钟
 - **Role label bleed** — text containing `催收员：` split into separate turns
 - **Turn alignment** — merge fragmented turns, insert missing short responses (嗯/好/对/是/知道了/明白/噢/啊)
-- **Markdown artifacts** — backticks, horizontal rules, excess whitespace in planevaluation
 
 ## Design Notes
 
 - **Emotion preservation:** Stutters, hesitations (嗯, 呃, 唉), emotional repetitions (对对对, 好好好), and customer emotional expressions are intentionally preserved across all stages
-- **Progressive correction:** Rule-based cleaning handles deterministic fixes; LLM handles context-dependent ASR errors
-- **Validation:** Operations-based approach includes validation to ensure corrections are actually applied
+- **Progressive correction:** Three LLM rounds — emotion preservation → 催收员 logic repair → full dialogue reconstruction — each building on the previous output
+- **Asymmetric treatment:** 客户 turns are preserved as-is in logic repair; 催收员 turns are aggressively corrected for accuracy
+- **Generated turn tracking:** Reconstructed/inserted turns are marked with `"label": "1"` for traceability

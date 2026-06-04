@@ -9,16 +9,6 @@ from pathlib import Path
 from openai import OpenAI
 
 BASE_DIR = Path(__file__).resolve().parent
-
-# Simple .env loader (no extra dependency)
-env_path = BASE_DIR / ".env"
-if env_path.exists():
-    with open(env_path, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#") and "=" in line:
-                key, value = line.split("=", 1)
-                os.environ.setdefault(key.strip(), value.strip())
 DATA_FILE = BASE_DIR / "output_logic.py"
 OUTPUT_FILE = BASE_DIR / "output_complete.py"
 
@@ -268,7 +258,6 @@ def create_client() -> OpenAI:
 
 
 def load_all_records() -> list[dict]:
-    # output_2.py defines a top-level `results` list
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         code = compile(f.read(), DATA_FILE, "exec")
         namespace = {}
@@ -277,16 +266,19 @@ def load_all_records() -> list[dict]:
 
     records = []
     for item in data:
-        record = item.get("record", item)
-        records.append(record)
+        records.append({
+            "call_id": item.get("call_id", ""),
+            "dialog": item.get("response", item),
+            "custno": item.get("custno", ""),
+        })
 
     print(f"Loaded {len(records)} records")
     return records
 
 
-def call_llm(client: OpenAI, system_prompt: str, user_data: dict,
+def call_llm(client: OpenAI, system_prompt: str, dialog: list[dict],
              max_tokens: int = 16384) -> dict:
-    user_message = json.dumps(user_data, ensure_ascii=False)
+    user_message = json.dumps(dialog, ensure_ascii=False)
     response = client.chat.completions.create(
         model="deepseek-chat",
         messages=[
@@ -349,8 +341,12 @@ def main() -> None:
     results = []
     for i, record in enumerate(records):
         print(f"  Processing record {i+1}/{len(records)} (call_id={record['call_id']})...")
-        result = call_llm(client, PROMPT, {"record": record})
-        results.append(result)
+        llm_response = call_llm(client, PROMPT, record["dialog"])
+        results.append({
+            "call_id": record["call_id"],
+            "custno": record["custno"],
+            "response": llm_response,
+        })
 
     with open(OUTPUT_FILE, "w+", encoding="utf-8") as f:
         f.write("results = ")

@@ -1,7 +1,3 @@
-"""
-round 1: script to clean ASR noises while preserving the emotional texture and spoken language style of the original call transcripts.
-"""
-
 import json
 import os
 import re
@@ -11,8 +7,8 @@ from pathlib import Path
 from openai import OpenAI
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_FILE = BASE_DIR / "(basic) data_0520.json"
-OUTPUT_FILE = BASE_DIR / "output_2.py"
+DATA_FILE = BASE_DIR / "data_0520.json"
+OUTPUT_FILE = BASE_DIR / "output_2_1.py"
 
 PROMPT = """ 
 You are editing noisy ASR-transcribed Mandarin phone calls into readable but emotionally authentic spoken dialogue.
@@ -165,9 +161,8 @@ def load_all_records() -> list[dict]:
     return records
 
 
-def call_llm(client: OpenAI, system_prompt: str, user_data: dict,
-             max_tokens: int = 16384) -> dict:
-    user_message = json.dumps(user_data, ensure_ascii=False)
+def call_llm(client: OpenAI, system_prompt: str, dialog: list[dict],max_tokens: int = 16384) -> dict:
+    user_message = json.dumps(dialog, ensure_ascii=False)
     response = client.chat.completions.create(
         model="deepseek-chat",
         messages=[
@@ -223,22 +218,54 @@ def call_llm(client: OpenAI, system_prompt: str, user_data: dict,
         raise
 
 
-def main() -> None:
-    client = create_client()
-    records = load_all_records()
+def load_existing_results() -> list[dict]:
+    if not OUTPUT_FILE.exists():
+        return []
+    with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
+        code = compile(f.read(), OUTPUT_FILE, "exec")
+        namespace = {}
+        exec(code, namespace)
+        return namespace.get("results", [])
 
-    results = []
-    for i, record in enumerate(records):
-        print(f"  Processing record {i+1}/{len(records)} (call_id={record['call_id']})...")
-        result = call_llm(client, PROMPT, {"record": record})
-        results.append(result)
 
-    with open(OUTPUT_FILE, "w+", encoding="utf-8") as f:
+def write_results(results: list[dict]) -> None:
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write("results = ")
         f.write(json.dumps(results, ensure_ascii=False, indent=2))
         f.write("\n")
 
-    print(f"Output written to {OUTPUT_FILE}")
+
+def main() -> None:
+    client = create_client()
+    records = load_all_records()
+    results = load_existing_results()
+    existing_call_ids = {r["call_id"] for r in results}
+
+    BATCH_SIZE = 1
+    batch = []
+
+    for i, record in enumerate(records):
+        if record["call_id"] in existing_call_ids:
+            print(f"  Skipping record {i+1}/{len(records)} (call_id={record['call_id']}) - already processed")
+            continue
+        print(f"  Processing record {i+1}/{len(records)} (call_id={record['call_id']})...")
+        llm_response = call_llm(client, PROMPT, record["dialog"])
+        result = {
+            "call_id": record["call_id"],
+            "custno": record["custno"],
+            "response": llm_response,
+        }
+        results.append(result)
+        batch.append(result)
+
+        if len(batch) >= BATCH_SIZE:
+            write_results(results)
+            print(f"  Checkpoint: {len(results)} results written to {OUTPUT_FILE}")
+            batch.clear()
+
+    if batch:
+        write_results(results)
+        print(f"  Final: {len(results)} results written to {OUTPUT_FILE}")
 
 
 if __name__ == "__main__":
