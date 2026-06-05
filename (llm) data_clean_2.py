@@ -7,8 +7,8 @@ from pathlib import Path
 from openai import OpenAI
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_FILE = BASE_DIR / "data_0520.json"
-OUTPUT_FILE = BASE_DIR / "output_2_1.py"
+DATA_FILE = Path(os.environ.get("DATA_FILE", str(BASE_DIR / "data_0520.json")))
+OUTPUT_FILE = Path(os.environ.get("OUTPUT_FILE", str(BASE_DIR / "output_2.py")))
 
 PROMPT = """ 
 You are editing noisy ASR-transcribed Mandarin phone calls into readable but emotionally authentic spoken dialogue.
@@ -114,18 +114,28 @@ DO NOT:
 TARGET STYLE:
 A professionally cleaned real call transcript with emotional texture preserved.
 
-Output JSON only.
+Output valid JSON only.
+{"dialog": [
+    {
+      "role": "催收员",
+      "text": "唉，您好，请问是……喂，您好，请问是。"
+    },
+    {
+      "role": "客户",
+      "text": "喂。"
+    },
+    {
+      "role": "催收员",
+      "text": "请问是张先生吗？"
+    }
+]}
 
 Transcript:
 """
 
 
 def create_client() -> OpenAI:
-    api_key = os.environ.get("DEEPSEEK_API_KEY")
-    if not api_key:
-        print("Error: DEEPSEEK_API_KEY environment variable is not set.")
-        sys.exit(1)
-    return OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
+    return OpenAI(api_key="", base_url="")
 
 
 def load_all_records() -> list[dict]:
