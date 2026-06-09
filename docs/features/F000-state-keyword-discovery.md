@@ -8,7 +8,7 @@ created: 2026-06-09
 
 # F000: State Keyword Discovery
 
-> **Status**: in-progress | **Owner**: agent | **Priority**: P0
+> **Status**: review | **Owner**: agent | **Priority**: P0
 
 ## Why
 
@@ -44,25 +44,25 @@ Define willingness as ordered levels (most resistant → most cooperative), wher
 ## Acceptance Criteria
 
 ### Phase A（Customer State Discovery）
-- [ ] AC-A1: `state_keywords.json` contains `facts`, `emotions`, `willingness_levels` arrays
-- [ ] AC-A2: Each fact/emotion group has `group_name`, `keywords` (list of variants), `frequency`, `example_turn` (verbatim), `source` ("observed" or "suggested")
-- [ ] AC-A3: Groups sorted by frequency descending; suggested entries after observed
-- [ ] AC-A4: Total observed fact groups ≥ 5, total observed emotion groups ≥ 5
-- [ ] AC-A5: Every `example_turn` traces to an actual customer turn in `/data/output_manual.py`
-- [ ] AC-A6: Suggested domain keywords included with `source: "suggested"` and `frequency: 0`
+- [x] AC-A1: `state_keywords.json` contains `facts`, `emotions`, `willingness_levels` arrays
+- [x] AC-A2: Each fact/emotion group has `group_name`, `keywords` (list of variants), `frequency`, `example_turn` (verbatim), `source` ("observed" or "suggested")
+- [x] AC-A3: Groups sorted by frequency descending; suggested entries after observed
+- [x] AC-A4: Total observed fact groups ≥ 5, total observed emotion groups ≥ 5
+- [x] AC-A5: Every `example_turn` traces to an actual customer turn in `/data/output_manual.py`
+- [x] AC-A6: Suggested domain keywords included with `source: "suggested"` and `frequency: 0`
 
 ### Phase B（Collector Action Discovery）
-- [ ] AC-B1: `state_keywords.json` contains `collector_actions` array
-- [ ] AC-B2: Each collector action group has `group_name`, `keywords`, `frequency`, `example_turn`, `source`
-- [ ] AC-B3: Total observed collector action groups ≥ 4
-- [ ] AC-B4: Every `example_turn` traces to an actual collector turn in `/data/output_manual.py`
+- [x] AC-B1: `state_keywords.json` contains `collector_actions` array
+- [x] AC-B2: Each collector action group has `group_name`, `keywords`, `frequency`, `example_turn`, `source`
+- [x] AC-B3: Total observed collector action groups ≥ 4
+- [x] AC-B4: Every `example_turn` traces to an actual collector turn in `/data/output_manual.py`
 
 ### Phase C（Willingness Level Definition）
-- [ ] AC-C1: Willingness levels ordered from most resistant to most cooperative
-- [ ] AC-C2: Each level has `level`, `definition`, `boundary`, `example_turns` (≥2 examples)
-- [ ] AC-C3: Each `example_turn` includes `text` (verbatim) and `reason` (why it fits this level)
-- [ ] AC-C4: Boundaries are non-overlapping — a turn can only belong to one level
-- [ ] AC-C5: Level count is data-driven (no preset number)
+- [x] AC-C1: Willingness levels ordered from most resistant to most cooperative
+- [ ] AC-C2: Each level has `level`, `definition`, `boundary`, `example_turns` (≥2 examples) — ⚠️ prompt updated to require ≥2; current output has 1 per level
+- [x] AC-C3: Each `example_turn` includes `text` (verbatim) and `reason` (why it fits this level)
+- [x] AC-C4: Boundaries are non-overlapping — a turn can only belong to one level
+- [x] AC-C5: Level count is data-driven (no preset number)
 
 ## Dependencies
 
