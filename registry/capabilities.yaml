@@ -1,0 +1,30 @@
+capabilities:
+  clowder_dev_workflows:
+    description: Development workflow orchestration — feature lifecycle, planning, worktree, TDD, quality gate, human review, merge. Covers the full dev pipeline from idea to merge.
+    module_path: modules/clowder-dev/
+    chain: feat-lifecycle → writing-plans → worktree → tdd → quality-gate → request-review → receive-review → merge-gate
+    skills: 8
+    triggers: 开个新功能, new feature, F0xx, F001, F002, F003, F004, F005, F\d+, f\d+, 立项, feature 完成, F0xx done, F\d+ done, f\d+ done, 验收通过, 讨论新功能需求, 写计划, implementation plan, 拆分步骤, F\d+ plan, f\d+ plan, 开始开发, 新 worktree, 开 worktree, 写代码, test first, TDD, 红绿重构, 开发完了, 准备 review, 自检, 声称完成, F\d+ complete, f\d+ complete, 请 review, 帮我看看, request review, F\d+ review, f\d+ review, review 结果, review 意见, reviewer 说, fix these, F\d+ fix, f\d+ fix, 合入 main, merge, 准备合入, 开 PR, F\d+ merge, f\d+ merge
+    memory_hooks:
+      feat-lifecycle.kickoff: memory-search
+      feat-lifecycle.design_gate: decision-record
+      writing-plans.start: memory-search
+      tdd.bug_fix: lesson-capture
+      quality-gate.complete: governance-review
+      receive-review.fix: lesson-capture
+      merge-gate.complete: memory-index
+    skill_hooks:
+      feat-lifecycle.discussion: collaborative-thinking
+      tdd.bug_found: debugging
+      writing-plans.research_needed: deep-research
+      quality-gate.incident: incident-response
+      request-review.handoff: cross-cat-handoff
+  agent_memory:
+    description: Durable project memory — decisions, lessons learned, searchable knowledge, governance review, cold-start bootstrap, and entropy reduction
+    module_path: modules/agent-memory/
+    triggers: search memory, find decision, what did we decide, recall, has this happened before, record this decision, create ADR, architecture decision, lesson learned, don't repeat this, capture that mistake, check metadata, validate frontmatter, rebuild index, reindex, summarize conversation, governance check, principle check, bootstrap memory, cold start, prune memory, reduce entropy, deprecate
+  global_skills:
+    description: Cross-cutting methodology tools — collaboration, research, debugging, creative, browser automation, and more. Discovered via intention matching during task decomposition.
+    module_path: global_skills/
+    skills: 23
+    triggers: brainstorm, 讨论, bug, 报错, 调研, research, 截图, 看效果, 知识工程, 闯祸了, 写 skill, 做 PPT, 做视频, 定时, 浏览器自动化, 打开文件, expert panel, incident, guide, enterprise workflow, pencil, 发语音, 引导流程

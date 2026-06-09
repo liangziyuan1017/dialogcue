@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent_tool"
+version = "0.1.0"
+description = "Project configuration for agent_tool"
+requires-python = ">=3.14,<3.15"
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.0",
+    "aiofiles>=24.0",
+    "cryptography>=43.0",
+    "pyyaml>=6.0",
+    "openai>=1.30",
+    "python-socketio>=5.11",
+    "httpx>=0.27",
+    "websockets>=12.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

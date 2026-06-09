@@ -1,0 +1,77 @@
+{
+  "description": "Concurrency test cases for agent-memory",
+  "version": 1,
+  "cases": [
+    {
+      "id": "CC-001",
+      "name": "Simultaneous ID allocation",
+      "agents": 2,
+      "action": "id_allocate",
+      "params": {"kind": "ADR"},
+      "expected": {
+        "unique_ids": true,
+        "no_duplicates": true,
+        "both_succeed": true
+      }
+    },
+    {
+      "id": "CC-002",
+      "name": "Duplicate ADR title",
+      "agents": 2,
+      "action": "write_decision",
+      "params": {
+        "title": "Use Redis for caching",
+        "what": "Use Redis 7.2",
+        "why": "Sub-millisecond latency"
+      },
+      "expected": {
+        "first_write": "accepted",
+        "second_write": "candidate",
+        "second_has_possible_duplicate_of": true
+      }
+    },
+    {
+      "id": "CC-003",
+      "name": "Index rebuild during writes",
+      "agents": 3,
+      "actions": ["index_rebuild", "write_decision", "write_lesson"],
+      "expected": {
+        "rebuild_completes": true,
+        "index_marked_stale": true,
+        "incremental_catches_up": true
+      }
+    },
+    {
+      "id": "CC-004",
+      "name": "Duplicate lesson with different wording",
+      "agents": 2,
+      "action": "write_lesson",
+      "params": {
+        "agent1_pitfall": "DB connection pool exhaustion under load",
+        "agent2_pitfall": "database pool runs out of connections at peak"
+      },
+      "expected": {
+        "first_write": "accepted",
+        "second_write": "candidate",
+        "second_has_possible_duplicate_of": true,
+        "detection_method": "lexical_overlap > 70%"
+      }
+    },
+    {
+      "id": "CC-005",
+      "name": "Optimistic concurrency rejection",
+      "agents": 2,
+      "action": "update_decision",
+      "params": {
+        "doc_id": "ADR-001",
+        "agent1_update": {"status": "superseded"},
+        "agent2_update": {"status": "archived"}
+      },
+      "expected": {
+        "first_update": "accepted",
+        "second_update": "rejected",
+        "rejection_reason": "document modified since read"
+      }
+    }
+  ]
+}

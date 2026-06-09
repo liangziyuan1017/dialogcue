@@ -1,0 +1,11 @@
+.DS_Store
+.venv/
+agent.md
+global_rules/
+global_skills/
+icbc_venv/
+modules/
+opencode.json
+plan.md
+pyproject.toml
+registry/

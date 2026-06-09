@@ -1,0 +1,76 @@
+# Memory Index Schema
+# Defines the structure of a searchable memory index entry.
+# Phase 4 status: Schema defined. Implementation deferred to Phase 8 (scripts).
+
+schema_version: 1
+
+memory_index_entry:
+  doc_id:
+    description: Stable document identifier (e.g. ADR-014, LL-042)
+    required: true
+
+  doc_path:
+    description: Path to the source document relative to project root
+    required: true
+    example: "docs/decisions/014-postgresql-choice.md"
+
+  doc_kind:
+    description: Document type per frontmatter.schema.yaml
+    required: true
+    enum: [decision, lesson, spec, plan, discussion, research, bug-report, review, note, summary]
+
+  # ── Searchable Fields ──
+
+  title:
+    description: Document title
+    indexed: true
+    weight: 3.0
+
+  topics:
+    description: Topic tags
+    indexed: true
+    weight: 2.0
+
+  feature_ids:
+    description: Related feature IDs
+    indexed: true
+    weight: 1.5
+
+  content_hash:
+    description: SHA-256 hash of document content for change detection
+    required: true
+
+  # ── Index Metadata ──
+
+  indexed_at:
+    description: When was this entry last indexed?
+    type: datetime
+    required: true
+
+  schema_version:
+    description: Schema version this entry was indexed against
+    type: integer
+    required: true
+
+# ── Index Statistics ──
+
+index_stats:
+  total_docs:
+    description: Total number of indexed documents
+    type: integer
+
+  by_kind:
+    description: Document count per doc_kind
+    type: map
+
+  last_full_rebuild:
+    description: Timestamp of last full index rebuild
+    type: datetime
+
+  last_incremental_rebuild:
+    description: Timestamp of last incremental update
+    type: datetime
+
+  hash_conflicts:
+    description: Number of documents with hash mismatches (source changed since last index)
+    type: integer

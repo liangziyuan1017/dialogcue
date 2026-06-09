@@ -1,0 +1,227 @@
+{
+  "description": "Golden retrieval set for agent-memory search validation",
+  "version": 1,
+  "queries": [
+    {
+      "id": "GQ-001",
+      "category": "exact_lookup",
+      "query": "ADR-001",
+      "expected_top3": ["ADR-001"],
+      "must_include": "ADR-001",
+      "must_not_rank_above": {"ADR-002": 3, "ADR-003": 3}
+    },
+    {
+      "id": "GQ-002",
+      "category": "exact_lookup",
+      "query": "LL-002",
+      "expected_top3": ["LL-002"],
+      "must_include": "LL-002",
+      "must_not_rank_above": {"LL-001": 3, "LL-003": 3}
+    },
+    {
+      "id": "GQ-003",
+      "category": "exact_lookup",
+      "query": "ADR-006",
+      "expected_top3": ["ADR-006"],
+      "must_include": "ADR-006",
+      "must_not_rank_above": {"ADR-005": 3, "ADR-004": 5}
+    },
+    {
+      "id": "GQ-004",
+      "category": "exact_lookup",
+      "query": "LL-003",
+      "expected_top3": ["LL-003"],
+      "must_include": "LL-003",
+      "must_not_rank_above": {"LL-001": 4, "LL-002": 4}
+    },
+    {
+      "id": "GQ-005",
+      "category": "exact_lookup",
+      "query": "SUM-20260415-1400",
+      "expected_top3": ["SUM-20260415-1400-database-migration"],
+      "must_include": "SUM-20260415-1400-database-migration",
+      "must_not_rank_above": {"ADR-001": 3, "LL-002": 5}
+    },
+    {
+      "id": "GQ-006",
+      "category": "concept_lookup",
+      "query": "port allocation strategy",
+      "expected_top3": ["LL-001", "ADR-001", "ADR-002"],
+      "must_include": "LL-001",
+      "must_not_rank_above": {"ADR-005": 5, "ADR-006": 5}
+    },
+    {
+      "id": "GQ-007",
+      "category": "concept_lookup",
+      "query": "hybrid search retrieval model",
+      "expected_top3": ["ADR-002", "ADR-004", "LL-002"],
+      "must_include": "ADR-002",
+      "must_not_rank_above": {"ADR-005": 5, "LL-001": 5}
+    },
+    {
+      "id": "GQ-008",
+      "category": "concept_lookup",
+      "query": "authority model for memory entries",
+      "expected_top3": ["ADR-004", "ADR-002", "ADR-003"],
+      "must_include": "ADR-004",
+      "must_not_rank_above": {"LL-001": 5, "ADR-005": 5}
+    },
+    {
+      "id": "GQ-009",
+      "category": "concept_lookup",
+      "query": "append-first write model",
+      "expected_top3": ["ADR-003", "ADR-002", "ADR-004"],
+      "must_include": "ADR-003",
+      "must_not_rank_above": {"ADR-005": 5, "LL-001": 5}
+    },
+    {
+      "id": "GQ-010",
+      "category": "concept_lookup",
+      "query": "tombstone and retention policy",
+      "expected_top3": ["ADR-004", "ADR-006", "LL-002"],
+      "must_include": "ADR-004",
+      "must_not_rank_above": {"ADR-001": 5, "LL-001": 5}
+    },
+    {
+      "id": "GQ-011",
+      "category": "lesson_recall",
+      "query": "lesson about concurrent writes",
+      "expected_top3": ["LL-002", "ADR-003", "LL-003"],
+      "must_include": "LL-002",
+      "must_not_rank_above": {"ADR-005": 5, "ADR-006": 5}
+    },
+    {
+      "id": "GQ-012",
+      "category": "lesson_recall",
+      "query": "duplicate detection failure",
+      "expected_top3": ["LL-003", "ADR-002", "LL-001"],
+      "must_include": "LL-003",
+      "must_not_rank_above": {"ADR-005": 5, "ADR-006": 5}
+    },
+    {
+      "id": "GQ-013",
+      "category": "lesson_recall",
+      "query": "port conflict between services",
+      "expected_top3": ["LL-001", "ADR-001", "LL-002"],
+      "must_include": "LL-001",
+      "must_not_rank_above": {"ADR-005": 5, "ADR-006": 5}
+    },
+    {
+      "id": "GQ-014",
+      "category": "lesson_recall",
+      "query": "index staleness and stale reads",
+      "expected_top3": ["LL-002", "ADR-002", "LL-003"],
+      "must_include": "LL-002",
+      "must_not_rank_above": {"ADR-005": 5, "ADR-006": 5}
+    },
+    {
+      "id": "GQ-015",
+      "category": "contradictory",
+      "query": "superseded decision about PostgreSQL",
+      "expected_top3": ["ADR-001", "ADR-002", "ADR-003"],
+      "must_include": "ADR-001",
+      "must_not_rank_above": {"LL-001": 5, "ADR-005": 5}
+    },
+    {
+      "id": "GQ-016",
+      "category": "contradictory",
+      "query": "invalidated lesson entry",
+      "expected_top3": ["LL-003", "LL-002", "ADR-004"],
+      "must_include": "LL-003",
+      "must_not_rank_above": {"ADR-005": 5, "ADR-006": 5}
+    },
+    {
+      "id": "GQ-017",
+      "category": "contradictory",
+      "query": "competing authority between decisions",
+      "expected_top3": ["ADR-004", "ADR-002", "ADR-003"],
+      "must_include": "ADR-004",
+      "must_not_rank_above": {"LL-001": 5, "ADR-005": 5}
+    },
+    {
+      "id": "GQ-018",
+      "category": "contradictory",
+      "query": "database migration",
+      "expected_top3": ["SUM-20260415-1400-database-migration", "ADR-001"],
+      "must_include": "SUM-20260415-1400-database-migration",
+      "must_not_rank_above": {"ADR-005": 5, "LL-001": 5}
+    },
+    {
+      "id": "GQ-019",
+      "category": "stale_knowledge",
+      "query": "old ADR about PostgreSQL decision",
+      "expected_top3": ["ADR-001", "ADR-002", "ADR-003"],
+      "must_include": "ADR-001",
+      "must_not_rank_above": {"LL-001": 5, "LL-003": 5}
+    },
+    {
+      "id": "GQ-020",
+      "category": "stale_knowledge",
+      "query": "draft decision not yet ratified",
+      "expected_top3": ["ADR-003", "ADR-002", "ADR-004"],
+      "must_include": "ADR-003",
+      "must_not_rank_above": {"LL-001": 5, "ADR-005": 5}
+    },
+    {
+      "id": "GQ-021",
+      "category": "stale_knowledge",
+      "query": "backstop entry for unused lesson",
+      "expected_top3": ["LL-003", "LL-002", "ADR-004"],
+      "must_include": "LL-003",
+      "must_not_rank_above": {"ADR-005": 5, "ADR-006": 5}
+    },
+    {
+      "id": "GQ-022",
+      "category": "stale_knowledge",
+      "query": "naming convention",
+      "expected_top3": ["ADR-005", "ADR-006"],
+      "must_include": "ADR-005",
+      "must_not_rank_above": {"LL-001": 5, "ADR-001": 5}
+    },
+    {
+      "id": "GQ-023",
+      "category": "feature_scoped",
+      "query": "F102 memory architecture decisions",
+      "expected_top3": ["ADR-002", "ADR-003", "ADR-004"],
+      "must_include": "ADR-002",
+      "must_not_rank_above": {"LL-001": 5, "ADR-005": 5}
+    },
+    {
+      "id": "GQ-024",
+      "category": "feature_scoped",
+      "query": "F200 nonexistent feature",
+      "expected_top3": [],
+      "must_include": null,
+      "must_not_rank_above": {}
+    },
+    {
+      "id": "GQ-025",
+      "category": "feature_scoped",
+      "query": "F102 architecture and write model",
+      "expected_top3": ["ADR-003", "ADR-002", "ADR-004"],
+      "must_include": "ADR-003",
+      "must_not_rank_above": {"LL-001": 5, "ADR-005": 5}
+    },
+    {
+      "id": "GQ-026",
+      "category": "feature_scoped",
+      "query": "F102 authority and governance",
+      "expected_top3": ["ADR-004", "ADR-002", "ADR-003"],
+      "must_include": "ADR-004",
+      "must_not_rank_above": {"LL-001": 5, "ADR-005": 5}
+    },
+    {
+      "id": "GQ-027",
+      "category": "nonexistent",
+      "query": "quantum computing architecture",
+      "expected_top3": [],
+      "must_include": null,
+      "must_not_rank_above": {}
+    }
+  ],
+  "acceptance_targets": {
+    "lexical_exact_top1": "100%",
+    "hybrid_concept_top3_hit_rate": ">= 85%",
+    "invalidated_outranks_active": "0 cases"
+  }
+}

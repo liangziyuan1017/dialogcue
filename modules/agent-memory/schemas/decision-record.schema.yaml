@@ -1,0 +1,67 @@
+# Decision Record Schema (ADR)
+# Architecture Decision Record with Why-First format.
+# Phase 4 status: Schema defined.
+
+schema_version: 1
+
+decision_record:
+  id:
+    description: Unique decision ID (e.g. ADR-001)
+    pattern: "^ADR-\\d{3}$"
+    example: "ADR-014"
+
+  title:
+    description: One-line summary of the decision
+    example: "Choose PostgreSQL as the primary database"
+
+  # ── Why-First Format ──
+
+  what:
+    description: What was decided? Specific, concrete.
+    required: true
+    example: "Use PostgreSQL 16 as the primary relational database for all services"
+
+  why:
+    description: Why this choice? Constraints, goals, risks that drove the decision.
+    required: true
+    example: "Needed ACID compliance for payment transactions, JSONB for flexible document storage, and mature replication for multi-region. PostgreSQL is the only option meeting all three."
+
+  tradeoff:
+    description: What alternatives were considered and why were they rejected?
+    required: true
+    example: "MySQL: weaker JSON support. MongoDB: no ACID for multi-document transactions. CockroachDB: too new, operational risk."
+
+  open_questions:
+    description: What is still uncertain? Who needs to answer?
+    required: false
+    example: "Should we use connection pooling (pgbouncer) from day one? @Architect to decide based on expected load."
+
+  next_action:
+    description: What happens next? Who does what?
+    required: true
+    example: "@Coder: set up PostgreSQL in docker-compose, add SQLAlchemy + Alembic to pyproject.toml"
+
+  # ── Metadata ──
+
+  status:
+    description: Current decision status (aligned with frontmatter.schema.yaml status_enum)
+    enum: [draft, review, accepted, deprecated, superseded, archived]
+    default: draft
+
+  deciders:
+    description: Who participated in this decision?
+    type: list
+    example: ["Architect", "Human"]
+
+  date:
+    description: When was this decision made?
+    type: date
+    required: true
+
+  supersedes:
+    description: Which ADR does this replace?
+    type: list
+
+  superseded_by:
+    description: Which ADR replaces this?
+    type: list

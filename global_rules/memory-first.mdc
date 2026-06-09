@@ -1,0 +1,27 @@
+---
+description: Before making design or architecture decisions, the agent MUST consult durable project memory. Prevents re-deciding what was already decided and repeating known mistakes.
+alwaysApply: true
+---
+
+# Memory-First Rule
+
+## Principle
+
+Before making design/architecture decisions, the agent MUST consult durable
+project memory. The specific hook points are defined in
+`registry/capabilities.yaml` under `clowder_dev_workflows.memory_hooks`.
+Do not hardcode memory consultation points in this rule — always read the
+registry for the authoritative hook list.
+
+## Rules
+
+1. If a prior decision exists on the same topic and is `status: accepted`,
+   respect it — do not re-decide without explicit Human override.
+2. If a prior lesson exists for the same pitfall, follow its guard — do not
+   repeat the mistake.
+3. After making a new decision that affects future work, invoke
+   `decision-record` to persist it.
+4. After encountering and recovering from a failure, invoke `lesson-capture`
+   to persist the lesson.
+5. This rule does NOT replace explicit triggers — it adds mandatory
+   consultation before action.

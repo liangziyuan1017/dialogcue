@@ -1,0 +1,90 @@
+# Conversation Summary Schema
+# LSM compaction: summary segments generated from conversation threads.
+# Phase 4 status: Schema defined.
+
+schema_version: 1
+
+conversation_summary:
+  thread_id:
+    description: Identifier for the conversation thread being summarized
+    required: true
+
+  segment_id:
+    description: Unique segment ID in the append-only ledger
+    required: true
+    example: "seg-2026-05-25-001"
+
+  # ── LSM Compaction Layer ──
+
+  layer:
+    description: Which LSM layer generated this summary?
+    enum:
+      - L0   # Real-time stitching (message concatenation)
+      - L1   # Periodic LLM summary (every 30min, eligibility-gated)
+      - L2   # Rollup (deferred, segment-based compaction)
+    required: true
+
+  # ── Eligibility (for L1+) ──
+
+  eligibility:
+    quiet_window_min:
+      description: Minutes since last message in thread
+      type: integer
+      default: 10
+    message_count:
+      description: Number of messages summarized
+      type: integer
+    token_count:
+      description: Estimated token count of source material
+      type: integer
+    cooldown_hours:
+      description: Minimum hours since last summary for this thread
+      type: integer
+      default: 2
+
+  # ── Summary Content ──
+
+  topic_label:
+    description: Short topic label for indexing
+    required: true
+    example: "Database migration planning"
+
+  topic_key:
+    description: Machine-readable topic key for grouping
+    required: true
+    example: "database-migration"
+
+  summary:
+    description: Natural language summary (Opus output — human-readable, not JSON)
+    required: true
+
+  durable_candidates:
+    description: Items flagged as potential durable knowledge ([decision], [lesson], [method])
+    type: list
+    items:
+      type: string
+      enum: [decision, lesson, method]
+
+  # ── Provenance ──
+
+  source_messages:
+    description: Range of message IDs covered by this summary
+    required: true
+    example: "msg-1420 to msg-1487"
+
+  generated_at:
+    description: When was this summary generated?
+    type: datetime
+    required: true
+
+  generated_by:
+    description: Which model or process generated this summary?
+    required: true
+    example: "opus-4.6"
+
+  # ── No-Summary-of-Summary Rule ──
+
+  is_summary_of_summary:
+    description: Must always be false. Summaries are generated from original source material only.
+    type: boolean
+    const: false

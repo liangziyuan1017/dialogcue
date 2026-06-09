@@ -1,0 +1,86 @@
+# Lesson Schema (LL-XXX)
+# 7-slot template + 5 quality gates for lessons learned.
+# Phase 4 status: Schema defined.
+
+schema_version: 1
+
+lesson:
+  id:
+    description: Unique lesson ID in LL-XXX format (3-digit, incrementing, never reused)
+    pattern: "^LL-\\d{3}$"
+    example: "LL-042"
+
+  title:
+    description: One-line summary of the lesson
+    example: "Port 8080 conflict: gunicorn default overlaps with dev server"
+
+  # ── 7 Required Slots ──
+
+  pitfall:
+    description: What went wrong? One sentence.
+    slot: 1
+    required: true
+    example: "gunicorn default port 8080 conflicts with the dev server running on the same port"
+
+  root_cause:
+    description: Why did it happen?
+    slot: 2
+    required: true
+    example: "Both services were configured with default ports; no pre-start port check existed"
+
+  trigger_conditions:
+    description: Under what conditions will this recur?
+    slot: 3
+    required: true
+    example: "Any time a new service is added with a default port that overlaps an existing service"
+
+  fix:
+    description: How was it resolved in this instance?
+    slot: 4
+    required: true
+    example: "Changed gunicorn port to 8081 in config; added port allocation table to docs/"
+
+  guard:
+    description: What executable mechanism prevents recurrence? Must be a script, test, CI check, or automated rule — not just "be careful."
+    slot: 5
+    required: true
+    example: "scripts/port-check.py — runs before dev server start; blocks if port conflict detected"
+
+  source_anchor:
+    description: Where is the evidence? At least 1 file path or commit SHA. Recommended: 2 (rule + instance).
+    slot: 6
+    required: true
+    min_items: 1
+    example: "commit:abc123, docs/decisions/008-port-allocation.md"
+
+  related:
+    description: Related ADR IDs, lesson IDs, or feature IDs
+    slot: 7
+    required: false
+    example: "[ADR-008, LL-023]"
+
+  # ── Optional: First-Principles Root Cause ──
+
+  principle:
+    description: Which first principle does this trace to? Only fill if a real failure case supports it.
+    required: false
+    enum: [null, P1, P2, P3, P4, P5]
+
+# ── 5 Quality Gates (must pass all before acceptance) ──
+
+quality_gates:
+  - id: QG1
+    name: Source anchor exists
+    check: "source_anchor has at least 1 entry"
+  - id: QG2
+    name: Timeliness verified
+    check: "No subsequent addendum or mailbox discussion has invalidated this lesson"
+  - id: QG3
+    name: Executable guard present
+    check: "guard references a script, test, CI rule, or automated check — not just prose"
+  - id: QG4
+    name: Principle slot constrained
+    check: "principle is null unless supported by a real failure case"
+  - id: QG5
+    name: Dedup check passed
+    check: "No existing LL-XXX describes the same pitfall with the same root cause"
