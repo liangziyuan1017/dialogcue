@@ -8,7 +8,7 @@ created: 2026-06-09
 
 # F000: State Keyword Discovery
 
-> **Status**: design-approved | **Owner**: agent | **Priority**: P0
+> **Status**: planned | **Owner**: agent | **Priority**: P0
 
 ## Why
 
@@ -108,3 +108,7 @@ Define willingness as ordered levels (most resistant → most cooperative), wher
 |------|------|------|
 | **Plan** | `plan_feature_base.md` | Feature-wise plan with F000 as first feature |
 | **Data** | `data/output_manual.py` | Source data (31 records, 805 turns) |
+
+## Implementation Plan
+
+→ [F000-implementation-plan.md](F000-implementation-plan.md)
