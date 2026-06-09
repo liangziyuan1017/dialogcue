@@ -52,7 +52,7 @@ def _build_cluster_prompt(signals: list) -> str:
 
 要求:
 - 等级从最抗拒到最配合排序
-- 每个等级至少1个example_turn
+- 每个等级至少2个example_turn（从观测数据中选取真实发言）
 - boundary要具体说明区分标准
 - 等级数量由数据自然聚类决定，不要预设"""
 
