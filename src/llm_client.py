@@ -17,6 +17,14 @@ def call_deepseek(prompt: str, temperature: float = 0.1) -> str:
     return resp.choices[0].message.content
 
 
+def _strip_json(text: str) -> str:
+    if "```json" in text:
+        text = text.split("```json")[1].split("```")[0]
+    elif "```" in text:
+        text = text.split("```")[1].split("```")[0]
+    return text.strip()
+
+
 def call_deepseek_json(prompt: str, temperature: float = 0.1) -> dict:
     text = call_deepseek(prompt, temperature)
-    return json.loads(text)
+    return json.loads(_strip_json(text))

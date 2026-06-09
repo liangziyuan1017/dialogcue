@@ -1,25 +1,32 @@
 from src.llm_client import call_deepseek_json
 
+BATCH_SIZE = 20
 
-def _build_classify_prompt(turn_text: str, context_turns: list) -> str:
-    ctx = "\n".join(f"  {t['role']}: {t['text']}" for t in context_turns)
-    return f"""分析以下催收对话中客户的还款意愿信号。
 
-上下文:
-{ctx}
+def _build_batch_classify_prompt(turns: list) -> str:
+    turns_text = ""
+    for idx, (turn_text, context) in enumerate(turns):
+        ctx = "\n".join(f"    {t['role']}: {t['text']}" for t in context)
+        turns_text += f"\n---\n发言{idx+1}:\n上下文:\n{ctx}\n客户: {turn_text}"
+    return f"""分析以下{len(turns)}条连续的客户发言，只标注**有明确还款态度**的意愿信号。
 
-客户发言: {turn_text}
+{turns_text}
 
-请以JSON格式输出:
-{{
-  "willingness_signal": "resistant|weak|conditional|negotiating|strong"
-}}
+请以JSON格式输出一个数组，每条发言对应一个元素:
+[
+  {{
+    "willingness_signal": "resistant|weak|conditional|negotiating|strong" | null
+  }}
+]
 
-- resistant: 明确拒绝、挂断、否认债务
-- weak: 有意愿但表达无力（没钱、困难）
-- conditional: 有条件同意（如果分期、如果减免）
+标注规则:
+- resistant: 明确拒绝还款、挂断、否认债务
+- weak: 有还款意愿但表达无力（"想还但没钱"、"困难"）
+- conditional: 有条件同意（"如果分期我可以"、"减免的话"）
 - negotiating: 主动协商、讨价还价
-- strong: 明确承诺还款、给出具体时间/金额"""
+- strong: 明确承诺还款、给出具体时间或金额
+- **null**: 短应答（嗯/好/对）、纯反问、确认身份、无还款态度的发言 → 设为null，不要硬编
+- 输出数组长度必须等于{len(turns)}"""
 
 
 def _build_cluster_prompt(signals: list) -> str:
@@ -50,10 +57,12 @@ def _build_cluster_prompt(signals: list) -> str:
 - 等级数量由数据自然聚类决定，不要预设"""
 
 
-def define_willingness_levels(records: list) -> list:
-    signals = []
-    example_turns_by_signal = {}
+def _build_classify_prompt(turn_text: str, context_turns: list) -> str:
+    return _build_batch_classify_prompt([(turn_text, context_turns)])
 
+
+def define_willingness_levels(records: list) -> list:
+    all_turns = []
     for record in records:
         dialog = record["response"]["dialog"]
         for i, turn in enumerate(dialog):
@@ -61,18 +70,26 @@ def define_willingness_levels(records: list) -> list:
                 continue
             context_start = max(0, i - 3)
             context_turns = dialog[context_start:i]
-            prompt = _build_classify_prompt(turn["text"], context_turns)
-            try:
-                result = call_deepseek_json(prompt)
-                sig = result.get("willingness_signal", "weak")
-                signals.append(sig)
-                if sig not in example_turns_by_signal:
-                    example_turns_by_signal[sig] = []
-                example_turns_by_signal[sig].append(turn["text"])
-            except Exception:
-                pass
+            all_turns.append((turn["text"], context_turns))
+
+    signals = []
+    for batch_start in range(0, len(all_turns), BATCH_SIZE):
+        batch = all_turns[batch_start:batch_start + BATCH_SIZE]
+        prompt = _build_batch_classify_prompt(batch)
+        try:
+            results = call_deepseek_json(prompt)
+            if isinstance(results, list):
+                for r in results:
+                    sig = r.get("willingness_signal")
+                    if sig:
+                        signals.append(sig)
+        except Exception:
+            pass
 
     unique_signals = list(dict.fromkeys(signals))
+    if not unique_signals:
+        return []
+
     cluster_prompt = _build_cluster_prompt(unique_signals)
     try:
         cluster_result = call_deepseek_json(cluster_prompt)

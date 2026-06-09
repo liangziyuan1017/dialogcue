@@ -7,21 +7,35 @@ SUGGESTED_ACTIONS = [
     {"group_name": "urgency_pressure", "keywords": ["最后期限", "今天必须", "马上"], "example_turn": ""},
 ]
 
+BATCH_SIZE = 20
+
+
+def _build_batch_prompt(turns: list) -> str:
+    turns_text = ""
+    for idx, turn_text in enumerate(turns):
+        turns_text += f"\n---\n发言{idx+1}: {turn_text}"
+    return f"""你是一个催收对话分析专家。分析以下{len(turns)}条连续的催收员发言，只标注**明显的**行为类型。
+
+{turns_text}
+
+请以JSON格式输出一个数组，每条发言对应一个元素:
+[
+  {{
+    "action_type": "行为类型关键词" | null,
+    "action_group": "语义组名(英文snake_case)" | null,
+    "keyword": "行为关键词" | null
+  }}
+]
+
+标注规则:
+1. **只标明显的催收行为**。短应答（"嗯"、"对"、"好"）、纯确认、单字回复 → 全部设为null。
+2. 常见行为组: greeting(问候), information(告知欠款/方案信息), plan_proposal(提出还款方案), pressure(施压/催促), empathy(共情/理解), legal_threat(法律威胁), closure(收尾/结束通话)
+3. 同一意思的不同说法归入同一group。
+4. 输出数组长度必须等于{len(turns)}。"""
+
 
 def _build_collector_prompt(turn_text: str) -> str:
-    return f"""你是一个催收对话分析专家。分析以下催收员发言，提取其行为类型。
-
-催收员发言: {turn_text}
-
-请以JSON格式输出:
-{{
-  "action_type": "行为类型关键词",
-  "action_group": "语义组名(英文snake_case)",
-  "keyword": "行为关键词"
-}}
-
-常见行为组: greeting(问候), information(告知信息), plan_proposal(提出方案), pressure(施压), empathy(共情), legal_threat(法律威胁), closure(收尾)
-同一意思的不同说法归入同一group。"""
+    return _build_batch_prompt([turn_text])
 
 
 def _group_collector_results(raw_results: list) -> list:
@@ -63,18 +77,28 @@ def _add_suggested(groups: list, suggested: list) -> list:
 
 
 def analyze_collector_turns(records: list) -> dict:
-    raw_results = []
+    all_turns = []
     for record in records:
         for turn in record["response"]["dialog"]:
             if turn["role"] != "催收员":
                 continue
-            prompt = _build_collector_prompt(turn["text"])
-            try:
-                result = call_deepseek_json(prompt)
-                result["_turn_text"] = turn["text"]
-                raw_results.append(result)
-            except Exception:
-                pass
+            all_turns.append(turn["text"])
+
+    raw_results = []
+    for batch_start in range(0, len(all_turns), BATCH_SIZE):
+        batch = all_turns[batch_start:batch_start + BATCH_SIZE]
+        prompt = _build_batch_prompt(batch)
+        try:
+            results = call_deepseek_json(prompt)
+            if isinstance(results, list):
+                for j, result in enumerate(results):
+                    if result.get("action_group") is None:
+                        continue
+                    if batch_start + j < len(all_turns):
+                        result["_turn_text"] = all_turns[batch_start + j]
+                    raw_results.append(result)
+        except Exception:
+            pass
 
     actions = _group_collector_results(raw_results)
     actions = _add_suggested(actions, SUGGESTED_ACTIONS)

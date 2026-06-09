@@ -16,7 +16,7 @@ CLUSTER_RESULT = _make_cluster_result([
 
 
 def test_returns_ordered_levels():
-    classify_resp = json.loads('{"willingness_signal": "weak"}')
+    classify_resp = [{"willingness_signal": "weak"}]
     cluster_resp = json.loads(CLUSTER_RESULT)
     with patch("src.define_willingness_levels.call_deepseek_json", side_effect=[classify_resp, cluster_resp]):
         records = [{"call_id": "test", "response": {"dialog": [{"role": "客户", "text": "想还但没钱"}]}}]
@@ -26,7 +26,7 @@ def test_returns_ordered_levels():
 
 
 def test_level_has_required_fields():
-    classify_resp = json.loads('{"willingness_signal": "weak"}')
+    classify_resp = [{"willingness_signal": "weak"}]
     cluster_resp = json.loads(_make_cluster_result([
         {"level": "resistant", "definition": "拒绝", "boundary": "说no", "example_turns": [{"text": "不还", "reason": "拒绝"}]},
         {"level": "strong", "definition": "同意", "boundary": "说ok", "example_turns": [{"text": "好我还", "reason": "同意"}]},
@@ -46,7 +46,7 @@ def test_level_has_required_fields():
 
 
 def test_levels_ordered_resistant_to_cooperative():
-    classify_resp = json.loads('{"willingness_signal": "weak"}')
+    classify_resp = [{"willingness_signal": "weak"}]
     cluster_resp = json.loads(_make_cluster_result([
         {"level": "resistant", "definition": "拒绝", "boundary": "说no", "example_turns": [{"text": "不还", "reason": "拒绝"}]},
         {"level": "weak", "definition": "想还但没钱", "boundary": "有意愿但无力", "example_turns": [{"text": "想还", "reason": "有意愿"}]},

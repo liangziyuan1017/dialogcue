@@ -16,34 +16,44 @@ SUGGESTED_EMOTIONS = [
     {"group_name": "embarrassment", "keywords": ["不好意思", "丢人", "难为情"], "example_turn": ""},
 ]
 
+BATCH_SIZE = 20
 
-def _build_customer_prompt(turn_text: str, context_turns: list) -> str:
-    ctx = "\n".join(f"  {t['role']}: {t['text']}" for t in context_turns)
-    return f"""你是一个催收对话分析专家。分析以下客户发言，提取事实、情绪和还款意愿信号。
 
-上下文:
-{ctx}
+def _build_batch_prompt(turns: list) -> str:
+    turns_text = ""
+    for idx, (turn_text, context) in enumerate(turns):
+        ctx = "\n".join(f"    {t['role']}: {t['text']}" for t in context)
+        turns_text += f"\n---\n发言{idx+1}:\n上下文:\n{ctx}\n客户: {turn_text}"
+    return f"""你是一个催收对话分析专家。分析以下{len(turns)}条连续的客户发言，只标注**明显的**事实、情绪和还款意愿。
 
-客户发言: {turn_text}
+{turns_text}
 
-请以JSON格式输出:
-{{
-  "facts": [{{"keyword": "关键词", "group": "语义组名(英文snake_case)"}}],
-  "emotions": [{{"keyword": "关键词", "group": "语义组名(英文snake_case)"}}],
-  "willingness_signal": "resistant|weak|conditional|negotiating|strong"
-}}
+请以JSON格式输出一个数组，每条发言对应一个元素:
+[
+  {{
+    "facts": [{{"keyword": "关键词", "group": "语义组名(英文snake_case)"}}] | null,
+    "emotions": [{{"keyword": "关键词", "group": "语义组名(英文snake_case)"}}] | null,
+    "willingness_signal": "resistant|weak|conditional|negotiating|strong" | null
+  }}
+]
 
-注意:
-- 同一意思的不同说法归入同一group（如"没钱"和"经济困难"都归入financial_hardship）
-- group名用英文snake_case
-- 如果该发言无明显事实/情绪，对应数组可为空
-- willingness_signal必填"""
+标注规则（严格遵守）:
+1. **只标明显的状态**。如果一条发言很难判断事实是什么，或者感觉没有明显情绪，设为null，不要硬编。
+2. 短发言（如"嗯"、"好"、"对"、喂"）几乎总是null/null/null，不要给它们编造标签。
+3. facts：只标客户明确陈述的客观事实（失业、生病、工资拖延、多头欠款、卡冻结等）。模糊或推断的事实跳过。
+4. emotions：只标明显可感知的情绪（焦虑、愤怒、恳求、防御、疲惫等）。语气平淡或礼貌的跳过。
+5. willingness_signal：只标有明确还款态度的发言。如果只是应答/确认/反问，设为null。
+6. 同一意思的不同说法归入同一group（如"没钱"和"经济困难"都归入financial_hardship）。
+7. group名用英文snake_case。
+8. 输出数组长度必须等于{len(turns)}。"""
 
 
 def _group_results(raw_results: list, dimension: str) -> list:
     groups = defaultdict(lambda: {"keywords": [], "frequency": 0, "example_turn": "", "source": "observed"})
     for result in raw_results:
-        for item in result.get(dimension, []):
+        for item in (result.get(dimension) or []):
+            if isinstance(item, str):
+                item = {"keyword": item, "group": item}
             group_name = item.get("group", item.get("keyword", "unknown"))
             keyword = item.get("keyword", "")
             g = groups[group_name]
@@ -79,8 +89,12 @@ def _add_suggested(groups: list, suggested: list) -> list:
     return groups
 
 
+def _build_customer_prompt(turn_text: str, context_turns: list) -> str:
+    return _build_batch_prompt([(turn_text, context_turns)])
+
+
 def analyze_customer_turns(records: list) -> dict:
-    raw_results = []
+    all_turns = []
     for record in records:
         dialog = record["response"]["dialog"]
         for i, turn in enumerate(dialog):
@@ -88,13 +102,23 @@ def analyze_customer_turns(records: list) -> dict:
                 continue
             context_start = max(0, i - 3)
             context_turns = dialog[context_start:i]
-            prompt = _build_customer_prompt(turn["text"], context_turns)
-            try:
-                result = call_deepseek_json(prompt)
-                result["_turn_text"] = turn["text"]
-                raw_results.append(result)
-            except Exception:
-                pass
+            all_turns.append((turn["text"], context_turns))
+
+    raw_results = []
+    for batch_start in range(0, len(all_turns), BATCH_SIZE):
+        batch = all_turns[batch_start:batch_start + BATCH_SIZE]
+        prompt = _build_batch_prompt(batch)
+        try:
+            results = call_deepseek_json(prompt)
+            if isinstance(results, list):
+                for j, result in enumerate(results):
+                    if result.get("facts") is None and result.get("emotions") is None and result.get("willingness_signal") is None:
+                        continue
+                    if batch_start + j < len(all_turns):
+                        result["_turn_text"] = all_turns[batch_start + j][0]
+                    raw_results.append(result)
+        except Exception:
+            pass
 
     facts = _group_results(raw_results, "facts")
     emotions = _group_results(raw_results, "emotions")
