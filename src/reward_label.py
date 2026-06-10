@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import os
 import re
 
@@ -121,16 +122,21 @@ def cross_validate(rewarded_records):
     return warnings
 
 
+def _python_dumps(obj, indent=2):
+    text = json.dumps(obj, indent=indent, ensure_ascii=False)
+    text = text.replace(": null", ": None")
+    text = text.replace(": true", ": True")
+    text = text.replace(": false", ": False")
+    return text
+
+
 def write_output_rewarded(output_path=None):
     if output_path is None:
         output_path = os.path.join(os.path.dirname(__file__), "output_rewarded.py")
     rewarded = label_all()
-    lines = ["results = ["]
-    for rec in rewarded:
-        lines.append("  " + repr(rec) + ",")
-    lines.append("]")
     with open(output_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines))
+        f.write("results = ")
+        f.write(_python_dumps(rewarded))
     return len(rewarded)
 
 
