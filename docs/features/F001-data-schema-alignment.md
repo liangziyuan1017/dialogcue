@@ -1,7 +1,7 @@
 ---
 id: F001
 name: Data Schema Alignment
-status: design-approved
+status: planned
 owner: agent
 source: plan_feature_base.md
 created: 2026-06-10
@@ -52,6 +52,10 @@ Map all 31 raw records to SOP-aligned schema:
 
 - [plan_feature_base.md](../../plan_feature_base.md) — F001 spec
 - [plan.md](../../plan.md) — Phase 0 detailed mapping
+
+## Implementation Plan
+
+See [F001-implementation-plan.md](F001-implementation-plan.md)
 
 ## Files
 
