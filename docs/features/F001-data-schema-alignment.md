@@ -57,6 +57,12 @@ Map all 31 raw records to SOP-aligned schema:
 
 See [F001-implementation-plan.md](F001-implementation-plan.md)
 
+## Review Notes
+
+**Review 1:** Include F000 state labels from `output_labeled.py` in `turns_annotated`.
+- Resolution: `build_turns_annotated` now reads `output_labeled.py` and carries `state` dict (facts/emotions/willingness/action) into each turn. 493/805 turns labeled.
+- Status: Fixed ✅
+
 ## Files
 
 | File | Purpose |
