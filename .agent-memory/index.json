@@ -11,7 +11,7 @@
       ],
       "id": "ADR-001",
       "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/001-data-driven-keyword-discovery.md",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-001-data-driven-keyword-discovery.md",
       "status": "accepted",
       "title": "Discover state keywords from data rather than prescribe",
       "topics": [
@@ -30,7 +30,7 @@
       ],
       "id": "ADR-002",
       "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/002-keyword-grouping.md",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-002-keyword-grouping.md",
       "status": "accepted",
       "title": "Group same-meaning keywords into canonical groups",
       "topics": [
@@ -49,7 +49,7 @@
       ],
       "id": "ADR-003",
       "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/003-suggested-domain-keywords.md",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-003-suggested-domain-keywords.md",
       "status": "accepted",
       "title": "Include suggested domain keywords not observed in data",
       "topics": [
@@ -68,7 +68,7 @@
       ],
       "id": "ADR-004",
       "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/004-collector-action-discovery.md",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-004-collector-action-discovery.md",
       "status": "accepted",
       "title": "Discover collector action types from data too",
       "topics": [
@@ -87,7 +87,7 @@
       ],
       "id": "ADR-005",
       "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/005-data-driven-willingness-levels.md",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-005-data-driven-willingness-levels.md",
       "status": "accepted",
       "title": "Willingness level count is data-driven",
       "topics": [
@@ -106,7 +106,7 @@
       ],
       "id": "ADR-006",
       "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/006-context-constraint-mapping.md",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-006-context-constraint-mapping.md",
       "status": "accepted",
       "title": "F001 context constraint mapping: 9 fields from customer_info",
       "topics": [
@@ -125,7 +125,7 @@
       ],
       "id": "ADR-007",
       "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/007-carry-state-labels.md",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-007-carry-state-labels.md",
       "status": "accepted",
       "title": "F001 carry F000 state labels into turns_annotated",
       "topics": [
@@ -144,7 +144,7 @@
       ],
       "id": "ADR-008",
       "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/008-output-format-py-file.md",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-008-output-format-py-file.md",
       "status": "accepted",
       "title": "F001 output format: .py file with results list",
       "topics": [
@@ -163,7 +163,7 @@
       ],
       "id": "LL-001",
       "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/lessons/001-dropped-state-labels.md",
+      "path": "/Users/jiani/Desktop/icbc/docs/lessons/LL-001-dropped-state-labels.md",
       "status": "draft",
       "title": "Schema alignment dropped prior feature state labels",
       "topics": [
@@ -174,14 +174,14 @@
     },
     "ADR-009": {
       "id": "ADR-009",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/009-eliminate-f002-llm-state-extraction.md",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-009-eliminate-f002-llm-state-extraction.md",
       "doc_kind": "decision",
       "content_hash": "589a8c5b36a89fb2",
       "indexed_at": "2026-06-10T15:26:18.813121"
     },
     "LL-002": {
       "id": "LL-002",
-      "path": "/Users/jiani/Desktop/icbc/docs/lessons/002-over-engineered-llm-extraction.md",
+      "path": "/Users/jiani/Desktop/icbc/docs/lessons/LL-002-over-engineered-llm-extraction.md",
       "doc_kind": "lesson",
       "content_hash": "b3952e7346d9faa2",
       "indexed_at": "2026-06-10T15:26:18.813161"
