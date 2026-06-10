@@ -9,10 +9,12 @@ Decompose the phase-based plan into independently developable features. Each fea
 ## Dependency Graph
 
 ```
-F000 ──► F001 ──► F002 ──► F003 ──► F004 ──► F005 ──► F006
-                                                    │
-                                             F007 ──┘
+F000 ──► F001 ──► F003 ──► F004 ──► F005 ──► F006
+                                    │
+                             F007 ──┘
 ```
+
+> **F002 removed** (ADR-009): LLM State Extraction eliminated. F001's manual annotations (493/805 turns) provide sufficient state coverage. Downstream features handle unlabeled turns gracefully.
 
 ---
 
@@ -48,24 +50,15 @@ F000 ──► F001 ──► F002 ──► F003 ──► F004 ──► F005 
 
 ---
 
-## F002: LLM State Extraction
+## F002: ~~LLM State Extraction~~ REMOVED
 
-**Depends on:** F001
-
-**Goal:** For each customer turn, extract composite state keywords `S = { Emotion + Fact + Willingness }` via DeepSeek, using the taxonomy from F000 as the target set. For each collector turn, extract `action_type` from the discovered taxonomy (F000) and preserve `action_text` verbatim. Output to `/src/output_states.py`.
-
-**Passing criteria:**
-- Every customer turn has `state_keywords` with at least one tag per dimension (emotion, fact, willingness)
-- Every collector turn has `action_type` from the F000 discovered taxonomy and `action_text` preserved verbatim
-- Labeled turns (label="1") annotated but flagged
-- Resume-safe: re-run skips already-annotated turns
-- All 805 turns processed
+**Status:** Removed per ADR-009. F001's manual annotations (493/805 turns) are sufficient. Downstream features handle missing `state` on unlabeled turns.
 
 ---
 
 ## F003: Reward Labeling
 
-**Depends on:** F002
+**Depends on:** F001
 
 **Goal:** Determine R ∈ {0, 1} per conversation — LLM detects repayment commitment triggers in final turns, performs counterfactual verification to credit the preceding collector action, cross-validates against `plan_evaluation`. Output to `/src/output_rewarded.py`.
 
