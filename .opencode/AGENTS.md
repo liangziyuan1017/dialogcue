@@ -37,7 +37,6 @@ After EVERY chain step that has a `memory_hooks` entry in `registry/capabilities
 **Pre-commit enforcement:** A git pre-commit hook blocks commits if a feature is `in-progress`, `review`, or `complete` but has no ADR in `docs/decisions/`. This is a hard gate — not a warning.
 
 ---
-
 # Memory-First Rule
 
 Before making design/architecture decisions, the agent MUST consult durable
