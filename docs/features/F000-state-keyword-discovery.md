@@ -8,7 +8,7 @@ created: 2026-06-09
 
 # F000: State Keyword Discovery
 
-> **Status**: review | **Owner**: agent | **Priority**: P0
+> **Status**: complete | **Owner**: agent | **Priority**: P0
 
 ## Why
 
@@ -102,6 +102,7 @@ Define willingness as ordered levels (most resistant → most cooperative), wher
 | 2026-06-09 | 立项 |
 | 2026-06-09 | Discussion — grouping, suggested keywords, collector discovery, data-driven willingness |
 | 2026-06-09 | Worktree created at `../icbc-f000` on branch `feat/f000-state-keyword-discovery` |
+| 2026-06-09 | Merged into main, worktree cleaned |
 
 ## Links
 
