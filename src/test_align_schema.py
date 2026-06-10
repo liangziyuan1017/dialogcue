@@ -2,6 +2,18 @@ from src.align_schema import align_all, align_record, build_context, build_turns
 from src.load_data import load_records
 
 
+def _load_labeled():
+    import importlib.util
+    import os
+    data_path = os.path.join(os.path.dirname(__file__), "..", "data", "output_labeled.py")
+    if not os.path.exists(data_path):
+        data_path = os.path.join(os.path.dirname(__file__), "output_labeled.py")
+    spec = importlib.util.spec_from_file_location("output_labeled", data_path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod.results
+
+
 def test_all_31_records_present():
     aligned = align_all()
     assert len(aligned) == 31
@@ -153,3 +165,34 @@ def test_context_available_plans():
         ctx = build_context(ci, raw.get("mob_typ", ""))
         for plan in ctx["available_plans"]:
             assert plan in ("reduction", "mina", "installment")
+
+
+def test_state_labels_from_output_labeled_carried_into_turns_annotated():
+    labeled = _load_labeled()
+    aligned = align_all()
+    labeled_by_id = {r["call_id"]: r for r in labeled}
+    for aln in aligned:
+        labeled_rec = labeled_by_id.get(aln["call_id"])
+        assert labeled_rec is not None, f"call_id {aln['call_id']} not in output_labeled"
+        for turn in aln["turns_annotated"]:
+            labeled_turn = labeled_rec["response"]["dialog"][turn["turn_index"]]
+            if "state" in labeled_turn:
+                assert "state" in turn, f"call_id {aln['call_id']} turn {turn['turn_index']}: state label missing"
+                assert turn["state"] == labeled_turn["state"]
+
+
+def test_state_labels_count_matches_output_labeled():
+    labeled = _load_labeled()
+    aligned = align_all()
+    labeled_by_id = {r["call_id"]: r for r in labeled}
+    total_labeled_states = 0
+    total_aligned_states = 0
+    for aln in aligned:
+        labeled_rec = labeled_by_id[aln["call_id"]]
+        for t in labeled_rec["response"]["dialog"]:
+            if "state" in t:
+                total_labeled_states += 1
+        for t in aln["turns_annotated"]:
+            if "state" in t:
+                total_aligned_states += 1
+    assert total_aligned_states == total_labeled_states == 493

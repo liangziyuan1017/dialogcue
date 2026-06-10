@@ -11,6 +11,16 @@ def _load_output_manual():
     return mod.results
 
 
+def _load_output_labeled():
+    data_path = os.path.join(os.path.dirname(__file__), "output_labeled.py")
+    if not os.path.exists(data_path):
+        return None
+    spec = importlib.util.spec_from_file_location("output_labeled", data_path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return {r["call_id"]: r for r in mod.results}
+
+
 def _parse_int(text):
     digits = re.sub(r"[^\d]", "", str(text))
     return int(digits) if digits else 0
@@ -64,22 +74,29 @@ def build_context(customer_info, mob_typ):
     }
 
 
-def build_turns_annotated(dialog):
+def build_turns_annotated(dialog, labeled_dialog=None):
     turns = []
     for i, turn in enumerate(dialog):
-        turns.append(
-            {
-                "turn_index": i,
-                "role": turn["role"],
-                "text": turn["text"],
-            }
-        )
+        entry = {
+            "turn_index": i,
+            "role": turn["role"],
+            "text": turn["text"],
+        }
+        if labeled_dialog is not None and i < len(labeled_dialog):
+            if "state" in labeled_dialog[i]:
+                entry["state"] = labeled_dialog[i]["state"]
+        turns.append(entry)
     return turns
 
 
-def align_record(record):
+def align_record(record, labeled_lookup=None):
     dialog = record["response"]["dialog"]
     customer_info = record.get("customer_info", {})
+    labeled_dialog = None
+    if labeled_lookup is not None:
+        labeled_rec = labeled_lookup.get(record["call_id"])
+        if labeled_rec is not None:
+            labeled_dialog = labeled_rec["response"]["dialog"]
     return {
         "call_id": record["call_id"],
         "custno": record["custno"],
@@ -89,7 +106,7 @@ def align_record(record):
         "talk_time": record.get("talk_time", ""),
         "plan_evaluation": record.get("plan_evaluation", ""),
         "customer_info": customer_info,
-        "turns_annotated": build_turns_annotated(dialog),
+        "turns_annotated": build_turns_annotated(dialog, labeled_dialog),
         "reward": None,
         "state_transitions": [],
         "context": build_context(customer_info, record.get("mob_typ", "")),
@@ -99,7 +116,8 @@ def align_record(record):
 def align_all(records=None):
     if records is None:
         records = _load_output_manual()
-    return [align_record(r) for r in records]
+    labeled_lookup = _load_output_labeled()
+    return [align_record(r, labeled_lookup) for r in records]
 
 
 def write_output_aligned(output_path=None):
