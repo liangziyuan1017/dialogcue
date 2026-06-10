@@ -1,5 +1,5 @@
 # ROADMAP
 
-| Feature | Name | Spec | Owner | Source | Link |
-|---------|------|------|-------|--------|------|
-| F000 | State Keyword Discovery | data-driven taxonomy of facts, emotions, willingness levels | agent | plan_feature_base.md | [F000](features/F000-state-keyword-discovery.md) |
+| ID | Name | Status | Owner | Source | Link |
+|----|------|--------|-------|--------|------|
+| F001 | Data Schema Alignment | kickoff | agent | plan_feature_base.md | [F001](features/F001-data-schema-alignment.md) |
