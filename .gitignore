@@ -1,6 +1,8 @@
 .DS_Store
 .venv/
-agent.md
+AGENTS.md
+.agent-memory/locks/
+.agent-memory/tombstones/
 global_rules/
 global_skills/
 icbc_venv/
@@ -9,3 +11,4 @@ opencode.json
 plan.md
 pyproject.toml
 registry/
+plan_feature_base.md
