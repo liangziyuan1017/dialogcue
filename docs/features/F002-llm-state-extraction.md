@@ -25,7 +25,7 @@ Output to `/src/output_states.py`.
 - [x] Every collector turn has `action_type` from the F000 discovered taxonomy and `action_text` preserved verbatim
 - [x] Labeled turns (label="1") annotated but flagged
 - [x] Resume-safe: re-run skips already-annotated turns
-- [ ] All 805 turns processed (requires live LLM run)
+- [x] All 805 turns processed (requires live LLM run)
 
 ## Dependencies
 
