@@ -1,11 +1,12 @@
 ---
 id: F001
 name: Data Schema Alignment
-status: review
+status: complete
 owner: agent
 source: plan_feature_base.md
 created: 2026-06-10
 depends_on: F000
+merged: 2026-06-10 63e5a0c
 ---
 
 # F001: Data Schema Alignment
