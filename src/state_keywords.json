@@ -1323,6 +1323,39 @@
       "frequency": 12,
       "example_turn": "信用卡已经属于严重逾期，未及时归还，逾期不良记录我们正在上报。",
       "source": "observed"
+    },
+    {
+      "group_name": "legal_warning",
+      "keywords": [
+        "法务处理",
+        "起诉",
+        "律师函"
+      ],
+      "frequency": 0,
+      "example_turn": "",
+      "source": "suggested"
+    },
+    {
+      "group_name": "asset_investigation",
+      "keywords": [
+        "查资产",
+        "名下房产",
+        "执行"
+      ],
+      "frequency": 0,
+      "example_turn": "",
+      "source": "suggested"
+    },
+    {
+      "group_name": "urgency_pressure",
+      "keywords": [
+        "最后期限",
+        "今天必须",
+        "马上"
+      ],
+      "frequency": 0,
+      "example_turn": "",
+      "source": "suggested"
     }
   ]
 }
