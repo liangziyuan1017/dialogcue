@@ -1,7 +1,7 @@
 ---
 id: F001
 name: Data Schema Alignment
-status: in-progress
+status: review
 owner: agent
 source: plan_feature_base.md
 created: 2026-06-10
