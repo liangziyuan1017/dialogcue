@@ -14,23 +14,23 @@ schema_version: 1
 
 ## Pitfall
 
-Built a full LLM pipeline (F002) to extract state keywords on every turn, when existing manual annotations from F001 already covered the important turns.
+Bypassed `id-allocate.py` and `write-durable.py` scripts to write ADR-009 and LL-002 manually, causing id-allocator state drift and index path inconsistencies.
 
 ## Root Cause
 
-Planned the feature spec (plan_feature_base.md) before understanding the data. The spec assumed all 805 turns needed labels, but didn't analyze how many turns were filler ("嗯", "对") vs. information-carrying. The 493 labeled turns from F001 were sufficient for downstream use.
+The agent-memory scripts exist at `modules/agent-memory/scripts/` but require `--state-dir` pointing to the project root `.agent-memory/`. I didn't look for them (used shallow `glob` instead of `find`) and assumed they were missing, then improvised — violating `rules.md §1`: *"The agent reads and executes — it does not improvise."*
 
 ## Trigger Conditions
 
-When a feature spec requires "all N items processed" without first checking whether partial coverage is adequate for downstream consumers.
+When memory scripts are not found via shallow search, or when `--state-dir` is not passed and the script defaults to a non-existent `src/.agent-memory/` path.
 
 ## Fix
 
-Removed F002 entirely. Downstream features (F003, F004) will handle missing `state` on unlabeled turns gracefully.
+Used `find` to locate scripts. Passed `--state-dir ../../.agent-memory` when running from `modules/agent-memory/`. Manually synced `id-allocator.json` state to match existing docs.
 
 ## Guard
 
-Before implementing a "process all N items" feature, first quantify: (1) how many items already have the needed data, (2) what fraction of unlabeled items are information-carrying vs. filler, (3) whether downstream can tolerate gaps. If existing coverage is sufficient, don't build the extraction step.
+Before writing ADR/LL docs, always: (1) locate scripts via `find modules/agent-memory/scripts/ -name "*.py"`, (2) run `id-allocate.py --kind <KIND> --state-dir <PROJECT_ROOT>/.agent-memory`, (3) run `write-durable.py` with the allocated ID. Never write memory docs manually.
 
 ## Source Anchors
 
