@@ -1,4 +1,5 @@
 .DS_Store
+.env
 .venv/
 icbc_venv/
 __pycache__/
