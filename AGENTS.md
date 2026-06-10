@@ -3,12 +3,7 @@
 ## Purpose
 Implement a deterministic navigation architecture for the whole project.
 
-The agent should only:
-- navigate
-- read
-- execute
-- validate
-- return
+The agent should only: navigate, read, execute, validate, return
 
 The execution intelligence must live in project files, not inside the agent.
 
@@ -181,10 +176,7 @@ When a capability entry in `registry/capabilities.yaml` contains `skill_hooks`, 
 ## Registry Contract
 The registry is for capability routing only.
 
-Each capability entry should contain only:
-- capability name
-- short description
-- module path
+Each capability entry should contain only: capability name, short description, module path
 
 The registry must not contain implementation details.
 
@@ -240,26 +232,14 @@ The workflow orchestrates only. It points directly to scripts — there is no in
 ## Script Contract
 Scripts perform actual execution.
 
-Scripts should be:
-- tiny
-- isolated
-- deterministic
-- reusable
+Scripts should be tiny, isolated, deterministic, reusable
 
-Each script should document:
-- purpose
-- invoking workflow
-- inputs
-- outputs
-- related tests
+Each script should document purpose, invoking workflow, inputs, outputs, related tests
 
 ## Test Contract
 Tests provide deterministic verification.
 
-Tests should validate:
-- expected outputs
-- edge cases
-- deterministic behavior
+Tests should validate expected outputs, edge cases, deterministic behavior
 
 ## Fallback Rule
 If no registry capability fits the task, do not use any module.
@@ -269,20 +249,7 @@ If a chosen module is missing the skill, workflow, script, or test path needed t
 In either case, ignore modules and continue with normal agent operations.
 
 ## `working_file.md` Purpose
-`working_file.md` is not just a progress log.
-
-The module is immutable during runtime except for `working_file.md`.
-
-`working_file.md` must not be used to track module-internal files such as:
-- `router.md`
-- `rules.md`
-- `skills/`
-- `workflows/`
-- `scripts/`
-- `tests/`
-- `examples/`
-
-It must only store runtime impact outside the module, including:
+`working_file.md` must not be used to track module-internal files (/modules/*) and only store runtime impact outside the module, including:
 - which external `src/` entrypoint receives the input
 - which external function invokes the module-related behavior
 - where the output is stored outside the module
