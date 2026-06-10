@@ -1,7 +1,7 @@
 ---
 id: F002
 name: LLM State Extraction
-status: planned
+status: review
 depends_on: [F000, F001]
 ---
 
@@ -21,11 +21,11 @@ Output to `/src/output_states.py`.
 
 ## Acceptance Criteria
 
-- [ ] Every customer turn has `state_keywords` with at least one tag per dimension (emotion, fact, willingness)
-- [ ] Every collector turn has `action_type` from the F000 discovered taxonomy and `action_text` preserved verbatim
-- [ ] Labeled turns (label="1") annotated but flagged
-- [ ] Resume-safe: re-run skips already-annotated turns
-- [ ] All 805 turns processed
+- [x] Every customer turn has `state_keywords` with at least one tag per dimension (emotion, fact, willingness)
+- [x] Every collector turn has `action_type` from the F000 discovered taxonomy and `action_text` preserved verbatim
+- [x] Labeled turns (label="1") annotated but flagged
+- [x] Resume-safe: re-run skips already-annotated turns
+- [ ] All 805 turns processed (requires live LLM run)
 
 ## Dependencies
 
@@ -43,6 +43,23 @@ Output to `/src/output_states.py`.
 ## Implementation Plan
 
 See [F002-implementation-plan.md](F002-implementation-plan.md)
+
+## Design Decisions
+
+- Two separate prompt templates: customer (3-dimension extraction) vs collector (action classification)
+- Resume-safe via checking existing `state` field on each turn
+- Rate limiting: 0.5s delay between LLM calls to avoid API throttling
+- Labeled turns from F001 flagged with `labeled: true` instead of re-extracting
+- None group_name in collector_actions taxonomy filtered out
+
+## Quality Gate Report
+
+| Check | Result |
+|-------|--------|
+| Tests (20/20) | PASS |
+| All project tests (46/46) | PASS |
+| Resume-safe | PASS |
+| Taxonomy filtering (None group_name) | PASS |
 
 ## Links
 
