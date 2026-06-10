@@ -174,14 +174,14 @@
     },
     "ADR-009": {
       "id": "ADR-009",
-      "path": "docs/decisions/009-eliminate-f002-llm-state-extraction.md",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/009-eliminate-f002-llm-state-extraction.md",
       "doc_kind": "decision",
       "content_hash": "589a8c5b36a89fb2",
       "indexed_at": "2026-06-10T15:26:18.813121"
     },
     "LL-002": {
       "id": "LL-002",
-      "path": "docs/lessons/002-over-engineered-llm-extraction.md",
+      "path": "/Users/jiani/Desktop/icbc/docs/lessons/002-over-engineered-llm-extraction.md",
       "doc_kind": "lesson",
       "content_hash": "b3952e7346d9faa2",
       "indexed_at": "2026-06-10T15:26:18.813161"
