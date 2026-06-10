@@ -25,6 +25,17 @@ When the user mentions any feature ID (e.g. F001, f001, F002), you MUST follow t
 
 If the feature doc is missing or status is unclear, ask the user before proceeding.
 
+### Hook Enforcement — MANDATORY, NOT OPTIONAL
+
+After EVERY chain step that has a `memory_hooks` entry in `registry/capabilities.yaml`:
+
+1. Read the registry → find the hook for `<current_skill>.<current_step>`
+2. Execute the hooked skill's workflow immediately — do NOT defer
+3. Run `python3 scripts/hook_check.py --step <skill>.<step> --feature Fxxx`
+4. If hook_check returns exit code 1 → **STOP**. Do not proceed to next chain step.
+
+**Pre-commit enforcement:** A git pre-commit hook blocks commits if a feature is `in-progress`, `review`, or `complete` but has no ADR in `docs/decisions/`. This is a hard gate — not a warning.
+
 ---
 
 # Memory-First Rule
@@ -47,20 +58,6 @@ registry for the authoritative hook list.
    to persist the lesson.
 5. This rule does NOT replace explicit triggers — it adds mandatory
    consultation before action.
-
-## Hook Enforcement — MANDATORY, NOT OPTIONAL
-
-After EVERY chain step that has a `memory_hooks` entry in `registry/capabilities.yaml`:
-
-1. Read the registry → find the hook for `<current_skill>.<current_step>`
-2. Execute the hooked skill's workflow immediately — do NOT defer
-3. Run `python3 scripts/hook_check.py --step <skill>.<step> --feature Fxxx`
-4. If hook_check returns exit code 1 → **STOP**. Do not proceed to next chain step.
-
-**Skipping a memory hook is a rule violation equal in severity to skipping a chain step.**
-There is no "I'll run it later" exception. Hooks run at their defined point, or the chain halts.
-
-**Pre-commit enforcement:** A git pre-commit hook blocks commits if a feature is `in-progress`, `review`, or `complete` but has no ADR in `docs/decisions/`. This is a hard gate — not a warning.
 
 ---
 

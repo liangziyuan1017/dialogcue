@@ -39,10 +39,10 @@ Map all 31 raw records to SOP-aligned schema:
 
 ## Acceptance Criteria
 
-- [ ] All 31 records present in output
-- [ ] Every record has `turns_annotated`, `reward`, `state_transitions`, `context`
-- [ ] All 9 context fields populated (no nulls in required fields)
-- [ ] Original dialog data preserved verbatim
+- [x] All 31 records present in output
+- [x] Every record has `turns_annotated`, `reward`, `state_transitions`, `context`
+- [x] All 9 context fields populated (no nulls in required fields)
+- [x] Original dialog data preserved verbatim
 
 ## Dependencies
 
