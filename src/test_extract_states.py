@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from extract_states import build_taxonomy_index, build_customer_prompt, build_collector_prompt, extract_turn_state, extract_all_states, write_output_states, main
+from extract_states import build_taxonomy_index, build_customer_prompt, build_collector_prompt, extract_turn_state, extract_all_states, write_output_states, main, _normalize_labeled_state
 
 
 def _load_taxonomy():
@@ -266,3 +266,29 @@ def test_main_loads_and_processes():
         assert "state" in turns[1]
     finally:
         os.unlink(out_path)
+
+
+def test_normalize_collector_action_to_action_type():
+    turn = {"role": "催收员", "text": "您好", "state": {"action": "greeting"}}
+    _normalize_labeled_state(turn)
+    assert turn["state"]["action_type"] == "greeting"
+    assert turn["state"]["action_text"] == "您好"
+    assert "action" not in turn["state"]
+
+
+def test_normalize_customer_missing_emotions():
+    turn = {"role": "客户", "text": "我没钱", "state": {"facts": ["financial_hardship"], "willingness": "Resistant"}}
+    _normalize_labeled_state(turn)
+    assert turn["state"]["emotions"] == []
+
+
+def test_normalize_willingness_mapping():
+    turn = {"role": "客户", "text": "test", "state": {"facts": [], "willingness": "strong"}}
+    _normalize_labeled_state(turn)
+    assert turn["state"]["willingness"] == "Cooperative"
+    turn2 = {"role": "客户", "text": "test", "state": {"facts": [], "willingness": "conditional"}}
+    _normalize_labeled_state(turn2)
+    assert turn2["state"]["willingness"] == "Ambivalent"
+    turn3 = {"role": "客户", "text": "test", "state": {"facts": [], "willingness": "weak"}}
+    _normalize_labeled_state(turn3)
+    assert turn3["state"]["willingness"] == "Resistant"

@@ -92,12 +92,33 @@ def extract_turn_state(turn, taxonomy_index):
         return {"action_type": result.get("action_type", "information")}
 
 
+def _normalize_labeled_state(turn):
+    state = turn["state"]
+    if turn["role"] == "催收员":
+        if "action" in state and "action_type" not in state:
+            state["action_type"] = state.pop("action")
+        if "action_text" not in state:
+            state["action_text"] = turn["text"]
+    else:
+        if "emotions" not in state:
+            state["emotions"] = []
+        if "facts" not in state:
+            state["facts"] = []
+        if "willingness" not in state:
+            state["willingness"] = "Ambivalent"
+        w = state["willingness"]
+        if w in ("strong", "conditional", "weak"):
+            mapping = {"strong": "Cooperative", "conditional": "Ambivalent", "weak": "Resistant"}
+            state["willingness"] = mapping.get(w, "Ambivalent")
+
+
 def extract_all_states(records, taxonomy_index, delay=0.5):
     total = sum(len(r["turns_annotated"]) for r in records)
     processed = 0
     for record in records:
         for turn in record["turns_annotated"]:
             if "state" in turn and turn["state"]:
+                _normalize_labeled_state(turn)
                 turn["labeled"] = True
                 continue
             state = extract_turn_state(turn, taxonomy_index)
