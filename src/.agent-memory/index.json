@@ -1,0 +1,179 @@
+{
+  "doc_count": 9,
+  "entries": {
+    "ADR-001": {
+      "body_preview": "# ADR-001: Discover state keywords from data rather than prescribe\n\n## What\n\nState keyword taxonomy (facts, emotions, willingness levels) is discovered by LLM analysis of actual conversation data, not prescribed from assumptions.\n\n## Why\n\nThe original plan prescribed a fixed taxonomy (8 emotions, 10 facts, 5 willingness levels) based on English-language assumptions. Debt collection conversations in Chinese have domain-specific patterns \u2014 the actual frequent facts, emotions, and willingness signa",
+      "content_hash": "947344bacc02d40ad3342ae1ae4776f36fd6507a9d44fd3fb7b55d6370687321",
+      "created": "2026-06-09",
+      "doc_kind": "decision",
+      "feature_ids": [
+        "F000"
+      ],
+      "id": "ADR-001",
+      "indexed_at": "2026-06-10T11:49:40.465283",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/001-data-driven-keyword-discovery.md",
+      "status": "accepted",
+      "title": "Discover state keywords from data rather than prescribe",
+      "topics": [
+        "taxonomy",
+        "state-extraction",
+        "data-driven"
+      ]
+    },
+    "ADR-002": {
+      "body_preview": "# ADR-002: Group same-meaning keywords into canonical groups\n\n## What\n\nKeywords with the same meaning but different phrasing (e.g. \"\u6ca1\u94b1\", \"\u7ecf\u6d4e\u56f0\u96be\", \"\u73b0\u5728\u786e\u5b9e\u56f0\u96be\") are grouped under a single canonical group name (e.g. `financial_hardship`). Each group stores the list of variant keywords and their aggregate frequency.\n\n## Why\n\nIn debt collection conversations, customers express the same circumstance in many different ways. Without grouping, each variant becomes a separate state node in the decision tree, ",
+      "content_hash": "475281c8ec29ece0f5b99a4113bf728c55fa0c00f17d81cbf74a079d6a50aff6",
+      "created": "2026-06-09",
+      "doc_kind": "decision",
+      "feature_ids": [
+        "F000"
+      ],
+      "id": "ADR-002",
+      "indexed_at": "2026-06-10T11:49:40.465283",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/002-keyword-grouping.md",
+      "status": "accepted",
+      "title": "Group same-meaning keywords into canonical groups",
+      "topics": [
+        "taxonomy",
+        "grouping",
+        "normalization"
+      ]
+    },
+    "ADR-003": {
+      "body_preview": "# ADR-003: Include suggested domain keywords not observed in data\n\n## What\n\nThe taxonomy includes keywords that are common in the debt collection domain but did not appear in the 31 records, marked with `source: \"suggested\"` and `frequency: 0`. Examples: `legal_threat` (\u88ab\u8d77\u8bc9/\u6cd5\u9662/\u5f8b\u5e08\u51fd), `debt_evasion` (\u4e0d\u8ba4\u8d26/\u9003\u5e9f\u503a).\n\n## Why\n\n31 records may not cover all common debt collection scenarios. Domain knowledge fills coverage gaps so that when the system encounters these states at scale (10K records), the taxon",
+      "content_hash": "50ad968291742b13ebcaaa99eeeb13f87f7175a2c659e416be4f0815400ddceb",
+      "created": "2026-06-09",
+      "doc_kind": "decision",
+      "feature_ids": [
+        "F000"
+      ],
+      "id": "ADR-003",
+      "indexed_at": "2026-06-10T11:49:40.465283",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/003-suggested-domain-keywords.md",
+      "status": "accepted",
+      "title": "Include suggested domain keywords not observed in data",
+      "topics": [
+        "taxonomy",
+        "domain-knowledge",
+        "coverage"
+      ]
+    },
+    "ADR-004": {
+      "body_preview": "# ADR-004: Discover collector action types from data too\n\n## What\n\nCollector action type taxonomy is discovered from actual collector turns via LLM, rather than using a fixed 7-type enum (greeting, information, proposal, pressure, empathy, threat, closure).\n\n## Why\n\nThe fixed 7-type enum was assumed from English-language debt collection literature. Chinese collectors may use different behavioral patterns, and the granularity may not match. Data discovery revealed 7 observed groups plus 3 suggest",
+      "content_hash": "20fec40a4d9212705f615b2d688292542c65e0092d7f75720c5a0b32f68f8e32",
+      "created": "2026-06-09",
+      "doc_kind": "decision",
+      "feature_ids": [
+        "F000"
+      ],
+      "id": "ADR-004",
+      "indexed_at": "2026-06-10T11:49:40.465283",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/004-collector-action-discovery.md",
+      "status": "accepted",
+      "title": "Discover collector action types from data too",
+      "topics": [
+        "taxonomy",
+        "collector-actions",
+        "data-driven"
+      ]
+    },
+    "ADR-005": {
+      "body_preview": "# ADR-005: Willingness level count is data-driven\n\n## What\n\nThe number and boundaries of willingness levels are determined by natural clustering in the data, not preset. The LLM clusters observed willingness signals into ordered levels from most resistant to most cooperative.\n\n## Why\n\nPresetting 4 or 5 levels forces the data into an artificial structure. The actual distribution of willingness signals in debt collection may have 3 natural clusters or 6. Data-driven clustering lets the taxonomy re",
+      "content_hash": "f07ac8deebed6306e2a0f75a5956e23d3faa8bd014a2950958fc32649c4dacc2",
+      "created": "2026-06-09",
+      "doc_kind": "decision",
+      "feature_ids": [
+        "F000"
+      ],
+      "id": "ADR-005",
+      "indexed_at": "2026-06-10T11:49:40.465283",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/005-data-driven-willingness-levels.md",
+      "status": "accepted",
+      "title": "Willingness level count is data-driven",
+      "topics": [
+        "taxonomy",
+        "willingness",
+        "clustering"
+      ]
+    },
+    "ADR-006": {
+      "body_preview": "# F001 Context Constraint Mapping: 9 Fields from customer_info\n\n## What\n\nMap `customer_info` dict (27 Chinese-named fields) to a fixed 9-field `context` constraint dict with SOP-aligned English keys and typed values.\n\n| SOP Field | Source | Transform |\n|-----------|--------|-----------|\n| `has_auto_loan` | \u4ed6\u884c/\u6211\u884c\u662f\u5426\u6709\u8f66\u8d37 | Bool: contains \"\u6709\u8f66\u8d37\" |\n| `has_mortgage` | \u4ed6\u884c/\u6211\u884c\u662f\u5426\u6709\u623f\u8d37 | Bool: contains \"\u6709\u623f\u8d37\" |\n| `credit_rating` | 24\u671f\u7f34\u6b3e\u8bc4\u7b49 | Enum: first char (Z=good, B/2/3=moderate, 0=bad) |\n| `days_delinquent` ",
+      "content_hash": "529f8c8ec55df1cda4e1284e02d8ecd565f0ef6281cd83b032e3d8928d7c6c7b",
+      "created": "2026-06-10",
+      "doc_kind": "decision",
+      "feature_ids": [
+        "F001"
+      ],
+      "id": "ADR-006",
+      "indexed_at": "2026-06-10T11:49:40.465283",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/006-context-constraint-mapping.md",
+      "status": "accepted",
+      "title": "F001 context constraint mapping: 9 fields from customer_info",
+      "topics": [
+        "schema",
+        "context",
+        "alignment"
+      ]
+    },
+    "ADR-007": {
+      "body_preview": "# F001 Carry F000 State Labels into turns_annotated\n\n## What\n\nInclude the `state` dict from `output_labeled.py` (F000 output) in each turn of `turns_annotated`. Turns with labels carry `state` with keys `facts`, `emotions`, `willingness` (customer) or `action` (collector). Turns without labels omit `state`.\n\n## Why\n\nF000 already labeled 493/805 turns with state keywords. F002 will extend labeling to all turns. If F001 drops these labels, F002 must re-derive them \u2014 wasting the F000 work and break",
+      "content_hash": "8864512ed6fa28887ee74074a89ccdd088a4f774659c089c49df16e64f73ab62",
+      "created": "2026-06-10",
+      "doc_kind": "decision",
+      "feature_ids": [
+        "F001"
+      ],
+      "id": "ADR-007",
+      "indexed_at": "2026-06-10T11:49:40.465283",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/007-carry-state-labels.md",
+      "status": "accepted",
+      "title": "F001 carry F000 state labels into turns_annotated",
+      "topics": [
+        "schema",
+        "state-labels",
+        "continuity"
+      ]
+    },
+    "ADR-008": {
+      "body_preview": "# F001 Output Format: .py File with Results List\n\n## What\n\nWrite aligned output to `src/output_aligned.py` as `results = [...]` \u2014 a Python file with a top-level list variable, matching the format of `data/output_manual.py` and `src/output_labeled.py`.\n\n## Why\n\nConsistency with existing data pipeline. All intermediate outputs (`output_manual.py`, `output_labeled.py`, `output_states.py`, `output_rewarded.py`) use this format. Downstream scripts load them via `importlib`. Switching to JSON would br",
+      "content_hash": "cbd4aca054ddcf82e5de6d4e51532da678e66258b8e57bddd5e07b34be580620",
+      "created": "2026-06-10",
+      "doc_kind": "decision",
+      "feature_ids": [
+        "F001"
+      ],
+      "id": "ADR-008",
+      "indexed_at": "2026-06-10T11:49:40.465283",
+      "path": "/Users/jiani/Desktop/icbc/docs/decisions/008-output-format-py-file.md",
+      "status": "accepted",
+      "title": "F001 output format: .py file with results list",
+      "topics": [
+        "schema",
+        "output-format",
+        "serialization"
+      ]
+    },
+    "LL-001": {
+      "body_preview": "# Schema Alignment Dropped Prior Feature State Labels\n\n## Pitfall\n\nF001 Data Schema Alignment built `turns_annotated` from raw `output_manual.py` only, dropping the 493 state labels already produced by F000 in `output_labeled.py`.\n\n## Root Cause\n\nThe implementation plan and initial code only referenced `output_manual.py` as input. No check was made for intermediate outputs from prior features in the dependency chain (F000 \u2192 F001). The spec said \"derive turns_annotated\" without explicitly stating",
+      "content_hash": "cf52c4dee32e03401de5595cf144b44f3a2a21f3a54a4858b1d2ffe25feeddd5",
+      "created": "2026-06-10",
+      "doc_kind": "lesson",
+      "feature_ids": [
+        "F001"
+      ],
+      "id": "LL-001",
+      "indexed_at": "2026-06-10T11:49:40.465283",
+      "path": "/Users/jiani/Desktop/icbc/docs/lessons/001-dropped-state-labels.md",
+      "status": "draft",
+      "title": "Schema alignment dropped prior feature state labels",
+      "topics": [
+        "schema",
+        "data-continuity",
+        "review"
+      ]
+    }
+  },
+  "hash_conflicts": 0,
+  "last_full_rebuild": "2026-06-10T11:49:40.465283",
+  "last_incremental_rebuild": null
+}
