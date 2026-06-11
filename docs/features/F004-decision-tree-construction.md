@@ -1,12 +1,13 @@
 ---
 id: F004
 name: Decision Tree Construction
-status: in-progress
+status: complete
 owner: agent
 source: plan_feature_base.md
 created: 2026-06-11
 updated: 2026-06-11
 depends_on: F003
+merged: 2026-06-11
 ---
 
 # F004: Decision Tree Construction
