@@ -257,6 +257,70 @@ def _collect_leaf_and_ids(node, leaf_empty, found_ids):
         _collect_leaf_and_ids(child, leaf_empty, found_ids)
 
 
+def _sample_record_emotion_cycle(call_id="test-004"):
+    return {
+        "call_id": call_id,
+        "reward": 0,
+        "turns_annotated": [
+            {"turn_index": 0, "role": "催收员", "text": "您好。", "state": {"action": "greeting"}},
+            {"turn_index": 1, "role": "客户", "text": "我没钱。", "state": {"facts": ["financial_hardship"], "emotions": ["anger"], "willingness": "resistant"}},
+            {"turn_index": 2, "role": "催收员", "text": "我理解。", "state": {"action": "empathy"}},
+            {"turn_index": 3, "role": "客户", "text": "唉...", "state": {"facts": ["financial_hardship"], "emotions": ["anxiety"], "willingness": "weak"}},
+            {"turn_index": 4, "role": "催收员", "text": "别担心。", "state": {"action": "empathy"}},
+            {"turn_index": 5, "role": "客户", "text": "我就是气不过！", "state": {"facts": ["financial_hardship"], "emotions": ["anger"], "willingness": "resistant"}},
+            {"turn_index": 6, "role": "催收员", "text": "建议还款。", "state": {"action": "plan_proposal"}},
+        ],
+    }
+
+
+def test_emotion_cycle_same_facts_anger_returns_same_pool():
+    rec = _sample_record_emotion_cycle()
+    tree = build_tree([rec])
+    anger_nodes = _find_nodes_by_branch_key(tree, {"facts": ["financial_hardship"], "emotions": ["anger"]})
+    assert len(anger_nodes) == 1, f"Same (facts,emotions)=(financial_hardship,anger) should be ONE node, got {len(anger_nodes)}"
+
+
+def test_emotion_cycle_anger_and_anxiety_are_siblings():
+    rec = _sample_record_emotion_cycle()
+    tree = build_tree([rec])
+    anger_nodes = _find_nodes_by_branch_key(tree, {"facts": ["financial_hardship"], "emotions": ["anger"]})
+    anxiety_nodes = _find_nodes_by_branch_key(tree, {"facts": ["financial_hardship"], "emotions": ["anxiety"]})
+    assert len(anger_nodes) >= 1
+    assert len(anxiety_nodes) >= 1
+    assert len(anger_nodes) == 1, "anger should be a single merged node even after cycle"
+
+
+def test_emotion_cycle_anger_pool_has_both_sentences():
+    rec = _sample_record_emotion_cycle()
+    tree = build_tree([rec])
+    anger_nodes = _find_nodes_by_branch_key(tree, {"facts": ["financial_hardship"], "emotions": ["anger"]})
+    assert len(anger_nodes) == 1
+    pool = anger_nodes[0]["sentence_pool"]
+    texts = [s["script_text"] for s in pool]
+    assert any("我理解" in t for t in texts), "First anger response should be in pool"
+    assert any("建议还款" in t for t in texts), "Second anger response (after cycle back) should also be in same pool"
+
+
+def _find_nodes_by_branch_key(node, target_key, results=None):
+    if results is None:
+        results = []
+    if node.get("branch_key") == target_key:
+        results.append(node)
+    for child in node.get("children", []):
+        _find_nodes_by_branch_key(child, target_key, results)
+    return results
+
+
+def _find_parent(tree, target, parent=None):
+    if tree is target:
+        return parent
+    for child in tree.get("children", []):
+        result = _find_parent(child, target, tree)
+        if result is not None:
+            return result
+    return None
+
+
 def _check_sorted_tree(node, violations):
     for key in ("facts", "emotions"):
         if key in node.get("branch_key", {}):

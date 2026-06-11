@@ -23,6 +23,16 @@ def _make_branch_key(state):
     return key
 
 
+def _find_node_by_branch_key(node, target_key):
+    if node.get("branch_key") == target_key:
+        return node
+    for child in node.get("children", []):
+        result = _find_node_by_branch_key(child, target_key)
+        if result is not None:
+            return result
+    return None
+
+
 def _branch_key_to_str(key):
     parts = []
     if "facts" in key:
@@ -125,6 +135,9 @@ def build_tree(records):
                 if child.get("branch_key") == branch_key:
                     matching = child
                     break
+
+            if matching is None:
+                matching = _find_node_by_branch_key(root, branch_key)
 
             if matching is None:
                 matching = {
