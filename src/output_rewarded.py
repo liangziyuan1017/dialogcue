@@ -2174,13 +2174,14 @@ results = [
     },
     "reward_evidence": {
       "trigger_text": "嗯，好的，嗯，好好好",
-      "trigger_turn_index": 2
+      "trigger_turn_index": 38
     },
     "reward_action_credit": {
-      "turn_index": 2,
+      "turn_index": 38,
       "role": "客户",
       "action": "agree_to_pay",
-      "text": "嗯，啊是的是的嗯"
+      "text": "嗯，好的，嗯，好好好",
+      "explanation": "Customer showed financial hardship, multiple debts, and a frozen bank account, with weak willingness. Collector built empathy by acknowledging his situation, then applied pressure by warning of bank collection and debt priority. This shifted customer from conditional to agree_to_pay, as he feared worse consequences from dual bank actions."
     }
   },
   {
@@ -3498,7 +3499,8 @@ results = [
       "turn_index": 7,
       "role": "客户",
       "action": "agree_to_pay",
-      "text": "嗯，可以，好的"
+      "text": "嗯，可以，好的",
+      "explanation": "Customer showed strong willingness early with repeated '嗯' and immediate '可以，好的'. Collector succeeded by clearly stating urgency (freeze/full payment risk) and offering a manageable action (pay minimum 920). This low-barrier request matched customer's readiness, causing quick agree_to_pay."
     }
   },
   {
@@ -5673,7 +5675,8 @@ results = [
       "turn_index": 11,
       "role": "客户",
       "action": "agree_to_pay",
-      "text": "嗯，好的，我知道了，肯定的。"
+      "text": "嗯，好的，我知道了，肯定的。",
+      "explanation": "Customer showed strong willingness after explaining account was frozen, not avoidance. Collector validated her reason, proposed immediate payment plan, and set clear deadline. This built trust and urgency, leading to agree_to_pay."
     }
   },
   {
@@ -6111,13 +6114,14 @@ results = [
     },
     "reward_evidence": {
       "trigger_text": "转130是吧",
-      "trigger_turn_index": 16
+      "trigger_turn_index": 3
     },
     "reward_action_credit": {
-      "turn_index": 16,
+      "turn_index": 3,
       "role": "客户",
       "action": "agree_to_pay",
-      "text": "转130是吧"
+      "text": "是",
+      "explanation": "Customer showed pleading emotion and conditional willingness to pay if interest waived. Collector empathized, elicited salary delay fact, then proposed a concrete plan: pay minimum 130 now for future fee waiver. Customer agreed after fee breakdown, confirming causal chain: empathy + clear offer → agreement."
     }
   },
   {
@@ -6244,13 +6248,14 @@ results = [
     },
     "reward_evidence": {
       "trigger_text": "我叫我儿子转哈，好吗？",
-      "trigger_turn_index": 4
+      "trigger_turn_index": 6
     },
     "reward_action_credit": {
-      "turn_index": 4,
+      "turn_index": 6,
       "role": "客户",
       "action": "promise_to_pay",
-      "text": "唉……对，是的。800多少？我的是……这哈……"
+      "text": "我不是……这两天生意不好做，然后我的卡号跟微信点人锁了。股东啊……嗯，我、我知道了我今天……嗯，我，我叫我把存进去。我叫我儿子转哈，好吗？",
+      "explanation": "Customer showed weak willingness and cited business difficulty and locked account. Collector acknowledged without judgment, proposed a clear plan (deposit before 5:30 PM with follow-up call), reducing customer's anxiety. This concrete, low-pressure action transformed weak willingness into a firm promise_to_pay."
     }
   },
   {
@@ -6640,7 +6645,8 @@ results = [
       "turn_index": 5,
       "role": "客户",
       "action": "agree_to_pay",
-      "text": "嗯"
+      "text": "嗯",
+      "explanation": "Customer showed frustration over unresolved prior contact and financial hardship. Collector validated his concerns by reviewing call logs, then offered empathy and a concrete solution: pay the $440 minimum to restore eligibility, with a promise to seek a full-payment waiver. This shifted customer from resistant to weak agreement, as the collector addressed his emotional need for acknowledgment and provided a clear, manageable next step."
     }
   },
   {

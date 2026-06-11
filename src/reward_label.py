@@ -14,6 +14,39 @@ def _load_aligned():
     return mod.results
 
 
+def _build_explanation_prompt(record, acceptance_type):
+    turns = record.get("turns_annotated", [])
+    annotated_lines = []
+    for t in turns:
+        role = "Collector" if t["role"] == "催收员" else "Customer"
+        state = t.get("state", {})
+        parts = [f"{role}: {t['text']}"]
+        if state.get("facts"):
+            parts.append(f"  facts: {state['facts']}")
+        if state.get("emotions"):
+            parts.append(f"  emotions: {state['emotions']}")
+        if state.get("willingness"):
+            parts.append(f"  willingness: {state['willingness']}")
+        if state.get("action"):
+            parts.append(f"  action: {state['action']}")
+        annotated_lines.append("; ".join(parts))
+    dialog_text = "\n".join(annotated_lines)
+    prompt = f"""Based on this annotated debt collection call, explain WHY this call succeeded (R=1) in terms of the conversation logic flow.
+
+Focus on: what facts/emotions/willingness the customer showed, and what collector actions led to the successful outcome (customer {acceptance_type}).
+
+Keep the explanation under 100 words. Be specific about the causal chain.
+
+Annotated dialog:
+{dialog_text}
+
+Respond in JSON:
+{{
+  "explanation": "your explanation here"
+}}"""
+    return prompt
+
+
 def _build_prompt(record):
     turns = record.get("turns_annotated", [])
     last_n = turns[-6:] if len(turns) >= 6 else turns
@@ -97,6 +130,17 @@ def label_reward(record):
             "action": acceptance_type or "agree_to_pay",
             "text": customer_turn["text"],
         }
+
+        try:
+            expl_prompt = _build_explanation_prompt(record, acceptance_type or "agree_to_pay")
+            expl_result = call_deepseek_json(expl_prompt)
+            explanation = expl_result.get("explanation", "")
+            if len(explanation.split()) > 100:
+                explanation = " ".join(explanation.split()[:100])
+        except Exception:
+            explanation = ""
+
+        result["reward_action_credit"]["explanation"] = explanation
     else:
         result["reward_action_credit"] = None
 

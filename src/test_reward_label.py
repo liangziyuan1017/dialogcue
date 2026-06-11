@@ -158,3 +158,14 @@ def test_r1_only_when_customer_accepts_plan_or_promises():
     }
     result = label_reward(rec_no_accept)
     assert result["reward"] == 0
+
+
+def test_reward_action_credit_has_explanation():
+    rec = _sample_record(reward_trigger=True)
+    result = label_reward(rec)
+    if result["reward"] == 1:
+        credit = result["reward_action_credit"]
+        assert "explanation" in credit
+        assert isinstance(credit["explanation"], str)
+        assert len(credit["explanation"]) > 0
+        assert len(credit["explanation"].split()) <= 100
