@@ -1,11 +1,12 @@
 ---
 id: F003
 name: Reward Labeling
-status: review
+status: complete
 owner: agent
 source: plan_feature_base.md
 created: 2026-06-11
 depends_on: F001
+merged: 2026-06-11 76b7c5c
 ---
 
 # F003: Reward Labeling
