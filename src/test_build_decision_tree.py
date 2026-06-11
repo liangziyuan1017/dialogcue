@@ -31,50 +31,77 @@ def _sample_record_with_facts(call_id="test-002"):
             {"turn_index": 0, "role": "催收员", "text": "您好。", "state": {"action": "greeting"}},
             {"turn_index": 1, "role": "客户", "text": "我没钱。", "state": {"facts": ["financial_hardship"], "emotions": ["distress"], "willingness": "resistant"}},
             {"turn_index": 2, "role": "催收员", "text": "我理解您的困难。", "state": {"action": "empathy"}},
-            {"turn_index": 3, "role": "客户", "text": "嗯。"},
+            {"turn_index": 3, "role": "客户", "text": "嗯。", "state": {"facts": ["financial_hardship"], "willingness": "weak"}},
             {"turn_index": 4, "role": "催收员", "text": "建议您还最低还款。", "state": {"action": "plan_proposal"}},
         ],
     }
 
 
-def test_extract_state_paths_returns_list():
+def _sample_record_same_facts_diff_willingness(call_id="test-003"):
+    return {
+        "call_id": call_id,
+        "reward": 1,
+        "turns_annotated": [
+            {"turn_index": 0, "role": "催收员", "text": "您好。", "state": {"action": "greeting"}},
+            {"turn_index": 1, "role": "客户", "text": "我没钱。", "state": {"facts": ["financial_hardship"], "emotions": ["distress"], "willingness": "negotiating"}},
+            {"turn_index": 2, "role": "催收员", "text": "我们可以帮您调整。", "state": {"action": "plan_proposal"}},
+        ],
+    }
+
+
+def test_extract_state_paths_returns_pairs():
     rec = _sample_record()
     paths = extract_state_paths(rec)
     assert isinstance(paths, list)
     assert len(paths) > 0
 
 
-def test_extract_state_paths_has_state_key_and_collector_text():
-    rec = _sample_record()
+def test_extract_state_paths_customer_key_is_facts_emotions_only():
+    rec = _sample_record_with_facts()
     paths = extract_state_paths(rec)
-    for state_key, collector_text in paths:
-        assert isinstance(state_key, dict)
-        assert isinstance(collector_text, (str, type(None)))
+    for item in paths:
+        if item["type"] == "customer":
+            key = item["branch_key"]
+            assert "willingness" not in key
+            assert "facts" in key or "emotions" in key or (key.get("facts") is None and key.get("emotions") is None)
 
 
-def test_extract_state_paths_includes_initial_contact():
-    rec = _sample_record()
+def test_extract_state_paths_willingness_on_sentence():
+    rec = _sample_record_with_facts()
     paths = extract_state_paths(rec)
-    first_key = paths[0][0]
-    assert first_key.get("action") == "greeting"
+    collector_steps = [p for p in paths if p["type"] == "collector"]
+    for step in collector_steps:
+        if step.get("sentence"):
+            assert "customer_willingness" in step["sentence"]
 
 
 def test_build_tree_has_root_initial_contact():
-    records = [_sample_record()]
-    tree = build_tree(records)
+    tree = build_tree([_sample_record()])
     assert tree["state_id"] == "initial_contact"
 
 
-def test_build_tree_has_children():
-    records = [_sample_record()]
-    tree = build_tree(records)
-    assert "children" in tree
-    assert len(tree["children"]) > 0
+def test_build_tree_branches_on_facts_emotions():
+    r1 = _sample_record_with_facts("call-A")
+    r2 = _sample_record_same_facts_diff_willingness("call-B")
+    tree = build_tree([r1, r2])
+    root_children = tree.get("children", [])
+    assert len(root_children) > 0
+    financial_hardship_branch = [c for c in root_children if "financial_hardship" in str(c.get("branch_key", {}))]
+    assert len(financial_hardship_branch) == 1, "Same (facts, emotions) should merge into one branch"
+
+
+def test_build_tree_willingness_merges_into_same_branch():
+    r1 = _sample_record_with_facts("call-A")
+    r2 = _sample_record_same_facts_diff_willingness("call-B")
+    tree = build_tree([r1, r2])
+    all_sentences = _collect_all_sentences(tree)
+    willingness_labels = set(s.get("customer_willingness") for s in all_sentences if s.get("customer_willingness"))
+    assert "resistant" in willingness_labels or "weak" in willingness_labels
+    assert "negotiating" in willingness_labels
 
 
 def test_build_tree_leaf_has_sentence_pool():
-    records = [_sample_record()]
-    tree = build_tree(records)
+    tree = build_tree([_sample_record()])
     _check_leaf_pools(tree)
 
 
@@ -88,13 +115,13 @@ def _check_leaf_pools(node):
 
 
 def test_sentence_entry_has_required_fields():
-    records = [_sample_record()]
-    tree = build_tree(records)
+    tree = build_tree([_sample_record()])
     entries = _collect_all_sentences(tree)
     for entry in entries:
         assert "script_text" in entry
         assert "script_id" in entry
         assert "source_call_ids" in entry
+        assert "customer_willingness" in entry
 
 
 def _collect_all_sentences(node):
@@ -124,44 +151,35 @@ def _collect_all_call_ids(node):
 
 
 def test_keywords_sorted_at_every_node():
-    records = [_sample_record_with_facts()]
-    tree = build_tree(records)
+    tree = build_tree([_sample_record_with_facts()])
     _check_sorted(tree)
 
 
 def _check_sorted(node):
     for key in ("facts", "emotions"):
-        if key in node.get("state_key", {}):
-            vals = node["state_key"][key]
-            assert vals == sorted(vals), f"{key} not sorted at node {node.get('state_id')}"
+        if key in node.get("branch_key", {}):
+            vals = node["branch_key"][key]
+            if vals:
+                assert vals == sorted(vals)
     for child in node.get("children", []):
         _check_sorted(child)
 
 
 def test_find_node_exact_match():
-    records = [_sample_record()]
-    tree = build_tree(records)
+    tree = build_tree([_sample_record()])
     result = find_node(tree, {"action": "greeting"})
     assert result is not None
 
 
 def test_find_node_fallback_removes_emotions():
-    records = [_sample_record_with_facts()]
-    tree = build_tree(records)
-    result = find_node(tree, {"facts": ["financial_hardship"], "emotions": ["distress", "anger"], "willingness": "resistant"})
-    assert result is not None
-
-
-def test_find_node_fallback_removes_facts():
-    records = [_sample_record_with_facts()]
-    tree = build_tree(records)
-    result = find_node(tree, {"facts": ["financial_hardship", "other_fact"], "emotions": ["distress"], "willingness": "resistant"})
+    tree = build_tree([_sample_record_with_facts()])
+    result = find_node(tree, {"facts": ["financial_hardship"], "emotions": ["distress", "anger"]})
     assert result is not None
 
 
 def test_write_decision_tree_produces_json():
     records = [_sample_record()]
-    output_path = "/tmp/test_decision_tree.json"
+    output_path = "/tmp/test_decision_tree_f004.json"
     count = write_decision_tree(records, output_path)
     assert count > 0
     with open(output_path) as f:
@@ -185,7 +203,6 @@ def test_real_data_all_criteria():
     leaf_empty = []
     found_ids = set()
     _collect_leaf_and_ids(tree, leaf_empty, found_ids)
-
     assert len(leaf_empty) == 0, f"{len(leaf_empty)} leaf nodes with empty sentence_pool"
 
     all_call_ids = set(r["call_id"] for r in records)
@@ -194,7 +211,38 @@ def test_real_data_all_criteria():
 
     violations = []
     _check_sorted_tree(tree, violations)
-    assert len(violations) == 0, f"{len(violations)} nodes with unsorted keywords"
+    assert len(violations) == 0
+
+    all_sentences = _collect_all_sentences(tree)
+    for s in all_sentences:
+        assert "customer_willingness" in s, f"Sentence missing customer_willingness: {s.get('script_id')}"
+
+
+def test_real_data_branches_not_chains():
+    import importlib.util
+    data_path = os.path.join(os.path.dirname(__file__), "output_rewarded.py")
+    spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    records = mod.results
+
+    tree = build_tree(records)
+    branching = _branching_histogram(tree)
+    single_child = branching.get(1, 0)
+    total = sum(branching.values())
+    ratio = single_child / total if total > 0 else 1
+    assert ratio < 0.8, f"Tree is too chain-like: {single_child}/{total} nodes have 1 child ({ratio:.0%})"
+
+
+def _branching_histogram(node):
+    from collections import Counter
+    c = Counter()
+    def walk(n):
+        kids = n.get("children", [])
+        c[len(kids)] += 1
+        for k in kids: walk(k)
+    walk(node)
+    return c
 
 
 def _collect_leaf_and_ids(node, leaf_empty, found_ids):
@@ -209,11 +257,75 @@ def _collect_leaf_and_ids(node, leaf_empty, found_ids):
         _collect_leaf_and_ids(child, leaf_empty, found_ids)
 
 
+def _sample_record_emotion_cycle(call_id="test-004"):
+    return {
+        "call_id": call_id,
+        "reward": 0,
+        "turns_annotated": [
+            {"turn_index": 0, "role": "催收员", "text": "您好。", "state": {"action": "greeting"}},
+            {"turn_index": 1, "role": "客户", "text": "我没钱。", "state": {"facts": ["financial_hardship"], "emotions": ["anger"], "willingness": "resistant"}},
+            {"turn_index": 2, "role": "催收员", "text": "我理解。", "state": {"action": "empathy"}},
+            {"turn_index": 3, "role": "客户", "text": "唉...", "state": {"facts": ["financial_hardship"], "emotions": ["anxiety"], "willingness": "weak"}},
+            {"turn_index": 4, "role": "催收员", "text": "别担心。", "state": {"action": "empathy"}},
+            {"turn_index": 5, "role": "客户", "text": "我就是气不过！", "state": {"facts": ["financial_hardship"], "emotions": ["anger"], "willingness": "resistant"}},
+            {"turn_index": 6, "role": "催收员", "text": "建议还款。", "state": {"action": "plan_proposal"}},
+        ],
+    }
+
+
+def test_emotion_cycle_same_facts_anger_returns_same_pool():
+    rec = _sample_record_emotion_cycle()
+    tree = build_tree([rec])
+    anger_nodes = _find_nodes_by_branch_key(tree, {"facts": ["financial_hardship"], "emotions": ["anger"]})
+    assert len(anger_nodes) == 1, f"Same (facts,emotions)=(financial_hardship,anger) should be ONE node, got {len(anger_nodes)}"
+
+
+def test_emotion_cycle_anger_and_anxiety_are_siblings():
+    rec = _sample_record_emotion_cycle()
+    tree = build_tree([rec])
+    anger_nodes = _find_nodes_by_branch_key(tree, {"facts": ["financial_hardship"], "emotions": ["anger"]})
+    anxiety_nodes = _find_nodes_by_branch_key(tree, {"facts": ["financial_hardship"], "emotions": ["anxiety"]})
+    assert len(anger_nodes) >= 1
+    assert len(anxiety_nodes) >= 1
+    assert len(anger_nodes) == 1, "anger should be a single merged node even after cycle"
+
+
+def test_emotion_cycle_anger_pool_has_both_sentences():
+    rec = _sample_record_emotion_cycle()
+    tree = build_tree([rec])
+    anger_nodes = _find_nodes_by_branch_key(tree, {"facts": ["financial_hardship"], "emotions": ["anger"]})
+    assert len(anger_nodes) == 1
+    pool = anger_nodes[0]["sentence_pool"]
+    texts = [s["script_text"] for s in pool]
+    assert any("我理解" in t for t in texts), "First anger response should be in pool"
+    assert any("建议还款" in t for t in texts), "Second anger response (after cycle back) should also be in same pool"
+
+
+def _find_nodes_by_branch_key(node, target_key, results=None):
+    if results is None:
+        results = []
+    if node.get("branch_key") == target_key:
+        results.append(node)
+    for child in node.get("children", []):
+        _find_nodes_by_branch_key(child, target_key, results)
+    return results
+
+
+def _find_parent(tree, target, parent=None):
+    if tree is target:
+        return parent
+    for child in tree.get("children", []):
+        result = _find_parent(child, target, tree)
+        if result is not None:
+            return result
+    return None
+
+
 def _check_sorted_tree(node, violations):
     for key in ("facts", "emotions"):
-        if key in node.get("state_key", {}):
-            vals = node["state_key"][key]
-            if vals != sorted(vals):
+        if key in node.get("branch_key", {}):
+            vals = node["branch_key"][key]
+            if vals and vals != sorted(vals):
                 violations.append(node.get("state_id"))
     for child in node.get("children", []):
         _check_sorted_tree(child, violations)

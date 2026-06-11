@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F004 Decision Tree Explorer</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#c9d1d9;display:flex;flex-direction:column;height:100vh}
+#toolbar{height:44px;background:#161b22;border-bottom:1px solid #30363d;display:flex;align-items:center;padding:0 12px;gap:10px;flex-shrink:0}
+#toolbar h1{font-size:14px;color:#58a6ff;font-weight:600}
+.stat{font-size:11px;color:#8b949e}
+#search{background:#0d1117;border:1px solid #30363d;border-radius:4px;padding:4px 8px;color:#c9d1d9;font-size:12px;width:220px;outline:none}
+#search:focus{border-color:#58a6ff}
+#main{display:flex;flex:1;overflow:hidden}
+#tree-panel{flex:1;overflow:auto;padding:8px 0 8px 8px}
+#detail{width:380px;background:#161b22;border-left:1px solid #30363d;overflow-y:auto;padding:12px;flex-shrink:0}
+.tnode{display:flex;align-items:flex-start;padding:3px 0;cursor:pointer}
+.tnode:hover .nlabel{color:#58a6ff}
+.tindent{flex-shrink:0}
+.ttoggle{width:16px;text-align:center;color:#8b949e;font-size:10px;flex-shrink:0;user-select:none}
+.ttoggle:hover{color:#58a6ff}
+.nbadge{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin:5px 6px 0 0}
+.nbadge.root{background:#58a6ff}
+.nbadge.pool{background:#3fb950}
+.nbadge.leaf{background:#d29922}
+.nbadge.empty{background:#484f58}
+.nlabel{font-size:12px;color:#c9d1d9;word-break:break-all;line-height:1.4}
+.nlabel .ncount{color:#8b949e;font-size:10px;margin-left:4px}
+.nchildren{padding-left:20px}
+#detail h2{font-size:13px;color:#58a6ff;margin-bottom:6px;word-break:break-all}
+.section{margin-bottom:14px}
+.section-title{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#8b949e;margin-bottom:4px}
+.tag{display:inline-block;background:#0d1117;border:1px solid #30363d;border-radius:3px;padding:1px 6px;margin:2px;font-size:11px}
+.tag.fact{border-color:#3fb950;color:#3fb950}
+.tag.emotion{border-color:#d2a8ff;color:#d2a8ff}
+.tag.willingness{border-color:#79c0ff;color:#79c0ff}
+.tag.action{border-color:#d29922;color:#d29922}
+.wbar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.wbar-item{font-size:10px;background:#0d1117;border:1px solid #30363d;border-radius:3px;padding:1px 6px}
+.wbar-item .wlabel{color:#79c0ff}
+.wbar-item .wcount{color:#8b949e}
+.script{background:#0d1117;border:1px solid #30363d;border-radius:4px;padding:6px 8px;margin-bottom:4px;font-size:11px}
+.script .stxt{color:#c9d1d9;margin-bottom:2px}
+.script .smeta{color:#8b949e;font-size:10px}
+.script .swill{display:inline-block;border:1px solid #79c0ff;border-radius:3px;padding:0 4px;color:#79c0ff;font-size:9px;margin-right:4px}
+.child-link{display:inline-block;background:#0d1117;border:1px solid #30363d;border-radius:3px;padding:1px 6px;margin:2px;font-size:10px;color:#58a6ff;cursor:pointer}
+.child-link:hover{border-color:#58a6ff}
+#empty-detail{text-align:center;padding:40px 12px;color:#484f58;font-size:13px}
+.breadcrumb{font-size:10px;color:#8b949e;margin-bottom:8px}
+.breadcrumb span{color:#58a6ff;cursor:pointer}
+.breadcrumb span:hover{text-decoration:underline}
+.highlight{background:#1f2937;border-radius:3px}
+</style>
+</head>
+<body>
+<div id="toolbar">
+  <h1>Decision Tree Explorer</h1>
+  <span class="stat" id="stats"></span>
+  <input type="text" id="search" placeholder="Search state_id or script text...">
+  <span class="stat" id="search-info"></span>
+</div>
+<div id="main">
+  <div id="tree-panel"></div>
+  <div id="detail">
+    <div id="empty-detail">Click a node to inspect details</div>
+    <div id="detail-content" style="display:none"></div>
+  </div>
+</div>
+<script>
+let treeData, nodeMap={}, selectedNode=null, expandedSet=new Set();
+
+function indexTree(node, parentId=null) {
+  const id = node.state_id + '_' + Math.random().toString(36).slice(2,6);
+  node._id = id;
+  node._parentId = parentId;
+  nodeMap[id] = node;
+  if (parentId === null) expandedSet.add(id);
+  (node.children||[]).forEach(c => indexTree(c, id));
+}
+
+function renderTree() {
+  const panel = document.getElementById('tree-panel');
+  panel.innerHTML = renderNode(treeData, 0);
+}
+
+function renderNode(node, depth) {
+  const id = node._id;
+  const expanded = expandedSet.has(id);
+  const kids = node.children || [];
+  const hasKids = kids.length > 0;
+  const pool = node.sentence_pool || [];
+  const badgeCls = depth===0?'root':pool.length>0&&hasKids?'pool':!hasKids?'leaf':'empty';
+  const indent = depth * 20;
+  const isSelected = selectedNode && selectedNode._id === id;
+
+  let h = `<div class="tnode${isSelected?' highlight':''}" data-id="${id}" onclick="selectAndToggle('${id}')">`;
+  h += `<span class="tindent" style="width:${indent}px"></span>`;
+  h += `<span class="ttoggle">${hasKids?(expanded?'▼':'▶'):'◦'}</span>`;
+  h += `<span class="nbadge ${badgeCls}"></span>`;
+
+  // willingness distribution summary
+  let wSummary = '';
+  if (pool.length > 0) {
+    const wCounts = {};
+    pool.forEach(s => { const w = s.customer_willingness || 'none'; wCounts[w] = (wCounts[w]||0)+1; });
+    wSummary = Object.entries(wCounts).map(([w,c]) => `${w}:${c}`).join(' ');
+  }
+
+  h += `<span class="nlabel">${esc(node.state_id)}<span class="ncount">(${pool.length} scripts${hasKids?', '+kids.length+' kids':''}${wSummary?' | '+wSummary:''})</span></span>`;
+  h += `</div>`;
+  if (hasKids && expanded) {
+    h += `<div class="nchildren" style="margin-left:${indent}px">`;
+    kids.forEach(c => h += renderNode(c, depth+1));
+    h += `</div>`;
+  }
+  return h;
+}
+
+function esc(s) { return (s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function selectAndToggle(id) {
+  const node = nodeMap[id];
+  if ((node.children||[]).length > 0) {
+    if (expandedSet.has(id)) expandedSet.delete(id); else expandedSet.add(id);
+  }
+  selectedNode = node;
+  renderTree();
+  renderDetail();
+  scrollIntoView(id);
+}
+
+function scrollIntoView(id) {
+  const el = document.querySelector(`.tnode[data-id="${id}"]`);
+  if (el) el.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function renderDetail() {
+  if (!selectedNode) {
+    document.getElementById('empty-detail').style.display = '';
+    document.getElementById('detail-content').style.display = 'none';
+    return;
+  }
+  document.getElementById('empty-detail').style.display = 'none';
+  const dc = document.getElementById('detail-content');
+  dc.style.display = '';
+  const n = selectedNode;
+
+  let h = '';
+  const path = [];
+  let cur = n;
+  while (cur) { path.unshift(cur); cur = cur._parentId ? nodeMap[cur._parentId] : null; }
+  h += `<div class="breadcrumb">${path.map((p,i)=>`<span onclick="navTo('${p._id}')">${esc(p.state_id)}</span>${i<path.length-1?' / ':''}`).join('')}</div>`;
+
+  h += `<h2>${esc(n.state_id)}</h2>`;
+
+  const bk = n.branch_key || {};
+  h += `<div class="section"><div class="section-title">Branch Key (facts + emotions)</div>`;
+  (bk.facts||[]).forEach(f => h += `<span class="tag fact">${esc(f)}</span> `);
+  (bk.emotions||[]).forEach(e => h += `<span class="tag emotion">${esc(e)}</span> `);
+  if (!(bk.facts||[]).length && !(bk.emotions||[]).length) h += `<span style="color:#484f58">no facts, no emotions</span>`;
+  h += `</div>`;
+
+  const pool = n.sentence_pool || [];
+
+  // willingness distribution bar
+  if (pool.length > 0) {
+    const wCounts = {};
+    pool.forEach(s => { const w = s.customer_willingness || 'none'; wCounts[w] = (wCounts[w]||0)+1; });
+    h += `<div class="section"><div class="section-title">Willingness Distribution</div><div class="wbar">`;
+    Object.entries(wCounts).sort((a,b)=>b[1]-a[1]).forEach(([w,c]) => {
+      h += `<span class="wbar-item"><span class="wlabel">${esc(w)}</span> <span class="wcount">${c}</span></span>`;
+    });
+    h += `</div></div>`;
+  }
+
+  h += `<div class="section"><div class="section-title">Sentence Pool (${pool.length})</div>`;
+  // group by willingness for display
+  const byWill = {};
+  pool.forEach(s => { const w = s.customer_willingness || 'none'; (byWill[w] = byWill[w]||[]).push(s); });
+  for (const [w, scripts] of Object.entries(byWill).sort()) {
+    h += `<div style="margin-bottom:8px"><div style="font-size:10px;color:#79c0ff;margin-bottom:2px">when customer is <b>${esc(w)}</b>:</div>`;
+    scripts.forEach(s => {
+      h += `<div class="script"><span class="swill">${esc(w)}</span><span class="stxt">${esc(s.script_text)}</span><div class="smeta">${esc(s.script_id)} | ${(s.source_call_ids||[]).join(', ')}</div></div>`;
+    });
+    h += `</div>`;
+  }
+  if (!pool.length) h += `<span style="color:#484f58">empty</span>`;
+  h += `</div>`;
+
+  const kids = n.children || [];
+  h += `<div class="section"><div class="section-title">Children (${kids.length})</div>`;
+  kids.forEach(c => h += `<span class="child-link" onclick="navTo('${c._id}')">${esc(c.state_id)}</span> `);
+  if (!kids.length) h += `<span style="color:#484f58">leaf node</span>`;
+  h += `</div>`;
+
+  dc.innerHTML = h;
+}
+
+function navTo(id) {
+  let cur = nodeMap[id];
+  while (cur && cur._parentId) { expandedSet.add(cur._parentId); cur = nodeMap[cur._parentId]; }
+  selectedNode = nodeMap[id];
+  expandedSet.add(id);
+  renderTree();
+  renderDetail();
+  scrollIntoView(id);
+}
+
+function setupSearch() {
+  const input = document.getElementById('search');
+  const info = document.getElementById('search-info');
+  input.addEventListener('input', () => {
+    const q = input.value.toLowerCase().trim();
+    if (!q) { info.textContent=''; return; }
+    const matches = Object.values(nodeMap).filter(n =>
+      n.state_id.toLowerCase().includes(q) ||
+      (n.sentence_pool||[]).some(s => s.script_text.toLowerCase().includes(q))
+    );
+    info.textContent = `${matches.length} match${matches.length!==1?'es':''}`;
+    if (matches.length > 0) navTo(matches[0]._id);
+  });
+}
+
+function countNodes(node) { return 1 + (node.children||[]).reduce((s,c)=>s+countNodes(c),0); }
+function countLeaves(node) { const k=node.children||[]; return k.length===0?1:k.reduce((s,c)=>s+countLeaves(c),0); }
+
+fetch('/decision_tree.json')
+  .then(r => r.json())
+  .then(data => {
+    treeData = data;
+    indexTree(data);
+    const total = countNodes(data), leaves = countLeaves(data);
+    document.getElementById('stats').textContent = `${total} nodes · ${leaves} leaves · 31 conversations`;
+    renderTree();
+    setupSearch();
+    selectedNode = treeData;
+    renderDetail();
+  });
+</script>
+</body>
+</html>
