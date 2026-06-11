@@ -12,115 +12,87 @@ def _load_rewarded():
     return mod.results
 
 
-def _make_state_key(state):
+def _make_branch_key(state):
     key = {}
-    if "facts" in state and state["facts"]:
-        key["facts"] = sorted(state["facts"])
-    if "emotions" in state and state["emotions"]:
-        key["emotions"] = sorted(state["emotions"])
-    if "willingness" in state and state["willingness"]:
-        key["willingness"] = state["willingness"]
-    if "action" in state and state["action"]:
-        key["action"] = state["action"]
+    facts = state.get("facts", [])
+    emotions = state.get("emotions", [])
+    if facts:
+        key["facts"] = sorted(facts)
+    if emotions:
+        key["emotions"] = sorted(emotions)
     return key
 
 
-def _state_key_to_str(key):
+def _branch_key_to_str(key):
     parts = []
-    if "action" in key:
-        parts.append(f"a:{key['action']}")
-    if "willingness" in key:
-        parts.append(f"w:{key['willingness']}")
     if "facts" in key:
         parts.append(f"f:{','.join(key['facts'])}")
     if "emotions" in key:
         parts.append(f"e:{','.join(key['emotions'])}")
-    return "|".join(parts) if parts else "unknown"
+    return "|".join(parts) if parts else "no_facts_no_emotions"
 
 
 def extract_state_paths(record):
     turns = record.get("turns_annotated", [])
     call_id = record.get("call_id", "")
     paths = []
-    collector_sentences = []
-
-    initial_key = {"action": "greeting"}
-    paths.append((initial_key, None))
+    last_customer_willingness = None
 
     for turn in turns:
         state = turn.get("state")
-        if state and turn["role"] == "催收员":
-            key = _make_state_key(state)
-            paths.append((key, turn["text"]))
-            collector_sentences.append({
-                "script_text": turn["text"],
-                "script_id": f"{call_id}_t{turn['turn_index']}",
-                "source_call_ids": [call_id],
-            })
-        elif state and turn["role"] == "客户":
-            key = _make_state_key(state)
-            paths.append((key, None))
+        if not state:
+            continue
+        if turn["role"] == "催收员":
+            action = state.get("action")
+            if action:
+                entry = {
+                    "type": "collector",
+                    "action": action,
+                    "sentence": {
+                        "script_text": turn["text"],
+                        "script_id": f"{call_id}_t{turn['turn_index']}",
+                        "source_call_ids": [call_id],
+                        "customer_willingness": last_customer_willingness,
+                    },
+                }
+                paths.append(entry)
+        elif turn["role"] == "客户":
+            branch_key = _make_branch_key(state)
+            last_customer_willingness = state.get("willingness")
+            entry = {
+                "type": "customer",
+                "branch_key": branch_key,
+                "willingness": last_customer_willingness,
+            }
+            paths.append(entry)
 
     return paths
 
 
 def _merge_sentences(existing, new_entries):
-    by_text = defaultdict(list)
+    by_key = defaultdict(list)
     for entry in existing:
-        by_text[entry["script_text"]].append(entry)
+        k = (entry["script_text"], entry.get("customer_willingness"))
+        by_key[k].append(entry)
 
     for entry in new_entries:
-        text = entry["script_text"]
-        if text in by_text:
-            for existing_entry in by_text[text]:
+        k = (entry["script_text"], entry.get("customer_willingness"))
+        if k in by_key:
+            for existing_entry in by_key[k]:
                 for cid in entry["source_call_ids"]:
                     if cid not in existing_entry["source_call_ids"]:
                         existing_entry["source_call_ids"].append(cid)
                         existing_entry["source_call_ids"].sort()
+                break
         else:
-            by_text[text].append(entry)
+            by_key[k].append(entry)
             existing.append(entry)
-
-
-def _insert_path(node, path_steps, call_id, depth=0):
-    if not path_steps:
-        return
-
-    state_key, collector_text = path_steps[0]
-    state_str = _state_key_to_str(state_key)
-    state_id = state_str if depth > 0 else "initial_contact"
-
-    children = node.setdefault("children", [])
-    matching = None
-    for child in children:
-        if child.get("state_key") == state_key:
-            matching = child
-            break
-
-    if matching is None:
-        matching = {
-            "state_id": state_id,
-            "state_key": state_key,
-            "sentence_pool": [],
-            "children": [],
-        }
-        children.append(matching)
-
-    if collector_text:
-        entry = {
-            "script_text": collector_text,
-            "script_id": f"{call_id}_d{depth}",
-            "source_call_ids": [call_id],
-        }
-        _merge_sentences(matching["sentence_pool"], [entry])
-
-    _insert_path(matching, path_steps[1:], call_id, depth + 1)
 
 
 def build_tree(records):
     root = {
         "state_id": "initial_contact",
-        "state_key": {"action": "greeting"},
+        "branch_key": {},
         "sentence_pool": [],
         "children": [],
     }
@@ -135,30 +107,84 @@ def build_tree(records):
                     "script_text": turn["text"],
                     "script_id": f"{call_id}_t{turn['turn_index']}",
                     "source_call_ids": [call_id],
+                    "customer_willingness": None,
                 }
                 _merge_sentences(root["sentence_pool"], [entry])
                 break
 
-        path_steps = []
-        current_key = None
-        for turn in turns:
-            state = turn.get("state")
-            if not state:
-                continue
-            key = _make_state_key(state)
-            if key != current_key:
-                if turn["role"] == "催收员":
-                    path_steps.append((key, turn["text"]))
-                else:
-                    path_steps.append((key, None))
-                current_key = key
+        segments = _extract_segments(turns, call_id)
 
-        if path_steps:
-            _insert_path(root, path_steps, call_id)
+        current_node = root
+        for seg in segments:
+            branch_key = seg["branch_key"]
+            branch_str = _branch_key_to_str(branch_key)
+
+            children = current_node.setdefault("children", [])
+            matching = None
+            for child in children:
+                if child.get("branch_key") == branch_key:
+                    matching = child
+                    break
+
+            if matching is None:
+                matching = {
+                    "state_id": branch_str,
+                    "branch_key": branch_key,
+                    "sentence_pool": [],
+                    "children": [],
+                }
+                children.append(matching)
+
+            _merge_sentences(matching["sentence_pool"], seg["sentences"])
+            current_node = matching
 
     _propagate_sentences(root)
     _sort_keywords(root)
     return root
+
+
+def _extract_segments(turns, call_id):
+    segments = []
+    current_branch_key = None
+    current_sentences = []
+    last_willingness = None
+
+    for turn in turns:
+        state = turn.get("state")
+        if not state:
+            continue
+
+        if turn["role"] == "客户":
+            new_branch_key = _make_branch_key(state)
+            last_willingness = state.get("willingness")
+
+            if new_branch_key != current_branch_key:
+                if current_branch_key is not None and current_sentences:
+                    segments.append({
+                        "branch_key": current_branch_key,
+                        "sentences": current_sentences,
+                    })
+                current_branch_key = new_branch_key
+                current_sentences = []
+
+        elif turn["role"] == "催收员":
+            action = state.get("action")
+            if action and current_branch_key is not None:
+                entry = {
+                    "script_text": turn["text"],
+                    "script_id": f"{call_id}_t{turn['turn_index']}",
+                    "source_call_ids": [call_id],
+                    "customer_willingness": last_willingness,
+                }
+                current_sentences.append(entry)
+
+    if current_branch_key is not None and current_sentences:
+        segments.append({
+            "branch_key": current_branch_key,
+            "sentences": current_sentences,
+        })
+
+    return segments
 
 
 def _propagate_sentences(node, parent_pool=None):
@@ -171,12 +197,11 @@ def _propagate_sentences(node, parent_pool=None):
 
 def _sort_keywords(node):
     for key in ("facts", "emotions"):
-        if key in node.get("state_key", {}):
-            node["state_key"][key] = sorted(node["state_key"][key])
+        if key in node.get("branch_key", {}):
+            node["branch_key"][key] = sorted(node["branch_key"][key])
     for entry in node.get("sentence_pool", []):
-        for cid_key in ("source_call_ids",):
-            if cid_key in entry:
-                entry[cid_key] = sorted(entry[cid_key])
+        if "source_call_ids" in entry:
+            entry["source_call_ids"] = sorted(entry["source_call_ids"])
     for child in node.get("children", []):
         _sort_keywords(child)
 
@@ -191,8 +216,6 @@ def _strip_key(key, level):
             stripped["facts"] = facts[:-1]
     if level >= 3:
         stripped.pop("facts", None)
-    if level >= 4:
-        stripped.pop("willingness", None)
     return stripped
 
 
@@ -211,11 +234,12 @@ def _subset_match(node_key, target_key):
 
 
 def _search_node(node, target_key, subset=False):
+    bk = node.get("branch_key", {})
     if subset:
-        if _subset_match(node.get("state_key", {}), target_key):
+        if _subset_match(bk, target_key):
             return node
     else:
-        if node.get("state_key") == target_key:
+        if bk == target_key:
             return node
     for child in node.get("children", []):
         result = _search_node(child, target_key, subset)
@@ -229,7 +253,7 @@ def find_node(tree, state_key):
     if result is not None:
         return result
 
-    for level in range(1, 5):
+    for level in range(1, 4):
         stripped = _strip_key(state_key, level)
         if not stripped:
             break
