@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F004 Decision Tree Explorer</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0f; color: #e0e0e0; overflow: hidden; }
+#toolbar { position: fixed; top: 0; left: 0; right: 0; height: 48px; background: #12121a; border-bottom: 1px solid #2a2a3a; display: flex; align-items: center; padding: 0 16px; gap: 12px; z-index: 100; }
+#toolbar h1 { font-size: 15px; font-weight: 600; color: #8b8bf0; }
+#toolbar .stat { font-size: 12px; color: #888; }
+#search { background: #1a1a2a; border: 1px solid #2a2a3a; border-radius: 6px; padding: 6px 10px; color: #e0e0e0; font-size: 13px; width: 240px; outline: none; }
+#search:focus { border-color: #6b6bf0; }
+#search-results { font-size: 12px; color: #aaa; }
+#canvas-container { position: fixed; top: 48px; left: 0; right: 320px; bottom: 0; overflow: hidden; cursor: grab; }
+#canvas-container:active { cursor: grabbing; }
+svg { width: 100%; height: 100%; }
+#detail-panel { position: fixed; top: 48px; right: 0; width: 320px; bottom: 0; background: #12121a; border-left: 1px solid #2a2a3a; overflow-y: auto; padding: 16px; }
+#detail-panel h2 { font-size: 14px; color: #8b8bf0; margin-bottom: 8px; word-break: break-all; }
+#detail-panel .section { margin-bottom: 16px; }
+#detail-panel .section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 6px; }
+#detail-panel .tag { display: inline-block; background: #1a1a2a; border: 1px solid #2a2a3a; border-radius: 4px; padding: 2px 8px; margin: 2px; font-size: 12px; }
+#detail-panel .tag.fact { border-color: #4a9; color: #4a9; }
+#detail-panel .tag.emotion { border-color: #e8a; color: #e8a; }
+#detail-panel .tag.willingness { border-color: #8bf; color: #8bf; }
+#detail-panel .tag.action { border-color: #fa0; color: #fa0; }
+#detail-panel .script { background: #1a1a2a; border: 1px solid #2a2a3a; border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; font-size: 12px; cursor: pointer; transition: border-color 0.2s; }
+#detail-panel .script:hover { border-color: #6b6bf0; }
+#detail-panel .script .text { color: #ccc; margin-bottom: 4px; }
+#detail-panel .script .meta { color: #666; font-size: 10px; }
+#detail-panel .call-ids { color: #555; font-size: 10px; margin-top: 2px; }
+#detail-panel .child-link { display: inline-block; background: #1a1a2a; border: 1px solid #2a2a3a; border-radius: 4px; padding: 2px 8px; margin: 2px; font-size: 11px; color: #8b8bf0; cursor: pointer; }
+#detail-panel .child-link:hover { border-color: #6b6bf0; }
+.node-circle { cursor: pointer; transition: r 0.2s; }
+.node-circle:hover { filter: brightness(1.3); }
+.node-label { font-size: 10px; fill: #999; pointer-events: none; }
+.edge-line { stroke: #2a2a3a; stroke-width: 1; fill: none; }
+.edge-line.highlighted { stroke: #6b6bf0; stroke-width: 2; }
+#zoom-controls { position: fixed; bottom: 16px; left: 16px; display: flex; gap: 8px; z-index: 100; }
+#zoom-controls button { background: #1a1a2a; border: 1px solid #2a2a3a; border-radius: 6px; color: #e0e0e0; width: 36px; height: 36px; cursor: pointer; font-size: 16px; }
+#zoom-controls button:hover { border-color: #6b6bf0; }
+#breadcrumb { font-size: 11px; color: #666; display: flex; gap: 4px; flex-wrap: wrap; }
+#breadcrumb span { color: #8b8bf0; cursor: pointer; }
+#breadcrumb span:hover { text-decoration: underline; }
+#empty-state { text-align: center; padding: 40px 16px; color: #555; }
+#empty-state .icon { font-size: 32px; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div id="toolbar">
+  <h1>Decision Tree Explorer</h1>
+  <span class="stat" id="node-count"></span>
+  <input type="text" id="search" placeholder="Search state_id, script text...">
+  <span id="search-results"></span>
+</div>
+<div id="canvas-container">
+  <svg id="tree-svg"></svg>
+</div>
+<div id="detail-panel">
+  <div id="empty-state"><div class="icon">&#x1F50D;</div>Click a node to inspect</div>
+  <div id="detail-content" style="display:none"></div>
+</div>
+<div id="zoom-controls">
+  <button onclick="zoomIn()">+</button>
+  <button onclick="zoomOut()">-</button>
+  <button onclick="resetView()">&#x21BA;</button>
+</div>
+<script>
+let treeData, flatNodes=[], edges=[], selectedId=null;
+let transform = {x:0, y:0, k:1};
+const NODE_R = 12, LEVEL_H = 70, NODE_W = 160;
+
+function flatten(node, depth=0, parentId=null, idx=0) {
+  const id = flatNodes.length;
+  const n = {
+    id, depth, idx, parentId,
+    state_id: node.state_id,
+    state_key: node.state_key || {},
+    sentence_pool: node.sentence_pool || [],
+    childCount: (node.children||[]).length,
+    raw: node
+  };
+  flatNodes.push(n);
+  if (parentId !== null) edges.push({from: parentId, to: id});
+  (node.children||[]).forEach((c,i) => flatten(c, depth+1, id, i));
+}
+
+function layout() {
+  const byDepth = {};
+  flatNodes.forEach(n => { (byDepth[n.depth] = byDepth[n.depth]||[]).push(n); });
+  Object.values(byDepth).forEach(arr => arr.forEach((n,i) => { n.x = i * NODE_W; n.y = n.depth * LEVEL_H; }));
+}
+
+function render() {
+  const svg = document.getElementById('tree-svg');
+  const w = svg.parentElement.clientWidth, h = svg.parentElement.clientHeight;
+  svg.setAttribute('viewBox', `${-w/2/transform.k + transform.x} ${-h/2/transform.k + transform.y} ${w/transform.k} ${h/transform.k}`);
+
+  let html = '';
+  edges.forEach(e => {
+    const a = flatNodes[e.from], b = flatNodes[e.to];
+    const highlighted = selectedId===e.from || selectedId===e.to;
+    html += `<path class="edge-line${highlighted?' highlighted':''}" d="M${a.x},${a.y+NODE_R} C${a.x},${a.y+LEVEL_H*0.5} ${b.x},${b.y-LEVEL_H*0.5} ${b.x},${b.y-NODE_R}"/>`;
+  });
+  flatNodes.forEach(n => {
+    const hasPool = n.sentence_pool.length > 0;
+    const isSelected = n.id === selectedId;
+    const color = n.depth===0 ? '#8b8bf0' : hasPool ? '#4a9' : '#e8a';
+    const r = isSelected ? NODE_R+3 : NODE_R;
+    html += `<circle class="node-circle" cx="${n.x}" cy="${n.y}" r="${r}" fill="${color}" opacity="0.8" data-id="${n.id}" stroke="${isSelected?'#fff':'none'}" stroke-width="${isSelected?2:0}"/>`;
+    const label = n.state_id.length > 18 ? n.state_id.slice(0,16)+'..' : n.state_id;
+    html += `<text class="node-label" x="${n.x}" y="${n.y+NODE_R+12}" text-anchor="middle">${label}</text>`;
+  });
+  svg.innerHTML = html;
+  svg.querySelectorAll('.node-circle').forEach(el => {
+    el.addEventListener('click', () => selectNode(+el.dataset.id));
+  });
+}
+
+function selectNode(id) {
+  selectedId = id;
+  const n = flatNodes[id];
+  document.getElementById('empty-state').style.display = 'none';
+  const dc = document.getElementById('detail-content');
+  dc.style.display = 'block';
+
+  let h = `<h2>${n.state_id}</h2>`;
+  h += `<div id="breadcrumb">`;
+  let cur = n;
+  const path = [];
+  while (cur) { path.unshift(cur); cur = cur.parentId!==null ? flatNodes[cur.parentId] : null; }
+  h += path.map((p,i) => `<span onclick="selectNode(${p.id})">${p.state_id}</span>${i<path.length-1?' / ':''}`).join('');
+  h += `</div>`;
+
+  const sk = n.state_key;
+  h += `<div class="section"><div class="section-title">State Key</div>`;
+  if (sk.action) h += `<span class="tag action">${sk.action}</span> `;
+  if (sk.willingness) h += `<span class="tag willingness">${sk.willingness}</span> `;
+  (sk.facts||[]).forEach(f => h += `<span class="tag fact">${f}</span> `);
+  (sk.emotions||[]).forEach(e => h += `<span class="tag emotion">${e}</span> `);
+  if (!sk.action && !sk.willingness && !(sk.facts||[]).length && !(sk.emotions||[]).length) h += `<span style="color:#555">empty</span>`;
+  h += `</div>`;
+
+  h += `<div class="section"><div class="section-title">Sentence Pool (${n.sentence_pool.length})</div>`;
+  n.sentence_pool.forEach((s,i) => {
+    h += `<div class="script"><div class="text">${s.script_text}</div><div class="meta">${s.script_id}</div><div class="call-ids">${s.source_call_ids.join(', ')}</div></div>`;
+  });
+  if (!n.sentence_pool.length) h += `<span style="color:#555">empty</span>`;
+  h += `</div>`;
+
+  h += `<div class="section"><div class="section-title">Children (${n.childCount})</div>`;
+  edges.filter(e => e.from===id).forEach(e => {
+    const c = flatNodes[e.to];
+    h += `<span class="child-link" onclick="selectNode(${c.id})">${c.state_id}</span> `;
+  });
+  h += `</div>`;
+
+  dc.innerHTML = h;
+  render();
+}
+
+function setupPanZoom() {
+  const container = document.getElementById('canvas-container');
+  let dragging=false, lastX, lastY;
+  container.addEventListener('mousedown', e => { if(e.target.tagName!=='circle'){dragging=true; lastX=e.clientX; lastY=e.clientY;} });
+  container.addEventListener('mousemove', e => { if(dragging){transform.x+=(e.clientX-lastX)/transform.k; transform.y+=(e.clientY-lastY)/transform.k; lastX=e.clientX; lastY=e.clientY; render();} });
+  container.addEventListener('mouseup', () => dragging=false);
+  container.addEventListener('mouseleave', () => dragging=false);
+  container.addEventListener('wheel', e => { e.preventDefault(); const f = e.deltaY>0?0.9:1.1; transform.k*=f; transform.x+=(e.clientX-container.clientWidth/2)*(1/f-1)/transform.k; transform.y+=(e.clientY-container.clientHeight/2+48)*(1/f-1)/transform.k; render(); }, {passive:false});
+}
+function zoomIn() { transform.k*=1.3; render(); }
+function zoomOut() { transform.k*=0.7; render(); }
+function resetView() { transform={x:0,y:0,k:1}; if(flatNodes.length){const r=flatNodes[0]; transform.x=-r.x; transform.y=-r.y+60;} render(); }
+
+function setupSearch() {
+  const input = document.getElementById('search');
+  const results = document.getElementById('search-results');
+  input.addEventListener('input', () => {
+    const q = input.value.toLowerCase();
+    if (!q) { results.textContent=''; return; }
+    const matches = flatNodes.filter(n => n.state_id.toLowerCase().includes(q) || n.sentence_pool.some(s => s.script_text.toLowerCase().includes(q)));
+    results.textContent = `${matches.length} match${matches.length!==1?'es':''}`;
+    if (matches.length > 0) { selectedId = matches[0].id; selectNode(matches[0].id); transform.x = -matches[0].x; transform.y = -matches[0].y + 60; render(); }
+  });
+}
+
+fetch('/src/decision_tree.json')
+  .then(r => r.json())
+  .then(data => {
+    treeData = data;
+    flatten(data);
+    layout();
+    document.getElementById('node-count').textContent = `${flatNodes.length} nodes, ${edges.length} edges`;
+    setupPanZoom();
+    setupSearch();
+    resetView();
+  });
+</script>
+</body>
+</html>
