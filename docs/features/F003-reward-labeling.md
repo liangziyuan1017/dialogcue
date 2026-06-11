@@ -1,7 +1,7 @@
 ---
 id: F003
 name: Reward Labeling
-status: planned
+status: review
 owner: agent
 source: plan_feature_base.md
 created: 2026-06-11
@@ -31,11 +31,11 @@ Determine R ∈ {0, 1} per conversation:
 
 ## Acceptance Criteria
 
-- [ ] All 31 records have `reward` ∈ {0, 1}
-- [ ] Every R=1 record has `reward_evidence` with `trigger_text` and `trigger_turn_index`
-- [ ] Every R=1 record has `reward_action_credit` with turn details
-- [ ] R=1 records consistent with `plan_evaluation`
-- [ ] No R=0 record has `reward_action_credit`
+- [x] All 31 records have `reward` ∈ {0, 1}
+- [x] Every R=1 record has `reward_evidence` with `trigger_text` and `trigger_turn_index`
+- [x] Every R=1 record has `reward_action_credit` with turn details
+- [x] R=1 records consistent with `plan_evaluation`
+- [x] No R=0 record has `reward_action_credit`
 
 ## Dependencies
 
@@ -48,6 +48,12 @@ Determine R ∈ {0, 1} per conversation:
 ## Implementation Plan
 
 See [F003-implementation-plan.md](F003-implementation-plan.md)
+
+## Review Notes
+
+**Review 1:** `reward_action_credit` should include an `explanation` field (<100 words) describing the conversation logic flow (facts, emotions, willingness, collector actions) rather than just copying data from `reward_evidence`.
+- Resolution: Added `_build_explanation_prompt()` that sends annotated turns to LLM, generates causal chain explanation. Added `explanation` field to `reward_action_credit`. New test `test_reward_action_credit_has_explanation` passes.
+- Status: Fixed ✅
 
 ## Files
 
