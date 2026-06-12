@@ -40,6 +40,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 #trace-controls button:hover{border-color:var(--blue);color:var(--blue)}
 #btn-start{border-color:var(--green)!important;color:var(--green)!important}
 #btn-start:hover{background:rgba(34,197,94,.15)!important}
+#btn-start.playing{background:rgba(34,197,94,.25)!important;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
 #btn-end{border-color:var(--amber)!important;color:var(--amber)!important}
 #btn-end:hover{background:rgba(245,158,11,.15)!important}
 #btn-end.abrupt{border-color:var(--red)!important;color:var(--red)!important}
@@ -110,7 +112,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 <script>
-let cy, treeData, nodeMap={}, dialogData=[], currentDialog=null, tracePath=[], traceIdx=-1;
+let cy, treeData, nodeMap={}, dialogData=[], currentDialog=null, tracePath=[], traceIdx=-1, playTimer=null, isPlaying=false;
 
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
@@ -256,6 +258,7 @@ function renderFlow(dialog){
 }
 
 function selectDialog(callId){
+  stopPlay();
   currentDialog=dialogData.find(d=>d.call_id===callId)||null;
   if(!currentDialog){
     tracePath=[];traceIdx=-1;
@@ -266,83 +269,121 @@ function selectDialog(callId){
     return;
   }
   tracePath=traceDialogPath(callId);
-  traceIdx=0;
+  traceIdx=-1;
   highlightPath(tracePath);
   renderFlow(currentDialog);
 
-  // determine end type
   const hasClosing=currentDialog.turns.some(t=>t.action==='closure'||t.action==='goodbye');
   const endBtn=document.getElementById('btn-end');
   endBtn.classList.toggle('abrupt',!hasClosing);
   endBtn.textContent=hasClosing?'End':'Abrupt End';
 }
 
+function buildTurnNodeMap(){
+  // map each turn index to its tree node id
+  if(!currentDialog) return {};
+  const map={};
+  const callId=currentDialog.call_id;
+  // root always matches turn 0 (greeting)
+  const rootId=treeData._id;
+  currentDialog.turns.forEach((t,i)=>{
+    const scriptId=callId+'_t'+t.turn_index;
+    for(const nid of tracePath){
+      const n=nodeMap[nid];
+      if(!n) continue;
+      const pool=n.sentence_pool||[];
+      if(pool.some(s=>s.script_id===scriptId)){
+        map[i]=nid;
+        return;
+      }
+    }
+    // customer turns: find the node they branch into
+    if(t.role==='客户'){
+      // the next collector turn's node is where this customer turn leads
+      for(let j=i+1;j<currentDialog.turns.length;j++){
+        if(currentDialog.turns[j].role==='催收员'){
+          const nextScriptId=callId+'_t'+currentDialog.turns[j].turn_index;
+          for(const nid of tracePath){
+            const n=nodeMap[nid];
+            if(!n) continue;
+            if((n.sentence_pool||[]).some(s=>s.script_id===nextScriptId)){
+              map[i]=nid;
+              return;
+            }
+          }
+        }
+      }
+    }
+    // fallback: assign to root for unmatched
+    if(!(i in map)) map[i]=rootId;
+  });
+  return map;
+}
+
+function stopPlay(){
+  if(playTimer){clearTimeout(playTimer);playTimer=null;}
+  isPlaying=false;
+  document.getElementById('btn-start').classList.remove('playing');
+  document.getElementById('btn-start').textContent='Start';
+}
+
 function goStart(){
-  if(!tracePath.length) return;
-  traceIdx=0;
-  const nodeId=tracePath[0];
-  const cyNode=cy.getElementById(nodeId);
-  if(cyNode&&cyNode.length){
-    cy.nodes().removeClass('highlighted');
-    cyNode.addClass('highlighted');
-    cy.animate({center:{eles:cyNode}},{duration:300});
+  if(!currentDialog) return;
+  if(isPlaying){stopPlay();return;}
+  isPlaying=true;
+  document.getElementById('btn-start').classList.add('playing');
+  document.getElementById('btn-start').textContent='Pause';
+  traceIdx=-1;
+  advanceStep();
+}
+
+function advanceStep(){
+  if(!isPlaying||!currentDialog) return;
+  traceIdx++;
+  if(traceIdx>=currentDialog.turns.length){
+    stopPlay();
+    return;
   }
-  showNodeInfo(nodeMap[nodeId]);
-  // highlight first step in flow
-  document.querySelectorAll('.flow-step').forEach(el=>el.classList.remove('active'));
-  const firstStep=document.querySelector('.flow-step[data-idx="0"]');
-  if(firstStep) firstStep.classList.add('active');
+  activateStep(traceIdx);
+  playTimer=setTimeout(advanceStep, 800);
 }
 
 function goEnd(){
-  if(!tracePath.length) return;
-  traceIdx=tracePath.length-1;
-  const nodeId=tracePath[traceIdx];
-  const cyNode=cy.getElementById(nodeId);
-  if(cyNode&&cyNode.length){
-    cy.nodes().removeClass('highlighted');
-    cyNode.addClass('highlighted');
-    cy.animate({center:{eles:cyNode}},{duration:300});
-  }
-  showNodeInfo(nodeMap[nodeId]);
-  // highlight last step in flow
-  const steps=document.querySelectorAll('.flow-step');
-  steps.forEach(el=>el.classList.remove('active'));
-  if(steps.length) steps[steps.length-1].classList.add('active');
+  stopPlay();
+  if(!currentDialog) return;
+  traceIdx=currentDialog.turns.length-1;
+  activateStep(traceIdx);
 }
 
-function goStep(idx){
+function activateStep(idx){
   if(!currentDialog) return;
-  // find which tree node this step maps to
-  const turn=currentDialog.turns[idx];
-  if(!turn) return;
-  // highlight the step
+  const turnMap=buildTurnNodeMap();
+  const nodeId=turnMap[idx];
+
+  // highlight flow step
   document.querySelectorAll('.flow-step').forEach(el=>el.classList.remove('active'));
   const stepEl=document.querySelector(`.flow-step[data-idx="${idx}"]`);
-  if(stepEl) stepEl.classList.add('active');
-
-  // find matching tree node by checking which node has this turn's script_id
-  const callId=currentDialog.call_id;
-  const scriptId=callId+'_t'+turn.turn_index;
-  let matchedNodeId=null;
-  for(const nid of tracePath){
-    const n=nodeMap[nid];
-    if(!n) continue;
-    const pool=n.sentence_pool||[];
-    if(pool.some(s=>s.script_id===scriptId)){
-      matchedNodeId=nid;
-      break;
-    }
+  if(stepEl){
+    stepEl.classList.add('active');
+    stepEl.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
-  if(matchedNodeId){
-    const cyNode=cy.getElementById(matchedNodeId);
-    if(cyNode&&cyNode.length){
+
+  // toggle to tree node
+  if(nodeId){
+    const cyNode=cy.getElementById(nodeId);
+    if(cyNode&&cyNode.length>0){
       cy.nodes().removeClass('highlighted');
       cyNode.addClass('highlighted');
       cy.animate({center:{eles:cyNode}},{duration:300});
     }
-    showNodeInfo(nodeMap[matchedNodeId]);
+    showNodeInfo(nodeMap[nodeId]);
   }
+}
+
+function goStep(idx){
+  stopPlay();
+  traceIdx=idx;
+  activateStep(idx);
 }
 
 function showNodeInfo(node){
