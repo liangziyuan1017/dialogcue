@@ -75,11 +75,11 @@
 **Step 4: Run test to verify it passes**
 **Step 5: Commit**
 
-### Task 6: Vertical Tree Visualizer
+### Task 6: Vertical Tree Visualizer (Cytoscape.js + dagre)
 
 **Files:**
 - Modify: `src/tree_explorer.html`
 
-**Step 1: Implement** — vertical (top-to-bottom) SVG tree layout with 1 opening node at top, decision branches in middle, 2 end nodes (normal_end circle + abrupt_end triangle) at bottom
-**Step 2: Verify** — open in browser, confirm all paths start at opening and terminate at one of two end nodes
+**Step 1: Implement** — Replace SVG renderer with Cytoscape.js graph engine + dagre hierarchical layout. Convert tree JSON to Cytoscape.js adjacency format (nodes + edges). Style nodes by type: round-rectangle (opening/decision), ellipse (normal end), triangle (abrupt end). Edges carry branch labels. Supports zoom, pan, drag, click-to-inspect.
+**Step 2: Verify** — open in browser, confirm tree renders vertically with 1 opening at top, 2 end nodes at bottom, all paths terminate correctly
 **Step 3: Commit**

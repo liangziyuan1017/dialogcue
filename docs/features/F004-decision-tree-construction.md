@@ -96,6 +96,7 @@ See [F004-implementation-plan.md](F004-implementation-plan.md)
 - **Segment-based extraction**: Each conversation is decomposed into segments of (customer branch key → collector sentences), not individual turns. This avoids the chain problem.
 - **Start/end node model**: The tree has exactly 1 opening node (root) and 2 consolidated end nodes (`normal_end` and `abrupt_end`) as direct children of root. All properly-closed dialogs converge into `normal_end`; all dialogs without proper closings converge into `abrupt_end`. This gives the tree a clean vertical structure: opening at top → decision branches → two end nodes at bottom.
 - **Consolidated endpoints**: Rather than scattering many `abrupt_end` leaves throughout the tree, all ending sentences are collected into a single `normal_end` node and all abrupt terminations into a single `abrupt_end` node. This ensures the tree has exactly 2 terminal nodes regardless of data size.
+- **Cytoscape.js + dagre layout**: Tree is rendered as an interactive graph using Cytoscape.js with the dagre hierarchical layout engine. Supports zoom, pan, drag, click-to-inspect. Nodes are styled by type: rectangles (opening/decision), ellipse (normal end), triangle (abrupt end). Edges carry branch labels (facts|emotions).
 
 ## Files
 
@@ -104,4 +105,4 @@ See [F004-implementation-plan.md](F004-implementation-plan.md)
 | `src/build_decision_tree.py` | Decision tree construction logic |
 | `src/test_build_decision_tree.py` | Tests (27 passing) |
 | `src/decision_tree.json` | Generated output (60 nodes) |
-| `src/tree_explorer.html` | Interactive vertical tree visualizer |
+| `src/tree_explorer.html` | Interactive vertical tree visualizer (Cytoscape.js + dagre) |

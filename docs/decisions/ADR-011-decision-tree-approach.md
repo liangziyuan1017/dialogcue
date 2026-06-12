@@ -65,3 +65,4 @@ The old model produced chains because willingness created spurious branches. In 
 - Tree has exactly 2 terminal nodes (normal_end + abrupt_end) regardless of data size
 - All ending gesture sentences are consolidated into normal_end; all abrupt terminations into abrupt_end
 - Tree renders vertically: opening at top → decision branches → two end nodes at bottom
+- Visualization uses Cytoscape.js with dagre hierarchical layout for interactive zoom/pan/drag/collapse
