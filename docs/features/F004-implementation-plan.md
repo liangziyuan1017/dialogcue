@@ -1,64 +1,75 @@
 # F004: Decision Tree Construction — Implementation Plan
 
 **Feature:** F004 — `docs/features/F004-decision-tree-construction.md`
-**Goal:** Build a collector decision tree where nodes are collector action points, branches are customer response profiles (facts + emotions), and willingness labels each sentence in the pool.
+**Goal:** Add opening/ending gesture support to the decision tree. Every dialog has a start node (opening gesture) and an end node (ending gesture). Dialogs without proper closings route to an `abrupt_end` node.
 **Acceptance Criteria:**
-- Root node has `state_id: "initial_contact"`
-- Every leaf node has non-empty `sentence_pool`
-- Every sentence entry has `script_text`, `script_id`, `source_call_ids`, `customer_willingness`
-- All 31 call_ids appear in at least one `source_call_ids`
-- Keywords lexicographically sorted at every node
-- Branches keyed by (facts, emotions) only — willingness is a sentence label
-- Fallback via progressive tag removal works when exact branch not found
-**Architecture:** Nodes = collector actions. Branches = customer (facts, emotions). Willingness tags each sentence. Merge rule: same (facts, emotions) = same branch regardless of willingness. See ADR-011.
+- Root node sentence_pool entries have `gesture_type: "opening"` for greeting sentences
+- Tree has an `abrupt_end` end node with `gesture_type: "ending"`
+- Every dialog path terminates at either a proper end node or `abrupt_end`
+- Ending gesture sentences have `gesture_type: "ending"`
+- Dialogs without proper closing are routed to `abrupt_end` node
+**Architecture:** Extend existing tree with gesture_type on sentence entries. Add `abrupt_end` as a special terminal node. Detect closing actions (goodbye, closure, etc.) vs abrupt endings (no closing turn). See ADR-011.
 **Tech Stack:** Python, pytest
 
 ---
 
-### Task 1: State Path Extraction (revised)
+### Task 1: Opening Gesture Detection
 
 **Files:**
 - Modify: `src/build_decision_tree.py`
 - Modify: `src/test_build_decision_tree.py`
 
-**Step 1: Write failing test** — test that `extract_state_paths(record)` returns alternating (collector_action, customer_response) pairs where customer_response key is (facts, emotions) and willingness is attached to the next collector sentence
+**Step 1: Write failing test** — test that greeting sentences in root node sentence_pool have `gesture_type: "opening"`
 **Step 2: Run test to verify it fails**
-**Step 3: Implement revised `extract_state_paths()`**
+**Step 3: Implement** — tag greeting sentences with `gesture_type: "opening"` in `build_tree()`
 **Step 4: Run test to verify it passes**
 **Step 5: Commit**
 
-### Task 2: Tree Construction with Branch Merging
+### Task 2: Ending Gesture Detection
 
 **Files:**
 - Modify: `src/build_decision_tree.py`
 - Modify: `src/test_build_decision_tree.py`
 
-**Step 1: Write failing test** — test that `build_tree(records)` branches on (facts, emotions), merges willingness into sentence labels, and produces branching structure (not chains)
+**Step 1: Write failing test** — test that closing sentences (action: closure, goodbye) have `gesture_type: "ending"` and are placed in an end node
 **Step 2: Run test to verify it fails**
-**Step 3: Implement revised `build_tree()`** — insert paths, merge on (facts, emotions), tag sentences with `customer_willingness`, sort keywords
+**Step 3: Implement** — detect closing actions in each record, tag with `gesture_type: "ending"`, add to end nodes
 **Step 4: Run test to verify it passes**
 **Step 5: Commit**
 
-### Task 3: Fallback via Progressive Tag Removal
+### Task 3: Abrupt End Node
 
 **Files:**
 - Modify: `src/build_decision_tree.py`
 - Modify: `src/test_build_decision_tree.py`
 
-**Step 1: Write failing test** — test fallback removes emotions then facts
+**Step 1: Write failing test** — test that dialogs without a closing action have their last state routed to an `abrupt_end` node with `gesture_type: "ending"`
 **Step 2: Run test to verify it fails**
-**Step 3: Implement revised `find_node()` with fallback**
+**Step 3: Implement** — after processing each record, if no closing action found, add `abrupt_end` child to the last node with sentence_pool containing the last collector turn tagged `gesture_type: "ending"`
 **Step 4: Run test to verify it passes**
 **Step 5: Commit**
 
-### Task 4: Output, Validation & Regeneration
+### Task 4: Path Termination Guarantee
 
 **Files:**
 - Modify: `src/build_decision_tree.py`
+- Modify: `src/test_build_decision_tree.py`
+
+**Step 1: Write failing test** — test that every leaf node in the tree is either a proper end node (has ending gesture) or the `abrupt_end` node
+**Step 2: Run test to verify it fails**
+**Step 3: Implement** — ensure `build_tree()` guarantees all paths terminate at end nodes or abrupt_end
+**Step 4: Run test to verify it passes**
+**Step 5: Commit**
+
+### Task 5: Regenerate & Validate Real Data
+
+**Files:**
+- Modify: `src/build_decision_tree.py`
+- Modify: `src/test_build_decision_tree.py`
 - Create: `src/decision_tree.json`
 
-**Step 1: Write failing test** — test real data: all 31 call_ids, all leaf nodes have sentence_pool, keywords sorted, sentences have customer_willingness
+**Step 1: Write failing test** — test real data: root has opening gestures, abrupt_end exists, all leaf nodes are end nodes or abrupt_end
 **Step 2: Run test to verify it fails**
-**Step 3: Implement `write_decision_tree()` and regenerate**
+**Step 3: Implement** — regenerate `decision_tree.json` with new structure
 **Step 4: Run test to verify it passes**
 **Step 5: Commit**
