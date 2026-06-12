@@ -105,4 +105,5 @@ See [F004-implementation-plan.md](F004-implementation-plan.md)
 | `src/build_decision_tree.py` | Decision tree construction logic |
 | `src/test_build_decision_tree.py` | Tests (27 passing) |
 | `src/decision_tree.json` | Generated output (60 nodes) |
-| `src/tree_explorer.html` | Interactive vertical tree visualizer (Cytoscape.js + dagre) |
+| `src/tree_explorer.html` | Interactive vertical tree visualizer (Cytoscape.js + dagre) with dialog tracer |
+| `src/dialog_records.json` | Dialog records for UI path tracing |
