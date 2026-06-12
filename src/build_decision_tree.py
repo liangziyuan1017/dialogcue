@@ -85,11 +85,11 @@ def extract_state_paths(record):
 def _merge_sentences(existing, new_entries):
     by_key = defaultdict(list)
     for entry in existing:
-        k = (entry["script_text"], entry.get("customer_willingness"))
+        k = (entry["script_text"], entry.get("customer_willingness"), entry.get("collector_action"))
         by_key[k].append(entry)
 
     for entry in new_entries:
-        k = (entry["script_text"], entry.get("customer_willingness"))
+        k = (entry["script_text"], entry.get("customer_willingness"), entry.get("collector_action"))
         if k in by_key:
             for existing_entry in by_key[k]:
                 for cid in entry["source_call_ids"]:
@@ -124,6 +124,7 @@ def build_tree(records):
                     "source_call_ids": [call_id],
                     "customer_willingness": None,
                     "gesture_type": "opening",
+                    "collector_action": "greeting",
                 }
                 _merge_sentences(root["sentence_pool"], [entry])
                 break
@@ -207,6 +208,7 @@ def _extract_segments(turns, call_id):
                     "script_id": f"{call_id}_t{turn['turn_index']}",
                     "source_call_ids": [call_id],
                     "customer_willingness": last_willingness,
+                    "collector_action": action,
                 }
                 current_sentences.append(entry)
                 if action in CLOSING_ACTIONS:

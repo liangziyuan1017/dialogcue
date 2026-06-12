@@ -473,3 +473,38 @@ def _check_leaf_termination(node, violations):
             violations.append(node.get("state_id"))
     for child in children:
         _check_leaf_termination(child, violations)
+
+
+def test_greeting_sentences_have_collector_action():
+    rec = _sample_record()
+    tree = build_tree([rec])
+    greeting = [s for s in tree["sentence_pool"] if s.get("gesture_type") == "opening"]
+    assert len(greeting) > 0
+    for s in greeting:
+        assert s.get("collector_action") == "greeting"
+
+
+def test_decision_sentences_have_collector_action():
+    rec = _sample_record_with_facts()
+    tree = build_tree([rec])
+    all_s = _collect_all_sentences(tree)
+    with_action = [s for s in all_s if s.get("collector_action")]
+    assert len(with_action) > 0, "Decision node sentences should have collector_action"
+    actions = set(s["collector_action"] for s in with_action)
+    assert "empathy" in actions or "plan_proposal" in actions
+
+
+def test_sentences_without_action_have_no_collector_action_key():
+    rec = {
+        "call_id": "test-no-action",
+        "reward": 0,
+        "turns_annotated": [
+            {"turn_index": 0, "role": "催收员", "text": "您好。", "state": {"action": "greeting"}},
+            {"turn_index": 1, "role": "客户", "text": "嗯。", "state": {"willingness": "cooperative"}},
+            {"turn_index": 2, "role": "催收员", "text": "随便说说。", "state": {}},
+        ],
+    }
+    tree = build_tree([rec])
+    all_s = _collect_all_sentences(tree)
+    no_action = [s for s in all_s if "collector_action" not in s and s.get("script_text") == "随便说说。"]
+    assert len(no_action) == 0, "Sentence without action state should not appear (no action = not extracted)"
