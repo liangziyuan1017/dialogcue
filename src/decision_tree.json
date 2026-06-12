@@ -1175,25 +1175,7 @@
                                           "customer_willingness": null
                                         }
                                       ],
-                                      "children": [
-                                        {
-                                          "state_id": "abrupt_end",
-                                          "branch_key": {
-                                            "abrupt": true
-                                          },
-                                          "sentence_pool": [
-                                            {
-                                              "script_text": "[对话未正常结束]",
-                                              "script_id": "abrupt_end_marker",
-                                              "source_call_ids": [],
-                                              "customer_willingness": null,
-                                              "gesture_type": "ending"
-                                            }
-                                          ],
-                                          "children": [],
-                                          "gesture_type": "ending"
-                                        }
-                                      ]
+                                      "children": []
                                     },
                                     {
                                       "state_id": "e:pleading",
@@ -1254,25 +1236,7 @@
                                               "customer_willingness": null
                                             }
                                           ],
-                                          "children": [
-                                            {
-                                              "state_id": "abrupt_end",
-                                              "branch_key": {
-                                                "abrupt": true
-                                              },
-                                              "sentence_pool": [
-                                                {
-                                                  "script_text": "[对话未正常结束]",
-                                                  "script_id": "abrupt_end_marker",
-                                                  "source_call_ids": [],
-                                                  "customer_willingness": null,
-                                                  "gesture_type": "ending"
-                                                }
-                                              ],
-                                              "children": [],
-                                              "gesture_type": "ending"
-                                            }
-                                          ]
+                                          "children": []
                                         },
                                         {
                                           "state_id": "f:salary_delay",
@@ -1349,23 +1313,6 @@
                                           ],
                                           "children": [
                                             {
-                                              "state_id": "abrupt_end",
-                                              "branch_key": {
-                                                "abrupt": true
-                                              },
-                                              "sentence_pool": [
-                                                {
-                                                  "script_text": "[对话未正常结束]",
-                                                  "script_id": "abrupt_end_marker",
-                                                  "source_call_ids": [],
-                                                  "customer_willingness": null,
-                                                  "gesture_type": "ending"
-                                                }
-                                              ],
-                                              "children": [],
-                                              "gesture_type": "ending"
-                                            },
-                                            {
                                               "state_id": "e:anger",
                                               "branch_key": {
                                                 "emotions": [
@@ -1427,65 +1374,13 @@
                                                           "customer_willingness": null
                                                         }
                                                       ],
-                                                      "children": [
-                                                        {
-                                                          "state_id": "abrupt_end",
-                                                          "branch_key": {
-                                                            "abrupt": true
-                                                          },
-                                                          "sentence_pool": [
-                                                            {
-                                                              "script_text": "[对话未正常结束]",
-                                                              "script_id": "abrupt_end_marker",
-                                                              "source_call_ids": [],
-                                                              "customer_willingness": null,
-                                                              "gesture_type": "ending"
-                                                            }
-                                                          ],
-                                                          "children": [],
-                                                          "gesture_type": "ending"
-                                                        }
-                                                      ]
+                                                      "children": []
                                                     }
                                                   ]
-                                                },
-                                                {
-                                                  "state_id": "abrupt_end",
-                                                  "branch_key": {
-                                                    "abrupt": true
-                                                  },
-                                                  "sentence_pool": [
-                                                    {
-                                                      "script_text": "[对话未正常结束]",
-                                                      "script_id": "abrupt_end_marker",
-                                                      "source_call_ids": [],
-                                                      "customer_willingness": null,
-                                                      "gesture_type": "ending"
-                                                    }
-                                                  ],
-                                                  "children": [],
-                                                  "gesture_type": "ending"
                                                 }
                                               ]
                                             }
                                           ]
-                                        },
-                                        {
-                                          "state_id": "abrupt_end",
-                                          "branch_key": {
-                                            "abrupt": true
-                                          },
-                                          "sentence_pool": [
-                                            {
-                                              "script_text": "[对话未正常结束]",
-                                              "script_id": "abrupt_end_marker",
-                                              "source_call_ids": [],
-                                              "customer_willingness": null,
-                                              "gesture_type": "ending"
-                                            }
-                                          ],
-                                          "children": [],
-                                          "gesture_type": "ending"
                                         }
                                       ]
                                     },
@@ -1514,25 +1409,7 @@
                                           "customer_willingness": null
                                         }
                                       ],
-                                      "children": [
-                                        {
-                                          "state_id": "abrupt_end",
-                                          "branch_key": {
-                                            "abrupt": true
-                                          },
-                                          "sentence_pool": [
-                                            {
-                                              "script_text": "[对话未正常结束]",
-                                              "script_id": "abrupt_end_marker",
-                                              "source_call_ids": [],
-                                              "customer_willingness": null,
-                                              "gesture_type": "ending"
-                                            }
-                                          ],
-                                          "children": [],
-                                          "gesture_type": "ending"
-                                        }
-                                      ]
+                                      "children": []
                                     }
                                   ]
                                 }
@@ -1867,23 +1744,6 @@
               ],
               "children": [
                 {
-                  "state_id": "abrupt_end",
-                  "branch_key": {
-                    "abrupt": true
-                  },
-                  "sentence_pool": [
-                    {
-                      "script_text": "[对话未正常结束]",
-                      "script_id": "abrupt_end_marker",
-                      "source_call_ids": [],
-                      "customer_willingness": null,
-                      "gesture_type": "ending"
-                    }
-                  ],
-                  "children": [],
-                  "gesture_type": "ending"
-                },
-                {
                   "state_id": "f:previous_offer",
                   "branch_key": {
                     "facts": [
@@ -1916,25 +1776,7 @@
                       "customer_willingness": null
                     }
                   ],
-                  "children": [
-                    {
-                      "state_id": "abrupt_end",
-                      "branch_key": {
-                        "abrupt": true
-                      },
-                      "sentence_pool": [
-                        {
-                          "script_text": "[对话未正常结束]",
-                          "script_id": "abrupt_end_marker",
-                          "source_call_ids": [],
-                          "customer_willingness": null,
-                          "gesture_type": "ending"
-                        }
-                      ],
-                      "children": [],
-                      "gesture_type": "ending"
-                    }
-                  ]
+                  "children": []
                 },
                 {
                   "state_id": "f:external_debt_uncollected",
@@ -1961,25 +1803,7 @@
                       "customer_willingness": null
                     }
                   ],
-                  "children": [
-                    {
-                      "state_id": "abrupt_end",
-                      "branch_key": {
-                        "abrupt": true
-                      },
-                      "sentence_pool": [
-                        {
-                          "script_text": "[对话未正常结束]",
-                          "script_id": "abrupt_end_marker",
-                          "source_call_ids": [],
-                          "customer_willingness": null,
-                          "gesture_type": "ending"
-                        }
-                      ],
-                      "children": [],
-                      "gesture_type": "ending"
-                    }
-                  ]
+                  "children": []
                 }
               ]
             }
@@ -2233,25 +2057,7 @@
                                   "customer_willingness": "resistant"
                                 }
                               ],
-                              "children": [
-                                {
-                                  "state_id": "abrupt_end",
-                                  "branch_key": {
-                                    "abrupt": true
-                                  },
-                                  "sentence_pool": [
-                                    {
-                                      "script_text": "[对话未正常结束]",
-                                      "script_id": "abrupt_end_marker",
-                                      "source_call_ids": [],
-                                      "customer_willingness": null,
-                                      "gesture_type": "ending"
-                                    }
-                                  ],
-                                  "children": [],
-                                  "gesture_type": "ending"
-                                }
-                              ]
+                              "children": []
                             },
                             {
                               "state_id": "f:other_bank_refund",
@@ -2278,25 +2084,7 @@
                                   "customer_willingness": null
                                 }
                               ],
-                              "children": [
-                                {
-                                  "state_id": "abrupt_end",
-                                  "branch_key": {
-                                    "abrupt": true
-                                  },
-                                  "sentence_pool": [
-                                    {
-                                      "script_text": "[对话未正常结束]",
-                                      "script_id": "abrupt_end_marker",
-                                      "source_call_ids": [],
-                                      "customer_willingness": null,
-                                      "gesture_type": "ending"
-                                    }
-                                  ],
-                                  "children": [],
-                                  "gesture_type": "ending"
-                                }
-                              ]
+                              "children": []
                             }
                           ]
                         }
@@ -2325,25 +2113,7 @@
               "customer_willingness": null
             }
           ],
-          "children": [
-            {
-              "state_id": "abrupt_end",
-              "branch_key": {
-                "abrupt": true
-              },
-              "sentence_pool": [
-                {
-                  "script_text": "[对话未正常结束]",
-                  "script_id": "abrupt_end_marker",
-                  "source_call_ids": [],
-                  "customer_willingness": null,
-                  "gesture_type": "ending"
-                }
-              ],
-              "children": [],
-              "gesture_type": "ending"
-            }
-          ]
+          "children": []
         }
       ]
     },
@@ -2382,44 +2152,9 @@
               "customer_willingness": "resistant"
             }
           ],
-          "children": [
-            {
-              "state_id": "abrupt_end",
-              "branch_key": {
-                "abrupt": true
-              },
-              "sentence_pool": [
-                {
-                  "script_text": "[对话未正常结束]",
-                  "script_id": "abrupt_end_marker",
-                  "source_call_ids": [],
-                  "customer_willingness": null,
-                  "gesture_type": "ending"
-                }
-              ],
-              "children": [],
-              "gesture_type": "ending"
-            }
-          ]
+          "children": []
         }
       ]
-    },
-    {
-      "state_id": "abrupt_end",
-      "branch_key": {
-        "abrupt": true
-      },
-      "sentence_pool": [
-        {
-          "script_text": "[对话未正常结束]",
-          "script_id": "abrupt_end_marker",
-          "source_call_ids": [],
-          "customer_willingness": null,
-          "gesture_type": "ending"
-        }
-      ],
-      "children": [],
-      "gesture_type": "ending"
     },
     {
       "state_id": "f:bank_account_frozen",
@@ -2476,25 +2211,7 @@
               "customer_willingness": null
             }
           ],
-          "children": [
-            {
-              "state_id": "abrupt_end",
-              "branch_key": {
-                "abrupt": true
-              },
-              "sentence_pool": [
-                {
-                  "script_text": "[对话未正常结束]",
-                  "script_id": "abrupt_end_marker",
-                  "source_call_ids": [],
-                  "customer_willingness": null,
-                  "gesture_type": "ending"
-                }
-              ],
-              "children": [],
-              "gesture_type": "ending"
-            }
-          ]
+          "children": []
         }
       ]
     },
@@ -2515,25 +2232,7 @@
           "customer_willingness": null
         }
       ],
-      "children": [
-        {
-          "state_id": "abrupt_end",
-          "branch_key": {
-            "abrupt": true
-          },
-          "sentence_pool": [
-            {
-              "script_text": "[对话未正常结束]",
-              "script_id": "abrupt_end_marker",
-              "source_call_ids": [],
-              "customer_willingness": null,
-              "gesture_type": "ending"
-            }
-          ],
-          "children": [],
-          "gesture_type": "ending"
-        }
-      ]
+      "children": []
     },
     {
       "state_id": "f:billing_dispute",
@@ -2594,25 +2293,7 @@
               "customer_willingness": null
             }
           ],
-          "children": [
-            {
-              "state_id": "abrupt_end",
-              "branch_key": {
-                "abrupt": true
-              },
-              "sentence_pool": [
-                {
-                  "script_text": "[对话未正常结束]",
-                  "script_id": "abrupt_end_marker",
-                  "source_call_ids": [],
-                  "customer_willingness": null,
-                  "gesture_type": "ending"
-                }
-              ],
-              "children": [],
-              "gesture_type": "ending"
-            }
-          ]
+          "children": []
         }
       ]
     },
@@ -2667,47 +2348,9 @@
               "customer_willingness": null
             }
           ],
-          "children": [
-            {
-              "state_id": "abrupt_end",
-              "branch_key": {
-                "abrupt": true
-              },
-              "sentence_pool": [
-                {
-                  "script_text": "[对话未正常结束]",
-                  "script_id": "abrupt_end_marker",
-                  "source_call_ids": [],
-                  "customer_willingness": null,
-                  "gesture_type": "ending"
-                }
-              ],
-              "children": [],
-              "gesture_type": "ending"
-            }
-          ]
+          "children": []
         }
       ]
-    },
-    {
-      "state_id": "f:expected_income",
-      "branch_key": {
-        "facts": [
-          "expected_income"
-        ]
-      },
-      "sentence_pool": [
-        {
-          "script_text": "我明白哈，那好的哈。反正我就告知您哈，您这还到位那么可以把罚息减掉。好吧，那就不打扰您哈。402元嘛，好，再见好，再见哈，好好。",
-          "script_id": "2320458250132136578_t29",
-          "source_call_ids": [
-            "2320458250132136578"
-          ],
-          "customer_willingness": null,
-          "gesture_type": "ending"
-        }
-      ],
-      "children": []
     },
     {
       "state_id": "f:promise_date",
@@ -2726,25 +2369,7 @@
           "customer_willingness": null
         }
       ],
-      "children": [
-        {
-          "state_id": "abrupt_end",
-          "branch_key": {
-            "abrupt": true
-          },
-          "sentence_pool": [
-            {
-              "script_text": "[对话未正常结束]",
-              "script_id": "abrupt_end_marker",
-              "source_call_ids": [],
-              "customer_willingness": null,
-              "gesture_type": "ending"
-            }
-          ],
-          "children": [],
-          "gesture_type": "ending"
-        }
-      ]
+      "children": []
     },
     {
       "state_id": "f:acknowledge_debt",
@@ -2763,25 +2388,7 @@
           "customer_willingness": "strong"
         }
       ],
-      "children": [
-        {
-          "state_id": "abrupt_end",
-          "branch_key": {
-            "abrupt": true
-          },
-          "sentence_pool": [
-            {
-              "script_text": "[对话未正常结束]",
-              "script_id": "abrupt_end_marker",
-              "source_call_ids": [],
-              "customer_willingness": null,
-              "gesture_type": "ending"
-            }
-          ],
-          "children": [],
-          "gesture_type": "ending"
-        }
-      ]
+      "children": []
     },
     {
       "state_id": "e:hesitation",
@@ -2800,25 +2407,7 @@
           "customer_willingness": "weak"
         }
       ],
-      "children": [
-        {
-          "state_id": "abrupt_end",
-          "branch_key": {
-            "abrupt": true
-          },
-          "sentence_pool": [
-            {
-              "script_text": "[对话未正常结束]",
-              "script_id": "abrupt_end_marker",
-              "source_call_ids": [],
-              "customer_willingness": null,
-              "gesture_type": "ending"
-            }
-          ],
-          "children": [],
-          "gesture_type": "ending"
-        }
-      ]
+      "children": []
     },
     {
       "state_id": "f:wage_garnishment",
@@ -2877,44 +2466,6 @@
           "customer_willingness": null
         }
       ],
-      "children": [
-        {
-          "state_id": "abrupt_end",
-          "branch_key": {
-            "abrupt": true
-          },
-          "sentence_pool": [
-            {
-              "script_text": "[对话未正常结束]",
-              "script_id": "abrupt_end_marker",
-              "source_call_ids": [],
-              "customer_willingness": null,
-              "gesture_type": "ending"
-            }
-          ],
-          "children": [],
-          "gesture_type": "ending"
-        }
-      ]
-    },
-    {
-      "state_id": "f:payment_commitment_date",
-      "branch_key": {
-        "facts": [
-          "payment_commitment_date"
-        ]
-      },
-      "sentence_pool": [
-        {
-          "script_text": "好的，先生，如果您能够周转，就请您还入，如果的确没有办法周转，那么逾期不良的记录银行这边是正常上报，届时我们给您来电确认您的个人相关信息，就请您电话保持畅通。",
-          "script_id": "2322003390316382406_t68",
-          "source_call_ids": [
-            "2322003390316382406"
-          ],
-          "customer_willingness": "conditional",
-          "gesture_type": "ending"
-        }
-      ],
       "children": []
     },
     {
@@ -2934,25 +2485,7 @@
           "customer_willingness": null
         }
       ],
-      "children": [
-        {
-          "state_id": "abrupt_end",
-          "branch_key": {
-            "abrupt": true
-          },
-          "sentence_pool": [
-            {
-              "script_text": "[对话未正常结束]",
-              "script_id": "abrupt_end_marker",
-              "source_call_ids": [],
-              "customer_willingness": null,
-              "gesture_type": "ending"
-            }
-          ],
-          "children": [],
-          "gesture_type": "ending"
-        }
-      ]
+      "children": []
     },
     {
       "state_id": "f:external_debt_uncollected,financial_hardship,negotiating_with_others|e:anxiety",
@@ -3068,25 +2601,7 @@
                       "customer_willingness": null
                     }
                   ],
-                  "children": [
-                    {
-                      "state_id": "abrupt_end",
-                      "branch_key": {
-                        "abrupt": true
-                      },
-                      "sentence_pool": [
-                        {
-                          "script_text": "[对话未正常结束]",
-                          "script_id": "abrupt_end_marker",
-                          "source_call_ids": [],
-                          "customer_willingness": null,
-                          "gesture_type": "ending"
-                        }
-                      ],
-                      "children": [],
-                      "gesture_type": "ending"
-                    }
-                  ]
+                  "children": []
                 }
               ]
             }
@@ -3186,44 +2701,6 @@
           "customer_willingness": "resistant"
         }
       ],
-      "children": [
-        {
-          "state_id": "abrupt_end",
-          "branch_key": {
-            "abrupt": true
-          },
-          "sentence_pool": [
-            {
-              "script_text": "[对话未正常结束]",
-              "script_id": "abrupt_end_marker",
-              "source_call_ids": [],
-              "customer_willingness": null,
-              "gesture_type": "ending"
-            }
-          ],
-          "children": [],
-          "gesture_type": "ending"
-        }
-      ]
-    },
-    {
-      "state_id": "f:no_funds_yet",
-      "branch_key": {
-        "facts": [
-          "no_funds_yet"
-        ]
-      },
-      "sentence_pool": [
-        {
-          "script_text": "嗯，还没周转到是吧？好的先生，那我帮您记录一下，另外您需要上传相关材料过来，然后做一个……",
-          "script_id": "2321996150207448387_t4",
-          "source_call_ids": [
-            "2321996150207448387"
-          ],
-          "customer_willingness": null,
-          "gesture_type": "ending"
-        }
-      ],
       "children": []
     },
     {
@@ -3241,54 +2718,6 @@
             "2321930350367249676"
           ],
           "customer_willingness": null
-        }
-      ],
-      "children": [
-        {
-          "state_id": "abrupt_end",
-          "branch_key": {
-            "abrupt": true
-          },
-          "sentence_pool": [
-            {
-              "script_text": "[对话未正常结束]",
-              "script_id": "abrupt_end_marker",
-              "source_call_ids": [],
-              "customer_willingness": null,
-              "gesture_type": "ending"
-            }
-          ],
-          "children": [],
-          "gesture_type": "ending"
-        }
-      ]
-    },
-    {
-      "state_id": "f:account_locked,business_difficulty",
-      "branch_key": {
-        "facts": [
-          "account_locked",
-          "business_difficulty"
-        ]
-      },
-      "sentence_pool": [
-        {
-          "script_text": "可以可以。您就赶在我们下班之前充进来就可以哈。我们五点半会再给您来个电话。嗯。",
-          "script_id": "2321931470032850074_t7",
-          "source_call_ids": [
-            "2321931470032850074"
-          ],
-          "customer_willingness": "weak",
-          "gesture_type": "ending"
-        },
-        {
-          "script_text": "那我这边不耽误您了。张先生，嗯，好，再见。",
-          "script_id": "2321931470032850074_t9",
-          "source_call_ids": [
-            "2321931470032850074"
-          ],
-          "customer_willingness": "weak",
-          "gesture_type": "ending"
         }
       ],
       "children": []
@@ -3361,25 +2790,7 @@
               "customer_willingness": null
             }
           ],
-          "children": [
-            {
-              "state_id": "abrupt_end",
-              "branch_key": {
-                "abrupt": true
-              },
-              "sentence_pool": [
-                {
-                  "script_text": "[对话未正常结束]",
-                  "script_id": "abrupt_end_marker",
-                  "source_call_ids": [],
-                  "customer_willingness": null,
-                  "gesture_type": "ending"
-                }
-              ],
-              "children": [],
-              "gesture_type": "ending"
-            }
-          ]
+          "children": []
         }
       ]
     },
@@ -3401,32 +2812,7 @@
           "gesture_type": "ending"
         }
       ],
-      "children": [
-        {
-          "state_id": "f:debt_amount,high_interest|e:frustration",
-          "branch_key": {
-            "facts": [
-              "debt_amount",
-              "high_interest"
-            ],
-            "emotions": [
-              "frustration"
-            ]
-          },
-          "sentence_pool": [
-            {
-              "script_text": "好，好，我这边会帮您备注登记，那您这边以后续实际方案为主。好吧，先生。会帮您反馈一下的。那这边就先不打扰您了，再见。",
-              "script_id": "2322104580207445086_t20",
-              "source_call_ids": [
-                "2322104580207445086"
-              ],
-              "customer_willingness": null,
-              "gesture_type": "ending"
-            }
-          ],
-          "children": []
-        }
-      ]
+      "children": []
     },
     {
       "state_id": "e:relief",
@@ -3479,25 +2865,7 @@
               "customer_willingness": null
             }
           ],
-          "children": [
-            {
-              "state_id": "abrupt_end",
-              "branch_key": {
-                "abrupt": true
-              },
-              "sentence_pool": [
-                {
-                  "script_text": "[对话未正常结束]",
-                  "script_id": "abrupt_end_marker",
-                  "source_call_ids": [],
-                  "customer_willingness": null,
-                  "gesture_type": "ending"
-                }
-              ],
-              "children": [],
-              "gesture_type": "ending"
-            }
-          ]
+          "children": []
         }
       ]
     },
@@ -3536,36 +2904,484 @@
               "customer_willingness": null
             }
           ],
-          "children": [
-            {
-              "state_id": "abrupt_end",
-              "branch_key": {
-                "abrupt": true
-              },
-              "sentence_pool": [
-                {
-                  "script_text": "[对话未正常结束]",
-                  "script_id": "abrupt_end_marker",
-                  "source_call_ids": [],
-                  "customer_willingness": null,
-                  "gesture_type": "ending"
-                }
-              ],
-              "children": [],
-              "gesture_type": "ending"
-            }
-          ]
+          "children": []
         }
       ]
     },
     {
-      "state_id": "f:no_funds",
+      "state_id": "normal_end",
       "branch_key": {
-        "facts": [
-          "no_funds"
-        ]
+        "end_type": "normal"
       },
       "sentence_pool": [
+        {
+          "script_text": "嗯，这个也可以，但是确实……嗯，对，但是我毕竟我们的目标是一致嘛，肯定是需要你还款嘛。然后这边的话就是如果我有方案的话，我肯定就给你了。但是这个确实没有啊。",
+          "script_id": "2317941550352385028_t59",
+          "source_call_ids": [
+            "2317941550352385028"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "对，呃，那个是利息加违约金是2200多，不是利息2000多。",
+          "script_id": "2317941550352385028_t63",
+          "source_call_ids": [
+            "2317941550352385028"
+          ],
+          "customer_willingness": "negotiating",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "好的，我尽量给您保留到明天，先给您保留到明天嘛，那如果明天，如果您没有还进来的话……",
+          "script_id": "2317941550352385028_t67",
+          "source_call_ids": [
+            "2317941550352385028"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "您先听我说完嘛。",
+          "script_id": "2317941550352385028_t69",
+          "source_call_ids": [
+            "2317941550352385028"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "您先听我说完嘛。",
+          "script_id": "2317941550352385028_t71",
+          "source_call_ids": [
+            "2317941550352385028"
+          ],
+          "customer_willingness": "negotiating",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "因为后续的话就是可能因为我们这个案件是在流动的嘛。然后后续话可能就是其他工作人员会接手你这个案子。那如果您愿意的话，我先给您保留到明天嘛。那如果后天的话，到时候如果你在我手上，我再给您来个电话嘛。",
+          "script_id": "2317941550352385028_t73",
+          "source_call_ids": [
+            "2317941550352385028"
+          ],
+          "customer_willingness": "negotiating",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "好的，那如果明天你没有处理的话，那后续以工作人员给您沟通为准哈。",
+          "script_id": "2317941550352385028_t75",
+          "source_call_ids": [
+            "2317941550352385028"
+          ],
+          "customer_willingness": "negotiating",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "好的，好的。那祝您生活愉快，再……呃，你那个短信上面，你这不是给我打过电话吗？我的工号是嗯，大写的SX17625。",
+          "script_id": "2317941550352385028_t77",
+          "source_call_ids": [
+            "2317941550352385028"
+          ],
+          "customer_willingness": "negotiating",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "呃，工号这个发不了信息，工号这个发不了信息，到时候因为你那个短信是我的分机号码，您到时候可以打我这边呢？",
+          "script_id": "2317941550352385028_t79",
+          "source_call_ids": [
+            "2317941550352385028"
+          ],
+          "customer_willingness": "negotiating",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "嗯嗯，好，那您明天我们也不给您来电，您专心周转，好吧？",
+          "script_id": "2320459500460373224_t39",
+          "source_call_ids": [
+            "2320459500460373224"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "嗯，行，那张先生，我们到时候再联系，祝您生活愉快，再见。",
+          "script_id": "2320459500460373224_t41",
+          "source_call_ids": [
+            "2320459500460373224"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "这个的话是因为您从您逾期开始，对吧？这边的话它就有就上置过这个系统啦，我们这边没有权限去给您，就是就是取消掉这个电话。因为您的这个电话也就是系统外呼直接转到我们这边，我们是负责接听的。",
+          "script_id": "2322171620585885966_t38",
+          "source_call_ids": [
+            "2322171620585885966"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "这个电话，它是系统给您打过去，然后转接到我这边，过来是这个情况。",
+          "script_id": "2322171620585885966_t40",
+          "source_call_ids": [
+            "2322171620585885966"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "因为我们这边都是系统外呼，然后转接到我们人工去处理。",
+          "script_id": "2322171620585885966_t42",
+          "source_call_ids": [
+            "2322171620585885966"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "对。您如果说想就是减少这个电话，只能说您将这个款项逾期款项181块钱处理进来，这边才能给您拦截掉您的电话短信。",
+          "script_id": "2322171620585885966_t44",
+          "source_call_ids": [
+            "2322171620585885966"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "呃，您可以查看短信，这边是，这边，是的。",
+          "script_id": "2322171620585885966_t46",
+          "source_call_ids": [
+            "2322171620585885966"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "您这边可以，您可以再打一下，那这边先不打扰您了。祝您生活愉快再见。",
+          "script_id": "2322171620585885966_t50",
+          "source_call_ids": [
+            "2322171620585885966"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "这边尽快处理哈，因为我也不想给您太多压力。",
+          "script_id": "2322802090338590101_t6",
+          "source_call_ids": [
+            "2322802090338590101"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "之前给您说过了，后面会面临停卡或者降额的风险。",
+          "script_id": "2322802090338590101_t8",
+          "source_call_ids": [
+            "2322802090338590101"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "如果您目前在我行的欠款比较多，后续一旦找到停卡审核部门，可能会正式开启全款销售相关流程，到时候您的资金压力会进一步加大。",
+          "script_id": "2322802090338590101_t10",
+          "source_call_ids": [
+            "2322802090338590101"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "而且如果您在其他银行有外债，这边一旦停卡，其他银行可能也会把您视为风险客户，停掉您的卡片或者降额。",
+          "script_id": "2322802090338590101_t12",
+          "source_call_ids": [
+            "2322802090338590101"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "到时候您资金压力会更大，这边还是建议尽快处理一下。",
+          "script_id": "2322802090338590101_t14",
+          "source_call_ids": [
+            "2322802090338590101"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "想办法把它处理一下，3680块钱，明白吗？",
+          "script_id": "2322802090338590101_t16",
+          "source_call_ids": [
+            "2322802090338590101"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "嗯，那这边先不打扰您了。你尽快想办法吧。",
+          "script_id": "2322802090338590101_t20",
+          "source_call_ids": [
+            "2322802090338590101"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "特别提醒您，在逾期账务审核期前，请你务必保持电话畅通，避免银行联系不到您可能外呼紧急联系人转告您回电，到时候可能会怀疑您本人故意逃避银行债务催缴。",
+          "script_id": "2322802090338590101_t22",
+          "source_call_ids": [
+            "2322802090338590101"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "那这边先不打扰您了，祝您生活愉快，再见。",
+          "script_id": "2322802090338590101_t24",
+          "source_call_ids": [
+            "2322802090338590101"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "行，那我这边就不耽误您了哈。您在我们今天下班之前把这个最低处理进来是可以的哈。<PERSON>女士。",
+          "script_id": "2321930350367249676_t10",
+          "source_call_ids": [
+            "2321930350367249676"
+          ],
+          "customer_willingness": "strong",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "嗯，那我这边就不耽误您了哈，<PERSON>，再见。",
+          "script_id": "2321930350367249676_t12",
+          "source_call_ids": [
+            "2321930350367249676"
+          ],
+          "customer_willingness": "strong",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "嗯，因为之前我们有给您发过短信，这个……您今天晚上能抽1分钟时间补一下吗？",
+          "script_id": "2322254460585889026_t5",
+          "source_call_ids": [
+            "2322254460585889026"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "那您抓紧时间，打扰您了。祝您生活愉快，再见。",
+          "script_id": "2322254460585889026_t7",
+          "source_call_ids": [
+            "2322254460585889026"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "明白了，明白的。那您的情况我这边了解了。张先生，如果有合适的方案，我会再给您来电话的。",
+          "script_id": "2317662270201974818_t41",
+          "source_call_ids": [
+            "2317662270201974818"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "先生，我们这里很相信您。因为您这个案件确实逾期的时间比较久，两期账单都没有处理，风险因素过高，就要即将转入到后端那个全款清收流程。",
+          "script_id": "2318767580460372761_t32",
+          "source_call_ids": [
+            "2318767580460372761"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "但是我们知道您毕竟是做生意的，讲究信用，我们也是觉得您肯定可以东山再起的。",
+          "script_id": "2318767580460372761_t34",
+          "source_call_ids": [
+            "2318767580460372761"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "我们这也是希望能够帮助到您，帮您解一下燃眉之急。因为破产外面负债肯定也很多嘛，先生，对吧？",
+          "script_id": "2318767580460372761_t36",
+          "source_call_ids": [
+            "2318767580460372761"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "也是希望能轮转过来嘛。",
+          "script_id": "2318767580460372761_t38",
+          "source_call_ids": [
+            "2318767580460372761"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "嗯，没关系，先生。我们这次来电呢，也只是跟您说一下具体的情况，对吧？那我们这里看，是不是能在行内达成一个和解？",
+          "script_id": "2318767580460372761_t42",
+          "source_call_ids": [
+            "2318767580460372761"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "就是说我们这里的服务态度还是很好的，是吧？",
+          "script_id": "2318767580460372761_t44",
+          "source_call_ids": [
+            "2318767580460372761"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "我们相信您肯定会处理。因为您看，您额度也有这么些，肯定也是有实力，之前肯定是做过资产的，对吧？",
+          "script_id": "2318767580460372761_t46",
+          "source_call_ids": [
+            "2318767580460372761"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "我们也是相信。只不过说，因为我们接到了通知，这次来电的初心都是希望能为客户解决问题。既然确实要做转接了，要做转案了，那我们就是来个电话看一下，还能不能达成和解，来避免后续一些不好的流程之类的，对吧，先生？",
+          "script_id": "2318767580460372761_t48",
+          "source_call_ids": [
+            "2318767580460372761"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "我们也是希望能帮助到您，所以主动再跟您来电确认一下。",
+          "script_id": "2318767580460372761_t50",
+          "source_call_ids": [
+            "2318767580460372761"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "那先生，身体包括生活的话，肯定是您要第一时间做保证的，对吧？",
+          "script_id": "2318767580460372761_t52",
+          "source_call_ids": [
+            "2318767580460372761"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "那这里的话我就先不多打扰您了。",
+          "script_id": "2318767580460372761_t54",
+          "source_call_ids": [
+            "2318767580460372761"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "如果说您有需要，觉得我刚刚跟您说的这个方案很好，那您后续再给我们来电。",
+          "script_id": "2318767580460372761_t56",
+          "source_call_ids": [
+            "2318767580460372761"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "好吧，因为流程也走得比较快，就在近几天，差不多在9号之前，就是今明两天，您觉得还可以，突然间有了笔钱，你想处理了，那你打电话给我们。",
+          "script_id": "2318767580460372761_t58",
+          "source_call_ids": [
+            "2318767580460372761"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "好吧，就不多打扰您了，先生，好吧。",
+          "script_id": "2318767580460372761_t60",
+          "source_call_ids": [
+            "2318767580460372761"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "我明白哈，那好的哈。反正我就告知您哈，您这还到位那么可以把罚息减掉。好吧，那就不打扰您哈。402元嘛，好，再见好，再见哈，好好。",
+          "script_id": "2320458250132136578_t29",
+          "source_call_ids": [
+            "2320458250132136578"
+          ],
+          "customer_willingness": null,
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "好的，先生，如果您能够周转，就请您还入，如果的确没有办法周转，那么逾期不良的记录银行这边是正常上报，届时我们给您来电确认您的个人相关信息，就请您电话保持畅通。",
+          "script_id": "2322003390316382406_t68",
+          "source_call_ids": [
+            "2322003390316382406"
+          ],
+          "customer_willingness": "conditional",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "嗯，还没周转到是吧？好的先生，那我帮您记录一下，另外您需要上传相关材料过来，然后做一个……",
+          "script_id": "2321996150207448387_t4",
+          "source_call_ids": [
+            "2321996150207448387"
+          ],
+          "customer_willingness": null,
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "可以可以。您就赶在我们下班之前充进来就可以哈。我们五点半会再给您来个电话。嗯。",
+          "script_id": "2321931470032850074_t7",
+          "source_call_ids": [
+            "2321931470032850074"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "那我这边不耽误您了。张先生，嗯，好，再见。",
+          "script_id": "2321931470032850074_t9",
+          "source_call_ids": [
+            "2321931470032850074"
+          ],
+          "customer_willingness": "weak",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "嗯，我这边会帮您备注登记一下，好吧。那您这边以后续的实际方案为主。",
+          "script_id": "2322104580207445086_t18",
+          "source_call_ids": [
+            "2322104580207445086"
+          ],
+          "customer_willingness": "negotiating",
+          "gesture_type": "ending"
+        },
+        {
+          "script_text": "好，好，我这边会帮您备注登记，那您这边以后续实际方案为主。好吧，先生。会帮您反馈一下的。那这边就先不打扰您了，再见。",
+          "script_id": "2322104580207445086_t20",
+          "source_call_ids": [
+            "2322104580207445086"
+          ],
+          "customer_willingness": null,
+          "gesture_type": "ending"
+        },
         {
           "script_text": "如果说您确实是需要时间的话，请您在今明2天之内把您这个E招贷146还进来。如果说确实处理不了两个账户的一个全款11958.28，邀请您提前准备好，风险是联动的，到时候您处理的不光光是您的E招贷，两个账户都是需要您还款的。好吧。",
           "script_id": "2337738920631743115_t22",
@@ -3585,7 +3401,25 @@
           "gesture_type": "ending"
         }
       ],
-      "children": []
+      "children": [],
+      "gesture_type": "ending"
+    },
+    {
+      "state_id": "abrupt_end",
+      "branch_key": {
+        "end_type": "abrupt"
+      },
+      "sentence_pool": [
+        {
+          "script_text": "[对话未正常结束]",
+          "script_id": "abrupt_end_marker",
+          "source_call_ids": [],
+          "customer_willingness": null,
+          "gesture_type": "ending"
+        }
+      ],
+      "children": [],
+      "gesture_type": "ending"
     }
   ]
 }

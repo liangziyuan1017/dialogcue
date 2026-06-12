@@ -168,6 +168,7 @@ def build_tree(records):
     _propagate_sentences(root)
     _sort_keywords(root)
     _ensure_leaf_termination(root)
+    _consolidate_endpoints(root)
     return root
 
 
@@ -250,6 +251,76 @@ def _ensure_leaf_termination(node):
     else:
         for child in children:
             _ensure_leaf_termination(child)
+
+
+def _consolidate_endpoints(root):
+    normal_end = {
+        "state_id": "normal_end",
+        "branch_key": {"end_type": "normal"},
+        "sentence_pool": [],
+        "children": [],
+        "gesture_type": "ending",
+    }
+    abrupt_end = {
+        "state_id": "abrupt_end",
+        "branch_key": {"end_type": "abrupt"},
+        "sentence_pool": [
+            {
+                "script_text": "[对话未正常结束]",
+                "script_id": "abrupt_end_marker",
+                "source_call_ids": [],
+                "customer_willingness": None,
+                "gesture_type": "ending",
+            }
+        ],
+        "children": [],
+        "gesture_type": "ending",
+    }
+
+    ending_sentences = []
+    _collect_ending_sentences(root, ending_sentences)
+    for s in ending_sentences:
+        normal_end["sentence_pool"].append(s)
+    if not normal_end["sentence_pool"]:
+        normal_end["sentence_pool"].append({
+            "script_text": "[正常结束]",
+            "script_id": "normal_end_marker",
+            "source_call_ids": [],
+            "customer_willingness": None,
+            "gesture_type": "ending",
+        })
+
+    _strip_terminal_nodes(root)
+
+    root["children"].append(normal_end)
+    root["children"].append(abrupt_end)
+
+
+def _collect_ending_sentences(node, results):
+    for s in node.get("sentence_pool", []):
+        if s.get("gesture_type") == "ending" and s.get("script_text") != "[对话未正常结束]":
+            results.append(s)
+    for child in node.get("children", []):
+        _collect_ending_sentences(child, results)
+
+
+def _strip_terminal_nodes(node):
+    children = node.get("children", [])
+    to_remove = []
+    for i, child in enumerate(children):
+        sid = child.get("state_id", "")
+        if sid == "abrupt_end" or sid == "normal_end":
+            to_remove.append(i)
+            continue
+        is_ending_leaf = not child.get("children") and any(
+            s.get("gesture_type") == "ending" for s in child.get("sentence_pool", [])
+        )
+        if is_ending_leaf:
+            to_remove.append(i)
+            continue
+        _strip_terminal_nodes(child)
+    for i in sorted(to_remove, reverse=True):
+        children.pop(i)
 
 
 def _ensure_abrupt_end(node, call_id, turns):

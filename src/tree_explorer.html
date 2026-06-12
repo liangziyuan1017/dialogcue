@@ -6,133 +6,232 @@
 <title>F004 Decision Tree Explorer</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#c9d1d9;display:flex;flex-direction:column;height:100vh}
-#toolbar{height:44px;background:#161b22;border-bottom:1px solid #30363d;display:flex;align-items:center;padding:0 12px;gap:10px;flex-shrink:0}
-#toolbar h1{font-size:14px;color:#58a6ff;font-weight:600}
-.stat{font-size:11px;color:#8b949e}
-#search{background:#0d1117;border:1px solid #30363d;border-radius:4px;padding:4px 8px;color:#c9d1d9;font-size:12px;width:220px;outline:none}
-#search:focus{border-color:#58a6ff}
+:root{
+  --slate-300:#cbd5e1;--slate-400:#94a3b8;--slate-500:#64748b;--slate-700:#334155;--slate-800:#1e293b;--slate-900:#0f172a;
+  --green-400:#4ade80;--green-500:#22c55e;--green-900:#052e16;
+  --blue-400:#60a5fa;--blue-500:#3b82f6;--blue-900:#1e3a5f;
+  --amber-400:#fbbf24;--amber-500:#f59e0b;--amber-900:#422006;
+  --red-400:#f87171;--red-500:#ef4444;--red-900:#450a0a;
+  --bg:#0f172a;--surface:#1e293b;--border:#334155;--text:#f1f5f9;--muted:#94a3b8;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh}
+#toolbar{height:56px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:16px;gap:12px;flex-shrink:0}
+#logo{height:32px;display:flex;align-items:center;gap:8px}
+#logo svg{height:32px;width:32px}
+#logo span{font-size:18px;font-weight:600;color:var(--blue-400);letter-spacing:-0.02em;white-space:nowrap}
+.stat{font-size:11px;color:var(--muted)}
+#search{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:var(--text);font-size:12px;width:240px;outline:none}
+#search:focus{border-color:var(--blue-500)}
+.legend{display:flex;gap:14px;align-items:center;font-size:11px;color:var(--muted);margin-left:auto}
+.legend-item{display:flex;align-items:center;gap:5px}
+.legend-shape{width:14px;height:14px}
 #main{display:flex;flex:1;overflow:hidden}
-#tree-panel{flex:1;overflow:auto;padding:8px 0 8px 8px}
-#detail{width:380px;background:#161b22;border-left:1px solid #30363d;overflow-y:auto;padding:12px;flex-shrink:0}
-.tnode{display:flex;align-items:flex-start;padding:3px 0;cursor:pointer}
-.tnode:hover .nlabel{color:#58a6ff}
-.tindent{flex-shrink:0}
-.ttoggle{width:16px;text-align:center;color:#8b949e;font-size:10px;flex-shrink:0;user-select:none}
-.ttoggle:hover{color:#58a6ff}
-.nbadge{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin:5px 6px 0 0}
-.nbadge.root{background:#58a6ff}
-.nbadge.pool{background:#3fb950}
-.nbadge.leaf{background:#d29922}
-.nbadge.empty{background:#484f58}
-.nlabel{font-size:12px;color:#c9d1d9;word-break:break-all;line-height:1.4}
-.nlabel .ncount{color:#8b949e;font-size:10px;margin-left:4px}
-.nchildren{padding-left:20px}
-#detail h2{font-size:13px;color:#58a6ff;margin-bottom:6px;word-break:break-all}
-.section{margin-bottom:14px}
-.section-title{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#8b949e;margin-bottom:4px}
-.tag{display:inline-block;background:#0d1117;border:1px solid #30363d;border-radius:3px;padding:1px 6px;margin:2px;font-size:11px}
-.tag.fact{border-color:#3fb950;color:#3fb950}
-.tag.emotion{border-color:#d2a8ff;color:#d2a8ff}
-.tag.willingness{border-color:#79c0ff;color:#79c0ff}
-.tag.action{border-color:#d29922;color:#d29922}
-.wbar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
-.wbar-item{font-size:10px;background:#0d1117;border:1px solid #30363d;border-radius:3px;padding:1px 6px}
-.wbar-item .wlabel{color:#79c0ff}
-.wbar-item .wcount{color:#8b949e}
-.script{background:#0d1117;border:1px solid #30363d;border-radius:4px;padding:6px 8px;margin-bottom:4px;font-size:11px}
-.script .stxt{color:#c9d1d9;margin-bottom:2px}
-.script .smeta{color:#8b949e;font-size:10px}
-.script .swill{display:inline-block;border:1px solid #79c0ff;border-radius:3px;padding:0 4px;color:#79c0ff;font-size:9px;margin-right:4px}
-.child-link{display:inline-block;background:#0d1117;border:1px solid #30363d;border-radius:3px;padding:1px 6px;margin:2px;font-size:10px;color:#58a6ff;cursor:pointer}
-.child-link:hover{border-color:#58a6ff}
-#empty-detail{text-align:center;padding:40px 12px;color:#484f58;font-size:13px}
-.breadcrumb{font-size:10px;color:#8b949e;margin-bottom:8px}
-.breadcrumb span{color:#58a6ff;cursor:pointer}
+#tree-panel{flex:1;overflow:auto;position:relative}
+#detail{width:380px;background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:16px;flex-shrink:0}
+#svg-wrap{position:absolute;top:0;left:0}
+svg{display:block}
+#empty-detail{text-align:center;padding:48px 16px;color:var(--slate-500);font-size:13px}
+.breadcrumb{font-size:11px;color:var(--muted);margin-bottom:10px}
+.breadcrumb span{color:var(--blue-400);cursor:pointer}
 .breadcrumb span:hover{text-decoration:underline}
-.highlight{background:#1f2937;border-radius:3px}
+#detail h2{font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;word-break:break-all;letter-spacing:-0.01em}
+.section{margin-bottom:16px}
+.section-title{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:6px}
+.tag{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin:2px;font-size:11px}
+.tag.fact{border-color:var(--green-500);color:var(--green-400)}
+.tag.emotion{border-color:#a78bfa;color:#c4b5fd}
+.tag.gesture-open{border-color:var(--green-500);color:var(--green-400)}
+.tag.gesture-end{border-color:var(--amber-500);color:var(--amber-400)}
+.tag.gesture-abrupt{border-color:var(--red-500);color:var(--red-400)}
+.wbar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.wbar-item{font-size:10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 8px}
+.wbar-item .wlabel{color:var(--blue-400)}
+.wbar-item .wcount{color:var(--muted)}
+.script{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:4px;font-size:11px}
+.script .stxt{color:var(--text);margin-bottom:2px}
+.script .smeta{color:var(--muted);font-size:10px}
+.script .swill{display:inline-block;border:1px solid var(--blue-500);border-radius:9999px;padding:0 6px;color:var(--blue-400);font-size:9px;margin-right:4px}
+.script .sgesture{display:inline-block;border-radius:9999px;padding:0 6px;font-size:9px;margin-right:4px}
+.script .sgesture.opening{border:1px solid var(--green-500);color:var(--green-400)}
+.script .sgesture.ending{border:1px solid var(--amber-500);color:var(--amber-400)}
+.child-link{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin:2px;font-size:10px;color:var(--blue-400);cursor:pointer}
+.child-link:hover{border-color:var(--blue-500)}
 </style>
 </head>
 <body>
 <div id="toolbar">
-  <h1>Decision Tree Explorer</h1>
+  <div id="logo">
+    <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="#3b82f6" stroke-width="2"/><circle cx="23" cy="8" r="5" stroke="#f59e0b" stroke-width="2"/><polygon points="8,18 14,30 2,30" stroke="#ef4444" stroke-width="2" fill="none"/><line x1="14" y1="8" x2="18" y2="8" stroke="#cbd5e1" stroke-width="2"/></svg>
+    <span>Decision Tree</span>
+  </div>
   <span class="stat" id="stats"></span>
-  <input type="text" id="search" placeholder="Search state_id or script text...">
+  <div class="legend">
+    <div class="legend-item"><svg class="legend-shape" viewBox="0 0 14 14"><rect x="1" y="1" width="12" height="12" rx="2" stroke="#22c55e" stroke-width="1.5" fill="none"/></svg>Opening</div>
+    <div class="legend-item"><svg class="legend-shape" viewBox="0 0 14 14"><rect x="1" y="1" width="12" height="12" rx="2" stroke="#3b82f6" stroke-width="1.5" fill="none"/></svg>Decision</div>
+    <div class="legend-item"><svg class="legend-shape" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.5" stroke="#f59e0b" stroke-width="1.5" fill="none"/></svg>Normal End</div>
+    <div class="legend-item"><svg class="legend-shape" viewBox="0 0 14 14"><polygon points="7,1 13,13 1,13" stroke="#ef4444" stroke-width="1.5" fill="none"/></svg>Abrupt End</div>
+  </div>
+  <input type="text" id="search" placeholder="Search node...">
   <span class="stat" id="search-info"></span>
 </div>
 <div id="main">
-  <div id="tree-panel"></div>
+  <div id="tree-panel"><div id="svg-wrap"></div></div>
   <div id="detail">
-    <div id="empty-detail">Click a node to inspect details</div>
+    <div id="empty-detail">Click a node to inspect</div>
     <div id="detail-content" style="display:none"></div>
   </div>
 </div>
 <script>
-let treeData, nodeMap={}, selectedNode=null, expandedSet=new Set();
+const NODE_MIN_W=180, NODE_H=44, V_GAP=60, H_GAP=12, LEAF_W=160, LEAF_H=40, CANVAS_PAD=32;
+let treeData, nodeMap={}, selectedNode=null, layoutNodes=[];
 
-function indexTree(node, parentId=null) {
+function nodeType(node, depth) {
+  if (depth === 0) return 'opening';
+  if (node.state_id === 'abrupt_end') return 'abrupt';
+  if (node.state_id === 'normal_end') return 'ending';
+  if ((node.sentence_pool||[]).some(s => s.gesture_type === 'ending')) return 'ending';
+  return 'decision';
+}
+
+function indexTree(node, parentId=null, depth=0) {
   const id = node.state_id + '_' + Math.random().toString(36).slice(2,6);
-  node._id = id;
-  node._parentId = parentId;
+  node._id = id; node._parentId = parentId; node._depth = depth; node._type = nodeType(node, depth);
   nodeMap[id] = node;
-  if (parentId === null) expandedSet.add(id);
-  (node.children||[]).forEach(c => indexTree(c, id));
+  (node.children||[]).forEach(c => indexTree(c, id, depth+1));
 }
 
-function renderTree() {
-  const panel = document.getElementById('tree-panel');
-  panel.innerHTML = renderNode(treeData, 0);
-}
+function labelW(label) { return Math.max(NODE_MIN_W, label.length * 8.5 + 48); }
 
-function renderNode(node, depth) {
-  const id = node._id;
-  const expanded = expandedSet.has(id);
+function layoutTree(node) {
   const kids = node.children || [];
-  const hasKids = kids.length > 0;
+  const type = node._type;
+  const isLeaf = kids.length === 0;
   const pool = node.sentence_pool || [];
-  const badgeCls = depth===0?'root':pool.length>0&&hasKids?'pool':!hasKids?'leaf':'empty';
-  const indent = depth * 20;
-  const isSelected = selectedNode && selectedNode._id === id;
 
-  let h = `<div class="tnode${isSelected?' highlight':''}" data-id="${id}" onclick="selectAndToggle('${id}')">`;
-  h += `<span class="tindent" style="width:${indent}px"></span>`;
-  h += `<span class="ttoggle">${hasKids?(expanded?'▼':'▶'):'◦'}</span>`;
-  h += `<span class="nbadge ${badgeCls}"></span>`;
+  let label = node.state_id, sub = '';
+  if (type === 'opening') sub = pool.filter(s=>s.gesture_type==='opening').length + ' greetings';
+  else if (type === 'abrupt') sub = 'no proper close';
+  else if (type === 'ending') { const es = pool.filter(s=>s.gesture_type==='ending'); sub = es.length + ' closing scripts'; }
+  else sub = pool.length + ' scripts';
 
-  // willingness distribution summary
-  let wSummary = '';
-  if (pool.length > 0) {
-    const wCounts = {};
-    pool.forEach(s => { const w = s.customer_willingness || 'none'; wCounts[w] = (wCounts[w]||0)+1; });
-    wSummary = Object.entries(wCounts).map(([w,c]) => `${w}:${c}`).join(' ');
-  }
+  const w = isLeaf ? Math.max(LEAF_W, labelW(label)) : labelW(label);
+  const h = isLeaf ? LEAF_H : NODE_H;
 
-  h += `<span class="nlabel">${esc(node.state_id)}<span class="ncount">(${pool.length} scripts${hasKids?', '+kids.length+' kids':''}${wSummary?' | '+wSummary:''})</span></span>`;
-  h += `</div>`;
-  if (hasKids && expanded) {
-    h += `<div class="nchildren" style="margin-left:${indent}px">`;
-    kids.forEach(c => h += renderNode(c, depth+1));
-    h += `</div>`;
-  }
-  return h;
+  if (isLeaf) return { node, x:0, y:0, w, h, subtreeW:w, children:[], label, sub, type };
+
+  const childLayouts = kids.map(c => layoutTree(c));
+  const totalChildW = childLayouts.reduce((s,c) => s + c.subtreeW, 0) + H_GAP * Math.max(0, kids.length - 1);
+  const subtreeW = Math.max(w, totalChildW);
+  return { node, x:0, y:0, w, h, subtreeW, children: childLayouts, label, sub, type };
 }
 
-function esc(s) { return (s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function positionTree(layout, xCenter, y) {
+  layout.x = xCenter; layout.y = y;
+  layoutNodes.push(layout);
+  if (layout.children.length === 0) return;
 
-function selectAndToggle(id) {
-  const node = nodeMap[id];
-  if ((node.children||[]).length > 0) {
-    if (expandedSet.has(id)) expandedSet.delete(id); else expandedSet.add(id);
+  const childY = y + layout.h + V_GAP;
+  const totalW = layout.children.reduce((s,c) => s + c.subtreeW, 0) + H_GAP * (layout.children.length - 1);
+  let cx = xCenter - totalW / 2;
+
+  for (const child of layout.children) {
+    positionTree(child, cx + child.subtreeW / 2, childY);
+    cx += child.subtreeW + H_GAP;
   }
-  selectedNode = node;
-  renderTree();
-  renderDetail();
-  scrollIntoView(id);
 }
 
-function scrollIntoView(id) {
-  const el = document.querySelector(`.tnode[data-id="${id}"]`);
-  if (el) el.scrollIntoView({behavior:'smooth', block:'nearest'});
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function trunc(s, max) { return s.length <= max ? s : s.slice(0, max-1) + '…'; }
+
+function renderSVG() {
+  let minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
+  for (const l of layoutNodes) {
+    minX = Math.min(minX, l.x - l.w/2); minY = Math.min(minY, l.y);
+    maxX = Math.max(maxX, l.x + l.w/2); maxY = Math.max(maxY, l.y + l.h);
+  }
+  const pad = CANVAS_PAD;
+  const svgW = maxX - minX + pad*2;
+  const svgH = maxY - minY + pad*2;
+  const offX = -minX + pad;
+  const offY = -minY + pad;
+
+  let svg = `<svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg">`;
+
+  // edges: vertical top-to-bottom
+  for (const l of layoutNodes) {
+    const px = l.x + offX, py = l.y + l.h + offY;
+    for (const child of l.children) {
+      const cx = child.x + offX, cy = child.y + offY;
+      const my = (py + cy) / 2;
+
+      const bk = child.node.branch_key || {};
+      let bl = '';
+      if (bk.facts && bk.facts.length) bl += bk.facts.join(', ');
+      if (bk.emotions && bk.emotions.length) bl += (bl?' | ':'') + bk.emotions.join(', ');
+      if (bk.abrupt) bl = 'abrupt';
+      if (bk.end_type === 'normal') bl = 'normal end';
+      if (bk.end_type === 'abrupt') bl = 'abrupt end';
+      if (!bl) bl = '∅';
+
+      svg += `<path d="M${px},${py} C${px},${my} ${cx},${my} ${cx},${cy}" fill="none" stroke="var(--slate-300)" stroke-width="2"/>`;
+      svg += `<text x="${(px+cx)/2}" y="${my - 4}" text-anchor="middle" fill="var(--muted)" font-size="12" font-weight="500" font-family="-apple-system,sans-serif">${esc(trunc(bl, 24))}</text>`;
+    }
+  }
+
+  // nodes
+  for (const l of layoutNodes) {
+    const n = l.node, type = l.type;
+    const x = l.x + offX, y = l.y + offY;
+    const isSel = selectedNode && selectedNode._id === n._id;
+
+    const themes = {
+      opening: {stroke:'#22c55e', fill:'#052e16', text:'#4ade80', icon:'S'},
+      decision: {stroke:'#3b82f6', fill:'#1e3a5f', text:'#60a5fa', icon:'D'},
+      ending:   {stroke:'#f59e0b', fill:'#422006', text:'#fbbf24', icon:'E'},
+      abrupt:   {stroke:'#ef4444', fill:'#450a0a', text:'#f87171', icon:'X'},
+    };
+    const t = themes[type] || themes.decision;
+    const sw = isSel ? 3 : 2;
+    const sc = isSel ? '#ffffff' : t.stroke;
+
+    if (type === 'opening' || type === 'decision') {
+      const rx = x - l.w/2, ry = y;
+      svg += `<rect x="${rx}" y="${ry}" width="${l.w}" height="${l.h}" rx="8" fill="${t.fill}" stroke="${sc}" stroke-width="${sw}" style="cursor:pointer" class="sn" data-id="${n._id}"/>`;
+      svg += `<rect x="${rx+10}" y="${y+l.h/2-10}" width="20" height="20" rx="4" fill="none" stroke="${t.stroke}" stroke-width="1.2"/>`;
+      svg += `<text x="${rx+20}" y="${y+l.h/2+4}" text-anchor="middle" fill="${t.text}" font-size="11" font-weight="700" font-family="-apple-system,sans-serif">${t.icon}</text>`;
+      svg += `<text x="${rx+38}" y="${y+l.h/2-4}" fill="${t.text}" font-size="14" font-weight="600" font-family="-apple-system,sans-serif" style="cursor:pointer" class="sn" data-id="${n._id}">${esc(trunc(l.label, 22))}</text>`;
+      svg += `<text x="${rx+38}" y="${y+l.h/2+12}" fill="var(--muted)" font-size="12" font-weight="500" font-family="-apple-system,sans-serif">${esc(trunc(l.sub, 28))}</text>`;
+    } else if (type === 'ending') {
+      const r = Math.max(l.w, l.h) / 2;
+      svg += `<circle cx="${x}" cy="${y+l.h/2}" r="${r}" fill="${t.fill}" stroke="${sc}" stroke-width="${sw}" style="cursor:pointer" class="sn" data-id="${n._id}"/>`;
+      svg += `<text x="${x}" y="${y+l.h/2-4}" text-anchor="middle" fill="${t.text}" font-size="14" font-weight="600" font-family="-apple-system,sans-serif" style="cursor:pointer" class="sn" data-id="${n._id}">${esc(trunc(l.label, 14))}</text>`;
+      svg += `<text x="${x}" y="${y+l.h/2+12}" text-anchor="middle" fill="var(--muted)" font-size="12" font-weight="500" font-family="-apple-system,sans-serif">${esc(trunc(l.sub, 18))}</text>`;
+    } else if (type === 'abrupt') {
+      const tw = l.w, th = l.h + 12;
+      const cy = y + l.h/2;
+      const pts = `${x},${cy-th/2} ${x+tw/2},${cy+th/2} ${x-tw/2},${cy+th/2}`;
+      svg += `<polygon points="${pts}" fill="${t.fill}" stroke="${sc}" stroke-width="${sw}" style="cursor:pointer" class="sn" data-id="${n._id}"/>`;
+      svg += `<text x="${x}" y="${cy+2}" text-anchor="middle" fill="${t.text}" font-size="12" font-weight="600" font-family="-apple-system,sans-serif" style="cursor:pointer" class="sn" data-id="${n._id}">${esc(trunc(l.label, 12))}</text>`;
+      svg += `<text x="${x}" y="${cy+14}" text-anchor="middle" fill="var(--muted)" font-size="10" font-weight="500" font-family="-apple-system,sans-serif">${esc(trunc(l.sub, 16))}</text>`;
+    }
+  }
+
+  svg += `</svg>`;
+  document.getElementById('svg-wrap').innerHTML = svg;
+
+  document.querySelectorAll('.sn').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.getAttribute('data-id');
+      if (id) { selectedNode = nodeMap[id]; renderAll(); renderDetail(); }
+    });
+  });
+}
+
+function renderAll() {
+  layoutNodes = [];
+  const root = layoutTree(treeData);
+  positionTree(root, 0, 0);
+  renderSVG();
 }
 
 function renderDetail() {
@@ -144,7 +243,7 @@ function renderDetail() {
   document.getElementById('empty-detail').style.display = 'none';
   const dc = document.getElementById('detail-content');
   dc.style.display = '';
-  const n = selectedNode;
+  const n = selectedNode, type = n._type;
 
   let h = '';
   const path = [];
@@ -152,18 +251,20 @@ function renderDetail() {
   while (cur) { path.unshift(cur); cur = cur._parentId ? nodeMap[cur._parentId] : null; }
   h += `<div class="breadcrumb">${path.map((p,i)=>`<span onclick="navTo('${p._id}')">${esc(p.state_id)}</span>${i<path.length-1?' / ':''}`).join('')}</div>`;
 
+  const tl = {opening:'Opening (Start)', decision:'Decision Point', ending:'Normal End', abrupt:'Abrupt End'};
   h += `<h2>${esc(n.state_id)}</h2>`;
+  h += `<div class="section"><div class="section-title">Node Type</div><span class="tag gesture-${type==='opening'?'open':type}">${tl[type]||type}</span></div>`;
 
   const bk = n.branch_key || {};
-  h += `<div class="section"><div class="section-title">Branch Key (facts + emotions)</div>`;
+  h += `<div class="section"><div class="section-title">Branch Key</div>`;
   (bk.facts||[]).forEach(f => h += `<span class="tag fact">${esc(f)}</span> `);
   (bk.emotions||[]).forEach(e => h += `<span class="tag emotion">${esc(e)}</span> `);
-  if (!(bk.facts||[]).length && !(bk.emotions||[]).length) h += `<span style="color:#484f58">no facts, no emotions</span>`;
+  if (bk.abrupt || bk.end_type==='abrupt') h += `<span class="tag gesture-abrupt">abrupt</span> `;
+  if (bk.end_type==='normal') h += `<span class="tag gesture-end">normal end</span> `;
+  if (!(bk.facts||[]).length && !(bk.emotions||[]).length && !bk.abrupt && !bk.end_type) h += `<span style="color:var(--slate-500)">∅</span>`;
   h += `</div>`;
 
   const pool = n.sentence_pool || [];
-
-  // willingness distribution bar
   if (pool.length > 0) {
     const wCounts = {};
     pool.forEach(s => { const w = s.customer_willingness || 'none'; wCounts[w] = (wCounts[w]||0)+1; });
@@ -175,37 +276,30 @@ function renderDetail() {
   }
 
   h += `<div class="section"><div class="section-title">Sentence Pool (${pool.length})</div>`;
-  // group by willingness for display
   const byWill = {};
   pool.forEach(s => { const w = s.customer_willingness || 'none'; (byWill[w] = byWill[w]||[]).push(s); });
   for (const [w, scripts] of Object.entries(byWill).sort()) {
-    h += `<div style="margin-bottom:8px"><div style="font-size:10px;color:#79c0ff;margin-bottom:2px">when customer is <b>${esc(w)}</b>:</div>`;
+    h += `<div style="margin-bottom:8px"><div style="font-size:11px;color:var(--blue-400);margin-bottom:3px">when customer is <b>${esc(w)}</b>:</div>`;
     scripts.forEach(s => {
-      h += `<div class="script"><span class="swill">${esc(w)}</span><span class="stxt">${esc(s.script_text)}</span><div class="smeta">${esc(s.script_id)} | ${(s.source_call_ids||[]).join(', ')}</div></div>`;
+      let gt = '';
+      if (s.gesture_type === 'opening') gt = `<span class="sgesture opening">OPENING</span>`;
+      else if (s.gesture_type === 'ending') gt = `<span class="sgesture ending">ENDING</span>`;
+      h += `<div class="script">${gt}<span class="swill">${esc(w)}</span><span class="stxt">${esc(s.script_text)}</span><div class="smeta">${esc(s.script_id)} | ${(s.source_call_ids||[]).join(', ')}</div></div>`;
     });
     h += `</div>`;
   }
-  if (!pool.length) h += `<span style="color:#484f58">empty</span>`;
+  if (!pool.length) h += `<span style="color:var(--slate-500)">empty</span>`;
   h += `</div>`;
 
   const kids = n.children || [];
   h += `<div class="section"><div class="section-title">Children (${kids.length})</div>`;
   kids.forEach(c => h += `<span class="child-link" onclick="navTo('${c._id}')">${esc(c.state_id)}</span> `);
-  if (!kids.length) h += `<span style="color:#484f58">leaf node</span>`;
+  if (!kids.length) h += `<span style="color:var(--slate-500)">leaf node</span>`;
   h += `</div>`;
-
   dc.innerHTML = h;
 }
 
-function navTo(id) {
-  let cur = nodeMap[id];
-  while (cur && cur._parentId) { expandedSet.add(cur._parentId); cur = nodeMap[cur._parentId]; }
-  selectedNode = nodeMap[id];
-  expandedSet.add(id);
-  renderTree();
-  renderDetail();
-  scrollIntoView(id);
-}
+function navTo(id) { selectedNode = nodeMap[id]; renderAll(); renderDetail(); }
 
 function setupSearch() {
   const input = document.getElementById('search');
@@ -222,20 +316,19 @@ function setupSearch() {
   });
 }
 
-function countNodes(node) { return 1 + (node.children||[]).reduce((s,c)=>s+countNodes(c),0); }
-function countLeaves(node) { const k=node.children||[]; return k.length===0?1:k.reduce((s,c)=>s+countLeaves(c),0); }
+function countNodes(n) { return 1 + (n.children||[]).reduce((s,c)=>s+countNodes(c),0); }
 
-fetch('/decision_tree.json')
+fetch('decision_tree.json')
   .then(r => r.json())
   .then(data => {
     treeData = data;
     indexTree(data);
-    const total = countNodes(data), leaves = countLeaves(data);
-    document.getElementById('stats').textContent = `${total} nodes · ${leaves} leaves · 31 conversations`;
-    renderTree();
-    setupSearch();
+    const total = countNodes(data);
+    document.getElementById('stats').textContent = `${total} nodes · 1 opening · 1 normal end · 1 abrupt end`;
     selectedNode = treeData;
+    renderAll();
     renderDetail();
+    setupSearch();
   });
 </script>
 </body>

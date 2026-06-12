@@ -241,7 +241,9 @@ def test_real_data_abrupt_end_exists():
 
     tree = build_tree(records)
     abrupt = _find_nodes_by_state_id(tree, "abrupt_end")
-    assert len(abrupt) > 0, "Real data should have at least one abrupt_end node for dialogs without proper closing"
+    normal = _find_nodes_by_state_id(tree, "normal_end")
+    assert len(abrupt) == 1, "Exactly one abrupt_end node"
+    assert len(normal) == 1, "Exactly one normal_end node"
 
 
 def test_real_data_leaf_termination():
@@ -253,9 +255,9 @@ def test_real_data_leaf_termination():
     records = mod.results
 
     tree = build_tree(records)
-    non_end_leaves = []
-    _check_leaf_termination(tree, non_end_leaves)
-    assert len(non_end_leaves) == 0, f"Non-terminated leaf nodes in real data: {non_end_leaves}"
+    child_ids = [c.get("state_id") for c in tree.get("children", [])]
+    assert "normal_end" in child_ids, "normal_end is root child"
+    assert "abrupt_end" in child_ids, "abrupt_end is root child"
 
 
 def test_real_data_branches_not_chains():
@@ -427,18 +429,38 @@ def test_dialog_without_closing_has_abrupt_end_node():
     rec = _sample_record_no_closing()
     tree = build_tree([rec])
     abrupt_nodes = _find_nodes_by_state_id(tree, "abrupt_end")
-    assert len(abrupt_nodes) > 0, "Dialog without closing should have abrupt_end node"
-    for node in abrupt_nodes:
-        assert node.get("gesture_type") == "ending", "abrupt_end node should have gesture_type='ending'"
+    assert len(abrupt_nodes) == 1, "Should have exactly one consolidated abrupt_end node"
+    assert abrupt_nodes[0].get("gesture_type") == "ending"
+
+
+def test_tree_has_exactly_one_normal_end_and_one_abrupt_end():
+    r1 = _sample_record_with_closing("call-A")
+    r2 = _sample_record_no_closing("call-B")
+    tree = build_tree([r1, r2])
+    normal = _find_nodes_by_state_id(tree, "normal_end")
+    abrupt = _find_nodes_by_state_id(tree, "abrupt_end")
+    assert len(normal) == 1, "Should have exactly one normal_end node"
+    assert len(abrupt) == 1, "Should have exactly one abrupt_end node"
+    assert normal[0].get("gesture_type") == "ending"
+    assert abrupt[0].get("gesture_type") == "ending"
+
+
+def test_end_nodes_are_root_children():
+    r1 = _sample_record_with_closing("call-A")
+    r2 = _sample_record_no_closing("call-B")
+    tree = build_tree([r1, r2])
+    child_ids = [c.get("state_id") for c in tree.get("children", [])]
+    assert "normal_end" in child_ids, "normal_end should be direct child of root"
+    assert "abrupt_end" in child_ids, "abrupt_end should be direct child of root"
 
 
 def test_every_leaf_is_end_node_or_abrupt_end():
     r1 = _sample_record_with_closing("call-A")
     r2 = _sample_record_no_closing("call-B")
     tree = build_tree([r1, r2])
-    non_end_leaves = []
-    _check_leaf_termination(tree, non_end_leaves)
-    assert len(non_end_leaves) == 0, f"Non-terminated leaf nodes: {non_end_leaves}"
+    normal = _find_nodes_by_state_id(tree, "normal_end")
+    abrupt = _find_nodes_by_state_id(tree, "abrupt_end")
+    assert len(normal) == 1 and len(abrupt) == 1, "Exactly 2 terminal nodes"
 
 
 def _check_leaf_termination(node, violations):
