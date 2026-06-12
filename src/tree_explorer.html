@@ -19,8 +19,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 #logo svg{height:32px;width:32px}
 #logo span{font-size:18px;font-weight:600;color:var(--blue);letter-spacing:-0.02em;white-space:nowrap}
 .stat{font-size:11px;color:var(--muted)}
-#search{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:var(--text);font-size:12px;width:240px;outline:none}
-#search:focus{border-color:var(--blue)}
 .legend{display:flex;gap:14px;align-items:center;font-size:11px;color:var(--muted);margin-left:auto}
 .legend-item{display:flex;align-items:center;gap:5px}
 .lbox{width:14px;height:14px;border-radius:3px;border-width:2px;border-style:solid}
@@ -28,36 +26,57 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .lbox.decision{border-color:var(--blue);background:rgba(59,130,246,.15)}
 .lbox.ending{border-color:var(--amber);background:rgba(245,158,11,.15);border-radius:50%}
 .lbox.abrupt{border-color:var(--red);background:rgba(239,68,68,.15);border-radius:0;clip-path:polygon(50% 0%,100% 100%,0% 100%)}
+
 #main{display:flex;flex:1;overflow:hidden}
 #cy{flex:1}
-#detail{width:380px;background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:16px;flex-shrink:0}
-#empty-detail{text-align:center;padding:48px 16px;color:#64748b;font-size:13px}
-.breadcrumb{font-size:11px;color:var(--muted);margin-bottom:10px}
-.breadcrumb span{color:var(--blue);cursor:pointer}
-.breadcrumb span:hover{text-decoration:underline}
-#detail h2{font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;letter-spacing:-0.01em}
-.section{margin-bottom:16px}
-.section-title{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:6px}
-.tag{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin:2px;font-size:11px}
-.tag.fact{border-color:var(--green);color:#4ade80}
-.tag.emotion{border-color:#a78bfa;color:#c4b5fd}
-.tag.gesture-open{border-color:var(--green);color:#4ade80}
-.tag.gesture-end{border-color:var(--amber);color:#fbbf24}
-.tag.gesture-abrupt{border-color:var(--red);color:#f87171}
-.wbar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
-.wbar-item{font-size:10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 8px}
-.wbar-item .wlabel{color:#60a5fa}
-.wbar-item .wcount{color:var(--muted)}
-.script{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:4px;font-size:11px}
-.script .stxt{color:var(--text);margin-bottom:2px}
-.script .smeta{color:var(--muted);font-size:10px}
-.script .swill{display:inline-block;border:1px solid var(--blue);border-radius:9999px;padding:0 6px;color:#60a5fa;font-size:9px;margin-right:4px}
-.script .sgesture{display:inline-block;border-radius:9999px;padding:0 6px;font-size:9px;margin-right:4px}
-.script .sgesture.opening{border:1px solid var(--green);color:#4ade80}
-.script .sgesture.ending{border:1px solid var(--amber);color:#fbbf24}
-.script .saction{display:inline-block;border-radius:9999px;padding:0 6px;font-size:9px;margin-right:4px;border:1px solid #d29922;color:#d29922}
-.child-link{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin:2px;font-size:10px;color:#60a5fa;cursor:pointer}
-.child-link:hover{border-color:var(--blue)}
+#detail{width:420px;background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:16px;flex-shrink:0;display:flex;flex-direction:column}
+
+#tracer{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+#tracer-title{font-size:12px;font-weight:600;color:var(--blue);margin-bottom:8px;text-transform:uppercase;letter-spacing:.6px}
+#dialog-select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;outline:none;margin-bottom:8px}
+#dialog-select:focus{border-color:var(--blue)}
+#trace-controls{display:flex;gap:8px;margin-bottom:10px}
+#trace-controls button{flex:1;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+#trace-controls button:hover{border-color:var(--blue);color:var(--blue)}
+#btn-start{border-color:var(--green)!important;color:var(--green)!important}
+#btn-start:hover{background:rgba(34,197,94,.15)!important}
+#btn-end{border-color:var(--amber)!important;color:var(--amber)!important}
+#btn-end:hover{background:rgba(245,158,11,.15)!important}
+#btn-end.abrupt{border-color:var(--red)!important;color:var(--red)!important}
+
+#flow{flex:1;overflow-y:auto}
+#flow-title{font-size:10px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px}
+.flow-step{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid rgba(51,65,85,.5);cursor:pointer;transition:background .1s}
+.flow-step:hover{background:rgba(59,130,246,.08);border-radius:4px}
+.flow-step.active{background:rgba(59,130,246,.15);border-radius:4px}
+.flow-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.flow-num.collector{background:#1e3a5f;color:#60a5fa;border:1px solid #3b82f6}
+.flow-num.customer{background:#1a2a1a;color:#4ade80;border:1px solid #22c55e}
+.flow-content{flex:1;min-width:0}
+.flow-role{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.flow-role.collector{color:#60a5fa}
+.flow-role.customer{color:#4ade80}
+.flow-text{font-size:11px;color:var(--text);line-height:1.4;word-break:break-all}
+.flow-meta{font-size:9px;color:var(--muted);margin-top:2px;display:flex;gap:4px;flex-wrap:wrap}
+.flow-tag{display:inline-block;border-radius:9999px;padding:0 5px;font-size:9px;border:1px solid}
+.flow-tag.action{border-color:#d29922;color:#d29922}
+.flow-tag.willingness{border-color:#60a5fa;color:#60a5fa}
+.flow-tag.fact{border-color:#22c55e;color:#4ade80}
+.flow-tag.emotion{border-color:#a78bfa;color:#c4b5fd}
+.flow-tag.gesture-open{border-color:#22c55e;color:#4ade80}
+.flow-tag.gesture-end{border-color:#f59e0b;color:#fbbf24}
+.flow-tag.gesture-abrupt{border-color:#ef4444;color:#f87171}
+
+#node-info{padding-top:16px;border-top:1px solid var(--border)}
+#node-info h3{font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px}
+.ni-section{margin-bottom:12px}
+.ni-title{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:4px}
+.ni-tag{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin:2px;font-size:11px}
+.ni-tag.fact{border-color:var(--green);color:#4ade80}
+.ni-tag.emotion{border-color:#a78bfa;color:#c4b5fd}
+.ni-script{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 8px;margin-bottom:3px;font-size:11px}
+.ni-script .stxt{color:var(--text);margin-bottom:2px}
+.ni-script .smeta{color:var(--muted);font-size:9px}
 </style>
 </head>
 <body>
@@ -73,21 +92,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="legend-item"><div class="lbox ending"></div>Normal End</div>
     <div class="legend-item"><div class="lbox abrupt"></div>Abrupt End</div>
   </div>
-  <input type="text" id="search" placeholder="Search node...">
-  <span class="stat" id="search-info"></span>
 </div>
 <div id="main">
   <div id="cy"></div>
   <div id="detail">
-    <div id="empty-detail">Click a node to inspect</div>
-    <div id="detail-content" style="display:none"></div>
+    <div id="tracer">
+      <div id="tracer-title">Dialog Tracer</div>
+      <select id="dialog-select"><option value="">-- Select a dialog --</option></select>
+      <div id="trace-controls">
+        <button id="btn-start" onclick="goStart()">Start</button>
+        <button id="btn-end" onclick="goEnd()">End</button>
+      </div>
+      <div id="flow-title">Dialog Flow</div>
+      <div id="flow"></div>
+    </div>
+    <div id="node-info"></div>
   </div>
 </div>
 <script>
-let cy, treeData, nodeMap={};
+let cy, treeData, nodeMap={}, dialogData=[], currentDialog=null, tracePath=[], traceIdx=-1;
 
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function trunc(s,m){return s.length<=m?s:s.slice(0,m-1)+'…'}
 
 function nodeType(node,depth){
   if(depth===0) return 'opening';
@@ -97,28 +122,17 @@ function nodeType(node,depth){
 }
 
 function indexTree(node,parentId=null,depth=0){
-  const id = node.state_id+'_'+Math.random().toString(36).slice(2,6);
-  node._id=id; node._parentId=parentId; node._depth=depth; node._type=nodeType(node,depth);
+  const id=node.state_id+'_'+Math.random().toString(36).slice(2,6);
+  node._id=id;node._parentId=parentId;node._depth=depth;node._type=nodeType(node,depth);
   nodeMap[id]=node;
   (node.children||[]).forEach(c=>indexTree(c,id,depth+1));
 }
 
 function treeToCytoscape(node,pid=null,depth=0){
-  const id=node._id;
-  const type=node._type;
-  const pool=node.sentence_pool||[];
-  const kids=node.children||[];
-
+  const id=node._id, type=node._type, pool=node.sentence_pool||[], kids=node.children||[];
   let label=node.state_id;
-  let sub='';
-  if(type==='opening') sub=pool.filter(s=>s.gesture_type==='opening').length+' greetings';
-  else if(type==='abrupt') sub='no proper close';
-  else if(type==='ending') sub=pool.filter(s=>s.gesture_type==='ending').length+' closing scripts';
-  else sub=pool.length+' scripts';
-
-  const cyNodes=[{data:{id,label,sub,type,nodeRef:id,poolSize:pool.length}}];
+  const cyNodes=[{data:{id,label,type,nodeRef:id,poolSize:pool.length}}];
   const cyEdges=[];
-
   if(pid!==null){
     const bk=node.branch_key||{};
     let bl='';
@@ -130,13 +144,11 @@ function treeToCytoscape(node,pid=null,depth=0){
     if(!bl) bl='∅';
     cyEdges.push({data:{source:pid,target:id,label:bl}});
   }
-
   for(const child of kids){
-    const sub2=treeToCytoscape(child,id,depth+1);
-    cyNodes.push(...sub2.nodes);
-    cyEdges.push(...sub2.edges);
+    const sub=treeToCytoscape(child,id,depth+1);
+    cyNodes.push(...sub.nodes);
+    cyEdges.push(...sub.edges);
   }
-
   return {nodes:cyNodes,edges:cyEdges};
 }
 
@@ -145,195 +157,245 @@ function initCytoscape(elements){
     container:document.getElementById('cy'),
     elements,
     style:[
-      {selector:'node[type="opening"]',style:{
-        'shape':'round-rectangle','width':280,'height':44,
-        'background-color':'#052e16','border-color':'#22c55e','border-width':2,
-        'label':'data(label)','text-halign':'center','text-valign':'center',
-        'color':'#4ade80','font-size':14,'font-weight':600,'font-family':'-apple-system,sans-serif',
-        'text-wrap':'wrap','text-max-width':260,
-      }},
-      {selector:'node[type="decision"]',style:{
-        'shape':'round-rectangle','width':280,'height':44,
-        'background-color':'#1e3a5f','border-color':'#3b82f6','border-width':2,
-        'label':'data(label)','text-halign':'center','text-valign':'center',
-        'color':'#60a5fa','font-size':13,'font-weight':600,'font-family':'-apple-system,sans-serif',
-        'text-wrap':'wrap','text-max-width':260,
-      }},
-      {selector:'node[type="ending"]',style:{
-        'shape':'ellipse','width':180,'height':60,
-        'background-color':'#422006','border-color':'#f59e0b','border-width':2,
-        'label':'data(label)','text-halign':'center','text-valign':'center',
-        'color':'#fbbf24','font-size':14,'font-weight':600,'font-family':'-apple-system,sans-serif',
-      }},
-      {selector:'node[type="abrupt"]',style:{
-        'shape':'triangle','width':160,'height':80,
-        'background-color':'#450a0a','border-color':'#ef4444','border-width':2,
-        'label':'data(label)','text-halign':'center','text-valign':'center',
-        'color':'#f87171','font-size':12,'font-weight':600,'font-family':'-apple-system,sans-serif',
-      }},
-      {selector:'edge',style:{
-        'width':2,'line-color':'#cbd5e1','target-arrow-color':'#cbd5e1','target-arrow-shape':'triangle',
-        'curve-style':'bezier','arrow-scale':0.8,
-        'label':'data(label)','font-size':10,'font-weight':500,'color':'#94a3b8',
-        'text-rotation':'autorotate','text-margin-y':-6,
-        'text-wrap':'wrap','text-max-width':120,
-      }},
-      {selector:'node:active',style:{'border-width':3,'border-color':'#ffffff'}},
+      {selector:'node[type="opening"]',style:{'shape':'round-rectangle','width':280,'height':44,'background-color':'#052e16','border-color':'#22c55e','border-width':2,'label':'data(label)','text-halign':'center','text-valign':'center','color':'#4ade80','font-size':14,'font-weight':600,'font-family':'-apple-system,sans-serif','text-wrap':'wrap','text-max-width':260}},
+      {selector:'node[type="decision"]',style:{'shape':'round-rectangle','width':280,'height':44,'background-color':'#1e3a5f','border-color':'#3b82f6','border-width':2,'label':'data(label)','text-halign':'center','text-valign':'center','color':'#60a5fa','font-size':13,'font-weight':600,'font-family':'-apple-system,sans-serif','text-wrap':'wrap','text-max-width':260}},
+      {selector:'node[type="ending"]',style:{'shape':'ellipse','width':180,'height':60,'background-color':'#422006','border-color':'#f59e0b','border-width':2,'label':'data(label)','text-halign':'center','text-valign':'center','color':'#fbbf24','font-size':14,'font-weight':600,'font-family':'-apple-system,sans-serif'}},
+      {selector:'node[type="abrupt"]',style:{'shape':'triangle','width':160,'height':80,'background-color':'#450a0a','border-color':'#ef4444','border-width':2,'label':'data(label)','text-halign':'center','text-valign':'center','color':'#f87171','font-size':12,'font-weight':600,'font-family':'-apple-system,sans-serif'}},
+      {selector:'edge',style:{'width':2,'line-color':'#334155','target-arrow-color':'#334155','target-arrow-shape':'triangle','curve-style':'bezier','arrow-scale':0.7,'label':'data(label)','font-size':9,'font-weight':500,'color':'#64748b','text-rotation':'autorotate','text-margin-y':-5,'text-wrap':'wrap','text-max-width':100}},
+      {selector:'node.on-path',style:{'border-width':3,'border-color':'#ffffff','background-opacity':1}},
+      {selector:'edge.on-path',style:{'width':3,'line-color':'#60a5fa','target-arrow-color':'#60a5fa','color':'#60a5fa'}},
+      {selector:'node.off-path',style:{'opacity':0.25}},
+      {selector:'edge.off-path',style:{'opacity':0.15}},
       {selector:'node.highlighted',style:{'border-width':3,'border-color':'#ffffff'}},
     ],
-    layout:{
-      name:'dagre',
-      rankDir:'TB',
-      spacingFactor:1.2,
-      nodeSep:30,
-      rankSep:80,
-      alignVertical:false,
-      alignHorizontal:false,
-    },
-    userZoomingEnabled:true,
-    userPanningEnabled:true,
-    boxSelectionEnabled:false,
+    layout:{name:'dagre',rankDir:'TB',spacingFactor:1.2,nodeSep:30,rankSep:80},
+    userZoomingEnabled:true,userPanningEnabled:true,boxSelectionEnabled:false,
   });
 
   cy.on('tap','node',function(e){
     const node=e.target;
     const refId=node.data('nodeRef');
-    if(refId){
-      selectedNode=nodeMap[refId];
-      renderDetail();
-      cy.nodes().removeClass('highlighted');
-      node.addClass('highlighted');
-    }
-  });
-
-  cy.on('tap',function(e){
-    if(e.target===cy){
-      selectedNode=null;
-      cy.nodes().removeClass('highlighted');
-      document.getElementById('empty-detail').style.display='';
-      document.getElementById('detail-content').style.display='none';
-    }
+    if(refId) showNodeInfo(nodeMap[refId]);
   });
 }
 
-let selectedNode=null;
+function traceDialogPath(callId){
+  const path=[];
+  function walk(node){
+    const pool=node.sentence_pool||[];
+    const has=pool.some(s=>(s.source_call_ids||[]).includes(callId));
+    if(has||node.state_id==='initial_contact') path.push(node._id);
+    for(const c of (node.children||[])) walk(c);
+  }
+  walk(treeData);
 
-function renderDetail(){
-  if(!selectedNode){
-    document.getElementById('empty-detail').style.display='';
-    document.getElementById('detail-content').style.display='none';
+  // ensure end nodes are included
+  const normalId=Object.values(nodeMap).find(n=>n.state_id==='normal_end')?._id;
+  const abruptId=Object.values(nodeMap).find(n=>n.state_id==='abrupt_end')?._id;
+  const lastNode=nodeMap[path[path.length-1]];
+  if(lastNode&&lastNode.children){
+    for(const c of lastNode.children){
+      if(c.state_id==='normal_end'||c.state_id==='abrupt_end'){
+        if(!path.includes(c._id)) path.push(c._id);
+      }
+    }
+  }
+  // if the dialog has closing actions, it ends at normal_end
+  const dlg=dialogData.find(d=>d.call_id===callId);
+  if(dlg){
+    const hasClosing=dlg.turns.some(t=>t.action==='closure'||t.action==='goodbye');
+    if(hasClosing&&normalId&&!path.includes(normalId)) path.push(normalId);
+    if(!hasClosing&&abruptId&&!path.includes(abruptId)) path.push(abruptId);
+  }
+
+  return path;
+}
+
+function highlightPath(path){
+  cy.elements().removeClass('on-path off-path highlighted');
+  if(!path||path.length===0){
+    cy.elements().style('opacity','');
     return;
   }
-  document.getElementById('empty-detail').style.display='none';
-  const dc=document.getElementById('detail-content');
-  dc.style.display='';
-  const n=selectedNode, type=n._type;
-
-  let h='';
-  const path=[];
-  let cur=n;
-  while(cur){path.unshift(cur);cur=cur._parentId?nodeMap[cur._parentId]:null;}
-  h+=`<div class="breadcrumb">${path.map((p,i)=>`<span onclick="navTo('${p._id}')">${esc(p.state_id)}</span>${i<path.length-1?' / ':''}`).join('')}</div>`;
-
-  const tl={opening:'Opening (Start)',decision:'Decision Point',ending:'Normal End',abrupt:'Abrupt End'};
-  h+=`<h2>${esc(n.state_id)}</h2>`;
-  h+=`<div class="section"><div class="section-title">Node Type</div><span class="tag gesture-${type==='opening'?'open':type}">${tl[type]||type}</span></div>`;
-
-  const bk=n.branch_key||{};
-  h+=`<div class="section"><div class="section-title">Branch Key</div>`;
-  (bk.facts||[]).forEach(f=>h+=`<span class="tag fact">${esc(f)}</span> `);
-  (bk.emotions||[]).forEach(e=>h+=`<span class="tag emotion">${esc(e)}</span> `);
-  if(bk.abrupt||bk.end_type==='abrupt') h+=`<span class="tag gesture-abrupt">abrupt</span> `;
-  if(bk.end_type==='normal') h+=`<span class="tag gesture-end">normal end</span> `;
-  if(!(bk.facts||[]).length&&!(bk.emotions||[]).length&&!bk.abrupt&&!bk.end_type) h+=`<span style="color:#64748b">∅</span>`;
-  h+=`</div>`;
-
-  const pool=n.sentence_pool||[];
-  if(pool.length>0){
-    const wCounts={};
-    pool.forEach(s=>{const w=s.customer_willingness||'none';wCounts[w]=(wCounts[w]||0)+1;});
-    h+=`<div class="section"><div class="section-title">Willingness Distribution</div><div class="wbar">`;
-    Object.entries(wCounts).sort((a,b)=>b[1]-a[1]).forEach(([w,c])=>{
-      h+=`<span class="wbar-item"><span class="wlabel">${esc(w)}</span> <span class="wcount">${c}</span></span>`;
-    });
-    h+=`</div></div>`;
-    const aCounts={};
-    pool.forEach(s=>{if(s.collector_action){aCounts[s.collector_action]=(aCounts[s.collector_action]||0)+1;}});
-    if(Object.keys(aCounts).length>0){
-      h+=`<div class="section"><div class="section-title">Collector Actions</div><div class="wbar">`;
-      Object.entries(aCounts).sort((a,b)=>b[1]-a[1]).forEach(([a,c])=>{
-        h+=`<span class="wbar-item"><span class="wlabel" style="color:#d29922">${esc(a)}</span> <span class="wcount">${c}</span></span>`;
-      });
-      h+=`</div></div>`;
-    }
-  }
-
-  h+=`<div class="section"><div class="section-title">Sentence Pool (${pool.length})</div>`;
-  const byWill={};
-  pool.forEach(s=>{const w=s.customer_willingness||'none';(byWill[w]=byWill[w]||[]).push(s);});
-  for(const[w,scripts]of Object.entries(byWill).sort()){
-    h+=`<div style="margin-bottom:8px"><div style="font-size:11px;color:#60a5fa;margin-bottom:3px">when customer is <b>${esc(w)}</b>:</div>`;
-    scripts.forEach(s=>{
-      let gt='';
-      if(s.gesture_type==='opening') gt=`<span class="sgesture opening">OPENING</span>`;
-      else if(s.gesture_type==='ending') gt=`<span class="sgesture ending">ENDING</span>`;
-      let actTag=s.collector_action?`<span class="saction">${esc(s.collector_action)}</span>`:'';
-      h+=`<div class="script">${gt}${actTag}<span class="swill">${esc(w)}</span><span class="stxt">${esc(s.script_text)}</span><div class="smeta">${esc(s.script_id)} | ${(s.source_call_ids||[]).join(', ')}</div></div>`;
-    });
-    h+=`</div>`;
-  }
-  if(!pool.length) h+=`<span style="color:#64748b">empty</span>`;
-  h+=`</div>`;
-
-  const kids=n.children||[];
-  h+=`<div class="section"><div class="section-title">Children (${kids.length})</div>`;
-  kids.forEach(c=>h+=`<span class="child-link" onclick="navTo('${c._id}')">${esc(c.state_id)}</span> `);
-  if(!kids.length) h+=`<span style="color:#64748b">leaf node</span>`;
-  h+=`</div>`;
-  dc.innerHTML=h;
+  const pathSet=new Set(path);
+  cy.nodes().forEach(n=>{
+    if(pathSet.has(n.id())) n.addClass('on-path');
+    else n.addClass('off-path');
+  });
+  cy.edges().forEach(e=>{
+    if(pathSet.has(e.data('source'))&&pathSet.has(e.data('target'))) e.addClass('on-path');
+    else e.addClass('off-path');
+  });
+  const pathEles=cy.nodes().filter(n=>pathSet.has(n.id()));
+  cy.animate({center:{eles:pathEles}},{duration:400});
 }
 
-function navTo(id){
-  selectedNode=nodeMap[id];
-  renderDetail();
-  const cyNode=cy.getElementById(id);
-  if(cyNode&&cyNode.length>0){
+function renderFlow(dialog){
+  const flow=document.getElementById('flow');
+  if(!dialog){flow.innerHTML='<div style="color:#64748b;font-size:11px;padding:8px">Select a dialog to trace</div>';return;}
+  let h='';
+  dialog.turns.forEach((t,i)=>{
+    const isCollector=t.role==='催收员';
+    const cls=isCollector?'collector':'customer';
+    let meta='';
+    if(t.action) meta+=`<span class="flow-tag action">${esc(t.action)}</span>`;
+    if(t.willingness) meta+=`<span class="flow-tag willingness">${esc(t.willingness)}</span>`;
+    if(t.gesture_type==='opening') meta+=`<span class="flow-tag gesture-open">OPENING</span>`;
+    if(t.gesture_type==='ending') meta+=`<span class="flow-tag gesture-end">ENDING</span>`;
+    (t.facts||[]).forEach(f=>meta+=`<span class="flow-tag fact">${esc(f)}</span>`);
+    (t.emotions||[]).forEach(e=>meta+=`<span class="flow-tag emotion">${esc(e)}</span>`);
+    h+=`<div class="flow-step" data-idx="${i}" onclick="goStep(${i})">`;
+    h+=`<div class="flow-num ${cls}">${i+1}</div>`;
+    h+=`<div class="flow-content">`;
+    h+=`<div class="flow-role ${cls}">${isCollector?'Collector':'Customer'}</div>`;
+    h+=`<div class="flow-text">${esc(t.text)}</div>`;
+    if(meta) h+=`<div class="flow-meta">${meta}</div>`;
+    h+=`</div></div>`;
+  });
+  flow.innerHTML=h;
+}
+
+function selectDialog(callId){
+  currentDialog=dialogData.find(d=>d.call_id===callId)||null;
+  if(!currentDialog){
+    tracePath=[];traceIdx=-1;
+    highlightPath(null);
+    renderFlow(null);
+    document.getElementById('node-info').innerHTML='';
+    document.getElementById('btn-end').classList.remove('abrupt');
+    return;
+  }
+  tracePath=traceDialogPath(callId);
+  traceIdx=0;
+  highlightPath(tracePath);
+  renderFlow(currentDialog);
+
+  // determine end type
+  const hasClosing=currentDialog.turns.some(t=>t.action==='closure'||t.action==='goodbye');
+  const endBtn=document.getElementById('btn-end');
+  endBtn.classList.toggle('abrupt',!hasClosing);
+  endBtn.textContent=hasClosing?'End':'Abrupt End';
+}
+
+function goStart(){
+  if(!tracePath.length) return;
+  traceIdx=0;
+  const nodeId=tracePath[0];
+  const cyNode=cy.getElementById(nodeId);
+  if(cyNode&&cyNode.length){
     cy.nodes().removeClass('highlighted');
     cyNode.addClass('highlighted');
     cy.animate({center:{eles:cyNode}},{duration:300});
   }
+  showNodeInfo(nodeMap[nodeId]);
+  // highlight first step in flow
+  document.querySelectorAll('.flow-step').forEach(el=>el.classList.remove('active'));
+  const firstStep=document.querySelector('.flow-step[data-idx="0"]');
+  if(firstStep) firstStep.classList.add('active');
 }
 
-function setupSearch(){
-  const input=document.getElementById('search');
-  const info=document.getElementById('search-info');
-  input.addEventListener('input',()=>{
-    const q=input.value.toLowerCase().trim();
-    if(!q){info.textContent='';return;}
-    const matches=Object.values(nodeMap).filter(n=>
-      n.state_id.toLowerCase().includes(q)||
-      (n.sentence_pool||[]).some(s=>s.script_text.toLowerCase().includes(q))
-    );
-    info.textContent=`${matches.length} match${matches.length!==1?'es':''}`;
-    if(matches.length>0) navTo(matches[0]._id);
+function goEnd(){
+  if(!tracePath.length) return;
+  traceIdx=tracePath.length-1;
+  const nodeId=tracePath[traceIdx];
+  const cyNode=cy.getElementById(nodeId);
+  if(cyNode&&cyNode.length){
+    cy.nodes().removeClass('highlighted');
+    cyNode.addClass('highlighted');
+    cy.animate({center:{eles:cyNode}},{duration:300});
+  }
+  showNodeInfo(nodeMap[nodeId]);
+  // highlight last step in flow
+  const steps=document.querySelectorAll('.flow-step');
+  steps.forEach(el=>el.classList.remove('active'));
+  if(steps.length) steps[steps.length-1].classList.add('active');
+}
+
+function goStep(idx){
+  if(!currentDialog) return;
+  // find which tree node this step maps to
+  const turn=currentDialog.turns[idx];
+  if(!turn) return;
+  // highlight the step
+  document.querySelectorAll('.flow-step').forEach(el=>el.classList.remove('active'));
+  const stepEl=document.querySelector(`.flow-step[data-idx="${idx}"]`);
+  if(stepEl) stepEl.classList.add('active');
+
+  // find matching tree node by checking which node has this turn's script_id
+  const callId=currentDialog.call_id;
+  const scriptId=callId+'_t'+turn.turn_index;
+  let matchedNodeId=null;
+  for(const nid of tracePath){
+    const n=nodeMap[nid];
+    if(!n) continue;
+    const pool=n.sentence_pool||[];
+    if(pool.some(s=>s.script_id===scriptId)){
+      matchedNodeId=nid;
+      break;
+    }
+  }
+  if(matchedNodeId){
+    const cyNode=cy.getElementById(matchedNodeId);
+    if(cyNode&&cyNode.length){
+      cy.nodes().removeClass('highlighted');
+      cyNode.addClass('highlighted');
+      cy.animate({center:{eles:cyNode}},{duration:300});
+    }
+    showNodeInfo(nodeMap[matchedNodeId]);
+  }
+}
+
+function showNodeInfo(node){
+  if(!node){document.getElementById('node-info').innerHTML='';return;}
+  const ni=document.getElementById('node-info');
+  const type=node._type;
+  const tl={opening:'Opening (Start)',decision:'Decision Point',ending:'Normal End',abrupt:'Abrupt End'};
+  let h=`<h3>${esc(node.state_id)}</h3>`;
+  h+=`<div class="ni-section"><div class="ni-title">Type</div>${tl[type]||type}</div>`;
+  const bk=node.branch_key||{};
+  h+=`<div class="ni-section"><div class="ni-title">Branch Key</div>`;
+  (bk.facts||[]).forEach(f=>h+=`<span class="ni-tag fact">${esc(f)}</span>`);
+  (bk.emotions||[]).forEach(e=>h+=`<span class="ni-tag emotion">${esc(e)}</span>`);
+  if(!bk.facts?.length&&!bk.emotions?.length&&!bk.abrupt&&!bk.end_type) h+=`<span style="color:#64748b">∅</span>`;
+  h+=`</div>`;
+  const pool=node.sentence_pool||[];
+  h+=`<div class="ni-section"><div class="ni-title">Sentences (${pool.length})</div>`;
+  pool.slice(0,10).forEach(s=>{
+    let tags='';
+    if(s.collector_action) tags+=`<span class="flow-tag action" style="margin-right:3px">${esc(s.collector_action)}</span>`;
+    if(s.customer_willingness) tags+=`<span class="flow-tag willingness" style="margin-right:3px">${esc(s.customer_willingness)}</span>`;
+    h+=`<div class="ni-script">${tags}<span class="stxt">${esc(s.script_text)}</span><div class="smeta">${esc(s.script_id)}</div></div>`;
   });
+  if(pool.length>10) h+=`<div style="color:#64748b;font-size:10px">...and ${pool.length-10} more</div>`;
+  h+=`</div>`;
+  ni.innerHTML=h;
 }
 
 function countNodes(n){return 1+(n.children||[]).reduce((s,c)=>s+countNodes(c),0);}
 
-fetch('decision_tree.json')
-  .then(r=>r.json())
-  .then(data=>{
-    treeData=data;
-    indexTree(data);
-    const{nodes,edges}=treeToCytoscape(data);
-    const total=countNodes(data);
-    document.getElementById('stats').textContent=`${total} nodes · 1 opening · 1 normal end · 1 abrupt end`;
-    initCytoscape({nodes,edges});
-    selectedNode=treeData;
-    renderDetail();
-    setupSearch();
+Promise.all([
+  fetch('decision_tree.json').then(r=>r.json()),
+  fetch('dialog_records.json').then(r=>r.json()),
+]).then(([tree,dialogs])=>{
+  treeData=tree;
+  dialogData=dialogs;
+  indexTree(tree);
+  const{nodes,edges}=treeToCytoscape(tree);
+  const total=countNodes(tree);
+  document.getElementById('stats').textContent=`${total} nodes · ${dialogs.length} dialogs · 1 opening · 1 normal end · 1 abrupt end`;
+  initCytoscape({nodes,edges});
+
+  const sel=document.getElementById('dialog-select');
+  dialogs.forEach((d,i)=>{
+    const opt=document.createElement('option');
+    opt.value=d.call_id;
+    const hasClosing=d.turns.some(t=>t.action==='closure'||t.action==='goodbye');
+    opt.textContent=`${i+1}. ${d.call_id.slice(-6)} (${d.turns.length} turns${hasClosing?' → normal':' → abrupt'})`;
+    sel.appendChild(opt);
   });
+  sel.addEventListener('change',()=>selectDialog(sel.value));
+  renderFlow(null);
+});
 </script>
 </body>
 </html>
