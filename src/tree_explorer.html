@@ -164,11 +164,11 @@ function initCytoscape(elements){
       {selector:'node[type="ending"]',style:{'shape':'ellipse','width':180,'height':60,'background-color':'#422006','border-color':'#f59e0b','border-width':2,'label':'data(label)','text-halign':'center','text-valign':'center','color':'#fbbf24','font-size':14,'font-weight':600,'font-family':'-apple-system,sans-serif'}},
       {selector:'node[type="abrupt"]',style:{'shape':'triangle','width':160,'height':80,'background-color':'#450a0a','border-color':'#ef4444','border-width':2,'label':'data(label)','text-halign':'center','text-valign':'center','color':'#f87171','font-size':12,'font-weight':600,'font-family':'-apple-system,sans-serif'}},
       {selector:'edge',style:{'width':2,'line-color':'#334155','target-arrow-color':'#334155','target-arrow-shape':'triangle','curve-style':'bezier','arrow-scale':0.7,'label':'data(label)','font-size':9,'font-weight':500,'color':'#64748b','text-rotation':'autorotate','text-margin-y':-5,'text-wrap':'wrap','text-max-width':100}},
-      {selector:'node.on-path',style:{'border-width':3,'border-color':'#ffffff','background-opacity':1}},
-      {selector:'edge.on-path',style:{'width':3,'line-color':'#60a5fa','target-arrow-color':'#60a5fa','color':'#60a5fa'}},
-      {selector:'node.off-path',style:{'opacity':0.25}},
-      {selector:'edge.off-path',style:{'opacity':0.15}},
-      {selector:'node.highlighted',style:{'border-width':3,'border-color':'#ffffff'}},
+      {selector:'node.on-path',style:{'border-width':2,'border-color':'#94a3b8','background-opacity':1}},
+      {selector:'edge.on-path',style:{'width':2,'line-color':'#60a5fa','target-arrow-color':'#60a5fa','color':'#60a5fa'}},
+      {selector:'node.off-path',style:{'opacity':0.2}},
+      {selector:'edge.off-path',style:{'opacity':0.1}},
+      {selector:'node.highlighted',style:{'border-width':3,'border-color':'#ffffff','background-color':'#1e3a5f'}},
     ],
     layout:{name:'dagre',rankDir:'TB',spacingFactor:1.2,nodeSep:30,rankSep:80},
     userZoomingEnabled:true,userPanningEnabled:true,boxSelectionEnabled:false,
@@ -372,7 +372,9 @@ function activateStep(idx){
   const stepEl=document.querySelector(`.flow-step[data-idx="${idx}"]`);
   if(stepEl){
     stepEl.classList.add('active');
-    stepEl.scrollIntoView({behavior:'smooth',block:'nearest'});
+    const flowContainer=document.getElementById('flow');
+    const stepTop=stepEl.offsetTop - flowContainer.offsetTop;
+    flowContainer.scrollTop = stepTop - 40;
   }
 
   if(nodeId){
