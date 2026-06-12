@@ -1,7 +1,7 @@
 ---
 id: F004
 name: Decision Tree Construction
-status: planned
+status: review
 owner: agent
 source: plan_feature_base.md
 created: 2026-06-11
@@ -27,12 +27,13 @@ Build a **collector decision tree** where:
 
 ### Dialog Gestures (Opening & Ending)
 
-Every dialog has a **start node** and an **end node**:
-- **Start node** (`state_id: "initial_contact"`) captures the **opening gesture** — greeting, self-introduction, purpose statement
-- **End node** captures the **ending gesture** — proper closing like goodbye, confirmation, or well-wishes
-- If a dialog has no proper ending (e.g., customer hangs up, conversation cut short), it leads to an **"abrupt_end"** end node
-- The tree structure guarantees every path from root to leaf passes through a start node and terminates at either a proper end node or the `abrupt_end` node
+Every dialog has a **start node** and converges to one of two **end nodes**:
+- **Start node** (`state_id: "initial_contact"`) — the single root capturing the **opening gesture** (greeting, self-introduction, purpose statement). There is exactly one opening node in the tree.
+- **Normal end node** (`state_id: "normal_end"`) — all properly-closed dialogs converge here. Contains all ending gesture sentences (goodbye, confirmation, well-wishes).
+- **Abrupt end node** (`state_id: "abrupt_end"`) — all dialogs without proper closings converge here. Contains the abrupt-end marker sentence.
+- The tree has exactly **3 terminal-adjacent nodes**: 1 opening (root), 1 normal_end, 1 abrupt_end. Both end nodes are direct children of root.
 - Opening and ending gestures are recorded as `gesture_type: "opening"` and `gesture_type: "ending"` on their sentence entries
+- The tree is rendered **vertically** (top-to-bottom): opening at top, decision branches in middle, two end nodes at bottom
 
 ### Architecture (ADR-011)
 
@@ -68,11 +69,12 @@ Nodes = collector action points. Branches = customer (facts, emotions). Willingn
 - [x] Branches keyed by (facts, emotions) only — willingness is a sentence label
 - [x] Fallback via progressive tag removal works when exact branch not found
 - [x] Tree is branching (not chain-like): single-child ratio < 80%
-- [ ] Root node sentence_pool entries have `gesture_type: "opening"` for greeting sentences
-- [ ] Tree has an `abrupt_end` end node with `gesture_type: "ending"`
-- [ ] Every dialog path terminates at either a proper end node or `abrupt_end`
-- [ ] Ending gesture sentences have `gesture_type: "ending"`
-- [ ] Dialogs without proper closing are routed to `abrupt_end` node
+- [x] Root node sentence_pool entries have `gesture_type: "opening"` for greeting sentences
+- [x] Tree has exactly one `normal_end` node and one `abrupt_end` node, both with `gesture_type: "ending"`
+- [x] Both end nodes are direct children of root (consolidated endpoints)
+- [x] Every dialog path terminates at either `normal_end` or `abrupt_end`
+- [x] Ending gesture sentences have `gesture_type: "ending"`
+- [x] Dialogs without proper closing are routed to `abrupt_end` node
 
 ## Dependencies
 
@@ -92,13 +94,14 @@ See [F004-implementation-plan.md](F004-implementation-plan.md)
 - **Willingness as sentence label, not branch key**: Same (facts, emotions) = same decision point regardless of willingness. Collector sees "under financial_hardship, when customer is weak I say X, when negotiating I say Y" — both under the same branch.
 - **Rare facts kept as branches**: Not bucketed into `_other` — data will broaden.
 - **Segment-based extraction**: Each conversation is decomposed into segments of (customer branch key → collector sentences), not individual turns. This avoids the chain problem.
-- **Start/end node model**: Every dialog has a start node (opening gesture) and an end node (ending gesture). Abrupt endings route to a shared `abrupt_end` node. This gives the tree a well-defined entry/exit structure.
+- **Start/end node model**: The tree has exactly 1 opening node (root) and 2 consolidated end nodes (`normal_end` and `abrupt_end`) as direct children of root. All properly-closed dialogs converge into `normal_end`; all dialogs without proper closings converge into `abrupt_end`. This gives the tree a clean vertical structure: opening at top → decision branches → two end nodes at bottom.
+- **Consolidated endpoints**: Rather than scattering many `abrupt_end` leaves throughout the tree, all ending sentences are collected into a single `normal_end` node and all abrupt terminations into a single `abrupt_end` node. This ensures the tree has exactly 2 terminal nodes regardless of data size.
 
 ## Files
 
 | File | Purpose |
 |------|---------|
 | `src/build_decision_tree.py` | Decision tree construction logic |
-| `src/test_build_decision_tree.py` | Tests (15 passing) |
-| `src/decision_tree.json` | Generated output (96 nodes) |
-| `src/tree_explorer.html` | Interactive tree visualizer |
+| `src/test_build_decision_tree.py` | Tests (27 passing) |
+| `src/decision_tree.json` | Generated output (60 nodes) |
+| `src/tree_explorer.html` | Interactive vertical tree visualizer |

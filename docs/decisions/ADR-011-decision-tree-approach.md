@@ -18,14 +18,19 @@ Initial implementation used composite state key (facts + emotions + willingness 
 
 ## Decision
 
-**Nodes are collector action points. Branches are customer response profiles.**
+**Nodes are collector action points. Branches are customer response profiles. Endpoints are consolidated.**
 
 - **Node** = a point where the collector must decide what to say (keyed by `action`)
 - **Branch** = customer response that led here (keyed by `facts + emotions` only)
 - **Willingness** = label on each sentence in the pool, NOT a branching factor
 - **Sentence pool** = collector scripts at this node, each tagged with `customer_willingness`
+- **Opening node** = single root (`initial_contact`) with `gesture_type: "opening"` on greeting sentences
+- **Normal end node** = single `normal_end` child of root, consolidating all properly-closed dialog ending sentences
+- **Abrupt end node** = single `abrupt_end` child of root, for all dialogs without proper closings
 
 A new decision point is created ONLY when the customer introduces new facts or new emotions. Willingness-only changes (e.g., conditional → negotiating) do NOT create new branches — the customer is warming up within the same state.
+
+The tree has exactly 3 structural anchors: 1 opening node (root), 1 normal_end, 1 abrupt_end. Both end nodes are direct children of root. All intermediate decision branches flow between the opening and one of the two end nodes.
 
 ### Merge Rule
 
@@ -57,3 +62,6 @@ The old model produced chains because willingness created spurious branches. In 
 - Willingness is preserved as metadata on each sentence for ranking/filtering
 - Rare facts are kept as separate branches (not bucketed) for future data expansion
 - Fallback may return scripts from a broader state than ideal
+- Tree has exactly 2 terminal nodes (normal_end + abrupt_end) regardless of data size
+- All ending gesture sentences are consolidated into normal_end; all abrupt terminations into abrupt_end
+- Tree renders vertically: opening at top → decision branches → two end nodes at bottom
