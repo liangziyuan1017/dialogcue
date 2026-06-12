@@ -181,35 +181,78 @@ function initCytoscape(elements){
   });
 }
 
-function traceDialogPath(callId){
-  const path=[];
-  function walk(node){
-    const pool=node.sentence_pool||[];
-    const has=pool.some(s=>(s.source_call_ids||[]).includes(callId));
-    if(has||node.state_id==='initial_contact') path.push(node._id);
-    for(const c of (node.children||[])) walk(c);
-  }
-  walk(treeData);
+function makeBranchKey(state){
+  if(!state) return {};
+  const key={};
+  if(state.facts&&state.facts.length) key.facts=[...state.facts].sort();
+  if(state.emotions&&state.emotions.length) key.emotions=[...state.emotions].sort();
+  return key;
+}
 
-  // ensure end nodes are included
-  const normalId=Object.values(nodeMap).find(n=>n.state_id==='normal_end')?._id;
-  const abruptId=Object.values(nodeMap).find(n=>n.state_id==='abrupt_end')?._id;
-  const lastNode=nodeMap[path[path.length-1]];
-  if(lastNode&&lastNode.children){
-    for(const c of lastNode.children){
-      if(c.state_id==='normal_end'||c.state_id==='abrupt_end'){
-        if(!path.includes(c._id)) path.push(c._id);
+function findChildByBranchKey(node, bk){
+  if(!bk||Object.keys(bk).length===0) return null;
+  for(const c of (node.children||[])){
+    if(JSON.stringify(c.branch_key)===JSON.stringify(bk)) return c;
+  }
+  return null;
+}
+
+function traceDialogPath(callId){
+  const dlg=dialogData.find(d=>d.call_id===callId);
+  if(!dlg) return [];
+
+  const path=[];
+  const turnNodeMap={};
+  let currentNode=treeData;
+  path.push(currentNode._id);
+  turnNodeMap[0]=currentNode._id;
+
+  for(let i=1;i<dlg.turns.length;i++){
+    const t=dlg.turns[i];
+    const state=t.state||t;
+
+    if(t.role==='客户'){
+      const bk=makeBranchKey(state);
+      if(Object.keys(bk).length>0){
+        const child=findChildByBranchKey(currentNode, bk);
+        if(child){
+          currentNode=child;
+          if(!path.includes(child._id)) path.push(child._id);
+        }
       }
+      turnNodeMap[i]=currentNode._id;
+    } else if(t.role==='催收员'){
+      const action=state?.action;
+      if(action){
+        const scriptId=callId+'_t'+t.turn_index;
+        let found=false;
+        const pool=currentNode.sentence_pool||[];
+        if(pool.some(s=>s.script_id===scriptId)){
+          found=true;
+        }
+        if(!found){
+          for(const c of (currentNode.children||[])){
+            const cp=c.sentence_pool||[];
+            if(cp.some(s=>s.script_id===scriptId)){
+              currentNode=c;
+              if(!path.includes(c._id)) path.push(c._id);
+              found=true;
+              break;
+            }
+          }
+        }
+      }
+      turnNodeMap[i]=currentNode._id;
+    } else {
+      turnNodeMap[i]=currentNode._id;
     }
   }
-  // if the dialog has closing actions, it ends at normal_end
-  const dlg=dialogData.find(d=>d.call_id===callId);
-  if(dlg){
-    const hasClosing=dlg.turns.some(t=>t.action==='closure'||t.action==='goodbye');
-    if(hasClosing&&normalId&&!path.includes(normalId)) path.push(normalId);
-    if(!hasClosing&&abruptId&&!path.includes(abruptId)) path.push(abruptId);
-  }
 
+  const hasClosing=dlg.turns.some(t=>t.action==='closure'||t.action==='goodbye');
+  const endNode=Object.values(nodeMap).find(n=>n.state_id===(hasClosing?'normal_end':'abrupt_end'));
+  if(endNode&&!path.includes(endNode._id)) path.push(endNode._id);
+
+  cachedTurnNodeMap=turnNodeMap;
   return path;
 }
 
@@ -282,40 +325,7 @@ function selectDialog(callId){
 
 function buildTurnNodeMap(){
   if(cachedTurnNodeMap) return cachedTurnNodeMap;
-  if(!currentDialog) return {};
-  const map={};
-  const callId=currentDialog.call_id;
-  const rootId=treeData._id;
-  currentDialog.turns.forEach((t,i)=>{
-    const scriptId=callId+'_t'+t.turn_index;
-    for(const nid of tracePath){
-      const n=nodeMap[nid];
-      if(!n) continue;
-      const pool=n.sentence_pool||[];
-      if(pool.some(s=>s.script_id===scriptId)){
-        map[i]=nid;
-        return;
-      }
-    }
-    if(t.role==='客户'){
-      for(let j=i+1;j<currentDialog.turns.length;j++){
-        if(currentDialog.turns[j].role==='催收员'){
-          const nextScriptId=callId+'_t'+currentDialog.turns[j].turn_index;
-          for(const nid of tracePath){
-            const n=nodeMap[nid];
-            if(!n) continue;
-            if((n.sentence_pool||[]).some(s=>s.script_id===nextScriptId)){
-              map[i]=nid;
-              return;
-            }
-          }
-        }
-      }
-    }
-    if(!(i in map)) map[i]=rootId;
-  });
-  cachedTurnNodeMap=map;
-  return map;
+  return {};
 }
 
 function stopPlay(){
