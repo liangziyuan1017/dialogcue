@@ -112,7 +112,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 <script>
-let cy, treeData, nodeMap={}, dialogData=[], currentDialog=null, tracePath=[], traceIdx=-1, playTimer=null, isPlaying=false;
+let cy, treeData, nodeMap={}, dialogData=[], currentDialog=null, tracePath=[], traceIdx=-1, playTimer=null, isPlaying=false, cachedTurnNodeMap=null;
 
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
@@ -259,6 +259,7 @@ function renderFlow(dialog){
 
 function selectDialog(callId){
   stopPlay();
+  cachedTurnNodeMap=null;
   currentDialog=dialogData.find(d=>d.call_id===callId)||null;
   if(!currentDialog){
     tracePath=[];traceIdx=-1;
@@ -280,11 +281,10 @@ function selectDialog(callId){
 }
 
 function buildTurnNodeMap(){
-  // map each turn index to its tree node id
+  if(cachedTurnNodeMap) return cachedTurnNodeMap;
   if(!currentDialog) return {};
   const map={};
   const callId=currentDialog.call_id;
-  // root always matches turn 0 (greeting)
   const rootId=treeData._id;
   currentDialog.turns.forEach((t,i)=>{
     const scriptId=callId+'_t'+t.turn_index;
@@ -297,9 +297,7 @@ function buildTurnNodeMap(){
         return;
       }
     }
-    // customer turns: find the node they branch into
     if(t.role==='客户'){
-      // the next collector turn's node is where this customer turn leads
       for(let j=i+1;j<currentDialog.turns.length;j++){
         if(currentDialog.turns[j].role==='催收员'){
           const nextScriptId=callId+'_t'+currentDialog.turns[j].turn_index;
@@ -314,9 +312,9 @@ function buildTurnNodeMap(){
         }
       }
     }
-    // fallback: assign to root for unmatched
     if(!(i in map)) map[i]=rootId;
   });
+  cachedTurnNodeMap=map;
   return map;
 }
 
@@ -345,7 +343,7 @@ function advanceStep(){
     return;
   }
   activateStep(traceIdx);
-  playTimer=setTimeout(advanceStep, 800);
+  playTimer=setTimeout(()=>{requestAnimationFrame(advanceStep);}, 700);
 }
 
 function goEnd(){
@@ -360,7 +358,6 @@ function activateStep(idx){
   const turnMap=buildTurnNodeMap();
   const nodeId=turnMap[idx];
 
-  // highlight flow step
   document.querySelectorAll('.flow-step').forEach(el=>el.classList.remove('active'));
   const stepEl=document.querySelector(`.flow-step[data-idx="${idx}"]`);
   if(stepEl){
@@ -368,13 +365,12 @@ function activateStep(idx){
     stepEl.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
 
-  // toggle to tree node
   if(nodeId){
     const cyNode=cy.getElementById(nodeId);
     if(cyNode&&cyNode.length>0){
       cy.nodes().removeClass('highlighted');
       cyNode.addClass('highlighted');
-      cy.animate({center:{eles:cyNode}},{duration:300});
+      cy.center(cyNode);
     }
     showNodeInfo(nodeMap[nodeId]);
   }
