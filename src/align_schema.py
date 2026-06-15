@@ -5,7 +5,7 @@ import re
 
 
 def _load_output_manual():
-    data_path = os.path.join(os.path.dirname(__file__), "output_manual.py")
+    data_path = os.path.join(os.path.dirname(__file__), "..", "data", "output_manual.py")
     spec = importlib.util.spec_from_file_location("output_manual", data_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -14,6 +14,8 @@ def _load_output_manual():
 
 def _load_output_labeled():
     data_path = os.path.join(os.path.dirname(__file__), "output_labeled.py")
+    if not os.path.exists(data_path):
+        data_path = os.path.join(os.path.dirname(__file__), "..", "data", "output_labeled.py")
     if not os.path.exists(data_path):
         return None
     spec = importlib.util.spec_from_file_location("output_labeled", data_path)
@@ -100,7 +102,7 @@ def align_record(record, labeled_lookup=None):
             labeled_dialog = labeled_rec["response"]["dialog"]
     return {
         "call_id": record["call_id"],
-        "cust_no": record["cust_no"],
+        "cust_no": record.get("cust_no") or record.get("custno", ""),
         "call_date": record.get("call_date", ""),
         "coll_user_id": record.get("coll_user_id", ""),
         "mob_typ": record.get("mob_typ", ""),
