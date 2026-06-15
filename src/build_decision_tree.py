@@ -4,6 +4,9 @@ import os
 from collections import defaultdict
 
 
+CLOSING_ACTIONS = {"closure", "goodbye"}
+
+
 def _load_rewarded():
     data_path = os.path.join(os.path.dirname(__file__), "output_rewarded.py")
     spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
@@ -82,11 +85,11 @@ def extract_state_paths(record):
 def _merge_sentences(existing, new_entries):
     by_key = defaultdict(list)
     for entry in existing:
-        k = (entry["script_text"], entry.get("customer_willingness"))
+        k = (entry["script_text"], entry.get("customer_willingness"), entry.get("collector_action"))
         by_key[k].append(entry)
 
     for entry in new_entries:
-        k = (entry["script_text"], entry.get("customer_willingness"))
+        k = (entry["script_text"], entry.get("customer_willingness"), entry.get("collector_action"))
         if k in by_key:
             for existing_entry in by_key[k]:
                 for cid in entry["source_call_ids"]:
@@ -111,6 +114,8 @@ def build_tree(records):
         call_id = record.get("call_id", "")
         turns = record.get("turns_annotated", [])
 
+        has_closing = False
+
         for turn in turns:
             if turn["role"] == "催收员" and turn.get("state", {}).get("action") == "greeting":
                 entry = {
@@ -118,6 +123,8 @@ def build_tree(records):
                     "script_id": f"{call_id}_t{turn['turn_index']}",
                     "source_call_ids": [call_id],
                     "customer_willingness": None,
+                    "gesture_type": "opening",
+                    "collector_action": "greeting",
                 }
                 _merge_sentences(root["sentence_pool"], [entry])
                 break
@@ -151,8 +158,18 @@ def build_tree(records):
             _merge_sentences(matching["sentence_pool"], seg["sentences"])
             current_node = matching
 
+            if seg.get("is_closing"):
+                has_closing = True
+                for s in seg["sentences"]:
+                    s["gesture_type"] = "ending"
+
+        if not has_closing:
+            _ensure_abrupt_end(current_node, call_id, turns)
+
     _propagate_sentences(root)
     _sort_keywords(root)
+    _ensure_leaf_termination(root)
+    _consolidate_endpoints(root)
     return root
 
 
@@ -161,6 +178,7 @@ def _extract_segments(turns, call_id):
     current_branch_key = None
     current_sentences = []
     last_willingness = None
+    is_closing = False
 
     for turn in turns:
         state = turn.get("state")
@@ -176,9 +194,11 @@ def _extract_segments(turns, call_id):
                     segments.append({
                         "branch_key": current_branch_key,
                         "sentences": current_sentences,
+                        "is_closing": is_closing,
                     })
                 current_branch_key = new_branch_key
                 current_sentences = []
+                is_closing = False
 
         elif turn["role"] == "催收员":
             action = state.get("action")
@@ -188,16 +208,128 @@ def _extract_segments(turns, call_id):
                     "script_id": f"{call_id}_t{turn['turn_index']}",
                     "source_call_ids": [call_id],
                     "customer_willingness": last_willingness,
+                    "collector_action": action,
                 }
                 current_sentences.append(entry)
+                if action in CLOSING_ACTIONS:
+                    is_closing = True
 
     if current_branch_key is not None and current_sentences:
         segments.append({
             "branch_key": current_branch_key,
             "sentences": current_sentences,
+            "is_closing": is_closing,
         })
 
     return segments
+
+
+def _make_abrupt_end_node():
+    return {
+        "state_id": "abrupt_end",
+        "branch_key": {"abrupt": True},
+        "sentence_pool": [
+            {
+                "script_text": "[对话未正常结束]",
+                "script_id": "abrupt_end_marker",
+                "source_call_ids": [],
+                "customer_willingness": None,
+                "gesture_type": "ending",
+            }
+        ],
+        "children": [],
+        "gesture_type": "ending",
+    }
+
+
+def _ensure_leaf_termination(node):
+    children = node.get("children", [])
+    if not children:
+        is_end = node.get("state_id") == "abrupt_end" or any(
+            s.get("gesture_type") == "ending" for s in node.get("sentence_pool", [])
+        )
+        if not is_end:
+            node["children"] = [_make_abrupt_end_node()]
+    else:
+        for child in children:
+            _ensure_leaf_termination(child)
+
+
+def _consolidate_endpoints(root):
+    normal_end = {
+        "state_id": "normal_end",
+        "branch_key": {"end_type": "normal"},
+        "sentence_pool": [],
+        "children": [],
+        "gesture_type": "ending",
+    }
+    abrupt_end = {
+        "state_id": "abrupt_end",
+        "branch_key": {"end_type": "abrupt"},
+        "sentence_pool": [
+            {
+                "script_text": "[对话未正常结束]",
+                "script_id": "abrupt_end_marker",
+                "source_call_ids": [],
+                "customer_willingness": None,
+                "gesture_type": "ending",
+            }
+        ],
+        "children": [],
+        "gesture_type": "ending",
+    }
+
+    ending_sentences = []
+    _collect_ending_sentences(root, ending_sentences)
+    for s in ending_sentences:
+        normal_end["sentence_pool"].append(s)
+    if not normal_end["sentence_pool"]:
+        normal_end["sentence_pool"].append({
+            "script_text": "[正常结束]",
+            "script_id": "normal_end_marker",
+            "source_call_ids": [],
+            "customer_willingness": None,
+            "gesture_type": "ending",
+        })
+
+    _strip_terminal_nodes(root)
+
+    root["children"].append(normal_end)
+    root["children"].append(abrupt_end)
+
+
+def _collect_ending_sentences(node, results):
+    for s in node.get("sentence_pool", []):
+        if s.get("gesture_type") == "ending" and s.get("script_text") != "[对话未正常结束]":
+            results.append(s)
+    for child in node.get("children", []):
+        _collect_ending_sentences(child, results)
+
+
+def _strip_terminal_nodes(node):
+    children = node.get("children", [])
+    to_remove = []
+    for i, child in enumerate(children):
+        sid = child.get("state_id", "")
+        if sid == "abrupt_end" or sid == "normal_end":
+            to_remove.append(i)
+            continue
+        is_ending_leaf = not child.get("children") and any(
+            s.get("gesture_type") == "ending" for s in child.get("sentence_pool", [])
+        )
+        if is_ending_leaf:
+            to_remove.append(i)
+            continue
+        _strip_terminal_nodes(child)
+    for i in sorted(to_remove, reverse=True):
+        children.pop(i)
+
+
+def _ensure_abrupt_end(node, call_id, turns):
+    for child in node.get("children", []):
+        if child.get("state_id") == "abrupt_end":
+            return
+    node.setdefault("children", []).append(_make_abrupt_end_node())
 
 
 def _propagate_sentences(node, parent_pool=None):

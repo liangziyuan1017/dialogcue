@@ -218,6 +218,48 @@ def test_real_data_all_criteria():
         assert "customer_willingness" in s, f"Sentence missing customer_willingness: {s.get('script_id')}"
 
 
+def test_real_data_opening_gestures():
+    import importlib.util
+    data_path = os.path.join(os.path.dirname(__file__), "output_rewarded.py")
+    spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    records = mod.results
+
+    tree = build_tree(records)
+    opening = [s for s in tree["sentence_pool"] if s.get("gesture_type") == "opening"]
+    assert len(opening) > 0, "Root should have opening gesture sentences from real data"
+
+
+def test_real_data_abrupt_end_exists():
+    import importlib.util
+    data_path = os.path.join(os.path.dirname(__file__), "output_rewarded.py")
+    spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    records = mod.results
+
+    tree = build_tree(records)
+    abrupt = _find_nodes_by_state_id(tree, "abrupt_end")
+    normal = _find_nodes_by_state_id(tree, "normal_end")
+    assert len(abrupt) == 1, "Exactly one abrupt_end node"
+    assert len(normal) == 1, "Exactly one normal_end node"
+
+
+def test_real_data_leaf_termination():
+    import importlib.util
+    data_path = os.path.join(os.path.dirname(__file__), "output_rewarded.py")
+    spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    records = mod.results
+
+    tree = build_tree(records)
+    child_ids = [c.get("state_id") for c in tree.get("children", [])]
+    assert "normal_end" in child_ids, "normal_end is root child"
+    assert "abrupt_end" in child_ids, "abrupt_end is root child"
+
+
 def test_real_data_branches_not_chains():
     import importlib.util
     data_path = os.path.join(os.path.dirname(__file__), "output_rewarded.py")
@@ -311,6 +353,16 @@ def _find_nodes_by_branch_key(node, target_key, results=None):
     return results
 
 
+def _find_nodes_by_state_id(node, target_id, results=None):
+    if results is None:
+        results = []
+    if node.get("state_id") == target_id:
+        results.append(node)
+    for child in node.get("children", []):
+        _find_nodes_by_state_id(child, target_id, results)
+    return results
+
+
 def _find_parent(tree, target, parent=None):
     if tree is target:
         return parent
@@ -329,3 +381,130 @@ def _check_sorted_tree(node, violations):
                 violations.append(node.get("state_id"))
     for child in node.get("children", []):
         _check_sorted_tree(child, violations)
+
+
+def test_root_greeting_sentences_have_opening_gesture_type():
+    rec = _sample_record()
+    tree = build_tree([rec])
+    greeting_sentences = [s for s in tree["sentence_pool"] if "您好" in s["script_text"]]
+    assert len(greeting_sentences) > 0, "Root should have greeting sentences"
+    for s in greeting_sentences:
+        assert s.get("gesture_type") == "opening", f"Greeting sentence should have gesture_type='opening': {s['script_text']}"
+
+
+def _sample_record_with_closing(call_id="test-005"):
+    return {
+        "call_id": call_id,
+        "reward": 1,
+        "turns_annotated": [
+            {"turn_index": 0, "role": "催收员", "text": "您好。", "state": {"action": "greeting"}},
+            {"turn_index": 1, "role": "客户", "text": "嗯。", "state": {"willingness": "cooperative"}},
+            {"turn_index": 2, "role": "催收员", "text": "好的，请尽快还款。", "state": {"action": "closure"}},
+            {"turn_index": 3, "role": "催收员", "text": "祝您生活愉快，再见。", "state": {"action": "goodbye"}},
+        ],
+    }
+
+
+def test_closing_sentences_have_ending_gesture_type():
+    rec = _sample_record_with_closing()
+    tree = build_tree([rec])
+    all_sentences = _collect_all_sentences(tree)
+    ending_sentences = [s for s in all_sentences if s.get("gesture_type") == "ending"]
+    assert len(ending_sentences) > 0, "Should have ending gesture sentences for closing actions"
+
+
+def _sample_record_no_closing(call_id="test-006"):
+    return {
+        "call_id": call_id,
+        "reward": 0,
+        "turns_annotated": [
+            {"turn_index": 0, "role": "催收员", "text": "您好。", "state": {"action": "greeting"}},
+            {"turn_index": 1, "role": "客户", "text": "我没钱。", "state": {"facts": ["financial_hardship"], "willingness": "resistant"}},
+            {"turn_index": 2, "role": "催收员", "text": "建议您还款。", "state": {"action": "plan_proposal"}},
+        ],
+    }
+
+
+def test_dialog_without_closing_has_abrupt_end_node():
+    rec = _sample_record_no_closing()
+    tree = build_tree([rec])
+    abrupt_nodes = _find_nodes_by_state_id(tree, "abrupt_end")
+    assert len(abrupt_nodes) == 1, "Should have exactly one consolidated abrupt_end node"
+    assert abrupt_nodes[0].get("gesture_type") == "ending"
+
+
+def test_tree_has_exactly_one_normal_end_and_one_abrupt_end():
+    r1 = _sample_record_with_closing("call-A")
+    r2 = _sample_record_no_closing("call-B")
+    tree = build_tree([r1, r2])
+    normal = _find_nodes_by_state_id(tree, "normal_end")
+    abrupt = _find_nodes_by_state_id(tree, "abrupt_end")
+    assert len(normal) == 1, "Should have exactly one normal_end node"
+    assert len(abrupt) == 1, "Should have exactly one abrupt_end node"
+    assert normal[0].get("gesture_type") == "ending"
+    assert abrupt[0].get("gesture_type") == "ending"
+
+
+def test_end_nodes_are_root_children():
+    r1 = _sample_record_with_closing("call-A")
+    r2 = _sample_record_no_closing("call-B")
+    tree = build_tree([r1, r2])
+    child_ids = [c.get("state_id") for c in tree.get("children", [])]
+    assert "normal_end" in child_ids, "normal_end should be direct child of root"
+    assert "abrupt_end" in child_ids, "abrupt_end should be direct child of root"
+
+
+def test_every_leaf_is_end_node_or_abrupt_end():
+    r1 = _sample_record_with_closing("call-A")
+    r2 = _sample_record_no_closing("call-B")
+    tree = build_tree([r1, r2])
+    normal = _find_nodes_by_state_id(tree, "normal_end")
+    abrupt = _find_nodes_by_state_id(tree, "abrupt_end")
+    assert len(normal) == 1 and len(abrupt) == 1, "Exactly 2 terminal nodes"
+
+
+def _check_leaf_termination(node, violations):
+    children = node.get("children", [])
+    if not children:
+        is_end = node.get("state_id") == "abrupt_end" or any(
+            s.get("gesture_type") == "ending" for s in node.get("sentence_pool", [])
+        )
+        if not is_end:
+            violations.append(node.get("state_id"))
+    for child in children:
+        _check_leaf_termination(child, violations)
+
+
+def test_greeting_sentences_have_collector_action():
+    rec = _sample_record()
+    tree = build_tree([rec])
+    greeting = [s for s in tree["sentence_pool"] if s.get("gesture_type") == "opening"]
+    assert len(greeting) > 0
+    for s in greeting:
+        assert s.get("collector_action") == "greeting"
+
+
+def test_decision_sentences_have_collector_action():
+    rec = _sample_record_with_facts()
+    tree = build_tree([rec])
+    all_s = _collect_all_sentences(tree)
+    with_action = [s for s in all_s if s.get("collector_action")]
+    assert len(with_action) > 0, "Decision node sentences should have collector_action"
+    actions = set(s["collector_action"] for s in with_action)
+    assert "empathy" in actions or "plan_proposal" in actions
+
+
+def test_sentences_without_action_have_no_collector_action_key():
+    rec = {
+        "call_id": "test-no-action",
+        "reward": 0,
+        "turns_annotated": [
+            {"turn_index": 0, "role": "催收员", "text": "您好。", "state": {"action": "greeting"}},
+            {"turn_index": 1, "role": "客户", "text": "嗯。", "state": {"willingness": "cooperative"}},
+            {"turn_index": 2, "role": "催收员", "text": "随便说说。", "state": {}},
+        ],
+    }
+    tree = build_tree([rec])
+    all_s = _collect_all_sentences(tree)
+    no_action = [s for s in all_s if "collector_action" not in s and s.get("script_text") == "随便说说。"]
+    assert len(no_action) == 0, "Sentence without action state should not appear (no action = not extracted)"
