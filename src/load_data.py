@@ -3,7 +3,7 @@ import os
 
 
 def _load_output_manual():
-    data_path = os.path.join(os.path.dirname(__file__), "..", "data", "output_manual.py")
+    data_path = os.path.join(os.path.dirname(__file__), "output_manual.py")
     spec = importlib.util.spec_from_file_location("output_manual", data_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)

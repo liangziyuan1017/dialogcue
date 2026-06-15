@@ -19,18 +19,22 @@ EXTRA_FIELDS = [
     "customer_info",
 ]
 
+def _get_cust_no(record: dict) -> str:
+    return record.get("cust_no") or record.get("custno") or ""
 
 def load_source() -> dict:
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         records = [json.loads(line) for line in f if line.strip()]
     index = {}
     for r in records:
-        key = (r["call_id"], r["cust_no"])
+        key = (r["call_id"], _get_cust_no(r))
         index[key] = r
     return index
 
 
 def load_results() -> list[dict]:
+    if not OUTPUT_FILE.exists():
+        return []
     with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
         code = compile(f.read(), OUTPUT_FILE, "exec")
         namespace = {}
@@ -52,11 +56,11 @@ def main() -> None:
     matched = 0
     unmatched = 0
     for r in results:
-        key = (r["call_id"], r["custno"])
+        key = (r["call_id"], _get_cust_no(r))
         src = source_index.get(key)
         if src is None:
             unmatched += 1
-            print(f"  Unmatched: call_id={r['call_id']}, custno={r['custno']}")
+            print(f"  Unmatched: call_id={r['call_id']}, cust_no={r['cust_no']}")
             continue
         matched += 1
         for field in EXTRA_FIELDS:

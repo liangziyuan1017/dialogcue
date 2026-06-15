@@ -3,7 +3,8 @@ import json
 import os
 import re
 
-from src.llm_client import call_deepseek_json
+from llm_client import call_deepseek_json
+from retry import retry_call
 
 
 def _load_aligned():
@@ -150,7 +151,17 @@ def label_reward(record):
 def label_all(records=None):
     if records is None:
         records = _load_aligned()
-    return [label_reward(r) for r in records]
+    results = []
+    for i, r in enumerate(records):
+        def _process():
+            return label_reward(r)
+
+        def _on_fail(exc):
+            print(f"  SKIPPED record {i+1}/{len(records)} (call_id={r.get('call_id', '?')}) after 3 retries: {exc}")
+            return {**r, "reward": 0, "_retry_failed": True}
+
+        results.append(retry_call(_process, on_fail=_on_fail))
+    return results
 
 
 def cross_validate(rewarded_records):

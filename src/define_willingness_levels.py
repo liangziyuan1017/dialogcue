@@ -1,4 +1,4 @@
-from src.llm_client import call_deepseek_json
+from llm_client import call_deepseek_json
 
 BATCH_SIZE = 20
 

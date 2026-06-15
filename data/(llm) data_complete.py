@@ -9,6 +9,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 from openai import OpenAI
 
+from llm_client import _get_client
+from retry import retry_call
+
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
 DATA_FILE = Path(os.environ.get("DATA_FILE", str(BASE_DIR / "output_logic.py")))
@@ -269,7 +272,7 @@ Transcript:
 
 
 def create_client() -> OpenAI:
-    return OpenAI(api_key=os.environ["DEEPSEEK_API_KEY"], base_url="https://api.deepseek.com")
+    return _get_client()
 
 
 def load_all_records() -> list[dict]:
@@ -284,7 +287,7 @@ def load_all_records() -> list[dict]:
         records.append({
             "call_id": item.get("call_id", ""),
             "dialog": item.get("response", item),
-            "custno": item.get("custno", ""),
+            "cust_no": item.get("cust_no", ""),
         })
 
     print(f"Loaded {len(records)} records")
@@ -410,12 +413,21 @@ def main() -> None:
             print(f"  Skipping record {i+1}/{len(records)} (call_id={record['call_id']}) - already processed")
             continue
         print(f"  Processing record {i+1}/{len(records)} (call_id={record['call_id']})...")
-        llm_response = call_llm(client, PROMPT, record["dialog"])
-        result = {
-            "call_id": record["call_id"],
-            "custno": record["custno"],
-            "response": llm_response,
-        }
+        def _process():
+            llm_response = call_llm(client, PROMPT, record["dialog"])
+            return {
+                "call_id": record["call_id"],
+                "cust_no": record["cust_no"],
+                "response": llm_response,
+            }
+
+        def _on_fail(exc):
+            print(f"  SKIPPED record {i+1}/{len(records)} (call_id={record['call_id']}) after 3 retries: {exc}")
+            return None
+
+        result = retry_call(_process, on_fail=_on_fail)
+        if result is None:
+            continue
         results.append(result)
         batch.append(result)
 

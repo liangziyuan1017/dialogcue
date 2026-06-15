@@ -1,6 +1,7 @@
 import json
 from collections import defaultdict
-from src.llm_client import call_deepseek_json
+from llm_client import call_deepseek_json
+from retry import retry_call
 
 SUGGESTED_FACTS = [
     {"group_name": "legal_threat", "keywords": ["被起诉", "法院", "律师函"], "example_turn": ""},
@@ -108,17 +109,23 @@ def analyze_customer_turns(records: list) -> dict:
     for batch_start in range(0, len(all_turns), BATCH_SIZE):
         batch = all_turns[batch_start:batch_start + BATCH_SIZE]
         prompt = _build_batch_prompt(batch)
-        try:
-            results = call_deepseek_json(prompt)
-            if isinstance(results, list):
-                for j, result in enumerate(results):
-                    if result.get("facts") is None and result.get("emotions") is None and result.get("willingness_signal") is None:
-                        continue
-                    if batch_start + j < len(all_turns):
-                        result["_turn_text"] = all_turns[batch_start + j][0]
-                    raw_results.append(result)
-        except Exception:
-            pass
+        def _process():
+            return call_deepseek_json(prompt)
+
+        def _on_fail(exc):
+            print(f"  SKIPPED batch starting at turn {batch_start} after 3 retries: {exc}")
+            return None
+
+        batch_result = retry_call(_process, on_fail=_on_fail)
+        if batch_result is None:
+            continue
+        if isinstance(batch_result, list):
+            for j, result in enumerate(batch_result):
+                if result.get("facts") is None and result.get("emotions") is None and result.get("willingness_signal") is None:
+                    continue
+                if batch_start + j < len(all_turns):
+                    result["_turn_text"] = all_turns[batch_start + j][0]
+                raw_results.append(result)
 
     facts = _group_results(raw_results, "facts")
     emotions = _group_results(raw_results, "emotions")
