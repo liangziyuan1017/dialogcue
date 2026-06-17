@@ -225,7 +225,7 @@ def load_all_records() -> list[dict]:
         records.append({
             "call_id": item.get("call_id", ""),
             "dialog": item.get("response", item),
-            "custno": item.get("custno", ""),
+            "cust_no": item.get("cust_no", ""),
         })
 
     print(f"Loaded {len(records)} records")
@@ -342,7 +342,7 @@ def main() -> None:
 
         result = {
             "call_id": record["call_id"],
-            "custno": record["custno"],
+            "cust_no": record["cust_no"],
             "response": new_response,
         }
         results.append(result)

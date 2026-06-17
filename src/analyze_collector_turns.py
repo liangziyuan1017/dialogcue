@@ -101,7 +101,7 @@ def analyze_collector_turns(records: list) -> dict:
             continue
         if isinstance(batch_result, list):
             for j, result in enumerate(batch_result):
-                if result.get("action_group") is None:
+                if not result or result.get("action_group") is None:
                     continue
                 if batch_start + j < len(all_turns):
                     result["_turn_text"] = all_turns[batch_start + j]

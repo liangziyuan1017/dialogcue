@@ -1,5 +1,5 @@
 {
-  "doc_count": 11,
+  "doc_count": 13,
   "entries": {
     "ADR-001": {
       "body_preview": "# ADR-001: Discover state keywords from data rather than prescribe\n\n## What\n\nState keyword taxonomy (facts, emotions, willingness levels) is discovered by LLM analysis of actual conversation data, not prescribed from assumptions.\n\n## Why\n\nThe original plan prescribed a fixed taxonomy (8 emotions, 10 facts, 5 willingness levels) based on English-language assumptions. Debt collection conversations in Chinese have domain-specific patterns \u2014 the actual frequent facts, emotions, and willingness signa",
@@ -10,8 +10,8 @@
         "F000"
       ],
       "id": "ADR-001",
-      "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-001-data-driven-keyword-discovery.md",
+      "indexed_at": "2026-06-11T17:06:43.388705",
+      "path": "../../docs/decisions/ADR-001-data-driven-keyword-discovery.md",
       "status": "accepted",
       "title": "Discover state keywords from data rather than prescribe",
       "topics": [
@@ -29,8 +29,8 @@
         "F000"
       ],
       "id": "ADR-002",
-      "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-002-keyword-grouping.md",
+      "indexed_at": "2026-06-11T17:06:43.388705",
+      "path": "../../docs/decisions/ADR-002-keyword-grouping.md",
       "status": "accepted",
       "title": "Group same-meaning keywords into canonical groups",
       "topics": [
@@ -48,8 +48,8 @@
         "F000"
       ],
       "id": "ADR-003",
-      "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-003-suggested-domain-keywords.md",
+      "indexed_at": "2026-06-11T17:06:43.388705",
+      "path": "../../docs/decisions/ADR-003-suggested-domain-keywords.md",
       "status": "accepted",
       "title": "Include suggested domain keywords not observed in data",
       "topics": [
@@ -67,8 +67,8 @@
         "F000"
       ],
       "id": "ADR-004",
-      "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-004-collector-action-discovery.md",
+      "indexed_at": "2026-06-11T17:06:43.388705",
+      "path": "../../docs/decisions/ADR-004-collector-action-discovery.md",
       "status": "accepted",
       "title": "Discover collector action types from data too",
       "topics": [
@@ -86,8 +86,8 @@
         "F000"
       ],
       "id": "ADR-005",
-      "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-005-data-driven-willingness-levels.md",
+      "indexed_at": "2026-06-11T17:06:43.388705",
+      "path": "../../docs/decisions/ADR-005-data-driven-willingness-levels.md",
       "status": "accepted",
       "title": "Willingness level count is data-driven",
       "topics": [
@@ -105,8 +105,8 @@
         "F001"
       ],
       "id": "ADR-006",
-      "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-006-context-constraint-mapping.md",
+      "indexed_at": "2026-06-11T17:06:43.388705",
+      "path": "../../docs/decisions/ADR-006-context-constraint-mapping.md",
       "status": "accepted",
       "title": "F001 context constraint mapping: 9 fields from customer_info",
       "topics": [
@@ -124,8 +124,8 @@
         "F001"
       ],
       "id": "ADR-007",
-      "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-007-carry-state-labels.md",
+      "indexed_at": "2026-06-11T17:06:43.388705",
+      "path": "../../docs/decisions/ADR-007-carry-state-labels.md",
       "status": "accepted",
       "title": "F001 carry F000 state labels into turns_annotated",
       "topics": [
@@ -143,8 +143,8 @@
         "F001"
       ],
       "id": "ADR-008",
-      "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-008-output-format-py-file.md",
+      "indexed_at": "2026-06-11T17:06:43.388705",
+      "path": "../../docs/decisions/ADR-008-output-format-py-file.md",
       "status": "accepted",
       "title": "F001 output format: .py file with results list",
       "topics": [
@@ -152,6 +152,51 @@
         "output-format",
         "serialization"
       ]
+    },
+    "ADR-009": {
+      "body_preview": "# Eliminate F002 LLM State Extraction\n\n## What\n\nRemove F002 (LLM State Extraction) entirely. The system will rely on the manual annotations already present in F001's `output_aligned.py` (493 of 805 turns labeled). No LLM-based per-turn extraction step.\n\n## Why\n\n- The 493 labeled turns from F001 already provide sufficient state coverage for downstream features (F003 reward labeling, F004 decision tree).\n- Running DeepSeek on all 805 turns costs API calls, adds latency, and introduces LLM inconsis",
+      "content_hash": "589a8c5b36a89fb2d2c46656bce0f1925b7340e357d80350aa82ba7aa8339863",
+      "created": "2026-06-10",
+      "doc_kind": "decision",
+      "feature_ids": [
+        "F002"
+      ],
+      "id": "ADR-009",
+      "indexed_at": "2026-06-11T17:06:43.388705",
+      "path": "../../docs/decisions/ADR-009-eliminate-f002-llm-state-extraction.md",
+      "status": "accepted",
+      "title": "Eliminate F002 LLM State Extraction \u2014 use F001 manual annotations only",
+      "topics": [
+        "architecture",
+        "state-extraction",
+        "cost-reduction"
+      ]
+    },
+    "ADR-010": {
+      "body_preview": "# ADR-010: Reward Labeling via LLM with Counterfactual Verification\n\n## Context\n\nF003 requires assigning R \u2208 {0, 1} per conversation to indicate whether the collector achieved a repayment commitment. This binary reward is the ground truth for downstream win-rate computation (F005) and retrieval ranking (F006).\n\n## Decision\n\nUse LLM to detect repayment commitment triggers in final turns, then perform counterfactual verification to credit the preceding collector action. Cross-validate against `pla",
+      "content_hash": "6f417dd2f63a7dff5183fee5c60ac0e02a6d65d94d950abafae8c6eb0a9577a8",
+      "created": "2026-06-11",
+      "feature_ids": [
+        "F003"
+      ],
+      "id": "ADR-010",
+      "indexed_at": "2026-06-11T17:06:43.388705",
+      "path": "../../docs/decisions/ADR-010-reward-labeling-approach.md",
+      "status": "accepted",
+      "title": "Reward Labeling via LLM with Counterfactual Verification"
+    },
+    "ADR-011": {
+      "body_preview": "# ADR-011: Collector Decision Tree with Customer Response Branching\n\n## Context\n\nF004 requires building a traversable decision tree from 31 annotated conversations. The tree must support exact state matching, fallback via progressive tag removal, and accumulate collector sentences at each node for script recommendation.\n\nInitial implementation used composite state key (facts + emotions + willingness + action) as node identity, producing a chain structure (323/357 nodes had exactly 1 child) becau",
+      "content_hash": "a272a05a803419eef48432e837c9f9e01afcbdedfde0c4d2e01f04d4e3750370",
+      "created": "2026-06-11",
+      "feature_ids": [
+        "F004"
+      ],
+      "id": "ADR-011",
+      "indexed_at": "2026-06-11T17:06:43.388705",
+      "path": "../../docs/decisions/ADR-011-decision-tree-approach.md",
+      "status": "accepted",
+      "title": "Collector Decision Tree with Customer Response Branching"
     },
     "LL-001": {
       "body_preview": "# Schema Alignment Dropped Prior Feature State Labels\n\n## Pitfall\n\nF001 Data Schema Alignment built `turns_annotated` from raw `output_manual.py` only, dropping the 493 state labels already produced by F000 in `output_labeled.py`.\n\n## Root Cause\n\nThe implementation plan and initial code only referenced `output_manual.py` as input. No check was made for intermediate outputs from prior features in the dependency chain (F000 \u2192 F001). The spec said \"derive turns_annotated\" without explicitly stating",
@@ -162,8 +207,8 @@
         "F001"
       ],
       "id": "LL-001",
-      "indexed_at": "2026-06-10T11:49:40.465283",
-      "path": "/Users/jiani/Desktop/icbc/docs/lessons/LL-001-dropped-state-labels.md",
+      "indexed_at": "2026-06-11T17:06:43.388705",
+      "path": "../../docs/lessons/LL-001-dropped-state-labels.md",
       "status": "draft",
       "title": "Schema alignment dropped prior feature state labels",
       "topics": [
@@ -172,22 +217,27 @@
         "review"
       ]
     },
-    "ADR-009": {
-      "id": "ADR-009",
-      "path": "/Users/jiani/Desktop/icbc/docs/decisions/ADR-009-eliminate-f002-llm-state-extraction.md",
-      "doc_kind": "decision",
-      "content_hash": "589a8c5b36a89fb2",
-      "indexed_at": "2026-06-10T15:26:18.813121"
-    },
     "LL-002": {
-      "id": "LL-002",
-      "path": "/Users/jiani/Desktop/icbc/docs/lessons/LL-002-over-engineered-llm-extraction.md",
+      "body_preview": "# Over-engineered per-turn LLM extraction\n\n## Pitfall\n\nBypassed `id-allocate.py` and `write-durable.py` scripts to write ADR-009 and LL-002 manually, causing id-allocator state drift and index path inconsistencies.\n\n## Root Cause\n\nThe agent-memory scripts exist at `modules/agent-memory/scripts/` but require `--state-dir` pointing to the project root `.agent-memory/`. I didn't look for them (used shallow `glob` instead of `find`) and assumed they were missing, then improvised \u2014 violating `rules.m",
+      "content_hash": "2d35c964e5ab41863296050158d81c769a8e5265d3ee7f2596fd4e407cab0411",
+      "created": "2026-06-10",
       "doc_kind": "lesson",
-      "content_hash": "b3952e7346d9faa2",
-      "indexed_at": "2026-06-10T15:26:18.813161"
+      "feature_ids": [
+        "F002"
+      ],
+      "id": "LL-002",
+      "indexed_at": "2026-06-11T17:06:43.388705",
+      "path": "../../docs/lessons/LL-002-over-engineered-llm-extraction.md",
+      "status": "draft",
+      "title": "Over-engineered per-turn LLM extraction when partial manual annotations suffice",
+      "topics": [
+        "cost",
+        "over-engineering",
+        "yagni"
+      ]
     }
   },
   "hash_conflicts": 0,
-  "last_full_rebuild": "2026-06-10T11:49:40.465283",
-  "last_incremental_rebuild": "2026-06-10T15:26:18.813164"
+  "last_full_rebuild": "2026-06-11T17:06:43.388705",
+  "last_incremental_rebuild": null
 }

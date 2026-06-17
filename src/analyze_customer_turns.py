@@ -121,6 +121,10 @@ def analyze_customer_turns(records: list) -> dict:
             continue
         if isinstance(batch_result, list):
             for j, result in enumerate(batch_result):
+
+                if result is None:
+                    continue
+
                 if result.get("facts") is None and result.get("emotions") is None and result.get("willingness_signal") is None:
                     continue
                 if batch_start + j < len(all_turns):
