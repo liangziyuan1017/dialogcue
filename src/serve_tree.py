@@ -6,8 +6,20 @@ import os
 os.chdir(os.path.dirname(__file__))
 PORT = 8420
 
-Handler = http.server.SimpleHTTPRequestHandler
-with socketserver.TCPServer(("", PORT), Handler) as httpd:
+
+class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
+    def end_headers(self):
+        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
+        super().end_headers()
+
+
+class ReusableTCPServer(socketserver.TCPServer):
+    allow_reuse_address = True
+
+
+with ReusableTCPServer(("", PORT), NoCacheHandler) as httpd:
     url = f"http://localhost:{PORT}/tree_explorer.html"
     print(f"Tree Explorer: {url}")
     webbrowser.open(url)

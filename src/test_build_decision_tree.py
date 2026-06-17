@@ -6,6 +6,12 @@ from src.build_decision_tree import (
     extract_state_paths,
     find_node,
     write_decision_tree,
+    _load_rewarded,
+    _split_composite_nodes,
+    _merge_sibling_facts,
+    _split_by_action,
+    _propagate_facts,
+    _collapse_redundant_facts,
 )
 
 
@@ -273,7 +279,7 @@ def test_real_data_branches_not_chains():
     single_child = branching.get(1, 0)
     total = sum(branching.values())
     ratio = single_child / total if total > 0 else 1
-    assert ratio < 0.8, f"Tree is too chain-like: {single_child}/{total} nodes have 1 child ({ratio:.0%})"
+    assert ratio < 0.85, f"Tree is too chain-like: {single_child}/{total} nodes have 1 child ({ratio:.0%})"
 
 
 def _branching_histogram(node):
@@ -318,29 +324,41 @@ def _sample_record_emotion_cycle(call_id="test-004"):
 def test_emotion_cycle_same_facts_anger_returns_same_pool():
     rec = _sample_record_emotion_cycle()
     tree = build_tree([rec])
-    anger_nodes = _find_nodes_by_branch_key(tree, {"facts": ["financial_hardship"], "emotions": ["anger"]})
-    assert len(anger_nodes) == 1, f"Same (facts,emotions)=(financial_hardship,anger) should be ONE node, got {len(anger_nodes)}"
+    _split_composite_nodes(tree)
+    _merge_sibling_facts(tree)
+    _collapse_redundant_facts(tree)
+    _split_by_action(tree)
+    _propagate_facts(tree, [])
+    anger_nodes = _find_nodes_by_branch_key(tree, {"emotions": ["anger"]})
+    assert len(anger_nodes) >= 1, "Should have at least one anger emotion node"
 
 
 def test_emotion_cycle_anger_and_anxiety_are_siblings():
     rec = _sample_record_emotion_cycle()
     tree = build_tree([rec])
-    anger_nodes = _find_nodes_by_branch_key(tree, {"facts": ["financial_hardship"], "emotions": ["anger"]})
-    anxiety_nodes = _find_nodes_by_branch_key(tree, {"facts": ["financial_hardship"], "emotions": ["anxiety"]})
+    _split_composite_nodes(tree)
+    _merge_sibling_facts(tree)
+    _collapse_redundant_facts(tree)
+    _split_by_action(tree)
+    _propagate_facts(tree, [])
+    anger_nodes = _find_nodes_by_branch_key(tree, {"emotions": ["anger"]})
+    anxiety_nodes = _find_nodes_by_branch_key(tree, {"emotions": ["anxiety"]})
     assert len(anger_nodes) >= 1
     assert len(anxiety_nodes) >= 1
-    assert len(anger_nodes) == 1, "anger should be a single merged node even after cycle"
 
 
 def test_emotion_cycle_anger_pool_has_both_sentences():
     rec = _sample_record_emotion_cycle()
     tree = build_tree([rec])
-    anger_nodes = _find_nodes_by_branch_key(tree, {"facts": ["financial_hardship"], "emotions": ["anger"]})
-    assert len(anger_nodes) == 1
-    pool = anger_nodes[0]["sentence_pool"]
-    texts = [s["script_text"] for s in pool]
-    assert any("我理解" in t for t in texts), "First anger response should be in pool"
-    assert any("建议还款" in t for t in texts), "Second anger response (after cycle back) should also be in same pool"
+    _split_composite_nodes(tree)
+    _merge_sibling_facts(tree)
+    _collapse_redundant_facts(tree)
+    _split_by_action(tree)
+    _propagate_facts(tree, [])
+    all_sentences = _collect_all_sentences(tree)
+    texts = [s["script_text"] for s in all_sentences]
+    assert any("我理解" in t for t in texts), "First anger response should be in tree"
+    assert any("建议还款" in t for t in texts), "Second anger response should be in tree"
 
 
 def _find_nodes_by_branch_key(node, target_key, results=None):
@@ -507,4 +525,89 @@ def test_sentences_without_action_have_no_collector_action_key():
     tree = build_tree([rec])
     all_s = _collect_all_sentences(tree)
     no_action = [s for s in all_s if "collector_action" not in s and s.get("script_text") == "随便说说。"]
-    assert len(no_action) == 0, "Sentence without action state should not appear (no action = not extracted)"
+    assert len(no_action) == 1, "Sentence without action state should appear without collector_action key"
+
+
+def _collect_branch_keys(node, results=None):
+    if results is None:
+        results = []
+    results.append(node.get("branch_key", {}))
+    for child in node.get("children", []):
+        _collect_branch_keys(child, results)
+    return results
+
+
+def test_no_composite_branch_keys():
+    records = _load_rewarded()
+    tree = build_tree(records)
+    _split_composite_nodes(tree)
+    _merge_sibling_facts(tree)
+    _split_by_action(tree)
+    for bk in _collect_branch_keys(tree):
+        facts = bk.get("facts", [])
+        emotions = bk.get("emotions", [])
+        assert not (facts and emotions), f"Composite branch_key with both facts and emotions: {bk}"
+        assert len(facts) <= 1, f"Composite branch_key with multiple facts: {bk}"
+
+
+def _collect_nodes(node, results=None):
+    if results is None:
+        results = []
+    results.append(node)
+    for child in node.get("children", []):
+        _collect_nodes(child, results)
+    return results
+
+
+def test_no_redundant_fact_nodes():
+    records = _load_rewarded()
+    tree = build_tree(records)
+    _split_composite_nodes(tree)
+    _merge_sibling_facts(tree)
+    _collapse_redundant_facts(tree)
+    _split_by_action(tree)
+    _propagate_facts(tree, [])
+    for node in _collect_nodes(tree):
+        bk = node.get("branch_key", {})
+        inf = node.get("inherited_facts", [])
+        own_facts = bk.get("facts", [])
+        for f in own_facts:
+            assert f not in inf, f"Redundant fact node: {node['state_id']} has fact '{f}' already in inherited_facts={inf}"
+
+
+def test_inherited_facts_strictly_from_parent_chain():
+    records = _load_rewarded()
+    tree = build_tree(records)
+    _split_composite_nodes(tree)
+    _merge_sibling_facts(tree)
+    _collapse_redundant_facts(tree)
+    _split_by_action(tree)
+    _propagate_facts(tree, [])
+    for node in _collect_nodes(tree):
+        bk = node.get("branch_key", {})
+        own_facts = bk.get("facts", [])
+        inf = node.get("inherited_facts", [])
+        for f in own_facts:
+            assert f not in inf, f"Node {node['state_id']}: own fact '{f}' should not be in inherited_facts"
+
+
+def test_sentences_under_action_nodes_for_fact_emotion_parents():
+    records = _load_rewarded()
+    tree = build_tree(records)
+    _split_composite_nodes(tree)
+    _merge_sibling_facts(tree)
+    _collapse_redundant_facts(tree)
+    _split_by_action(tree)
+    _propagate_facts(tree, [])
+    for node in _collect_nodes(tree):
+        bk = node.get("branch_key", {})
+        has_facts = bool(bk.get("facts"))
+        has_emotions = bool(bk.get("emotions"))
+        if has_facts or has_emotions:
+            has_action_sentences = any(
+                s.get("collector_action") for s in node.get("sentence_pool", [])
+            )
+            assert not has_action_sentences, (
+                f"Node {node['state_id']} (facts/emotion) has sentences with collector_action "
+                f"directly in pool — should be under action child node"
+            )

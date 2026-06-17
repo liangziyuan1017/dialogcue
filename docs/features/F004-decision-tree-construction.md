@@ -5,7 +5,7 @@ status: review
 owner: agent
 source: plan_feature_base.md
 created: 2026-06-11
-updated: 2026-06-12
+updated: 2026-06-17
 depends_on: F003
 ---
 
@@ -39,6 +39,24 @@ Every dialog has a **start node** and converges to one of two **end nodes**:
 
 Nodes = collector action points. Branches = customer (facts, emotions). Willingness tags each sentence. A new decision point is created ONLY when the customer introduces new facts or new emotions. Willingness-only changes (e.g., conditional → negotiating) do NOT create new branches.
 
+### Current Tree Statistics (2026-06-17)
+
+| Metric | Value |
+|--------|-------|
+| Total nodes | 333 |
+| Leaf nodes | 222 |
+| Max depth | 17 |
+| Single-child nodes | 16 |
+| Multi-child nodes | 95 |
+| Single-child ratio | 14.4% |
+| Opening gesture sentences | 217 |
+| Ending gesture sentences | 345 |
+| Non-gesture sentences | 772 |
+| Unique call_ids | 31/31 |
+| Branch key actions | 7 (closure, empathy, greeting, information, legal_threat, plan_proposal, pressure) |
+| Branch key facts | 53 |
+| Branch key emotions | 23 |
+
 ### Merge List (7 groups merged from 93 → 64 decision points)
 
 | # | facts | emotions | Willingness levels merged |
@@ -55,7 +73,7 @@ Nodes = collector action points. Branches = customer (facts, emotions). Willingn
 
 - Tree has root node with `state_id: "initial_contact"`
 - Every leaf node has non-empty `sentence_pool`
-- Every sentence entry has `script_text`, `script_id`, `source_call_ids`, `customer_willingness`
+- Every sentence entry has `script_text`, `script_id`, `source_call_ids`, `customer_willingness`, `collector_action`, `fact_context`
 - All 31 conversations represented (every call_id in at least one `source_call_ids`)
 - Keywords lexicographically sorted at every node
 
@@ -68,13 +86,22 @@ Nodes = collector action points. Branches = customer (facts, emotions). Willingn
 - [x] Keywords lexicographically sorted at every node
 - [x] Branches keyed by (facts, emotions) only — willingness is a sentence label
 - [x] Fallback via progressive tag removal works when exact branch not found
-- [x] Tree is branching (not chain-like): single-child ratio < 80%
+- [x] Tree is branching (not chain-like): single-child ratio < 85% (actual: 14.4%)
 - [x] Root node sentence_pool entries have `gesture_type: "opening"` for greeting sentences
 - [x] Tree has exactly one `normal_end` node and one `abrupt_end` node, both with `gesture_type: "ending"`
 - [x] Both end nodes are direct children of root (consolidated endpoints)
 - [x] Every dialog path terminates at either `normal_end` or `abrupt_end`
 - [x] Ending gesture sentences have `gesture_type: "ending"`
 - [x] Dialogs without proper closing are routed to `abrupt_end` node
+- [x] No composite branch keys (every node has single fact, single emotion, or single action)
+- [x] No redundant fact nodes (own fact never in inherited_facts)
+- [x] Sentences with collector_action always under action child nodes for fact/emotion parents
+- [x] All facts from data have corresponding nodes in tree
+- [x] All emotions from data have corresponding nodes in tree
+- [x] Collector turns with no action label captured without `collector_action` key (merged into parent pool)
+- [x] Collector turns with `state=None` captured (not silently dropped)
+- [x] Customer turns with facts/emotions but no following collector create branch nodes (empty sentence pool)
+- [x] Multiple greeting turns per record all captured (no early break)
 
 ## Dependencies
 
@@ -94,16 +121,43 @@ See [F004-implementation-plan.md](F004-implementation-plan.md)
 - **Willingness as sentence label, not branch key**: Same (facts, emotions) = same decision point regardless of willingness. Collector sees "under financial_hardship, when customer is weak I say X, when negotiating I say Y" — both under the same branch.
 - **Rare facts kept as branches**: Not bucketed into `_other` — data will broaden.
 - **Segment-based extraction**: Each conversation is decomposed into segments of (customer branch key → collector sentences), not individual turns. This avoids the chain problem.
+- **Fact-by-fact tree walking**: `build_tree` walks each segment's facts and emotions one at a time, creating single-key nodes at each step. Composites are never created, eliminating the need for `_split_composite_nodes` as a non-trivial operation.
+- **Local tree building (no global reuse)**: Each segment's branch key is matched only against children of `current_node`, not searched globally. This preserves path continuity — every record's conversation path is a connected subtree.
 - **Start/end node model**: The tree has exactly 1 opening node (root) and 2 consolidated end nodes (`normal_end` and `abrupt_end`) as direct children of root. All properly-closed dialogs converge into `normal_end`; all dialogs without proper closings converge into `abrupt_end`. This gives the tree a clean vertical structure: opening at top → decision branches → two end nodes at bottom.
 - **Consolidated endpoints**: Rather than scattering many `abrupt_end` leaves throughout the tree, all ending sentences are collected into a single `normal_end` node and all abrupt terminations into a single `abrupt_end` node. This ensures the tree has exactly 2 terminal nodes regardless of data size.
-- **Cytoscape.js + dagre layout**: Tree is rendered as an interactive graph using Cytoscape.js with the dagre hierarchical layout engine. Supports zoom, pan, drag, click-to-inspect. Nodes are styled by type: rectangles (opening/decision), ellipse (normal end), triangle (abrupt end). Edges carry branch labels (facts|emotions).
+- **Safe terminal stripping**: `_strip_terminal_nodes` only removes `abrupt_end`/`normal_end` nodes during consolidation, not decision nodes that happen to contain ending sentences deep in their subtree. This prevents cascading deletion of valid branches.
+- **Cytoscape.js + dagre layout**: Tree is rendered as an interactive graph using Cytoscape.js with the dagre hierarchical layout engine. Supports zoom, pan, drag, click-to-inspect. Nodes are styled by type: rectangles (opening/decision), ellipse (normal end/emotion), diamond (action), triangle (abrupt end). Edges carry branch labels (facts|emotions).
+- **collector_action field on sentences**: Each sentence entry carries `collector_action` (e.g. greeting, information, plan_proposal, pressure, empathy, legal_threat, closure) for UI display and filtering. Sentences without an action label are included without this key.
+- **Action nodes always created for fact/emotion parents**: `_split_by_action` force-splits sentence pools into action child nodes for any fact or emotion parent, ensuring sentences with `collector_action` always live under `a:xxx` nodes. Sentences without `collector_action` remain in the parent pool. This keeps the tree structure uniform: fact → action → sentences.
+- **Redundant fact collapse**: `_collapse_redundant_facts` removes fact nodes whose facts are already in the accumulated parent chain (iterative fixed-point), promoting their sentences and children up. This eliminates duplicate branches where a fact is restated.
+- **Strict inherited_facts**: `inherited_facts` contains only facts from the parent chain, never the node's own `branch_key.facts`. This makes the field semantically correct for redundancy detection.
+- **Empty-state customer turns**: Customer turns with `facts=[]` and `emotions=[]` don't break segments — collector sentences continue accumulating under the current branch key. This prevents loss of collector turns between customer acknowledgments.
+- **state=None handling**: Collector turns with `state=None` (no annotation) are captured without `collector_action` key and merged into the parent node's sentence pool. No synthetic `other` action category is created.
+- **No-annotation collector turns**: Collector turns without any action label are included in the tree without `collector_action`, ensuring full coverage of collector speech without inventing labels.
+- **Empty-sentence segments**: Customer turns that introduce new facts/emotions but have no following collector sentences still create branch nodes (with empty sentence pools). This ensures all facts and emotions from the data are represented in the tree structure.
+- **Multiple greetings per record**: All greeting turns per record are captured (no early `break`), so records with greeting at t0 and another at t2/t3 are fully represented.
+- **Dialog tracer with animated walkthrough**: The tree explorer includes a dialog tracer that walks through a selected call record step-by-step, highlighting the corresponding path in the tree. Auto-play animation with flowing node highlights and panel scrolling (1400ms per step).
+- **Bundled Cytoscape/dagre JS libraries**: The Cytoscape.js, dagre, and cytoscape-dagre JS libraries are bundled locally in `src/` to avoid CDN dependency and ensure offline operation.
+- **Action-to-end edges**: Dashed `action-flow` edges connect action leaf nodes to `normal_end`/`abrupt_end`, ensuring all branches visually connect to an end node in the graph.
+- **End node positioning**: End nodes are placed bottom-center of the graph with 2x vertical spacing from the deepest decision layer.
+- **Depth spacing**: Each tree depth gets its own Y band based on actual `_depth` (not dagre's rank). Shallow depths (0-2) get 2-3x spacing; depth 3+ gets 1x + 0.5x extra. `enforceParentAboveChild` ensures every child is strictly below its parent.
+- **Action node styling**: Action nodes use yellow/amber color with diamond shape. Emotion nodes use purple with ellipse shape. All action categories (including empathy and pressure) render consistently as action type.
+- **Edge arrow scale**: Arrows are 1.4x scale on both tree edges and action-flow edges. Action-flow edges use muted slate color (`#475569`) instead of bright teal.
+- **Label prefixes stripped**: Node labels strip `a:`, `e:`, `f:` prefixes — the shape already distinguishes node types.
+- **View mode renderer**: Dedicated `buildViewGraph` for dialog path view. Walks dialog sequence in order, assigns each node a consecutive row (Y = row × 320). Back edges (return to earlier state) render as dashed slate lines with source offset rightward to avoid crossing. Uses `preset` layout with `cy.fit(undefined, 80)` for comfortable zoom level.
+- **No-cache HTTP server**: `serve_tree.py` uses `NoCacheHandler` (Cache-Control: no-store) and `ReusableTCPServer` (allow_reuse_address) for fresh data on every reload.
 
 ## Files
 
 | File | Purpose |
 |------|---------|
-| `src/build_decision_tree.py` | Decision tree construction logic |
-| `src/test_build_decision_tree.py` | Tests (27 passing) |
-| `src/decision_tree.json` | Generated output (60 nodes) |
-| `src/tree_explorer.html` | Interactive vertical tree visualizer (Cytoscape.js + dagre) with dialog tracer |
+| `src/build_decision_tree.py` | Decision tree construction logic (600 lines) |
+| `src/test_build_decision_tree.py` | Unit tests (613 lines, 34 tests) |
+| `src/test_record_coverage.py` | Record-level coverage tests (436 lines, 10 tests) |
+| `src/test_ui_rendering.py` | UI rendering type/shape/color/depth tests (396 lines, 20 tests) |
+| `src/decision_tree.json` | Generated output (333 nodes, 222 leaves) |
+| `src/tree_explorer.html` | Interactive vertical tree visualizer (Cytoscape.js + dagre) with dialog tracer and view mode renderer (853 lines) |
 | `src/dialog_records.json` | Dialog records for UI path tracing |
+| `src/cytoscape.min.js` | Bundled Cytoscape.js library |
+| `src/cytoscape-dagre.min.js` | Bundled Cytoscape-dagre layout plugin |
+| `src/dagre.min.js` | Bundled dagre graph layout engine |

@@ -127,36 +127,55 @@ def build_tree(records):
                     "collector_action": "greeting",
                 }
                 _merge_sentences(root["sentence_pool"], [entry])
-                break
 
         segments = _extract_segments(turns, call_id)
 
         current_node = root
         for seg in segments:
             branch_key = seg["branch_key"]
-            branch_str = _branch_key_to_str(branch_key)
+            seg_facts = branch_key.get("facts", [])
+            seg_emotions = branch_key.get("emotions", [])
 
-            children = current_node.setdefault("children", [])
-            matching = None
-            for child in children:
-                if child.get("branch_key") == branch_key:
-                    matching = child
-                    break
+            if not branch_key:
+                _merge_sentences(current_node["sentence_pool"], seg["sentences"])
+            else:
+                for fact in seg_facts:
+                    single_bk = {"facts": [fact]}
+                    children = current_node.setdefault("children", [])
+                    matching = None
+                    for child in children:
+                        if child.get("branch_key") == single_bk:
+                            matching = child
+                            break
+                    if matching is None:
+                        matching = {
+                            "state_id": f"f:{fact}",
+                            "branch_key": single_bk,
+                            "sentence_pool": [],
+                            "children": [],
+                        }
+                        children.append(matching)
+                    current_node = matching
 
-            if matching is None:
-                matching = _find_node_by_branch_key(root, branch_key)
+                for emotion in seg_emotions:
+                    single_bk = {"emotions": [emotion]}
+                    children = current_node.setdefault("children", [])
+                    matching = None
+                    for child in children:
+                        if child.get("branch_key") == single_bk:
+                            matching = child
+                            break
+                    if matching is None:
+                        matching = {
+                            "state_id": f"e:{emotion}",
+                            "branch_key": single_bk,
+                            "sentence_pool": [],
+                            "children": [],
+                        }
+                        children.append(matching)
+                    current_node = matching
 
-            if matching is None:
-                matching = {
-                    "state_id": branch_str,
-                    "branch_key": branch_key,
-                    "sentence_pool": [],
-                    "children": [],
-                }
-                children.append(matching)
-
-            _merge_sentences(matching["sentence_pool"], seg["sentences"])
-            current_node = matching
+                _merge_sentences(current_node["sentence_pool"], seg["sentences"])
 
             if seg.get("is_closing"):
                 has_closing = True
@@ -175,51 +194,49 @@ def build_tree(records):
 
 def _extract_segments(turns, call_id):
     segments = []
-    current_branch_key = None
+    current_branch_key = {}
     current_sentences = []
     last_willingness = None
     is_closing = False
 
     for turn in turns:
         state = turn.get("state")
-        if not state:
-            continue
 
         if turn["role"] == "客户":
-            new_branch_key = _make_branch_key(state)
-            last_willingness = state.get("willingness")
+            new_branch_key = _make_branch_key(state or {})
+            last_willingness = (state or {}).get("willingness")
 
-            if new_branch_key != current_branch_key:
-                if current_branch_key is not None and current_sentences:
-                    segments.append({
-                        "branch_key": current_branch_key,
-                        "sentences": current_sentences,
-                        "is_closing": is_closing,
-                    })
+            if new_branch_key and new_branch_key != current_branch_key:
+                segments.append({
+                    "branch_key": current_branch_key,
+                    "sentences": current_sentences,
+                    "is_closing": is_closing,
+                })
                 current_branch_key = new_branch_key
                 current_sentences = []
                 is_closing = False
 
         elif turn["role"] == "催收员":
-            action = state.get("action")
-            if action and current_branch_key is not None:
-                entry = {
-                    "script_text": turn["text"],
-                    "script_id": f"{call_id}_t{turn['turn_index']}",
-                    "source_call_ids": [call_id],
-                    "customer_willingness": last_willingness,
-                    "collector_action": action,
-                }
-                current_sentences.append(entry)
-                if action in CLOSING_ACTIONS:
-                    is_closing = True
+            action = (state or {}).get("action")
+            if action == "greeting":
+                continue
+            entry = {
+                "script_text": turn["text"],
+                "script_id": f"{call_id}_t{turn['turn_index']}",
+                "source_call_ids": [call_id],
+                "customer_willingness": last_willingness,
+            }
+            if action:
+                entry["collector_action"] = action
+            current_sentences.append(entry)
+            if action in CLOSING_ACTIONS:
+                is_closing = True
 
-    if current_branch_key is not None and current_sentences:
-        segments.append({
-            "branch_key": current_branch_key,
-            "sentences": current_sentences,
-            "is_closing": is_closing,
-        })
+    segments.append({
+        "branch_key": current_branch_key,
+        "sentences": current_sentences,
+        "is_closing": is_closing,
+    })
 
     return segments
 
@@ -314,14 +331,9 @@ def _strip_terminal_nodes(node):
         if sid == "abrupt_end" or sid == "normal_end":
             to_remove.append(i)
             continue
-        is_ending_leaf = not child.get("children") and any(
-            s.get("gesture_type") == "ending" for s in child.get("sentence_pool", [])
-        )
-        if is_ending_leaf:
-            to_remove.append(i)
-            continue
         _strip_terminal_nodes(child)
     for i in sorted(to_remove, reverse=True):
+        _collect_ending_sentences(children[i], node.get("_ending_buf", []))
         children.pop(i)
 
 
@@ -330,6 +342,151 @@ def _ensure_abrupt_end(node, call_id, turns):
         if child.get("state_id") == "abrupt_end":
             return
     node.setdefault("children", []).append(_make_abrupt_end_node())
+
+
+def _split_composite_nodes(node):
+    new_children = []
+    for child in node.get("children", []):
+        _split_composite_nodes(child)
+        facts = child.get("branch_key", {}).get("facts", [])
+        emotions = child.get("branch_key", {}).get("emotions", [])
+        if len(facts) <= 1 and not emotions:
+            new_children.append(child)
+            continue
+        sorted_facts = sorted(facts)
+        sorted_emotions = sorted(emotions)
+        chain = []
+        for i, fact in enumerate(sorted_facts):
+            is_last = i == len(sorted_facts) - 1
+            n = {
+                "state_id": f"f:{fact}",
+                "branch_key": {"facts": [fact]},
+                "sentence_pool": [] if not is_last else [],
+                "children": [] if not is_last else [],
+            }
+            chain.append(n)
+        if sorted_emotions:
+            emotion_node = {
+                "state_id": f"e:{','.join(sorted_emotions)}",
+                "branch_key": {"emotions": sorted_emotions},
+                "sentence_pool": child.get("sentence_pool", []),
+                "children": child.get("children", []),
+            }
+            if chain:
+                chain[-1]["children"] = [emotion_node]
+            else:
+                chain.append(emotion_node)
+        else:
+            if chain:
+                chain[-1]["sentence_pool"] = child.get("sentence_pool", [])
+                chain[-1]["children"] = child.get("children", [])
+        for j in range(len(chain) - 1):
+            if not chain[j].get("children"):
+                chain[j]["children"] = [chain[j + 1]]
+            else:
+                chain[j]["children"].append(chain[j + 1])
+        new_children.append(chain[0])
+    node["children"] = new_children
+
+
+def _merge_sibling_facts(node):
+    children = node.get("children", [])
+    merged = {}
+    others = []
+    for child in children:
+        facts = child.get("branch_key", {}).get("facts", [])
+        emotions = child.get("branch_key", {}).get("emotions", [])
+        if len(facts) == 1 and not emotions:
+            key = facts[0]
+            if key not in merged:
+                merged[key] = child
+            else:
+                existing = merged[key]
+                if not existing.get("sentence_pool"):
+                    existing["sentence_pool"] = child.get("sentence_pool", [])
+                for c in child.get("children", []):
+                    existing.setdefault("children", []).append(c)
+        else:
+            others.append(child)
+    for child in list(merged.values()) + others:
+        _merge_sibling_facts(child)
+    node["children"] = list(merged.values()) + others
+
+
+def _split_by_action(node):
+    for child in node.get("children", []):
+        _split_by_action(child)
+    pool = node.get("sentence_pool", [])
+    if not pool:
+        return
+    bk = node.get("branch_key", {})
+    has_facts = bool(bk.get("facts"))
+    has_emotions = bool(bk.get("emotions"))
+    force_split = has_facts or has_emotions
+    by_action = {}
+    unassigned = []
+    for s in pool:
+        action = s.get("collector_action")
+        if action:
+            by_action.setdefault(action, []).append(s)
+        else:
+            unassigned.append(s)
+    if not force_split and len(by_action) <= 1:
+        return
+    node["sentence_pool"] = unassigned
+    action_children = []
+    for action in sorted(by_action):
+        action_node = {
+            "state_id": f"a:{action}",
+            "branch_key": {"action": action},
+            "sentence_pool": by_action[action],
+            "children": [],
+        }
+        action_children.append(action_node)
+    node["children"] = action_children + node.get("children", [])
+
+
+def _propagate_facts(node, accumulated_facts):
+    own_facts = node.get("branch_key", {}).get("facts", [])
+    node["inherited_facts"] = list(accumulated_facts)
+    for entry in node.get("sentence_pool", []):
+        entry["fact_context"] = list(accumulated_facts)
+    merged = sorted(set(accumulated_facts) | set(own_facts))
+    for child in node.get("children", []):
+        _propagate_facts(child, merged)
+
+
+def _collapse_redundant_facts(node, accumulated_facts=None):
+    if accumulated_facts is None:
+        accumulated_facts = set()
+    own_facts = set(node.get("branch_key", {}).get("facts", []))
+    changed = True
+    while changed:
+        changed = False
+        new_children = []
+        for child in node.get("children", []):
+            child_facts = set(child.get("branch_key", {}).get("facts", []))
+            child_emotions = child.get("branch_key", {}).get("emotions", [])
+            child_action = child.get("branch_key", {}).get("action", {})
+            is_redundant_fact = (
+                child_facts
+                and not child_emotions
+                and not child_action
+                and child_facts.issubset(accumulated_facts | own_facts)
+            )
+            if is_redundant_fact:
+                parent_sentences = node.get("sentence_pool", [])
+                child_sentences = child.get("sentence_pool", [])
+                parent_sentences.extend(child_sentences)
+                for grandchild in child.get("children", []):
+                    new_children.append(grandchild)
+                changed = True
+            else:
+                new_children.append(child)
+        node["children"] = new_children
+    current_facts = accumulated_facts | own_facts
+    for child in node["children"]:
+        _collapse_redundant_facts(child, current_facts)
 
 
 def _propagate_sentences(node, parent_pool=None):
@@ -419,6 +576,11 @@ def write_decision_tree(records=None, output_path=None):
         output_path = os.path.join(os.path.dirname(__file__), "decision_tree.json")
 
     tree = build_tree(records)
+    _split_composite_nodes(tree)
+    _merge_sibling_facts(tree)
+    _collapse_redundant_facts(tree)
+    _split_by_action(tree)
+    _propagate_facts(tree, [])
 
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(tree, f, indent=2, ensure_ascii=False)
