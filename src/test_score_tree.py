@@ -8,15 +8,20 @@ import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 from score_tree import (
     BITMASK_FIELDS,
+    BG_BACKGROUND_FIELDS,
     build_context_lookup,
+    build_customer_info_lookup,
     build_reward_lookup,
+    compute_bg_background,
     compute_bg_constraints,
     compute_hwr,
     compute_sas_for_pool,
     cosine_similarity,
     encode_bitmask,
+    encode_bitmask_int,
     score_tree,
     _extract_bg_constraints,
+    _extract_bg_background,
     _score_sentence_pool,
 )
 
@@ -29,6 +34,11 @@ def context_lookup():
 @pytest.fixture
 def reward_lookup():
     return build_reward_lookup()
+
+
+@pytest.fixture
+def customer_info_lookup():
+    return build_customer_info_lookup()
 
 
 class TestContextLookup:
@@ -51,6 +61,17 @@ class TestContextLookup:
         assert "2317941550352385028" in context_lookup
 
 
+class TestCustomerInfoLookup:
+    def test_returns_31_records(self, customer_info_lookup):
+        assert len(customer_info_lookup) == 31
+
+    def test_has_chinese_fields(self, customer_info_lookup):
+        ci = customer_info_lookup["2317941550352385028"]
+        assert "年龄" in ci
+        assert "学历" in ci
+        assert "行业" in ci
+
+
 class TestRewardLookup:
     def test_returns_31_records(self, reward_lookup):
         assert len(reward_lookup) == 31
@@ -64,26 +85,35 @@ class TestRewardLookup:
 
 
 class TestBitmaskEncoding:
-    def test_all_false_is_zero(self):
-        assert encode_bitmask({f: False for f in BITMASK_FIELDS}) == 0
+    def test_all_false_is_zero_dict(self):
+        bg = {f: False for f in BITMASK_FIELDS}
+        result = encode_bitmask(bg)
+        assert isinstance(result, dict)
+        assert all(v == 0 for v in result.values())
 
-    def test_all_true_is_31(self):
-        assert encode_bitmask({f: True for f in BITMASK_FIELDS}) == 31
+    def test_all_true_is_all_ones_dict(self):
+        bg = {f: True for f in BITMASK_FIELDS}
+        result = encode_bitmask(bg)
+        assert all(v == 1 for v in result.values())
 
     def test_single_bit_0(self):
         bg = {f: False for f in BITMASK_FIELDS}
         bg["has_auto_loan"] = True
-        assert encode_bitmask(bg) == 1
+        result = encode_bitmask(bg)
+        assert result["has_auto_loan"] == 1
+        assert result["has_mortgage"] == 0
 
-    def test_single_bit_1(self):
-        bg = {f: False for f in BITMASK_FIELDS}
-        bg["has_mortgage"] = True
-        assert encode_bitmask(bg) == 2
+    def test_bitmask_int_from_dict(self):
+        bg_bitmask = {"has_auto_loan": 1, "has_mortgage": 0, "has_negotiation_history": 0, "social_insurance_stable": 0, "credit_rating_good": 0}
+        assert encode_bitmask_int(bg_bitmask) == 1
 
-    def test_single_bit_4(self):
-        bg = {f: False for f in BITMASK_FIELDS}
-        bg["credit_rating_good"] = True
-        assert encode_bitmask(bg) == 16
+    def test_bitmask_int_all_ones(self):
+        bg_bitmask = {f: 1 for f in BITMASK_FIELDS}
+        assert encode_bitmask_int(bg_bitmask) == 31
+
+    def test_bitmask_int_all_zeros(self):
+        bg_bitmask = {f: 0 for f in BITMASK_FIELDS}
+        assert encode_bitmask_int(bg_bitmask) == 0
 
     def test_extract_bg_constraints_from_context(self):
         ctx = {
@@ -126,11 +156,36 @@ class TestBitmaskEncoding:
         assert bg["has_mortgage"] is False
         assert bg["credit_rating_good"] is True
 
-    def test_bitmask_range(self, context_lookup):
+    def test_bitmask_int_range(self, context_lookup):
         for cid, ctx in context_lookup.items():
             bg = _extract_bg_constraints(ctx)
             mask = encode_bitmask(bg)
-            assert 0 <= mask <= 31
+            assert 0 <= encode_bitmask_int(mask) <= 31
+
+
+class TestBgBackground:
+    def test_extract_from_customer_info(self, customer_info_lookup):
+        ci = customer_info_lookup["2317941550352385028"]
+        bg = _extract_bg_background(ci)
+        assert "age" in bg
+        assert "gender" in bg
+        assert "education" in bg
+        assert "industry" in bg
+
+    def test_compute_single_source(self, customer_info_lookup):
+        bg = compute_bg_background(["2317941550352385028"], customer_info_lookup)
+        assert "age" in bg
+        assert isinstance(bg["age"], str)
+
+    def test_compute_empty(self):
+        bg = compute_bg_background([], {})
+        for eng, _ in BG_BACKGROUND_FIELDS:
+            assert eng in bg
+            assert bg[eng] == ""
+
+    def test_all_7_fields_present(self, customer_info_lookup):
+        bg = compute_bg_background(["2317941550352385028"], customer_info_lookup)
+        assert len(bg) == 7
 
 
 class TestHWR:
@@ -209,65 +264,89 @@ class TestSAS:
 
 
 class TestScoreSentencePool:
-    def test_augments_all_fields(self, context_lookup, reward_lookup):
+    def test_augments_all_fields(self, context_lookup, reward_lookup, customer_info_lookup):
         pool = [
             {"script_text": "hello", "script_id": "t1", "source_call_ids": ["2317941550352385028"]},
         ]
-        _score_sentence_pool(pool, context_lookup, reward_lookup)
+        _score_sentence_pool(pool, context_lookup, reward_lookup, customer_info_lookup)
         s = pool[0]
-        assert "bg_constraints" in s
-        assert "bg_bitmask" in s
-        assert "win_rate" in s
-        assert "sas" in s
-        assert "uplift_score" in s
-        assert "csi" in s
-        assert "deferred" in s
+        for field in ["bg_constraints", "bg_bitmask", "bg_bitmask_int", "bg_background", "win_rate", "sas", "uplift_score", "csi", "deferred"]:
+            assert field in s, f"missing {field}"
 
-    def test_deferred_fields(self, context_lookup, reward_lookup):
+    def test_bg_bitmask_is_dict(self, context_lookup, reward_lookup, customer_info_lookup):
         pool = [
             {"script_text": "hello", "script_id": "t1", "source_call_ids": ["2317941550352385028"]},
         ]
-        _score_sentence_pool(pool, context_lookup, reward_lookup)
+        _score_sentence_pool(pool, context_lookup, reward_lookup, customer_info_lookup)
+        s = pool[0]
+        assert isinstance(s["bg_bitmask"], dict)
+        assert all(f in s["bg_bitmask"] for f in BITMASK_FIELDS)
+        assert all(v in (0, 1) for v in s["bg_bitmask"].values())
+
+    def test_bg_bitmask_int_is_integer(self, context_lookup, reward_lookup, customer_info_lookup):
+        pool = [
+            {"script_text": "hello", "script_id": "t1", "source_call_ids": ["2317941550352385028"]},
+        ]
+        _score_sentence_pool(pool, context_lookup, reward_lookup, customer_info_lookup)
+        s = pool[0]
+        assert isinstance(s["bg_bitmask_int"], int)
+        assert 0 <= s["bg_bitmask_int"] <= 31
+
+    def test_bg_background_has_fields(self, context_lookup, reward_lookup, customer_info_lookup):
+        pool = [
+            {"script_text": "hello", "script_id": "t1", "source_call_ids": ["2317941550352385028"]},
+        ]
+        _score_sentence_pool(pool, context_lookup, reward_lookup, customer_info_lookup)
+        s = pool[0]
+        assert isinstance(s["bg_background"], dict)
+        for eng, _ in BG_BACKGROUND_FIELDS:
+            assert eng in s["bg_background"]
+
+    def test_deferred_fields(self, context_lookup, reward_lookup, customer_info_lookup):
+        pool = [
+            {"script_text": "hello", "script_id": "t1", "source_call_ids": ["2317941550352385028"]},
+        ]
+        _score_sentence_pool(pool, context_lookup, reward_lookup, customer_info_lookup)
         s = pool[0]
         assert s["uplift_score"] == 0
         assert s["csi"] == 0
         assert s["deferred"] is True
 
-    def test_win_rate_in_range(self, context_lookup, reward_lookup):
+    def test_win_rate_in_range(self, context_lookup, reward_lookup, customer_info_lookup):
         pool = [
             {"script_text": "hello", "script_id": "t1", "source_call_ids": ["2317941550352385028"]},
         ]
-        _score_sentence_pool(pool, context_lookup, reward_lookup)
+        _score_sentence_pool(pool, context_lookup, reward_lookup, customer_info_lookup)
         assert 0 <= pool[0]["win_rate"] <= 1
 
-    def test_sas_computed(self, context_lookup, reward_lookup):
+    def test_sas_computed(self, context_lookup, reward_lookup, customer_info_lookup):
         pool = [
             {"script_text": "您可以尽快还款吗", "script_id": "t1", "source_call_ids": ["2317941550352385028"]},
             {"script_text": "我们建议您办理分期", "script_id": "t2", "source_call_ids": ["2317941550352385028"]},
         ]
-        _score_sentence_pool(pool, context_lookup, reward_lookup)
+        _score_sentence_pool(pool, context_lookup, reward_lookup, customer_info_lookup)
         assert 0 <= pool[0]["sas"] <= 1
         assert 0 <= pool[1]["sas"] <= 1
 
 
 class TestScoreTree:
-    def test_preserves_structure(self, context_lookup, reward_lookup):
+    def test_preserves_structure(self, context_lookup, reward_lookup, customer_info_lookup):
         with open(os.path.join(os.path.dirname(__file__), "decision_tree.json"), encoding="utf-8") as f:
             tree = json.load(f)
         import copy
         original = copy.deepcopy(tree)
-        scored = score_tree(tree, context_lookup, reward_lookup)
+        scored = score_tree(tree, context_lookup, reward_lookup, customer_info_lookup)
         assert scored["state_id"] == original["state_id"]
         assert len(scored.get("children", [])) == len(original.get("children", []))
 
-    def test_all_sentences_scored(self, context_lookup, reward_lookup):
+    def test_all_sentences_scored(self, context_lookup, reward_lookup, customer_info_lookup):
         with open(os.path.join(os.path.dirname(__file__), "decision_tree.json"), encoding="utf-8") as f:
             tree = json.load(f)
-        scored = score_tree(tree, context_lookup, reward_lookup)
+        scored = score_tree(tree, context_lookup, reward_lookup, customer_info_lookup)
         missing = []
         def check(node):
             for s in node.get("sentence_pool", []):
-                for field in ["bg_constraints", "bg_bitmask", "win_rate", "sas", "uplift_score", "csi", "deferred"]:
+                for field in ["bg_constraints", "bg_bitmask", "bg_bitmask_int", "bg_background", "win_rate", "sas", "uplift_score", "csi", "deferred"]:
                     if field not in s:
                         missing.append((s.get("script_id"), field))
             for child in node.get("children", []):

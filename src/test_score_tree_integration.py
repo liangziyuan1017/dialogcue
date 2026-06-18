@@ -7,9 +7,11 @@ import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 from score_tree import (
     BITMASK_FIELDS,
+    BG_BACKGROUND_FIELDS,
     build_context_lookup,
+    build_customer_info_lookup,
     build_reward_lookup,
-    encode_bitmask,
+    encode_bitmask_int,
     score_tree,
     _load_decision_tree,
 )
@@ -53,15 +55,31 @@ class TestIntegrationAllSentencesScored:
             for f in BITMASK_FIELDS:
                 assert f in s["bg_constraints"], f"{s['script_id']} missing {f}"
 
-    def test_every_sentence_has_bg_bitmask(self, scored_tree):
+    def test_every_sentence_has_bg_bitmask_dict(self, scored_tree):
         for s in _all_sentences(scored_tree):
             assert "bg_bitmask" in s
-            assert 0 <= s["bg_bitmask"] <= 31
+            assert isinstance(s["bg_bitmask"], dict)
+            for f in BITMASK_FIELDS:
+                assert f in s["bg_bitmask"]
+                assert s["bg_bitmask"][f] in (0, 1)
 
-    def test_bitmask_consistent_with_constraints(self, scored_tree):
+    def test_every_sentence_has_bg_bitmask_int(self, scored_tree):
         for s in _all_sentences(scored_tree):
-            expected = encode_bitmask(s["bg_constraints"])
-            assert s["bg_bitmask"] == expected, f"{s['script_id']} bitmask mismatch"
+            assert "bg_bitmask_int" in s
+            assert isinstance(s["bg_bitmask_int"], int)
+            assert 0 <= s["bg_bitmask_int"] <= 31
+
+    def test_bitmask_int_consistent_with_dict(self, scored_tree):
+        for s in _all_sentences(scored_tree):
+            expected = encode_bitmask_int(s["bg_bitmask"])
+            assert s["bg_bitmask_int"] == expected, f"{s['script_id']} bitmask_int mismatch"
+
+    def test_every_sentence_has_bg_background(self, scored_tree):
+        for s in _all_sentences(scored_tree):
+            assert "bg_background" in s
+            assert isinstance(s["bg_background"], dict)
+            for eng, _ in BG_BACKGROUND_FIELDS:
+                assert eng in s["bg_background"], f"{s['script_id']} missing bg_background.{eng}"
 
     def test_every_sentence_has_win_rate(self, scored_tree):
         for s in _all_sentences(scored_tree):
@@ -83,21 +101,21 @@ class TestIntegrationAllSentencesScored:
 class TestBitmaskFiltering:
     def test_subset_compatibility(self, scored_tree):
         for s in _all_sentences(scored_tree):
-            sb = s["bg_bitmask"]
+            sb = s["bg_bitmask_int"]
             query = 0b11111
             assert (sb & query) == sb
 
     def test_zero_bitmask_universal(self, scored_tree):
-        zero_mask = [s for s in _all_sentences(scored_tree) if s["bg_bitmask"] == 0]
+        zero_mask = [s for s in _all_sentences(scored_tree) if s["bg_bitmask_int"] == 0]
         assert len(zero_mask) > 0
         for s in zero_mask:
             for query in [0b00000, 0b00001, 0b11111]:
-                assert (s["bg_bitmask"] & query) == s["bg_bitmask"]
+                assert (s["bg_bitmask_int"] & query) == s["bg_bitmask_int"]
 
     def test_bitmask_filter_produces_subset(self, scored_tree):
         all_sentences = _all_sentences(scored_tree)
         query = 0b00001
-        compatible = [s for s in all_sentences if (s["bg_bitmask"] & query) == s["bg_bitmask"]]
+        compatible = [s for s in all_sentences if (s["bg_bitmask_int"] & query) == s["bg_bitmask_int"]]
         assert len(compatible) <= len(all_sentences)
         assert len(compatible) > 0
 
@@ -115,7 +133,6 @@ class TestTreeStructurePreserved:
         assert count_nodes(scored_tree) == count_nodes(original)
 
     def test_r1_sentences_have_higher_hwr(self, scored_tree):
-        context_lookup = build_context_lookup()
         reward_lookup = build_reward_lookup()
         r1_ids = {cid for cid, r in reward_lookup.items() if r == 1}
         r1_sentences = []

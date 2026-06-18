@@ -34,6 +34,12 @@ def build_context_lookup(records=None):
     return {r["call_id"]: r["context"] for r in records}
 
 
+def build_customer_info_lookup(records=None):
+    if records is None:
+        records = _load_output_aligned()
+    return {r["call_id"]: r.get("customer_info", {}) for r in records}
+
+
 def build_reward_lookup(records=None):
     if records is None:
         records = _load_output_rewarded()
@@ -60,9 +66,13 @@ def _extract_bg_constraints(context):
 
 
 def encode_bitmask(bg_constraints):
+    return {field: int(bg_constraints.get(field, False)) for field in BITMASK_FIELDS}
+
+
+def encode_bitmask_int(bg_bitmask):
     mask = 0
     for i, field in enumerate(BITMASK_FIELDS):
-        if bg_constraints.get(field, False):
+        if bg_bitmask.get(field, 0):
             mask |= (1 << i)
     return mask
 
@@ -80,6 +90,41 @@ def compute_bg_constraints(call_ids, context_lookup):
     result = {}
     for field in BITMASK_FIELDS:
         result[field] = all(src[field] for src in per_source)
+    return result
+
+
+BG_BACKGROUND_FIELDS = [
+    ("age", "年龄"),
+    ("gender", "性别"),
+    ("education", "学历"),
+    ("industry", "行业"),
+    ("is_cash_out", "是否为套现客户"),
+    ("is_restricted", "是否管制"),
+    ("complaint_history", "历史投诉情况"),
+]
+
+
+def _extract_bg_background(customer_info):
+    result = {}
+    for eng_key, cn_key in BG_BACKGROUND_FIELDS:
+        result[eng_key] = customer_info.get(cn_key, "")
+    return result
+
+
+def compute_bg_background(call_ids, customer_info_lookup):
+    if not call_ids:
+        return {eng: "" for eng, _ in BG_BACKGROUND_FIELDS}
+    per_source = []
+    for cid in call_ids:
+        ci = customer_info_lookup.get(cid)
+        if ci is not None:
+            per_source.append(_extract_bg_background(ci))
+    if not per_source:
+        return {eng: "" for eng, _ in BG_BACKGROUND_FIELDS}
+    result = {}
+    for eng_key, _ in BG_BACKGROUND_FIELDS:
+        values = [src[eng_key] for src in per_source if src[eng_key] != ""]
+        result[eng_key] = values[0] if len(set(values)) == 1 else ", ".join(sorted(set(values)))
     return result
 
 
@@ -148,12 +193,15 @@ def compute_sas_for_pool(sentences, embeddings_map=None):
     return scores
 
 
-def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup):
+def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_info_lookup):
     for s in sentence_pool:
         call_ids = s.get("source_call_ids", [])
         bg = compute_bg_constraints(call_ids, context_lookup)
         s["bg_constraints"] = bg
-        s["bg_bitmask"] = encode_bitmask(bg)
+        bg_bitmask = encode_bitmask(bg)
+        s["bg_bitmask"] = bg_bitmask
+        s["bg_bitmask_int"] = encode_bitmask_int(bg_bitmask)
+        s["bg_background"] = compute_bg_background(call_ids, customer_info_lookup)
         s["win_rate"] = compute_hwr(call_ids, reward_lookup)
         s["uplift_score"] = 0
         s["csi"] = 0
@@ -164,12 +212,13 @@ def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup):
     return sentence_pool
 
 
-def score_tree(tree, context_lookup, reward_lookup):
+def score_tree(tree, context_lookup, reward_lookup, customer_info_lookup):
     def _walk(node):
         _score_sentence_pool(
             node.get("sentence_pool", []),
             context_lookup,
             reward_lookup,
+            customer_info_lookup,
         )
         for child in node.get("children", []):
             _walk(child)
@@ -184,7 +233,8 @@ def write_scored_tree(output_path=None):
     tree = _load_decision_tree()
     context_lookup = build_context_lookup()
     reward_lookup = build_reward_lookup()
-    scored = score_tree(tree, context_lookup, reward_lookup)
+    customer_info_lookup = build_customer_info_lookup()
+    scored = score_tree(tree, context_lookup, reward_lookup, customer_info_lookup)
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(scored, f, indent=2, ensure_ascii=False)
     return scored
