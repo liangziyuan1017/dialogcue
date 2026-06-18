@@ -82,6 +82,10 @@ Augmented decision tree written to `/src/decision_tree_scored.json`. Structure i
 - [plan_feature_base.md](../../plan_feature_base.md) — F005 spec
 - [ADR-006](../../decisions/ADR-006-context-constraint-mapping.md) — Context constraint mapping (9 fields → 5 bitmask)
 
+## Implementation Plan
+
+See [F005-implementation-plan.md](F005-implementation-plan.md)
+
 ## Design Decisions
 
 - **5 bitmask fields from 9 context fields**: Only boolean-derivable fields are bitmask-encoded (has_auto_loan, has_mortgage, has_negotiation_history, social_insurance_stable, credit_rating_good). Numeric fields (total_debt, external_debt, days_delinquent) and list fields (available_plans) remain in bg_constraints dict for potential range/list filtering in F006.
@@ -94,4 +98,9 @@ Augmented decision tree written to `/src/decision_tree_scored.json`. Structure i
 
 ## Files
 
-(To be filled during implementation)
+| File | Purpose |
+|------|---------|
+| `src/score_tree.py` | Context tagging, HWR, SAS computation, scored tree output |
+| `src/test_score_tree.py` | Unit tests for scoring functions |
+| `src/test_score_tree_integration.py` | Integration tests on real scored tree |
+| `src/decision_tree_scored.json` | Generated output (augmented decision tree) |
