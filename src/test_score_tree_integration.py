@@ -43,8 +43,8 @@ def _all_call_ids(node):
 
 
 class TestIntegrationAllSentencesScored:
-    def test_1334_sentences(self, scored_tree):
-        assert len(_all_sentences(scored_tree)) == 1334
+    def test_998_sentences(self, scored_tree):
+        assert len(_all_sentences(scored_tree)) == 998
 
     def test_31_call_ids(self, scored_tree):
         assert len(_all_call_ids(scored_tree)) == 31

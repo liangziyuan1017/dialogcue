@@ -6,6 +6,71 @@ from collections import defaultdict
 
 CLOSING_ACTIONS = {"closure", "goodbye"}
 
+ACK_KEYWORDS = {"嗯", "好", "对", "是", "哦", "噢", "啊", "喂", "嗯嗯", "好好", "对对", "是的", "明白", "知道", "了解", "嗯好", "好嗯", "嗯对", "对嗯"}
+
+
+def _is_acknowledgment(turn):
+    text = turn.get("text", "").strip()
+    if len(text) > 6:
+        return False
+    state = turn.get("state")
+    has_annotation = False
+    if state:
+        if state.get("facts"):
+            has_annotation = True
+        if state.get("emotions"):
+            has_annotation = True
+        if state.get("willingness"):
+            has_annotation = True
+    if has_annotation:
+        return False
+    return text in ACK_KEYWORDS or any(text.startswith(kw) for kw in ACK_KEYWORDS if len(kw) <= 2)
+
+
+def _merge_collector_fragments(turns):
+    merged = []
+    collector_buffer = []
+
+    def flush_buffer():
+        nonlocal collector_buffer
+        if not collector_buffer:
+            return
+        if len(collector_buffer) == 1:
+            merged.append(collector_buffer[0])
+        else:
+            first = collector_buffer[0]
+            combined_text = "".join(t["text"] for t in collector_buffer)
+            indices = [t["turn_index"] for t in collector_buffer]
+            merged_turn = dict(first)
+            merged_turn["text"] = combined_text
+            merged_turn["merged_from"] = indices
+            merged.append(merged_turn)
+        collector_buffer = []
+
+    for turn in turns:
+        if turn["role"] == "催收员":
+            state = turn.get("state") or {}
+            is_greeting = state.get("action") == "greeting"
+            if is_greeting and collector_buffer:
+                flush_buffer()
+            collector_buffer.append(turn)
+            if is_greeting:
+                flush_buffer()
+        elif turn["role"] == "客户" and _is_acknowledgment(turn):
+            if collector_buffer:
+                state = collector_buffer[-1].get("state") or {}
+                if state.get("action") == "greeting":
+                    flush_buffer()
+                    merged.append(turn)
+                    continue
+            continue
+        else:
+            flush_buffer()
+            merged.append(turn)
+
+    flush_buffer()
+    return merged
+
 
 def _load_rewarded():
     data_path = os.path.join(os.path.dirname(__file__), "output_rewarded.py")
@@ -113,19 +178,27 @@ def build_tree(records):
     for record in records:
         call_id = record.get("call_id", "")
         turns = record.get("turns_annotated", [])
+        turns = _merge_collector_fragments(turns)
 
         has_closing = False
 
         for turn in turns:
             if turn["role"] == "催收员" and turn.get("state", {}).get("action") == "greeting":
+                merged_from = turn.get("merged_from")
+                if merged_from and len(merged_from) > 1:
+                    script_id = f"{call_id}_t{merged_from[0]}_t{merged_from[-1]}"
+                else:
+                    script_id = f"{call_id}_t{turn['turn_index']}"
                 entry = {
                     "script_text": turn["text"],
-                    "script_id": f"{call_id}_t{turn['turn_index']}",
+                    "script_id": script_id,
                     "source_call_ids": [call_id],
                     "customer_willingness": None,
                     "gesture_type": "opening",
                     "collector_action": "greeting",
                 }
+                if merged_from and len(merged_from) > 1:
+                    entry["merged_from"] = merged_from
                 _merge_sentences(root["sentence_pool"], [entry])
 
         segments = _extract_segments(turns, call_id)
@@ -220,12 +293,19 @@ def _extract_segments(turns, call_id):
             action = (state or {}).get("action")
             if action == "greeting":
                 continue
+            merged_from = turn.get("merged_from")
+            if merged_from and len(merged_from) > 1:
+                script_id = f"{call_id}_t{merged_from[0]}_t{merged_from[-1]}"
+            else:
+                script_id = f"{call_id}_t{turn['turn_index']}"
             entry = {
                 "script_text": turn["text"],
-                "script_id": f"{call_id}_t{turn['turn_index']}",
+                "script_id": script_id,
                 "source_call_ids": [call_id],
                 "customer_willingness": last_willingness,
             }
+            if merged_from and len(merged_from) > 1:
+                entry["merged_from"] = merged_from
             if action:
                 entry["collector_action"] = action
             current_sentences.append(entry)
@@ -588,6 +668,46 @@ def write_decision_tree(records=None, output_path=None):
     return _count_nodes(tree)
 
 
+def write_dialog_records(records=None, output_path=None):
+    if records is None:
+        records = _load_rewarded()
+    if output_path is None:
+        output_path = os.path.join(os.path.dirname(__file__), "dialog_records.json")
+
+    dialog_records = []
+    for record in records:
+        call_id = record.get("call_id", "")
+        turns = record.get("turns_annotated", [])
+        merged_turns = _merge_collector_fragments(turns)
+
+        dialog_turns = []
+        for t in merged_turns:
+            state = t.get("state") or {}
+            entry = {
+                "turn_index": t["turn_index"],
+                "role": t["role"],
+                "text": t["text"],
+                "action": state.get("action"),
+                "facts": state.get("facts", []),
+                "emotions": state.get("emotions", []),
+                "willingness": state.get("willingness"),
+            }
+            merged_from = t.get("merged_from")
+            if merged_from and len(merged_from) > 1:
+                entry["merged_from"] = merged_from
+            dialog_turns.append(entry)
+
+        dialog_records.append({
+            "call_id": call_id,
+            "turns": dialog_turns,
+        })
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(dialog_records, f, indent=2, ensure_ascii=False)
+
+    return len(dialog_records)
+
+
 def _count_nodes(node):
     count = 1
     for child in node.get("children", []):
@@ -597,4 +717,6 @@ def _count_nodes(node):
 
 if __name__ == "__main__":
     count = write_decision_tree()
+    dlg_count = write_dialog_records()
     print(f"Wrote decision tree with {count} nodes to decision_tree.json")
+    print(f"Wrote {dlg_count} dialog records to dialog_records.json")

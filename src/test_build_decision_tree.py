@@ -12,6 +12,8 @@ from src.build_decision_tree import (
     _split_by_action,
     _propagate_facts,
     _collapse_redundant_facts,
+    _is_acknowledgment,
+    _merge_collector_fragments,
 )
 
 
@@ -611,3 +613,121 @@ def test_sentences_under_action_nodes_for_fact_emotion_parents():
                 f"Node {node['state_id']} (facts/emotion) has sentences with collector_action "
                 f"directly in pool — should be under action child node"
             )
+
+
+class TestIsAcknowledgment:
+    def test_simple_ack(self):
+        assert _is_acknowledgment({"role": "客户", "text": "嗯", "state": None})
+
+    def test_ack_with_no_state(self):
+        assert _is_acknowledgment({"role": "客户", "text": "好", "state": {}})
+
+    def test_ack_with_empty_state(self):
+        assert _is_acknowledgment({"role": "客户", "text": "对", "state": {"facts": [], "emotions": [], "willingness": None}})
+
+    def test_not_ack_with_facts(self):
+        assert not _is_acknowledgment({"role": "客户", "text": "嗯", "state": {"facts": ["financial_hardship"], "emotions": [], "willingness": None}})
+
+    def test_not_ack_with_emotions(self):
+        assert not _is_acknowledgment({"role": "客户", "text": "嗯", "state": {"facts": [], "emotions": ["pleading"], "willingness": None}})
+
+    def test_not_ack_with_willingness(self):
+        assert not _is_acknowledgment({"role": "客户", "text": "好", "state": {"facts": [], "emotions": [], "willingness": "weak"}})
+
+    def test_not_ack_long_text(self):
+        assert not _is_acknowledgment({"role": "客户", "text": "我现在真的没有钱还", "state": None})
+
+    def test_ack_compound(self):
+        assert _is_acknowledgment({"role": "客户", "text": "嗯嗯", "state": None})
+
+    def test_not_ack_unknown_short_text(self):
+        assert not _is_acknowledgment({"role": "客户", "text": "不行", "state": None})
+
+
+class TestMergeCollectorFragments:
+    def _turn(self, role, text, idx, state=None):
+        t = {"role": role, "text": text, "turn_index": idx}
+        if state is not None:
+            t["state"] = state
+        return t
+
+    def test_consecutive_collector_merged(self):
+        turns = [
+            self._turn("催收员", "我可以帮您申请减免，", 4, {"action": "plan_proposal"}),
+            self._turn("催收员", "也就是说您还26000多。", 6, {"action": "plan_proposal"}),
+        ]
+        result = _merge_collector_fragments(turns)
+        assert len(result) == 1
+        assert result[0]["text"] == "我可以帮您申请减免，也就是说您还26000多。"
+        assert result[0]["merged_from"] == [4, 6]
+
+    def test_collector_ack_collector_merged(self):
+        turns = [
+            self._turn("催收员", "好的，我尽量给您保留到明天", 10, {"action": "information"}),
+            self._turn("客户", "嗯", 11),
+            self._turn("催收员", "您先听我说完嘛。", 12, {"action": "pressure"}),
+        ]
+        result = _merge_collector_fragments(turns)
+        assert len(result) == 1
+        assert "保留到明天" in result[0]["text"]
+        assert "听我说完" in result[0]["text"]
+
+    def test_collector_real_reply_collector_not_merged(self):
+        turns = [
+            self._turn("催收员", "您可以尽快还款吗？", 4, {"action": "pressure"}),
+            self._turn("客户", "我没有钱", 5, {"facts": ["financial_hardship"], "emotions": [], "willingness": "none"}),
+            self._turn("催收员", "那我们可以办理分期。", 6, {"action": "plan_proposal"}),
+        ]
+        result = _merge_collector_fragments(turns)
+        assert len(result) == 3
+        assert result[0]["role"] == "催收员"
+        assert result[1]["role"] == "客户"
+        assert result[2]["role"] == "催收员"
+
+    def test_greeting_not_merged_with_next(self):
+        turns = [
+            self._turn("催收员", "您好，请问是张女士吗？", 0, {"action": "greeting"}),
+            self._turn("催收员", "我这里是招商银行。", 1, {"action": "information"}),
+        ]
+        result = _merge_collector_fragments(turns)
+        assert len(result) == 2
+        assert result[0]["text"] == "您好，请问是张女士吗？"
+
+    def test_no_merge_when_no_fragmentation(self):
+        turns = [
+            self._turn("催收员", "您好", 0, {"action": "greeting"}),
+            self._turn("客户", "是。", 1),
+            self._turn("催收员", "请问是张女士吗？", 2, {"action": "information"}),
+            self._turn("客户", "对。", 3, {"facts": [], "emotions": [], "willingness": "conditional"}),
+            self._turn("催收员", "您的欠款是62209。", 4, {"action": "information"}),
+        ]
+        result = _merge_collector_fragments(turns)
+        collector_count = sum(1 for t in result if t["role"] == "催收员")
+        assert collector_count == 3
+
+    def test_multiple_acks_between_collectors(self):
+        turns = [
+            self._turn("催收员", "方案一", 4, {"action": "plan_proposal"}),
+            self._turn("客户", "嗯", 5),
+            self._turn("催收员", "方案二", 6, {"action": "plan_proposal"}),
+            self._turn("客户", "好", 7),
+            self._turn("催收员", "方案三", 8, {"action": "plan_proposal"}),
+        ]
+        result = _merge_collector_fragments(turns)
+        assert len(result) == 1
+        assert "方案一" in result[0]["text"]
+        assert "方案二" in result[0]["text"]
+        assert "方案三" in result[0]["text"]
+
+    def test_real_data_merge_count(self):
+        records = _load_rewarded()
+        total_original = 0
+        total_merged = 0
+        for r in records:
+            turns = r.get("turns_annotated", [])
+            total_original += len(turns)
+            merged = _merge_collector_fragments(turns)
+            total_merged += len(merged)
+        removed = total_original - total_merged
+        assert removed > 0
+        assert total_merged < total_original

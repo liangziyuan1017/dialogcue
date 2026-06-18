@@ -662,6 +662,7 @@ function renderFlow(dialog){
     if(t.willingness) meta+=`<span class="flow-tag willingness">${esc(t.willingness)}</span>`;
     if(t.gesture_type==='opening') meta+=`<span class="flow-tag gesture-open">OPENING</span>`;
     if(t.gesture_type==='ending') meta+=`<span class="flow-tag gesture-end">ENDING</span>`;
+    if(t.merged_from&&t.merged_from.length>1) meta+=`<span class="flow-tag" style="background:#fef3c7;color:#92400e">MERGED t${t.merged_from[0]}-t${t.merged_from[t.merged_from.length-1]}</span>`;
     (t.facts||[]).forEach(f=>meta+=`<span class="flow-tag fact">${esc(f)}</span>`);
     (t.emotions||[]).forEach(e=>meta+=`<span class="flow-tag emotion">${esc(e)}</span>`);
     h+=`<div class="flow-step" data-idx="${i}" onclick="goStep(${i})">`;

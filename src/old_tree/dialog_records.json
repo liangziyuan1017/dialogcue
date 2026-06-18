@@ -12,13 +12,14 @@
         "willingness": null
       },
       {
+        "turn_index": 1,
+        "role": "客户",
+        "text": "喂。"
+      },
+      {
         "turn_index": 2,
         "role": "客户",
-        "text": "唉，您好，你说，嗯。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "唉，您好，你说，嗯。"
       },
       {
         "turn_index": 3,
@@ -30,6 +31,11 @@
         "willingness": null
       },
       {
+        "turn_index": 4,
+        "role": "客户",
+        "text": "对对对。"
+      },
+      {
         "turn_index": 5,
         "role": "催收员",
         "text": "女士，您好，呃，你刚刚说那个分期嘛？然后这边分期肯定是……目前是没有方案的。而且你今天上午说，呃，你可能后续还要用卡，那如果分期的话肯定是没有，后续就不能用卡了，就需要把卡给冻了。",
@@ -37,6 +43,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 6,
+        "role": "客户",
+        "text": "好。"
       },
       {
         "turn_index": 7,
@@ -61,20 +72,12 @@
       {
         "turn_index": 9,
         "role": "客户",
-        "text": "以后都不能用了？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "以后都不能用了？"
       },
       {
         "turn_index": 10,
         "role": "催收员",
-        "text": "对。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "对。"
       },
       {
         "turn_index": 11,
@@ -95,6 +98,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 13,
+        "role": "客户",
+        "text": "嗯。"
       },
       {
         "turn_index": 14,
@@ -135,11 +143,7 @@
       {
         "turn_index": 17,
         "role": "催收员",
-        "text": "嗯，好的好的。您看这样可以不吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯，好的好的。您看这样可以不吗？"
       },
       {
         "turn_index": 18,
@@ -197,11 +201,7 @@
       {
         "turn_index": 23,
         "role": "催收员",
-        "text": "要返还什么？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "要返还什么？"
       },
       {
         "turn_index": 24,
@@ -228,20 +228,12 @@
       {
         "turn_index": 26,
         "role": "客户",
-        "text": "招商银行没有吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "招商银行没有吗？"
       },
       {
         "turn_index": 27,
         "role": "催收员",
-        "text": "嗯，我……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯，我……"
       },
       {
         "turn_index": 28,
@@ -267,11 +259,7 @@
       {
         "turn_index": 30,
         "role": "客户",
-        "text": "你可以把我额度调低啊。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "你可以把我额度调低啊。"
       },
       {
         "turn_index": 31,
@@ -285,11 +273,7 @@
       {
         "turn_index": 32,
         "role": "客户",
-        "text": "我想知道就是你们银行除了还最低还款额就没有其他任何的解决办法了吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "我想知道就是你们银行除了还最低还款额就没有其他任何的解决办法了吗？"
       },
       {
         "turn_index": 33,
@@ -303,11 +287,7 @@
       {
         "turn_index": 34,
         "role": "客户",
-        "text": "好，然后什么减免？什么减免到？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "好，然后什么减免？什么减免到？"
       },
       {
         "turn_index": 35,
@@ -321,33 +301,35 @@
       {
         "turn_index": 36,
         "role": "客户",
-        "text": "什么什么剪掉？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "什么什么剪掉？"
       },
       {
         "turn_index": 37,
         "role": "客户",
-        "text": "噢噢，呃，就你的意思是说……本来要还28000多的，然后现在你把我的利息减免掉，我直接还26000多就可以了，是吗？",
-        "action": null,
+        "text": "噢噢，呃，就你的意思是说……本来要还28000多的，然后现在你把我的利息减免掉，我直接还26000多就可以了，是吗？"
+      },
+      {
+        "turn_index": 38,
+        "role": "催收员",
+        "text": "呃，不是这个意思：您本人需要还最低还款26000多，然后我们这边再给您申请把那2000多减掉，就相当于您的总账单会减，总欠款会减少28000多。",
+        "action": "information",
         "facts": [],
         "emotions": [],
         "willingness": null
       },
       {
-        "turn_index": 38,
+        "turn_index": 39,
+        "role": "客户",
+        "text": "对。"
+      },
+      {
+        "turn_index": 40,
         "role": "催收员",
-        "text": "呃，不是这个意思：您本人需要还最低还款26000多，然后我们这边再给您申请把那2000多减掉，就相当于您的总账单会减，总欠款会减少28000多。嗯，你目前不是欠了121999.96嘛。",
+        "text": "嗯，你目前不是欠了121999.96嘛。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          38,
-          40
-        ]
+        "willingness": null
       },
       {
         "turn_index": 41,
@@ -390,6 +372,11 @@
         "willingness": null
       },
       {
+        "turn_index": 45,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
         "turn_index": 46,
         "role": "客户",
         "text": "按理说，本来是要还28000的，怎么会做完就可以减免那2000多呢？那这减免的2000多是需要还的，还是下一期再还，是什么意思呢？",
@@ -412,29 +399,17 @@
       {
         "turn_index": 48,
         "role": "客户",
-        "text": "嗯，噢，这样子，就从那个总额里面就……就意思说，这2000多的利息就不用还了。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯，噢，这样子，就从那个总额里面就……就意思说，这2000多的利息就不用还了。"
       },
       {
         "turn_index": 49,
         "role": "催收员",
-        "text": "对，噢对，行。还款日就相当于这500块钱的话……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "对，噢对，行。还款日就相当于这500块钱的话……"
       },
       {
         "turn_index": 50,
         "role": "客户",
-        "text": "那最后截止的日期是什么时候？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "那最后截止的日期是什么时候？"
       },
       {
         "turn_index": 51,
@@ -464,6 +439,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 54,
+        "role": "客户",
+        "text": "嗯，嗯。"
       },
       {
         "turn_index": 55,
@@ -517,20 +497,12 @@
       {
         "turn_index": 60,
         "role": "客户",
-        "text": "等下我看下有没有……分期。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "等下我看下有没有……分期。"
       },
       {
         "turn_index": 61,
         "role": "催收员",
-        "text": "对，这个确实没有。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "对，这个确实没有。"
       },
       {
         "turn_index": 62,
@@ -553,20 +525,12 @@
       {
         "turn_index": 64,
         "role": "客户",
-        "text": "你好。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "你好。"
       },
       {
         "turn_index": 65,
         "role": "催收员",
-        "text": "嗯，嗯好的好的。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯，嗯好的好的。"
       },
       {
         "turn_index": 66,
@@ -580,15 +544,25 @@
       {
         "turn_index": 67,
         "role": "催收员",
-        "text": "好的，我尽量给您保留到明天，先给您保留到明天嘛，那如果明天，如果您没有还进来的话……您先听我说完嘛。",
+        "text": "好的，我尽量给您保留到明天，先给您保留到明天嘛，那如果明天，如果您没有还进来的话……",
         "action": "plan_proposal",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          67,
-          69
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 68,
+        "role": "客户",
+        "text": "嗯好拜拜。"
+      },
+      {
+        "turn_index": 69,
+        "role": "催收员",
+        "text": "您先听我说完嘛。",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 70,
@@ -602,25 +576,44 @@
       {
         "turn_index": 71,
         "role": "催收员",
-        "text": "您先听我说完嘛。因为后续的话就是可能因为我们这个案件是在流动的嘛。然后后续话可能就是其他工作人员会接手你这个案子。那如果您愿意的话，我先给您保留到明天嘛。那如果后天的话，到时候如果你在我手上，我再给您来个电话嘛。好的，那如果明天你没有处理的话，那后续以工作人员给您沟通为准哈。",
+        "text": "您先听我说完嘛。",
         "action": "pressure",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          71,
-          73,
-          75
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 72,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 73,
+        "role": "催收员",
+        "text": "因为后续的话就是可能因为我们这个案件是在流动的嘛。然后后续话可能就是其他工作人员会接手你这个案子。那如果您愿意的话，我先给您保留到明天嘛。那如果后天的话，到时候如果你在我手上，我再给您来个电话嘛。",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 74,
+        "role": "客户",
+        "text": "嗯，嗯。"
+      },
+      {
+        "turn_index": 75,
+        "role": "催收员",
+        "text": "好的，那如果明天你没有处理的话，那后续以工作人员给您沟通为准哈。",
+        "action": "closure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 76,
         "role": "客户",
-        "text": "是的。好好好行，我问一下。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "是的。好好好行，我问一下。"
       },
       {
         "turn_index": 77,
@@ -634,11 +627,7 @@
       {
         "turn_index": 78,
         "role": "客户",
-        "text": "嗯，好的好谢谢哈。嗯，唉，你的工号是多少？我到时怎么找你啊？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯，好的好谢谢哈。嗯，唉，你的工号是多少？我到时怎么找你啊？"
       },
       {
         "turn_index": 79,
@@ -652,35 +641,28 @@
       {
         "turn_index": 80,
         "role": "客户",
-        "text": "你可以给我发信息吗？我直接找你不行吗……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "你可以给我发信息吗？我直接找你不行吗……"
       },
       {
         "turn_index": 81,
         "role": "催收员",
-        "text": "刚不是打进来了吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "刚不是打进来了吗？"
       },
       {
         "turn_index": 82,
         "role": "客户",
-        "text": "分机号码可以。噢好行行行，唉，嗯谢谢啊。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "分机号码可以。噢好行行行，唉，嗯谢谢啊。"
       }
     ]
   },
   {
     "call_id": "2318767580460372761",
     "turns": [
+      {
+        "turn_index": 0,
+        "role": "客户",
+        "text": "喂？"
+      },
       {
         "turn_index": 1,
         "role": "催收员",
@@ -689,6 +671,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 2,
+        "role": "客户",
+        "text": "是。"
       },
       {
         "turn_index": 3,
@@ -713,38 +700,101 @@
       {
         "turn_index": 5,
         "role": "催收员",
-        "text": "了解。之前工作人员好像跟您提到一些方案，您是对那些方案不满意，还是对工作人员不满意呢？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "了解。之前工作人员好像跟您提到一些方案，您是对那些方案不满意，还是对工作人员不满意呢？"
       },
       {
         "turn_index": 6,
         "role": "客户",
-        "text": "我什么方案我不记得了，你说说看吧。",
-        "action": null,
+        "text": "我什么方案我不记得了，你说说看吧。"
+      },
+      {
+        "turn_index": 7,
+        "role": "催收员",
+        "text": "那我这里把银行能有的方案跟您说一下，希望能帮助到您。因为我们看到之前跟您合作也比较久嘛，对吧？",
+        "action": "empathy",
         "facts": [],
         "emotions": [],
         "willingness": null
       },
       {
-        "turn_index": 7,
+        "turn_index": 8,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
+        "turn_index": 9,
         "role": "催收员",
-        "text": "那我这里把银行能有的方案跟您说一下，希望能帮助到您。因为我们看到之前跟您合作也比较久嘛，对吧？呃，是这样的，我这里看到您近一期有一个逾期账款，要处理一个上一期逾期的，有496.9，对不对？最低还款额。然后您新一期账单又出来一笔107476，两期账单加起来不是有157010.66，对不对？我们银行目前力度最大的一个兜底方案，就是帮您做一个账单调整的规划，您下两期账单调整为一个515元。并且我们会帮您把近一期的息费和违约金做免收。而且您也说了，您破产了，对吧？现在压力也大，后续的还款包括息费也是没办法承担的嘛，对吧，先生。这个对，我知道。",
+        "text": "呃，是这样的，我这里看到您近一期有一个逾期账款，要处理一个上一期逾期的，有496.9，对不对？最低还款额。",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 10,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 11,
+        "role": "催收员",
+        "text": "然后您新一期账单又出来一笔107476，两期账单加起来不是有157010.66，对不对？",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 12,
+        "role": "客户",
+        "text": "对"
+      },
+      {
+        "turn_index": 13,
+        "role": "催收员",
+        "text": "我们银行目前力度最大的一个兜底方案，就是帮您做一个账单调整的规划，您下两期账单调整为一个515元。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 14,
+        "role": "客户",
+        "text": "嗯？"
+      },
+      {
+        "turn_index": 15,
+        "role": "催收员",
+        "text": "并且我们会帮您把近一期的息费和违约金做免收。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 16,
+        "role": "客户",
+        "text": "好的"
+      },
+      {
+        "turn_index": 17,
+        "role": "催收员",
+        "text": "而且您也说了，您破产了，对吧？现在压力也大，后续的还款包括息费也是没办法承担的嘛，对吧，先生。",
         "action": "empathy",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          7,
-          9,
-          11,
-          13,
-          15,
-          17,
-          19
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 18,
+        "role": "客户",
+        "text": "对。"
+      },
+      {
+        "turn_index": 19,
+        "role": "催收员",
+        "text": "这个对，我知道。"
       },
       {
         "turn_index": 20,
@@ -771,46 +821,58 @@
       {
         "turn_index": 22,
         "role": "催收员",
-        "text": "我知道，相信您，先生，相信您。而且也相信您后续肯定也会东山再起的，这个我们完全相信您。只是说我们现在给您推出这个方案，也只是说目前能帮您暂时渡过难关。",
+        "text": "我知道，相信您，先生，相信您。而且也相信您后续肯定也会东山再起的，这个我们完全相信您。",
         "action": "empathy",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          22,
-          24
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 23,
+        "role": "客户",
+        "text": "嗯，谢谢"
+      },
+      {
+        "turn_index": 24,
+        "role": "催收员",
+        "text": "只是说我们现在给您推出这个方案，也只是说目前能帮您暂时渡过难关。",
+        "action": "empathy",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 25,
         "role": "客户",
-        "text": "什么方案？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "什么方案？"
       },
       {
         "turn_index": 26,
         "role": "催收员",
-        "text": "我跟您说这个515方案，就是说帮您两期账单调整完之后，您处理个515，下次还款时间是在6月13号，并且后续11个月您都可以按照515这个金额来还。而且这11个月期间，我们这里不会产生额外的循环利息和违约。",
+        "text": "我跟您说这个515方案，就是说帮您两期账单调整完之后，您处理个515，下次还款时间是在6月13号，并且后续11个月您都可以按照515这个金额来还。",
         "action": "plan_proposal",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          26,
-          28
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 27,
+        "role": "客户",
+        "text": "嗯，然后呢"
+      },
+      {
+        "turn_index": 28,
+        "role": "催收员",
+        "text": "而且这11个月期间，我们这里不会产生额外的循环利息和违约。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 29,
         "role": "客户",
-        "text": "那挺好的",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "那挺好的"
       },
       {
         "turn_index": 30,
@@ -835,18 +897,63 @@
       {
         "turn_index": 32,
         "role": "催收员",
-        "text": "先生，我们这里很相信您。因为您这个案件确实逾期的时间比较久，两期账单都没有处理，风险因素过高，就要即将转入到后端那个全款清收流程。但是我们知道您毕竟是做生意的，讲究信用，我们也是觉得您肯定可以东山再起的。我们这也是希望能够帮助到您，帮您解一下燃眉之急。因为破产外面负债肯定也很多嘛，先生，对吧？也是希望能轮转过来嘛。而且刚刚那个方案，您说……",
+        "text": "先生，我们这里很相信您。因为您这个案件确实逾期的时间比较久，两期账单都没有处理，风险因素过高，就要即将转入到后端那个全款清收流程。",
         "action": "pressure",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          32,
-          34,
-          36,
-          38,
-          40
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 33,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 34,
+        "role": "催收员",
+        "text": "但是我们知道您毕竟是做生意的，讲究信用，我们也是觉得您肯定可以东山再起的。",
+        "action": "empathy",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 35,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 36,
+        "role": "催收员",
+        "text": "我们这也是希望能够帮助到您，帮您解一下燃眉之急。因为破产外面负债肯定也很多嘛，先生，对吧？",
+        "action": "empathy",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 37,
+        "role": "客户",
+        "text": "对"
+      },
+      {
+        "turn_index": 38,
+        "role": "催收员",
+        "text": "也是希望能轮转过来嘛。",
+        "action": "empathy",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 39,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
+        "turn_index": 40,
+        "role": "催收员",
+        "text": "而且刚刚那个方案，您说……"
       },
       {
         "turn_index": 41,
@@ -862,23 +969,142 @@
       {
         "turn_index": 42,
         "role": "催收员",
-        "text": "嗯，没关系，先生。我们这次来电呢，也只是跟您说一下具体的情况，对吧？那我们这里看，是不是能在行内达成一个和解？就是说我们这里的服务态度还是很好的，是吧？我们相信您肯定会处理。因为您看，您额度也有这么些，肯定也是有实力，之前肯定是做过资产的，对吧？我们也是相信。只不过说，因为我们接到了通知，这次来电的初心都是希望能为客户解决问题。既然确实要做转接了，要做转案了，那我们就是来个电话看一下，还能不能达成和解，来避免后续一些不好的流程之类的，对吧，先生？我们也是希望能帮助到您，所以主动再跟您来电确认一下。那先生，身体包括生活的话，肯定是您要第一时间做保证的，对吧？那这里的话我就先不多打扰您了。如果说您有需要，觉得我刚刚跟您说的这个方案很好，那您后续再给我们来电。好吧，因为流程也走得比较快，就在近几天，差不多在9号之前，就是今明两天，您觉得还可以，突然间有了笔钱，你想处理了，那你打电话给我们。好吧，就不多打扰您了，先生，好吧。",
+        "text": "嗯，没关系，先生。我们这次来电呢，也只是跟您说一下具体的情况，对吧？那我们这里看，是不是能在行内达成一个和解？",
         "action": "closure",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          42,
-          44,
-          46,
-          48,
-          50,
-          52,
-          54,
-          56,
-          58,
-          60
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 43,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
+        "turn_index": 44,
+        "role": "催收员",
+        "text": "就是说我们这里的服务态度还是很好的，是吧？",
+        "action": "closure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 45,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 46,
+        "role": "催收员",
+        "text": "我们相信您肯定会处理。因为您看，您额度也有这么些，肯定也是有实力，之前肯定是做过资产的，对吧？",
+        "action": "empathy",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 47,
+        "role": "客户",
+        "text": "对"
+      },
+      {
+        "turn_index": 48,
+        "role": "催收员",
+        "text": "我们也是相信。只不过说，因为我们接到了通知，这次来电的初心都是希望能为客户解决问题。既然确实要做转接了，要做转案了，那我们就是来个电话看一下，还能不能达成和解，来避免后续一些不好的流程之类的，对吧，先生？",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 49,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 50,
+        "role": "催收员",
+        "text": "我们也是希望能帮助到您，所以主动再跟您来电确认一下。",
+        "action": "empathy",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 51,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
+        "turn_index": 52,
+        "role": "催收员",
+        "text": "那先生，身体包括生活的话，肯定是您要第一时间做保证的，对吧？",
+        "action": "empathy",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 53,
+        "role": "客户",
+        "text": "嗯，对"
+      },
+      {
+        "turn_index": 54,
+        "role": "催收员",
+        "text": "那这里的话我就先不多打扰您了。",
+        "action": "closure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 55,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 56,
+        "role": "催收员",
+        "text": "如果说您有需要，觉得我刚刚跟您说的这个方案很好，那您后续再给我们来电。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 57,
+        "role": "客户",
+        "text": "好的"
+      },
+      {
+        "turn_index": 58,
+        "role": "催收员",
+        "text": "好吧，因为流程也走得比较快，就在近几天，差不多在9号之前，就是今明两天，您觉得还可以，突然间有了笔钱，你想处理了，那你打电话给我们。",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 59,
+        "role": "客户",
+        "text": "知道了"
+      },
+      {
+        "turn_index": 60,
+        "role": "催收员",
+        "text": "好吧，就不多打扰您了，先生，好吧。",
+        "action": "closure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 61,
+        "role": "客户",
+        "text": "嗯。"
       }
     ]
   },
@@ -897,11 +1123,7 @@
       {
         "turn_index": 1,
         "role": "客户",
-        "text": "嗯，对，你好。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯，对，你好。"
       },
       {
         "turn_index": 2,
@@ -1027,24 +1249,25 @@
       {
         "turn_index": 14,
         "role": "催收员",
-        "text": "是这样的先生，您觉得现在有困难，银行给您方案，后续再有困难银行就不管您了吗？首先您是属于……我们银行这个……您听我说完嘛，先生。因为您之前额度不够了，而且办了个性化分期卡片也不能使用。您还三期个性化分期也是6300多，金额是一样的呀。您为什么执意要办理个性化分期呢？您每个月想……而且您之前也是银行从业人员，也知道政策一直在变化。这个方案还6000多，还能减2700，总账款会减少。",
+        "text": "是这样的先生，您觉得现在有困难，银行给您方案，后续再有困难银行就不管您了吗？首先您是属于……我们银行这个……您听我说完嘛，先生。因为您之前额度不够了，而且办了个性化分期卡片也不能使用。您还三期个性化分期也是6300多，金额是一样的呀。",
         "action": "plan_proposal",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          14,
-          15
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 15,
+        "role": "催收员",
+        "text": "您为什么执意要办理个性化分期呢？您每个月想……而且您之前也是银行从业人员，也知道政策一直在变化。这个方案还6000多，还能减2700，总账款会减少。",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 16,
         "role": "客户",
-        "text": "嗯，反正我……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯，反正我……"
       },
       {
         "turn_index": 17,
@@ -1058,11 +1281,7 @@
       {
         "turn_index": 18,
         "role": "客户",
-        "text": "什么？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "什么？"
       },
       {
         "turn_index": 19,
@@ -1076,11 +1295,7 @@
       {
         "turn_index": 20,
         "role": "客户",
-        "text": "我知道，但是……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "我知道，但是……"
       },
       {
         "turn_index": 21,
@@ -1105,19 +1320,61 @@
       {
         "turn_index": 23,
         "role": "催收员",
-        "text": "嗯，是这样的先生，不是说银行会看您反馈到哪里才去解决，您的心情我们非常理解，但银行不会看您反馈到哪里才给方案。您一来一回不是耽误进度吗？这个调整方案也是方案的一种啊。喂，是。一个月我可以帮您预约。而且如果您不预约……就是您说您只能到还款日，但只能帮您预约五次，近半年。您7月份还了，然后近半年……就是说我这帮您办一次，您7月份再看什么情况，再跟银行沟通协商。不是说我们银行不给您方案，您执意要办个性化分期，不是不给您办，而是对您个人影响很大，我们也有去申请，确实没申请到。而且您办个性化分期是从总账款里分，对还款没有帮助。您这个月还完之后，7月12号再还款就可以了。7月份12号之间我们银行都不会给您打电话。而且还能帮您把5月份账面上的循环利息和违约金做减免，总共减少9168.1。您这一次还一次款，下次还款就到7月份了。您7月份再跟银行沟通协商，因为这次只办一次，不帮您预约。如果您觉得每个月还6000多压力大，就这一次，您7月份再看有没有更好的方案。",
+        "text": "嗯，是这样的先生，不是说银行会看您反馈到哪里才去解决，您的心情我们非常理解，但银行不会看您反馈到哪里才给方案。您一来一回不是耽误进度吗？这个调整方案也是方案的一种啊。",
         "action": "pressure",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          23,
-          24,
-          25,
-          26,
-          27,
-          29
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 24,
+        "role": "催收员",
+        "text": "喂，是。一个月我可以帮您预约。而且如果您不预约……就是您说您只能到还款日，但只能帮您预约五次，近半年。您7月份还了，然后近半年……就是说我这帮您办一次，您7月份再看什么情况，再跟银行沟通协商。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 25,
+        "role": "催收员",
+        "text": "不是说我们银行不给您方案，您执意要办个性化分期，不是不给您办，而是对您个人影响很大，我们也有去申请，确实没申请到。而且您办个性化分期是从总账款里分，对还款没有帮助。",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 26,
+        "role": "催收员",
+        "text": "您这个月还完之后，7月12号再还款就可以了。7月份12号之间我们银行都不会给您打电话。而且还能帮您把5月份账面上的循环利息和违约金做减免，总共减少9168.1。您这一次还一次款，下次还款就到7月份了。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 27,
+        "role": "催收员",
+        "text": "您7月份再跟银行沟通协商，因为这次只办一次，不帮您预约。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 28,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 29,
+        "role": "催收员",
+        "text": "如果您觉得每个月还6000多压力大，就这一次，您7月份再看有没有更好的方案。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 30,
@@ -1131,25 +1388,44 @@
       {
         "turn_index": 31,
         "role": "催收员",
-        "text": "相当于您4月份没还款，5月份还6000多，6月份不用还款，到7月12号才是还款日。后面再有困难再沟通，总账款还会减少一两千七百多。您7月份可以再跟银行沟通协商，可以不处理那么多。我没有帮您预约，只是把还款时间拉到7月份了。到时候还多少说不定还更少。",
+        "text": "相当于您4月份没还款，5月份还6000多，6月份不用还款，到7月12号才是还款日。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          31,
-          33,
-          35
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 32,
+        "role": "客户",
+        "text": "明白"
+      },
+      {
+        "turn_index": 33,
+        "role": "催收员",
+        "text": "后面再有困难再沟通，总账款还会减少一两千七百多。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 34,
+        "role": "客户",
+        "text": "嗯……"
+      },
+      {
+        "turn_index": 35,
+        "role": "催收员",
+        "text": "您7月份可以再跟银行沟通协商，可以不处理那么多。我没有帮您预约，只是把还款时间拉到7月份了。到时候还多少说不定还更少。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 36,
         "role": "客户",
-        "text": "但是个性化分期……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "但是个性化分期……"
       },
       {
         "turn_index": 37,
@@ -1257,33 +1533,35 @@
       {
         "turn_index": 48,
         "role": "客户",
-        "text": "多少？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "多少？"
       },
       {
         "turn_index": 49,
         "role": "催收员",
-        "text": "您这个减的有2700，免的还有3545.84，一个月给您减的加免的将近6000多块钱。3545块8毛四和一个2848块5毛八，两个加在一起减免了6000多块钱啊先生。就是您这个月如果还了款，我们可以帮您从总账里减少2847.58的循环利息和违约金，下个月账面上也不会有任何循环利息和违约金，这一减一免加在一起不是有6000多吗？",
+        "text": "您这个减的有2700，免的还有3545.84，一个月给您减的加免的将近6000多块钱。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          49,
-          51
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 50,
+        "role": "客户",
+        "text": "嗯……"
+      },
+      {
+        "turn_index": 51,
+        "role": "催收员",
+        "text": "3545块8毛四和一个2848块5毛八，两个加在一起减免了6000多块钱啊先生。就是您这个月如果还了款，我们可以帮您从总账里减少2847.58的循环利息和违约金，下个月账面上也不会有任何循环利息和违约金，这一减一免加在一起不是有6000多吗？",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 52,
         "role": "客户",
-        "text": "你说什么？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "你说什么？"
       },
       {
         "turn_index": 53,
@@ -1311,29 +1589,17 @@
       {
         "turn_index": 1,
         "role": "客户",
-        "text": "您好，对。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "您好，对。"
       },
       {
         "turn_index": 2,
         "role": "催收员",
-        "text": "呃，是<PERSON>女士本人是吧？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "呃，是<PERSON>女士本人是吧？"
       },
       {
         "turn_index": 3,
         "role": "客户",
-        "text": "对对对，是的。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "对对对，是的。"
       },
       {
         "turn_index": 4,
@@ -1365,11 +1631,7 @@
       {
         "turn_index": 7,
         "role": "客户",
-        "text": "呃，不，不不不，你直接帮我扣不就完了吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "呃，不，不不不，你直接帮我扣不就完了吗？"
       },
       {
         "turn_index": 8,
@@ -1383,29 +1645,17 @@
       {
         "turn_index": 9,
         "role": "客户",
-        "text": "对呀，你是不是在<LOCATION>产生的费用吗？是吧？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "对呀，你是不是在<LOCATION>产生的费用吗？是吧？"
       },
       {
         "turn_index": 10,
         "role": "催收员",
-        "text": "嗯嗯，嗯对。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯嗯，嗯对。"
       },
       {
         "turn_index": 11,
         "role": "客户",
-        "text": "那，那是不是美金要比人民币划算一些？好像你们上次给我说需要划算一些。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "那，那是不是美金要比人民币划算一些？好像你们上次给我说需要划算一些。"
       },
       {
         "turn_index": 12,
@@ -1419,11 +1669,7 @@
       {
         "turn_index": 13,
         "role": "客户",
-        "text": "不是，我没懂什么叫逾期啊？我超过过期了付吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "不是，我没懂什么叫逾期啊？我超过过期了付吗？"
       },
       {
         "turn_index": 14,
@@ -1437,11 +1683,7 @@
       {
         "turn_index": 15,
         "role": "客户",
-        "text": "唉，我上次不是说让你们给我开开开吗？怎么会出现逾期呢？都不知道我走之前都跟你们说了我直接开一个美金，把那个换成美金，你怎么莫名其妙又造成？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "唉，我上次不是说让你们给我开开开吗？怎么会出现逾期呢？都不知道我走之前都跟你们说了我直接开一个美金，把那个换成美金，你怎么莫名其妙又造成？"
       },
       {
         "turn_index": 16,
@@ -1458,6 +1700,11 @@
     "call_id": "2320459500460373224",
     "turns": [
       {
+        "turn_index": 0,
+        "role": "客户",
+        "text": "喂,你好"
+      },
+      {
         "turn_index": 1,
         "role": "催收员",
         "text": "喂,您好，请问是张先生吗？",
@@ -1469,11 +1716,7 @@
       {
         "turn_index": 2,
         "role": "客户",
-        "text": "嗯，啊是的是的嗯",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯，啊是的是的嗯"
       },
       {
         "turn_index": 3,
@@ -1483,6 +1726,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 4,
+        "role": "客户",
+        "text": "嗯"
       },
       {
         "turn_index": 5,
@@ -1508,24 +1756,30 @@
       {
         "turn_index": 7,
         "role": "催收员",
-        "text": "就是说您这边想要延后是吗？那之前一线工作人员不是给您提供了一个还1000块钱的方案嘛，说帮您把两期账单清零，下次还款时间到6月份。这个方案您还有印象吗？",
+        "text": "就是说您这边想要延后是吗？",
         "action": "plan_proposal",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          7,
-          9
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 8,
+        "role": "客户",
+        "text": "对对对对"
+      },
+      {
+        "turn_index": 9,
+        "role": "催收员",
+        "text": "那之前一线工作人员不是给您提供了一个还1000块钱的方案嘛，说帮您把两期账单清零，下次还款时间到6月份。这个方案您还有印象吗？",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 10,
         "role": "客户",
-        "text": "我知道我知道",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "我知道我知道"
       },
       {
         "turn_index": 11,
@@ -1557,11 +1811,7 @@
       {
         "turn_index": 14,
         "role": "客户",
-        "text": "对对对对对，嗯",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "对对对对对，嗯"
       },
       {
         "turn_index": 15,
@@ -1615,20 +1865,12 @@
       {
         "turn_index": 20,
         "role": "客户",
-        "text": "对，对对对对对",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "对，对对对对对"
       },
       {
         "turn_index": 21,
         "role": "催收员",
-        "text": "噢噢噢，了解了解",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "噢噢噢，了解了解"
       },
       {
         "turn_index": 22,
@@ -1656,11 +1898,7 @@
       {
         "turn_index": 24,
         "role": "客户",
-        "text": "嗯，对对对对对，就是时间",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯，对对对对对，就是时间"
       },
       {
         "turn_index": 25,
@@ -1728,11 +1966,7 @@
       {
         "turn_index": 32,
         "role": "客户",
-        "text": "嗯嗯，噢，嗯嗯嗯",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯嗯，噢，嗯嗯嗯"
       },
       {
         "turn_index": 33,
@@ -1758,11 +1992,7 @@
       {
         "turn_index": 35,
         "role": "催收员",
-        "text": "对对，张先生",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "对对，张先生"
       },
       {
         "turn_index": 36,
@@ -1805,11 +2035,7 @@
       {
         "turn_index": 40,
         "role": "客户",
-        "text": "好好，嗯，好嗯嗯嗯",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "好好，嗯，好嗯嗯嗯"
       },
       {
         "turn_index": 41,
@@ -1823,11 +2049,7 @@
       {
         "turn_index": 42,
         "role": "客户",
-        "text": "好好好好好，拜",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "好好好好好，拜"
       }
     ]
   },
@@ -1844,6 +2066,11 @@
         "willingness": null
       },
       {
+        "turn_index": 1,
+        "role": "客户",
+        "text": "嗯，是的。"
+      },
+      {
         "turn_index": 2,
         "role": "催收员",
         "text": "先生，您这边是挂断电话了吗？之前几次都没接通，您不要挂断电话，我才能帮您转接。",
@@ -1855,11 +2082,7 @@
       {
         "turn_index": 3,
         "role": "客户",
-        "text": "因为好久了一直也没接通，我就挂了。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "因为好久了一直也没接通，我就挂了。"
       },
       {
         "turn_index": 4,
@@ -1869,6 +2092,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 5,
+        "role": "客户",
+        "text": "好的，谢谢。"
       }
     ]
   },
@@ -1887,11 +2115,7 @@
       {
         "turn_index": 1,
         "role": "客户",
-        "text": "您好请说。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "您好请说。"
       },
       {
         "turn_index": 2,
@@ -1901,6 +2125,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 3,
+        "role": "客户",
+        "text": "嗯对。"
       },
       {
         "turn_index": 4,
@@ -1914,11 +2143,7 @@
       {
         "turn_index": 5,
         "role": "客户",
-        "text": "个账单是不是不对啊？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "个账单是不是不对啊？"
       },
       {
         "turn_index": 6,
@@ -1972,42 +2197,40 @@
       {
         "turn_index": 11,
         "role": "客户",
-        "text": "稍等一下哈我这里信号不好你稍等一下。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "稍等一下哈我这里信号不好你稍等一下。"
       },
       {
         "turn_index": 12,
         "role": "催收员",
-        "text": "嗯好的好的。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯好的好的。"
       },
       {
         "turn_index": 13,
         "role": "客户",
-        "text": "因为我记得上一期的话，好像是余额的话是1000多块钱的怎么现在又变成是2000多？",
-        "action": null,
+        "text": "因为我记得上一期的话，好像是余额的话是1000多块钱的怎么现在又变成是2000多？"
+      },
+      {
+        "turn_index": 14,
+        "role": "催收员",
+        "text": "嗯，噢意思多1000多块钱？",
+        "action": "information",
         "facts": [],
         "emotions": [],
         "willingness": null
       },
       {
-        "turn_index": 14,
+        "turn_index": 15,
+        "role": "客户",
+        "text": "对啊。"
+      },
+      {
+        "turn_index": 16,
         "role": "催收员",
-        "text": "嗯，噢意思多1000多块钱？您可以，您现在您方便打开掌上生活，可以去查看一下？您上一期的余额是？",
+        "text": "您可以，您现在您方便打开掌上生活，可以去查看一下？您上一期的余额是？",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          14,
-          16
-        ]
+        "willingness": null
       },
       {
         "turn_index": 17,
@@ -2043,20 +2266,12 @@
       {
         "turn_index": 20,
         "role": "催收员",
-        "text": "2600多？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "2600多？"
       },
       {
         "turn_index": 21,
         "role": "客户",
-        "text": "就这前你，你现在你看一下我的那个余额是多少？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "就这前你，你现在你看一下我的那个余额是多少？"
       },
       {
         "turn_index": 22,
@@ -2070,11 +2285,7 @@
       {
         "turn_index": 23,
         "role": "客户",
-        "text": "上一期呢？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "上一期呢？"
       },
       {
         "turn_index": 24,
@@ -2088,11 +2299,7 @@
       {
         "turn_index": 25,
         "role": "客户",
-        "text": "那是不是有一些什么？什么其他的费用债？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "那是不是有一些什么？什么其他的费用债？"
       },
       {
         "turn_index": 26,
@@ -2106,11 +2313,7 @@
       {
         "turn_index": 27,
         "role": "客户",
-        "text": "对啊而且上个上个月的话呢？他们都将这笔费用的话给我减掉的呀。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "对啊而且上个上个月的话呢？他们都将这笔费用的话给我减掉的呀。"
       },
       {
         "turn_index": 28,
@@ -2135,11 +2338,7 @@
       {
         "turn_index": 30,
         "role": "催收员",
-        "text": "1900多，您是不是记错了呀？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "1900多，您是不是记错了呀？"
       },
       {
         "turn_index": 31,
@@ -2164,11 +2363,7 @@
       {
         "turn_index": 33,
         "role": "客户",
-        "text": "那是我记错吗？我要翻一下记录看一下因为我是觉得那个是那个金额是不对的。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "那是我记错吗？我要翻一下记录看一下因为我是觉得那个是那个金额是不对的。"
       },
       {
         "turn_index": 34,
@@ -2191,20 +2386,12 @@
       {
         "turn_index": 36,
         "role": "催收员",
-        "text": "免息您指的是息费对吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "免息您指的是息费对吗？"
       },
       {
         "turn_index": 37,
         "role": "客户",
-        "text": "免免免免，嗯对对对。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "免免免免，嗯对对对。"
       },
       {
         "turn_index": 38,
@@ -2218,56 +2405,73 @@
       {
         "turn_index": 39,
         "role": "客户",
-        "text": "那这个电话是你打给我的呀。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "那这个电话是你打给我的呀。"
       },
       {
         "turn_index": 40,
         "role": "催收员",
-        "text": "这个电话，它是系统给您打过去，然后转接到我这边，过来是这个情况。因为我们这边都是系统外呼，然后转接到我们人工去处理。对。您如果说想就是减少这个电话，只能说您将这个款项逾期款项181块钱处理进来，这边才能给您拦截掉您的电话短信。",
+        "text": "这个电话，它是系统给您打过去，然后转接到我这边，过来是这个情况。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          40,
-          42,
-          44
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 41,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
+        "turn_index": 42,
+        "role": "催收员",
+        "text": "因为我们这边都是系统外呼，然后转接到我们人工去处理。",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 43,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
+        "turn_index": 44,
+        "role": "催收员",
+        "text": "对。您如果说想就是减少这个电话，只能说您将这个款项逾期款项181块钱处理进来，这边才能给您拦截掉您的电话短信。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 45,
         "role": "客户",
-        "text": "你，你这里不是不是官方的客服吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "你，你这里不是不是官方的客服吗？"
       },
       {
         "turn_index": 46,
         "role": "催收员",
-        "text": "呃，您可以查看短信，这边是，这边，是的。您可以看看您来电的电话号码。您可以放心。",
+        "text": "呃，您可以查看短信，这边是，这边，是的。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          46,
-          48
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 47,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
+        "turn_index": 48,
+        "role": "催收员",
+        "text": "您可以看看您来电的电话号码。您可以放心。"
       },
       {
         "turn_index": 49,
         "role": "客户",
-        "text": "行嘛？那我，那我打400吧，好吧。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "行嘛？那我，那我打400吧，好吧。"
       },
       {
         "turn_index": 50,
@@ -2281,17 +2485,18 @@
       {
         "turn_index": 51,
         "role": "客户",
-        "text": "嗯好好嗯好拜拜。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯好好嗯好拜拜。"
       }
     ]
   },
   {
     "call_id": "2320458250132136578",
     "turns": [
+      {
+        "turn_index": 0,
+        "role": "客户",
+        "text": "喂"
+      },
       {
         "turn_index": 1,
         "role": "催收员",
@@ -2300,6 +2505,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 2,
+        "role": "客户",
+        "text": "是你讲。"
       },
       {
         "turn_index": 3,
@@ -2313,20 +2523,12 @@
       {
         "turn_index": 4,
         "role": "客户",
-        "text": "唉，我现在的话就是经济非常紧张，然后的话，这两天的话……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "唉，我现在的话就是经济非常紧张，然后的话，这两天的话……"
       },
       {
         "turn_index": 5,
         "role": "催收员",
-        "text": "嗯。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯。"
       },
       {
         "turn_index": 6,
@@ -2344,15 +2546,12 @@
       {
         "turn_index": 7,
         "role": "催收员",
-        "text": "嗯。明白，呃，先生，呃……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          7,
-          8
-        ]
+        "text": "嗯。"
+      },
+      {
+        "turn_index": 8,
+        "role": "催收员",
+        "text": "明白，呃，先生，呃……"
       },
       {
         "turn_index": 9,
@@ -2368,15 +2567,16 @@
       {
         "turn_index": 10,
         "role": "催收员",
-        "text": "好。家人生病哈，噢，好，明白明白。好，那先生先听我说哈。如果说是因为家里人生病了，那么肯定这个逾期不是您本人嘛，对吧？目前我能够帮到您的哈，只能说第一个方案嘛，去帮您把您这边呃，4月份账单上面的循环利息跟违约金啊，先生您的罚息嘛大概是有一个152块的罚息我继续给您减掉。",
-        "action": null,
+        "text": "好。"
+      },
+      {
+        "turn_index": 11,
+        "role": "催收员",
+        "text": "家人生病哈，噢，好，明白明白。好，那先生先听我说哈。如果说是因为家里人生病了，那么肯定这个逾期不是您本人嘛，对吧？目前我能够帮到您的哈，只能说第一个方案嘛，去帮您把您这边呃，4月份账单上面的循环利息跟违约金啊，先生您的罚息嘛大概是有一个152块的罚息我继续给您减掉。",
+        "action": "plan_proposal",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          10,
-          11
-        ]
+        "willingness": null
       },
       {
         "turn_index": 12,
@@ -2392,34 +2592,49 @@
       {
         "turn_index": 13,
         "role": "催收员",
-        "text": "因为上个月先生知道嘛哈，上个月工作人员也是帮您把罚金给减过的，他已经帮您哈把您这边3月份罚息嘛大概是120罚息给您减过的。那么这次同理，您这边私人罚息还有个153左右罚息继续去给减掉，这要您保证哈您还进来的钱是属于你的账单本金的那个罚息是没有的，继续给您减掉。好吧，这个第一个方案，罚息减免，但是需要您啊还是想办法要补齐一个最低还款金额，您需要再补一个442的金额哈。这是第一个方案。第二个方案呢，是指这张信用卡还了这么多年了，对吧？还到现在，总欠款呢，一共还剩一个8200左右。如果是您本人有这个想法，先要等到有钱了哈把它一把结清的话，我去帮您看一下，您这一次还全款，可以去帮您申请减一个2500块左右，减一个2500哈，您大概是只需要自己还一个5700进来清账，5700左右清账。这是还全额的话。如果说说现在确实没有钱，您还还不了全款，那么没关系，只要您想办法处理一个最低还款，罚息给减掉，帮您保留后续的协商资格。您后面有钱吗？那么是可以随时有钱随时调行的。这一次需要做的是再想办法补一个442进来，保证这笔逾期还够啊，那个罚息继续给您减掉。好吧，先这样。",
+        "text": "因为上个月先生知道嘛哈，上个月工作人员也是帮您把罚金给减过的，他已经帮您哈把您这边3月份罚息嘛大概是120罚息给您减过的。那么这次同理，您这边私人罚息还有个153左右罚息继续去给减掉，这要您保证哈您还进来的钱是属于你的账单本金的那个罚息是没有的，继续给您减掉。好吧，这个第一个方案，罚息减免，但是需要您啊还是想办法要补齐一个最低还款金额，您需要再补一个442的金额哈。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          13,
-          15,
-          17
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 14,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 15,
+        "role": "催收员",
+        "text": "这是第一个方案。第二个方案呢，是指这张信用卡还了这么多年了，对吧？还到现在，总欠款呢，一共还剩一个8200左右。如果是您本人有这个想法，先要等到有钱了哈把它一把结清的话，我去帮您看一下，您这一次还全款，可以去帮您申请减一个2500块左右，减一个2500哈，您大概是只需要自己还一个5700进来清账，5700左右清账。这是还全额的话。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 16,
+        "role": "客户",
+        "text": "是"
+      },
+      {
+        "turn_index": 17,
+        "role": "催收员",
+        "text": "如果说说现在确实没有钱，您还还不了全款，那么没关系，只要您想办法处理一个最低还款，罚息给减掉，帮您保留后续的协商资格。您后面有钱吗？那么是可以随时有钱随时调行的。这一次需要做的是再想办法补一个442进来，保证这笔逾期还够啊，那个罚息继续给您减掉。好吧，先这样。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 18,
         "role": "客户",
-        "text": "嗯，这个400多，我应该明天的话能能还。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯，这个400多，我应该明天的话能能还。"
       },
       {
         "turn_index": 19,
         "role": "催收员",
-        "text": "嗯。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯。"
       },
       {
         "turn_index": 20,
@@ -2433,33 +2648,36 @@
       {
         "turn_index": 21,
         "role": "催收员",
-        "text": "可以可以，明白。好，那可以哈。呃，先生，那可以哈。那我跟您讲哈，就是哈您这个方案呢，您这400多您在您知道今天和明天两天这150的利息都可以打取消的好吧。意思吗？",
+        "text": "可以可以，明白。好，那可以哈。呃，先生，那可以哈。那我跟您讲哈，就是哈您这个方案呢，您这400多您在您知道今天和明天两天这150的利息都可以打取消的好吧。",
         "action": "plan_proposal",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          21,
-          24
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 22,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
+        "turn_index": 23,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
+        "turn_index": 24,
+        "role": "催收员",
+        "text": "意思吗？"
       },
       {
         "turn_index": 25,
         "role": "客户",
-        "text": "明天，明天应该问题不大了。因为我现在的话有有……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "明天，明天应该问题不大了。因为我现在的话有有……"
       },
       {
         "turn_index": 26,
         "role": "催收员",
-        "text": "嗯。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯。"
       },
       {
         "turn_index": 27,
@@ -2491,6 +2709,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 30,
+        "role": "客户",
+        "text": "嗯嗯。"
       }
     ]
   },
@@ -2507,6 +2730,11 @@
         "willingness": null
       },
       {
+        "turn_index": 1,
+        "role": "客户",
+        "text": "是。"
+      },
+      {
         "turn_index": 2,
         "role": "催收员",
         "text": "呃，先生您好，我这边是招商银行信用卡中心的。之前也是给您发送了短信的，就是目前呢，您这个信用卡已经逾期了，逾期最低的一个金额是1229.17。",
@@ -2518,25 +2746,36 @@
       {
         "turn_index": 3,
         "role": "客户",
-        "text": "嗯，知道。我前两天给你们打过电话的，就是14号之前。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯，知道。我前两天给你们打过电话的，就是14号之前。"
       },
       {
         "turn_index": 4,
         "role": "催收员",
-        "text": "就4号之前吗？呃，就是您这边是给我们客服打的电话吗？就是……因为我们这边是风险管理部门的哈。那您这边是给客服怎么说的呀？这个问题确实已经是逾期了嘛。",
-        "action": null,
+        "text": "就4号之前吗？"
+      },
+      {
+        "turn_index": 5,
+        "role": "客户",
+        "text": "对。"
+      },
+      {
+        "turn_index": 6,
+        "role": "催收员",
+        "text": "呃，就是您这边是给我们客服打的电话吗？"
+      },
+      {
+        "turn_index": 7,
+        "role": "客户",
+        "text": "对。"
+      },
+      {
+        "turn_index": 8,
+        "role": "催收员",
+        "text": "就是……因为我们这边是风险管理部门的哈。那您这边是给客服怎么说的呀？这个问题确实已经是逾期了嘛。",
+        "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          4,
-          6,
-          8
-        ]
+        "willingness": null
       },
       {
         "turn_index": 9,
@@ -2552,11 +2791,7 @@
       {
         "turn_index": 10,
         "role": "催收员",
-        "text": "呃，10号呀。现在已经11号了呀。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "呃，10号呀。现在已经11号了呀。"
       },
       {
         "turn_index": 11,
@@ -2572,15 +2807,21 @@
       {
         "turn_index": 12,
         "role": "催收员",
-        "text": "就是您要在14号之前才能还进去吗？噢，噢。那先生，您这边是遇到什么困难了吗？您可以给我说一下嘛，我看看可不可以帮到您。",
-        "action": null,
+        "text": "就是您要在14号之前才能还进去吗？"
+      },
+      {
+        "turn_index": 13,
+        "role": "客户",
+        "text": "对。"
+      },
+      {
+        "turn_index": 14,
+        "role": "催收员",
+        "text": "噢，噢。那先生，您这边是遇到什么困难了吗？您可以给我说一下嘛，我看看可不可以帮到您。",
+        "action": "empathy",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          12,
-          14
-        ]
+        "willingness": null
       },
       {
         "turn_index": 15,
@@ -2601,6 +2842,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 17,
+        "role": "客户",
+        "text": "对。"
       },
       {
         "turn_index": 18,
@@ -2628,6 +2874,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 1,
+        "role": "客户",
+        "text": "对啊。"
       },
       {
         "turn_index": 2,
@@ -2699,11 +2950,7 @@
       {
         "turn_index": 9,
         "role": "客户",
-        "text": "那那不行，那在晚点……可以。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "那那不行，那在晚点……可以。"
       }
     ]
   },
@@ -2722,24 +2969,35 @@
       {
         "turn_index": 1,
         "role": "客户",
-        "text": "您好",
-        "action": null,
+        "text": "您好"
+      },
+      {
+        "turn_index": 2,
+        "role": "客户",
+        "text": "对"
+      },
+      {
+        "turn_index": 3,
+        "role": "催收员",
+        "text": "是这样的，张先生，和您来电呢，是关于您在我行办理的这个信用卡后四位4056，现在有逾期的一个情况了。然后银行要求我们通知到您现在这个款项逾期，有一个逾期最低665块钱，可能需要您在今天的一个七点钟，您得去处理一下了，先生。",
+        "action": "information",
         "facts": [],
         "emotions": [],
         "willingness": null
       },
       {
-        "turn_index": 3,
+        "turn_index": 4,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 5,
         "role": "催收员",
-        "text": "是这样的，张先生，和您来电呢，是关于您在我行办理的这个信用卡后四位4056，现在有逾期的一个情况了。然后银行要求我们通知到您现在这个款项逾期，有一个逾期最低665块钱，可能需要您在今天的一个七点钟，您得去处理一下了，先生。噢，那您这边您抓紧一下时间嘛，因为确实已经是过了您3号这个还款日了，现在这个账户已经是有逾期的一个情况了。先生，那您抓紧时间，您尽快处理一下嘛。好吧，先生。",
-        "action": "information",
+        "text": "噢，那您这边您抓紧一下时间嘛，因为确实已经是过了您3号这个还款日了，现在这个账户已经是有逾期的一个情况了。先生，那您抓紧时间，您尽快处理一下嘛。好吧，先生。",
+        "action": "pressure",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          3,
-          5
-        ]
+        "willingness": null
       }
     ]
   },
@@ -2758,11 +3016,7 @@
       {
         "turn_index": 1,
         "role": "客户",
-        "text": "您好",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "您好"
       },
       {
         "turn_index": 2,
@@ -2774,17 +3028,32 @@
         "willingness": null
       },
       {
+        "turn_index": 3,
+        "role": "客户",
+        "text": "对"
+      },
+      {
         "turn_index": 4,
         "role": "催收员",
-        "text": "<PERSON>女士，您好，我们这边是招商银行信用卡中心的，是这样的，这边跟您来电呢，是收到了<LOCATION>总部下发的通知，关于您身份证名下信用卡账户严重逾期的一个材料。到目前为止，您在我们招行总欠款有10695.29，最低还款额的话呢，有920块钱。您的卡片现在面临需要冻结和全款结清的一个流程，风险方面，您可以在线还一下最低还款额吗？女士",
+        "text": "<PERSON>女士，您好，我们这边是招商银行信用卡中心的，是这样的，这边跟您来电呢，是收到了<LOCATION>总部下发的通知，关于您身份证名下信用卡账户严重逾期的一个材料。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          4,
-          5
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 5,
+        "role": "催收员",
+        "text": "到目前为止，您在我们招行总欠款有10695.29，最低还款额的话呢，有920块钱。您的卡片现在面临需要冻结和全款结清的一个流程，风险方面，您可以在线还一下最低还款额吗？女士",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 6,
+        "role": "客户",
+        "text": "嗯"
       },
       {
         "turn_index": 7,
@@ -2810,6 +3079,11 @@
         "willingness": null
       },
       {
+        "turn_index": 1,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
         "turn_index": 2,
         "role": "催收员",
         "text": "啊，您好，张先生，我们这边是招商银行信用卡中心的，您是张先生本人，对吗？",
@@ -2819,51 +3093,107 @@
         "willingness": null
       },
       {
+        "turn_index": 3,
+        "role": "客户",
+        "text": "对。"
+      },
+      {
         "turn_index": 4,
         "role": "催收员",
-        "text": "呃，您好，先生，本次给您来电是关于您在我们招商银行的个人信用卡逾期事宜。先生，您个人信用卡逾期最低缴款是1405.32，截止今天逾期已经超过一周了。信用卡已经属于严重逾期，未及时归还，逾期不良记录我们正在上报。",
+        "text": "呃，您好，先生，本次给您来电是关于您在我们招商银行的个人信用卡逾期事宜。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          4,
-          6,
-          8
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 5,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 6,
+        "role": "催收员",
+        "text": "先生，您个人信用卡逾期最低缴款是1405.32，截止今天逾期已经超过一周了。",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 7,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 8,
+        "role": "催收员",
+        "text": "信用卡已经属于严重逾期，未及时归还，逾期不良记录我们正在上报。",
+        "action": "legal_threat",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 9,
         "role": "客户",
-        "text": "我知道",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "我知道"
       },
       {
         "turn_index": 10,
         "role": "催收员",
-        "text": "您从用卡以来累计未按时还款次数已经高达11次，银行总部已经下达了全额清缴及冻结通知。我们人工介入来电是跟您本人确认，最低还款1406块钱，您这边是忘记处理了，还是有什么其他情况呢？没有钱的原因是？我们这边看到工作人员给您登记说您在其他银行……就是说，呃，每个月会扣您的那个划扣您的钱，是吗？",
+        "text": "您从用卡以来累计未按时还款次数已经高达11次，银行总部已经下达了全额清缴及冻结通知。",
         "action": "legal_threat",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          10,
-          12,
-          14,
-          16
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 11,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 12,
+        "role": "催收员",
+        "text": "我们人工介入来电是跟您本人确认，最低还款1406块钱，您这边是忘记处理了，还是有什么其他情况呢？",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 13,
+        "role": "客户",
+        "text": "嗯……钱……"
+      },
+      {
+        "turn_index": 14,
+        "role": "催收员",
+        "text": "没有钱的原因是？我们这边看到工作人员给您登记说您在其他银行……",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 15,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
+        "turn_index": 16,
+        "role": "催收员",
+        "text": "就是说，呃，每个月会扣您的那个划扣您的钱，是吗？",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 17,
         "role": "客户",
-        "text": "现在不扣了，扣完了已经。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "现在不扣了，扣完了已经。"
       },
       {
         "turn_index": 18,
@@ -2888,25 +3218,44 @@
       {
         "turn_index": 20,
         "role": "催收员",
-        "text": "好的，呃，如果是这样的情况，我们这边可以去给您申请一下帮扶政策，先生，让您只还您的账单本金。先生，因为您本次逾期以来产生了循环利息和违约金，大概有400块钱左右，这个钱可以去给您进行减免，让您只还账面本金。先生，那这边需要您还到您4月份的账单1406元，建议您去周转一下，先生。",
+        "text": "好的，呃，如果是这样的情况，我们这边可以去给您申请一下帮扶政策，先生，让您只还您的账单本金。",
         "action": "plan_proposal",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          20,
-          22,
-          24
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 21,
+        "role": "客户",
+        "text": "嗯，好的"
+      },
+      {
+        "turn_index": 22,
+        "role": "催收员",
+        "text": "先生，因为您本次逾期以来产生了循环利息和违约金，大概有400块钱左右，这个钱可以去给您进行减免，让您只还账面本金。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 23,
+        "role": "客户",
+        "text": "嗯，明白"
+      },
+      {
+        "turn_index": 24,
+        "role": "催收员",
+        "text": "先生，那这边需要您还到您4月份的账单1406元，建议您去周转一下，先生。",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 25,
         "role": "客户",
-        "text": "多少？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "多少？"
       },
       {
         "turn_index": 26,
@@ -2920,11 +3269,7 @@
       {
         "turn_index": 27,
         "role": "客户",
-        "text": "这个什么什么违约金……欠多少？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "这个什么什么违约金……欠多少？"
       },
       {
         "turn_index": 28,
@@ -2938,11 +3283,7 @@
       {
         "turn_index": 29,
         "role": "客户",
-        "text": "400太少了，你的利息多少？400块钱的违约金，你有点少了点。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "400太少了，你的利息多少？400块钱的违约金，你有点少了点。"
       },
       {
         "turn_index": 30,
@@ -2967,20 +3308,12 @@
       {
         "turn_index": 32,
         "role": "催收员",
-        "text": "这的话……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "这的话……"
       },
       {
         "turn_index": 33,
         "role": "客户",
-        "text": "本次是本次啊。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "本次是本次啊。"
       },
       {
         "turn_index": 34,
@@ -2994,20 +3327,12 @@
       {
         "turn_index": 35,
         "role": "客户",
-        "text": "我是这么……去医院了不是？听我说哈，我这么这么多月了，你们招商银行早就给我停卡了。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "我是这么……去医院了不是？听我说哈，我这么这么多月了，你们招商银行早就给我停卡了。"
       },
       {
         "turn_index": 36,
         "role": "催收员",
-        "text": "不需要，现在的话是这个贷的还款，在这个可以……还是说您确保尽快用我们服务的中活享？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "不需要，现在的话是这个贷的还款，在这个可以……还是说您确保尽快用我们服务的中活享？"
       },
       {
         "turn_index": 37,
@@ -3023,11 +3348,7 @@
       {
         "turn_index": 38,
         "role": "催收员",
-        "text": "呃，先生，如果说是您这边……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "呃，先生，如果说是您这边……"
       },
       {
         "turn_index": 39,
@@ -3052,11 +3373,7 @@
       {
         "turn_index": 41,
         "role": "客户",
-        "text": "嗯，我暂时没有那么多钱。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯，我暂时没有那么多钱。"
       },
       {
         "turn_index": 42,
@@ -3081,33 +3398,35 @@
       {
         "turn_index": 44,
         "role": "催收员",
-        "text": "如果说您可以一次性全款结清，那么招商银行也可以给您减很多呀，先生。但是您现在，目前你的情况是，您没有办法一次性还全款呀。",
+        "text": "如果说您可以一次性全款结清，那么招商银行也可以给您减很多呀，先生。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          44,
-          46
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 45,
+        "role": "客户",
+        "text": "好。"
+      },
+      {
+        "turn_index": 46,
+        "role": "催收员",
+        "text": "但是您现在，目前你的情况是，您没有办法一次性还全款呀。",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 47,
         "role": "客户",
-        "text": "嗯。减多少啊招商银行？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯。减多少啊招商银行？"
       },
       {
         "turn_index": 48,
         "role": "催收员",
-        "text": "呃，您说还全款吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "呃，您说还全款吗？"
       },
       {
         "turn_index": 49,
@@ -3132,11 +3451,7 @@
       {
         "turn_index": 51,
         "role": "客户",
-        "text": "我减6000，我那个数吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "我减6000，我那个数吗？"
       },
       {
         "turn_index": 52,
@@ -3150,11 +3465,7 @@
       {
         "turn_index": 53,
         "role": "客户",
-        "text": "这个……不是6000了？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "这个……不是6000了？"
       },
       {
         "turn_index": 54,
@@ -3179,11 +3490,7 @@
       {
         "turn_index": 56,
         "role": "催收员",
-        "text": "呃，因为您……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "呃，因为您……"
       },
       {
         "turn_index": 57,
@@ -3258,11 +3565,7 @@
       {
         "turn_index": 64,
         "role": "催收员",
-        "text": "呃，这个的话我知道您现在……嗯，完对。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "呃，这个的话我知道您现在……嗯，完对。"
       },
       {
         "turn_index": 65,
@@ -3279,11 +3582,7 @@
       {
         "turn_index": 66,
         "role": "催收员",
-        "text": "我再挂2天。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "我再挂2天。"
       },
       {
         "turn_index": 67,
@@ -3322,6 +3621,11 @@
     "call_id": "2322202560338590106",
     "turns": [
       {
+        "turn_index": 0,
+        "role": "客户",
+        "text": "喂"
+      },
+      {
         "turn_index": 1,
         "role": "催收员",
         "text": "喂，您好。这边招商银行信用卡用卡中心，您是张先生吗？",
@@ -3329,6 +3633,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 2,
+        "role": "客户",
+        "text": "对"
       },
       {
         "turn_index": 3,
@@ -3380,46 +3689,54 @@
       {
         "turn_index": 8,
         "role": "客户",
-        "text": "下班了。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "下班了。"
       },
       {
         "turn_index": 9,
         "role": "催收员",
-        "text": "是这样的先生，因为您近半年都在逾期，银行这边肯定要永久性冻结您的卡片。以后信用卡也不能用了，只能还款，还完之后也只能注销。确定不用了是吧？那我这边就正式给您走后面的流程。另外，您现在的家庭地址还是爱迪生路13号吗？",
+        "text": "是这样的先生，因为您近半年都在逾期，银行这边肯定要永久性冻结您的卡片。以后信用卡也不能用了，只能还款，还完之后也只能注销。",
         "action": "information",
-        "facts": [],
-        "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          9,
-          11
-        ]
-      },
-      {
-        "turn_index": 12,
-        "role": "客户",
-        "text": "嗯，你有什么事吗？",
-        "action": null,
         "facts": [],
         "emotions": [],
         "willingness": null
       },
       {
+        "turn_index": 10,
+        "role": "客户",
+        "text": "嗯，那行吧。"
+      },
+      {
+        "turn_index": 11,
+        "role": "催收员",
+        "text": "确定不用了是吧？那我这边就正式给您走后面的流程。另外，您现在的家庭地址还是爱迪生路13号吗？",
+        "action": "legal_threat",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 12,
+        "role": "客户",
+        "text": "嗯，你有什么事吗？"
+      },
+      {
         "turn_index": 13,
         "role": "催收员",
-        "text": "这边需要核实您的地址信息，给您派发纸质版的催缴信函到您的家庭地址，避免出错。好。",
+        "text": "这边需要核实您的地址信息，给您派发纸质版的催缴信函到您的家庭地址，避免出错。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          13,
-          15
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 14,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
+        "turn_index": 15,
+        "role": "催收员",
+        "text": "好。"
       },
       {
         "turn_index": 16,
@@ -3445,17 +3762,32 @@
         "willingness": null
       },
       {
+        "turn_index": 1,
+        "role": "客户",
+        "text": "喂，嗯。"
+      },
+      {
         "turn_index": 2,
         "role": "催收员",
-        "text": "您好，这边是招商银行信用卡中心，家人给您来过电话的哈。您家人给我说，您要周五处理吗？是明天吗？昨天不是给我说的是3天内处理吗？",
+        "text": "您好，这边是招商银行信用卡中心，家人给您来过电话的哈。您家人给我说，您要周五处理吗？",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          2,
-          4
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 3,
+        "role": "客户",
+        "text": "对对对。"
+      },
+      {
+        "turn_index": 4,
+        "role": "催收员",
+        "text": "是明天吗？昨天不是给我说的是3天内处理吗？",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 5,
@@ -3469,46 +3801,58 @@
       {
         "turn_index": 6,
         "role": "催收员",
-        "text": "这边尽快处理哈，因为我也不想给您太多压力。之前给您说过了，后面会面临停卡或者降额的风险。",
+        "text": "这边尽快处理哈，因为我也不想给您太多压力。",
         "action": "closure",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          6,
-          8
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 7,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 8,
+        "role": "催收员",
+        "text": "之前给您说过了，后面会面临停卡或者降额的风险。",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 9,
         "role": "客户",
-        "text": "我知道",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "我知道"
       },
       {
         "turn_index": 10,
         "role": "催收员",
-        "text": "如果您目前在我行的欠款比较多，后续一旦找到停卡审核部门，可能会正式开启全款销售相关流程，到时候您的资金压力会进一步加大。而且如果您在其他银行有外债，这边一旦停卡，其他银行可能也会把您视为风险客户，停掉您的卡片或者降额。",
+        "text": "如果您目前在我行的欠款比较多，后续一旦找到停卡审核部门，可能会正式开启全款销售相关流程，到时候您的资金压力会进一步加大。",
         "action": "pressure",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          10,
-          12
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 11,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 12,
+        "role": "催收员",
+        "text": "而且如果您在其他银行有外债，这边一旦停卡，其他银行可能也会把您视为风险客户，停掉您的卡片或者降额。",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 13,
         "role": "客户",
-        "text": "那怎么办",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "那怎么办"
       },
       {
         "turn_index": 14,
@@ -3522,11 +3866,7 @@
       {
         "turn_index": 15,
         "role": "客户",
-        "text": "我就问你周五行不行嘛？你不要一直说一直说。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "我就问你周五行不行嘛？你不要一直说一直说。"
       },
       {
         "turn_index": 16,
@@ -3540,52 +3880,59 @@
       {
         "turn_index": 17,
         "role": "客户",
-        "text": "我你周五行不行？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "我你周五行不行？"
       },
       {
         "turn_index": 18,
         "role": "催收员",
-        "text": "您能听到我说话吗先生？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "您能听到我说话吗先生？"
       },
       {
         "turn_index": 19,
         "role": "客户",
-        "text": "我说周五行不行嘛？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "我说周五行不行嘛？"
       },
       {
         "turn_index": 20,
         "role": "催收员",
-        "text": "嗯，那这边先不打扰您了。你尽快想办法吧。特别提醒您，在逾期账务审核期前，请你务必保持电话畅通，避免银行联系不到您可能外呼紧急联系人转告您回电，到时候可能会怀疑您本人故意逃避银行债务催缴。那这边先不打扰您了，祝您生活愉快，再见。",
+        "text": "嗯，那这边先不打扰您了。你尽快想办法吧。",
         "action": "closure",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          20,
-          22,
-          24
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 21,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 22,
+        "role": "催收员",
+        "text": "特别提醒您，在逾期账务审核期前，请你务必保持电话畅通，避免银行联系不到您可能外呼紧急联系人转告您回电，到时候可能会怀疑您本人故意逃避银行债务催缴。",
+        "action": "legal_threat",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 23,
+        "role": "客户",
+        "text": "知道了"
+      },
+      {
+        "turn_index": 24,
+        "role": "催收员",
+        "text": "那这边先不打扰您了，祝您生活愉快，再见。",
+        "action": "closure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 25,
         "role": "客户",
-        "text": "我问你，周五可不可以？周五可不可以？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "我问你，周五可不可以？周五可不可以？"
       }
     ]
   },
@@ -3604,11 +3951,7 @@
       {
         "turn_index": 1,
         "role": "客户",
-        "text": "唉，哪位？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "唉，哪位？"
       },
       {
         "turn_index": 2,
@@ -3622,34 +3965,49 @@
       {
         "turn_index": 3,
         "role": "客户",
-        "text": "没看到噢。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "没看到噢。"
       },
       {
         "turn_index": 4,
         "role": "催收员",
-        "text": "嗯，好，您稍微看一下那个短信哈。是这样子的，您卡的尾号9657个人信用卡，它已经是严重逾期了。银行这边有给您发短信，但是您可能没注意到。还有，确实由于这个欠款金额较小，上期未还，银行这边可能怀疑是恶意拖欠的问题，逾期不良记录已经在被上报了。",
+        "text": "嗯，好，您稍微看一下那个短信哈。是这样子的，您卡的尾号9657个人信用卡，它已经是严重逾期了。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          4,
-          6,
-          8
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 5,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 6,
+        "role": "催收员",
+        "text": "银行这边有给您发短信，但是您可能没注意到。",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 7,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 8,
+        "role": "催收员",
+        "text": "还有，确实由于这个欠款金额较小，上期未还，银行这边可能怀疑是恶意拖欠的问题，逾期不良记录已经在被上报了。",
+        "action": "legal_threat",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 9,
         "role": "客户",
-        "text": "那怎么办",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "那怎么办"
       },
       {
         "turn_index": 10,
@@ -3663,11 +4021,7 @@
       {
         "turn_index": 11,
         "role": "客户",
-        "text": "怎么了？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "怎么了？"
       },
       {
         "turn_index": 12,
@@ -3683,6 +4037,11 @@
   {
     "call_id": "2317619700071385525",
     "turns": [
+      {
+        "turn_index": 0,
+        "role": "客户",
+        "text": "喂"
+      },
       {
         "turn_index": 1,
         "role": "催收员",
@@ -3726,15 +4085,25 @@
       {
         "turn_index": 5,
         "role": "催收员",
-        "text": "噢，就是外部账款有拖欠是吧？好，帮您记录，请稍等。您这边逾期比较长，个人逾期最低欠款有821块5毛9。您看如果最近能想办法周转，把这800多补掉，我这边可以帮您把违约产生的息费和违约金免掉。这个金额有200多，235块1毛4，好吧？",
+        "text": "噢，就是外部账款有拖欠是吧？",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          5,
-          7
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 6,
+        "role": "客户",
+        "text": "对。"
+      },
+      {
+        "turn_index": 7,
+        "role": "催收员",
+        "text": "好，帮您记录，请稍等。您这边逾期比较长，个人逾期最低欠款有821块5毛9。您看如果最近能想办法周转，把这800多补掉，我这边可以帮您把违约产生的息费和违约金免掉。这个金额有200多，235块1毛4，好吧？",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 8,
@@ -3757,11 +4126,7 @@
       {
         "turn_index": 10,
         "role": "客户",
-        "text": "12点之前估计来不及，现在已经……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "12点之前估计来不及，现在已经……"
       },
       {
         "turn_index": 11,
@@ -3796,6 +4161,11 @@
         "willingness": null
       },
       {
+        "turn_index": 1,
+        "role": "客户",
+        "text": "对。"
+      },
+      {
         "turn_index": 2,
         "role": "催收员",
         "text": "好的，先生。银行给您发的短信收到了吗？",
@@ -3807,24 +4177,30 @@
       {
         "turn_index": 3,
         "role": "客户",
-        "text": "收到了",
-        "action": null,
+        "text": "收到了"
+      },
+      {
+        "turn_index": 4,
+        "role": "催收员",
+        "text": "我们这边是接到本地移交过来的，您身份证尾号0410的逾期材料。目前您在招商银行的一个信用卡和一个E招贷都已经逾期了。",
+        "action": "information",
         "facts": [],
         "emotions": [],
         "willingness": null
       },
       {
-        "turn_index": 4,
+        "turn_index": 5,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 6,
         "role": "催收员",
-        "text": "我们这边是接到本地移交过来的，您身份证尾号0410的逾期材料。目前您在招商银行的一个信用卡和一个E招贷都已经逾期了。信用卡账户最低还款还剩359，E招贷账户最低还款还剩196，这两个账户都需要您现在补齐。您之前基本上每个月都有按时处理，这个月是忘了还是遇到什么困难了？",
+        "text": "信用卡账户最低还款还剩359，E招贷账户最低还款还剩196，这两个账户都需要您现在补齐。您之前基本上每个月都有按时处理，这个月是忘了还是遇到什么困难了？",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          4,
-          6
-        ]
+        "willingness": null
       },
       {
         "turn_index": 7,
@@ -3860,15 +4236,25 @@
       {
         "turn_index": 10,
         "role": "催收员",
-        "text": "唉，款项还没到是吧？好。唉，那鉴于这种情况，我看了一下，这边可以给您申请时间，但最晚不能超过今天下午5点，先生。您就周转一下嘛，起码在五点之前先处理一个账户。先把E招贷或者信用卡账户补齐一个，还剩一个359，您先处理一个，另外一个我们再给您申请点时间，好吗？",
+        "text": "唉，款项还没到是吧？好。",
         "action": "empathy",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          10,
-          12
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 11,
+        "role": "客户",
+        "text": "对。"
+      },
+      {
+        "turn_index": 12,
+        "role": "催收员",
+        "text": "唉，那鉴于这种情况，我看了一下，这边可以给您申请时间，但最晚不能超过今天下午5点，先生。您就周转一下嘛，起码在五点之前先处理一个账户。先把E招贷或者信用卡账户补齐一个，还剩一个359，您先处理一个，另外一个我们再给您申请点时间，好吗？",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 13,
@@ -3894,6 +4280,11 @@
         "willingness": null
       },
       {
+        "turn_index": 1,
+        "role": "客户",
+        "text": "喂，是的。"
+      },
+      {
         "turn_index": 2,
         "role": "催收员",
         "text": "女士，是这样子的，目前您在招行这个银行卡呢，是出现了一个逾期的情况。那我银行给您发送了短信，请您这边务必关注一下。您这边是忘记处理了吗？",
@@ -3905,11 +4296,7 @@
       {
         "turn_index": 3,
         "role": "客户",
-        "text": "你好，我知道，我知道这个事儿。我这在抓紧时间想办法处理一下啊。现在就是……那个……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "你好，我知道，我知道这个事儿。我这在抓紧时间想办法处理一下啊。现在就是……那个……"
       },
       {
         "turn_index": 4,
@@ -3938,43 +4325,50 @@
       {
         "turn_index": 6,
         "role": "催收员",
-        "text": "就是您外部是有人欠您钱，是吧？嗯，这样的。您现在能周转到多少的一个金额呢？这边想问一下您。喂，您好？",
+        "text": "就是您外部是有人欠您钱，是吧？",
         "action": "empathy",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          6,
-          8,
-          10
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 7,
+        "role": "客户",
+        "text": "对对，没错。"
+      },
+      {
+        "turn_index": 8,
+        "role": "催收员",
+        "text": "嗯，这样的。您现在能周转到多少的一个金额呢？这边想问一下您。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 9,
+        "role": "客户",
+        "text": "嗯……"
+      },
+      {
+        "turn_index": 10,
+        "role": "催收员",
+        "text": "喂，您好？"
       },
       {
         "turn_index": 11,
         "role": "客户",
-        "text": "您好。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "您好。"
       },
       {
         "turn_index": 12,
         "role": "催收员",
-        "text": "您能听得清楚吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "您能听得清楚吗？"
       },
       {
         "turn_index": 13,
         "role": "客户",
-        "text": "唉，你好说呀，我没听见。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "唉，你好说呀，我没听见。"
       },
       {
         "turn_index": 14,
@@ -4028,15 +4422,25 @@
       {
         "turn_index": 18,
         "role": "催收员",
-        "text": "呃，利息是万分之五，按月收复利。因为您这边出现了一个逾期，如果您说您这边承担不了，那我这边可以去帮您申请一个帮您申请到账面逾期的这个息费条件，但是您得尽快地去筹措您这个逾期最低的一个金额。我之前看到之前是给您提供过方案，但是好几次都是方案作废了，您这边都没有还足啊。",
+        "text": "呃，利息是万分之五，按月收复利。因为您这边出现了一个逾期，如果您说您这边承担不了，那我这边可以去帮您申请一个帮您申请到账面逾期的这个息费条件，但是您得尽快地去筹措您这个逾期最低的一个金额。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          18,
-          20
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 19,
+        "role": "客户",
+        "text": "嗯，我知道"
+      },
+      {
+        "turn_index": 20,
+        "role": "催收员",
+        "text": "我之前看到之前是给您提供过方案，但是好几次都是方案作废了，您这边都没有还足啊。",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 21,
@@ -4081,33 +4485,31 @@
       {
         "turn_index": 25,
         "role": "客户",
-        "text": "嗯……那我的利息呢？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯……那我的利息呢？"
       },
       {
         "turn_index": 26,
         "role": "催收员",
-        "text": "您稍等嘛，我给您查一下，好吧。您这个已出的循环利息跟违约金，您也可以在您的掌上生活APP上可以看到，是一个59097.81的一个金额。",
-        "action": null,
+        "text": "您稍等嘛，我给您查一下，好吧。"
+      },
+      {
+        "turn_index": 27,
+        "role": "客户",
+        "text": "嗯，好。"
+      },
+      {
+        "turn_index": 28,
+        "role": "催收员",
+        "text": "您这个已出的循环利息跟违约金，您也可以在您的掌上生活APP上可以看到，是一个59097.81的一个金额。",
+        "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          26,
-          28
-        ]
+        "willingness": null
       },
       {
         "turn_index": 29,
         "role": "客户",
-        "text": "多少？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "多少？"
       },
       {
         "turn_index": 30,
@@ -4121,11 +4523,7 @@
       {
         "turn_index": 31,
         "role": "客户",
-        "text": "总共的就是三万几，三万四块钱，不就是500多块钱的利息吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "总共的就是三万几，三万四块钱，不就是500多块钱的利息吗？"
       },
       {
         "turn_index": 32,
@@ -4161,11 +4559,7 @@
       {
         "turn_index": 35,
         "role": "客户",
-        "text": "噢，我知道啊。那利息怎么着啊？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "噢，我知道啊。那利息怎么着啊？"
       },
       {
         "turn_index": 36,
@@ -4215,11 +4609,7 @@
       {
         "turn_index": 41,
         "role": "客户",
-        "text": "现在这个点不可能，我就等于拿，我也拿不过来。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "现在这个点不可能，我就等于拿，我也拿不过来。"
       },
       {
         "turn_index": 42,
@@ -4251,45 +4641,78 @@
       {
         "turn_index": 45,
         "role": "客户",
-        "text": "好，好，好，我知道了，我知道了，好，OK，OK，好，好。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "好，好，好，我知道了，我知道了，好，OK，OK，好，好。"
       },
       {
         "turn_index": 46,
         "role": "催收员",
-        "text": "您先稍，您先听一下。好吧，有一个免责告知需要您听一下。呃，如果今天12点钟的时候审核失败的话，那银行具有法律效应的这个纸质信函呢，就会准备一个盖章，然后准备一个签发。然后第一点是，如果转入后端部门之后，那您和银行的这个合作关系将转变为债权债务关系。那银行呢，也会启动强制的一个清收流程。那第二个是银行，如果这边系统监测到……",
-        "action": null,
+        "text": "您先稍，您先听一下。好吧，有一个免责告知需要您听一下。"
+      },
+      {
+        "turn_index": 47,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 48,
+        "role": "催收员",
+        "text": "呃，如果今天12点钟的时候审核失败的话，那银行具有法律效应的这个纸质信函呢，就会准备一个盖章，然后准备一个签发。",
+        "action": "legal_threat",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          46,
-          48,
-          50,
-          52,
-          54
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 49,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 50,
+        "role": "催收员",
+        "text": "然后第一点是，如果转入后端部门之后，那您和银行的这个合作关系将转变为债权债务关系。",
+        "action": "legal_threat",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 51,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 52,
+        "role": "催收员",
+        "text": "那银行呢，也会启动强制的一个清收流程。",
+        "action": "legal_threat",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 53,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 54,
+        "role": "催收员",
+        "text": "那第二个是银行，如果这边系统监测到……",
+        "action": "legal_threat",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 55,
         "role": "客户",
-        "text": "拜拜。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "拜拜。"
       },
       {
         "turn_index": 56,
         "role": "催收员",
-        "text": "好，我听明白您的意思了，但是女士，我只是银行的工作人员，我得先把这个情况先告知到给您啊，以免您之后收到之后，您说银行这边没有提前告知到给您，对吧？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "好，我听明白您的意思了，但是女士，我只是银行的工作人员，我得先把这个情况先告知到给您啊，以免您之后收到之后，您说银行这边没有提前告知到给您，对吧？"
       }
     ]
   },
@@ -4304,6 +4727,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 1,
+        "role": "客户",
+        "text": "对。"
       },
       {
         "turn_index": 2,
@@ -4335,6 +4763,11 @@
         "willingness": null
       },
       {
+        "turn_index": 5,
+        "role": "客户",
+        "text": "好。"
+      },
+      {
         "turn_index": 6,
         "role": "客户",
         "text": "我自己上传好了，不用找我。",
@@ -4353,11 +4786,7 @@
       {
         "turn_index": 0,
         "role": "客户",
-        "text": "你好，请留下你的姓名和来电原因，我会帮你确认此人是否方便接听。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "你好，请留下你的姓名和来电原因，我会帮你确认此人是否方便接听。"
       },
       {
         "turn_index": 1,
@@ -4371,11 +4800,12 @@
       {
         "turn_index": 2,
         "role": "客户",
-        "text": "谢请不要挂断电话。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "谢请不要挂断电话。"
+      },
+      {
+        "turn_index": 3,
+        "role": "客户",
+        "text": "喂。"
       },
       {
         "turn_index": 4,
@@ -4385,6 +4815,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 5,
+        "role": "客户",
+        "text": "对，是的。"
       },
       {
         "turn_index": 6,
@@ -4450,12 +4885,22 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 13,
+        "role": "客户",
+        "text": "好。"
       }
     ]
   },
   {
     "call_id": "2322254460585889026",
     "turns": [
+      {
+        "turn_index": 0,
+        "role": "客户",
+        "text": "喂"
+      },
       {
         "turn_index": 1,
         "role": "催收员",
@@ -4468,11 +4913,7 @@
       {
         "turn_index": 2,
         "role": "客户",
-        "text": "呃，是。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "呃，是。"
       },
       {
         "turn_index": 3,
@@ -4525,6 +4966,11 @@
     "call_id": "2322850510351255318",
     "turns": [
       {
+        "turn_index": 0,
+        "role": "客户",
+        "text": "喂"
+      },
+      {
         "turn_index": 1,
         "role": "催收员",
         "text": "喂，您好。招商银行信用卡中心，请问您是张先生吗？",
@@ -4536,33 +4982,35 @@
       {
         "turn_index": 2,
         "role": "客户",
-        "text": "呃，是我。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "呃，是我。"
       },
       {
         "turn_index": 3,
         "role": "催收员",
-        "text": "唉，好的，先生，是这样的，我们招商银行信用卡给您来电，是关于您在我们银行的一个款项逾期的问题。看您昨天也还了11000块钱进来，但是您美元账户那边是有欠款的，先生，是有一个42.2的一个资金没有处理到位。",
+        "text": "唉，好的，先生，是这样的，我们招商银行信用卡给您来电，是关于您在我们银行的一个款项逾期的问题。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          3,
-          5
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 4,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 5,
+        "role": "催收员",
+        "text": "看您昨天也还了11000块钱进来，但是您美元账户那边是有欠款的，先生，是有一个42.2的一个资金没有处理到位。",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 6,
         "role": "客户",
-        "text": "然后呢",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "然后呢"
       },
       {
         "turn_index": 7,
@@ -4594,11 +5042,7 @@
       {
         "turn_index": 10,
         "role": "客户",
-        "text": "嗯，好，我知道。行，知道了啊，好。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯，好，我知道。行，知道了啊，好。"
       }
     ]
   },
@@ -4655,6 +5099,11 @@
         "willingness": null
       },
       {
+        "turn_index": 5,
+        "role": "客户",
+        "text": "嗯好"
+      },
+      {
         "turn_index": 6,
         "role": "客户",
         "text": "工资还没发",
@@ -4668,63 +5117,93 @@
       {
         "turn_index": 7,
         "role": "催收员",
-        "text": "您稍等一下工资没有发，然后再到这个息费，息费压力很大对不对？好，那您这边电话不挂断，在线将您逾期最低130块给您报的总数周转进来，我也像前面工作人员给你操作的那样，下一期循环利息和违约金给您减免掉",
-        "action": null,
+        "text": "您稍等一下"
+      },
+      {
+        "turn_index": 8,
+        "role": "催收员",
+        "text": "工资没有发，然后再到这个息费，息费压力很大对不对？",
+        "action": "empathy",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          7,
-          8,
-          10
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 9,
+        "role": "客户",
+        "text": "是的"
+      },
+      {
+        "turn_index": 10,
+        "role": "催收员",
+        "text": "好，那您这边电话不挂断，在线将您逾期最低130块给您报的总数周转进来，我也像前面工作人员给你操作的那样，下一期循环利息和违约金给您减免掉",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 11,
         "role": "客户",
-        "text": "那个是多少呀？循环利息和违约金。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "那个是多少呀？循环利息和违约金。"
       },
       {
         "turn_index": 12,
         "role": "催收员",
-        "text": "您稍等一下，那我帮您试算一下嘛。循环利息是38块1毛六，违约金是12块6毛五，总共是50块8毛一。嗯，好，那您这边在线处理130就可以了。",
+        "text": "您稍等一下，那我帮您试算一下嘛。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          12,
-          13,
-          15
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 13,
+        "role": "催收员",
+        "text": "循环利息是38块1毛六，违约金是12块6毛五，总共是50块8毛一。",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 14,
+        "role": "客户",
+        "text": "嗯行"
+      },
+      {
+        "turn_index": 15,
+        "role": "催收员",
+        "text": "嗯，好，那您这边在线处理130就可以了。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 16,
         "role": "客户",
-        "text": "转130是吧",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "转130是吧"
       },
       {
         "turn_index": 17,
         "role": "催收员",
-        "text": "对对对，给您报的整数。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "对对对，给您报的整数。"
+      },
+      {
+        "turn_index": 18,
+        "role": "客户",
+        "text": "好"
       }
     ]
   },
   {
     "call_id": "2321931470032850074",
     "turns": [
+      {
+        "turn_index": 0,
+        "role": "客户",
+        "text": "喂"
+      },
       {
         "turn_index": 1,
         "role": "催收员",
@@ -4733,6 +5212,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 2,
+        "role": "客户",
+        "text": "对"
       },
       {
         "turn_index": 3,
@@ -4746,20 +5230,12 @@
       {
         "turn_index": 4,
         "role": "客户",
-        "text": "唉……对，是的。800多少？我的是……这哈……",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "唉……对，是的。800多少？我的是……这哈……"
       },
       {
         "turn_index": 5,
         "role": "催收员",
-        "text": "嗯。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯。"
       },
       {
         "turn_index": 6,
@@ -4785,11 +5261,7 @@
       {
         "turn_index": 8,
         "role": "客户",
-        "text": "好的，好的好的。好的谢谢谢谢，好知道了。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "好的，好的好的。好的谢谢谢谢，好知道了。"
       },
       {
         "turn_index": 9,
@@ -4815,40 +5287,74 @@
         "willingness": null
       },
       {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "您好，这边是招商银行信用卡中心的，给您来电呢，主要是因为您的个人信用卡逾期问题。银行给您发的短信您有看到吗？您看到了。张先生，您这边逾期的最低应缴款是440块钱。由于您的金额比较小，而且您长期没有还，银行呢，怀疑您涉及故意拖欠，逾期不良记录已经正式上报。",
-        "action": "information",
-        "facts": [],
-        "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          2,
-          4,
-          6
-        ]
+        "turn_index": 1,
+        "role": "客户",
+        "text": "对。"
       },
       {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "那怎么办",
-        "action": null,
+        "turn_index": 2,
+        "role": "催收员",
+        "text": "您好，这边是招商银行信用卡中心的，给您来电呢，主要是因为您的个人信用卡逾期问题。银行给您发的短信您有看到吗？",
+        "action": "information",
         "facts": [],
         "emotions": [],
         "willingness": null
       },
       {
+        "turn_index": 3,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
+        "turn_index": 4,
+        "role": "催收员",
+        "text": "您看到了。张先生，您这边逾期的最低应缴款是440块钱。",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 5,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 6,
+        "role": "催收员",
+        "text": "由于您的金额比较小，而且您长期没有还，银行呢，怀疑您涉及故意拖欠，逾期不良记录已经正式上报。",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 7,
+        "role": "客户",
+        "text": "那怎么办"
+      },
+      {
         "turn_index": 8,
         "role": "催收员",
-        "text": "呃，您不要挂断电话，然后呢，在线处理一下440块钱。我这边呢，帮您在线撤案，保留您还最低款的一个资格。",
+        "text": "呃，您不要挂断电话，然后呢，在线处理一下440块钱。",
         "action": "plan_proposal",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          8,
-          10
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 9,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 10,
+        "role": "催收员",
+        "text": "我这边呢，帮您在线撤案，保留您还最低款的一个资格。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 11,
@@ -4867,11 +5373,7 @@
       {
         "turn_index": 12,
         "role": "催收员",
-        "text": "嗯。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯。"
       },
       {
         "turn_index": 13,
@@ -4891,16 +5393,34 @@
       {
         "turn_index": 14,
         "role": "催收员",
-        "text": "噢，我这边看到了，是有25年12月3号。您这边呢，就是说要一次性还清减免，然后后续的话呢，是有把您的一个……就是您是跟客服沟通过的嘛，然后这边呢也有专员跟您联系的。您是12月3号说的这个事情，然后我看一下……我查一下。喂，您好。呃，最近一次的话呢，是过了大概24天吧，12月25号是有工作人员跟您联系的，但是您都没有接。12月25号给您打了两通电话。然后12月26号的话呢，您也是有在跟我们工作人员联系，然后就是沟通一下还款的。然后工作人员也是有跟您打电话的，但是您没有接，先生。然后一直到29号，呃，是跟您说了一个预约特殊优惠政策，给您预约了六期。",
+        "text": "噢，我这边看到了，是有25年12月3号。您这边呢，就是说要一次性还清减免，然后后续的话呢，是有把您的一个……就是您是跟客服沟通过的嘛，然后这边呢也有专员跟您联系的。您是12月3号说的这个事情，然后我看一下……我查一下。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          14,
-          15,
-          17
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 15,
+        "role": "催收员",
+        "text": "喂，您好。呃，最近一次的话呢，是过了大概24天吧，12月25号是有工作人员跟您联系的，但是您都没有接。12月25号给您打了两通电话。",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 16,
+        "role": "客户",
+        "text": "嗯。"
+      },
+      {
+        "turn_index": 17,
+        "role": "催收员",
+        "text": "然后12月26号的话呢，您也是有在跟我们工作人员联系，然后就是沟通一下还款的。然后工作人员也是有跟您打电话的，但是您没有接，先生。然后一直到29号，呃，是跟您说了一个预约特殊优惠政策，给您预约了六期。",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 18,
@@ -4918,29 +5438,17 @@
       {
         "turn_index": 19,
         "role": "催收员",
-        "text": "嗯嗯，对。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯嗯，对。"
       },
       {
         "turn_index": 20,
         "role": "客户",
-        "text": "包括你刚刚跟我说有工作人员给我打电话，是不是我没有接到，是吧？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "包括你刚刚跟我说有工作人员给我打电话，是不是我没有接到，是吧？"
       },
       {
         "turn_index": 21,
         "role": "催收员",
-        "text": "嗯，对。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "嗯，对。"
       },
       {
         "turn_index": 22,
@@ -4959,15 +5467,20 @@
       {
         "turn_index": 23,
         "role": "催收员",
-        "text": "嗯，是因为3月29号嘛，您的那个……之前给您办理的那个特殊优惠方案，不是每个月让您还600多块钱就可以了嘛。然后3月20号……呃，可是您的逾期在您的缴款截止日前以及缴款截止日后，我们都有在跟您发短信以及打电话，从来都没沟通过。嗯，先生，这样吧，就是考虑到您的这个情况的话呢，银行也是愿意帮助您的，不会不管您的。所以说，考虑到您的这个情况呢，您产生的还没有出来的利息违约金，我这边申请一下给您减免掉，也算是帮一下您嘛。麻烦您报一下身份证后四位。",
+        "text": "嗯，是因为3月29号嘛，您的那个……之前给您办理的那个特殊优惠方案，不是每个月让您还600多块钱就可以了嘛。然后3月20号……呃，可是您的逾期在您的缴款截止日前以及缴款截止日后，我们都有在跟您发短信以及打电话，从来都没沟通过。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          23,
-          24
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 24,
+        "role": "催收员",
+        "text": "嗯，先生，这样吧，就是考虑到您的这个情况的话呢，银行也是愿意帮助您的，不会不管您的。所以说，考虑到您的这个情况呢，您产生的还没有出来的利息违约金，我这边申请一下给您减免掉，也算是帮一下您嘛。麻烦您报一下身份证后四位。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 25,
@@ -4985,62 +5498,104 @@
       {
         "turn_index": 26,
         "role": "催收员",
-        "text": "呃，先生，就是我们银行呢，也是一直有在跟您不断的沟通和联系的。这个确实银行就是不会不管您的，这个您放心。嗯，先生，非常理解您的心情，我们也想帮到您。可是您的最低款您可以先还了440块钱，先生。",
+        "text": "呃，先生，就是我们银行呢，也是一直有在跟您不断的沟通和联系的。这个确实银行就是不会不管您的，这个您放心。",
         "action": "empathy",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          26,
-          27
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 27,
+        "role": "催收员",
+        "text": "嗯，先生，非常理解您的心情，我们也想帮到您。可是您的最低款您可以先还了440块钱，先生。",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 28,
         "role": "客户",
-        "text": "没人通知我呀？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "没人通知我呀？"
       },
       {
         "turn_index": 29,
         "role": "催收员",
-        "text": "就是呃，我刚才看了一下那个通话记录嘛，您之前在跟客服沟通过之后呢，第二天呢，是工作人员有跟您打电话的，打了两通，我看到是打了，就是第二天打了两通，然后您没有接。是这个意思。嗯，好的，好的，先生。那您的情况呢，我这边了解了。先生，嗯，呃，就是您后续呢，如果没有还款……噢，噢。但是我们主要还是要把话题放到您的逾期的最低款上面。因为我们银行也是给了您方案的嘛，您的情况也是能够理解的，对吧？把逾期解决了，后续您想要还全款？",
+        "text": "就是呃，我刚才看了一下那个通话记录嘛，您之前在跟客服沟通过之后呢，第二天呢，是工作人员有跟您打电话的，打了两通，我看到是打了，就是第二天打了两通，然后您没有接。是这个意思。",
         "action": "information",
-        "facts": [],
-        "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          29,
-          30,
-          32,
-          34,
-          36
-        ]
-      },
-      {
-        "turn_index": 37,
-        "role": "客户",
-        "text": "之前你们跟我说的吗？",
-        "action": null,
         "facts": [],
         "emotions": [],
         "willingness": null
       },
       {
+        "turn_index": 30,
+        "role": "催收员",
+        "text": "嗯，好的，好的，先生。那您的情况呢，我这边了解了。"
+      },
+      {
+        "turn_index": 31,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 32,
+        "role": "催收员",
+        "text": "先生，嗯，呃，就是您后续呢，如果没有还款……",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 33,
+        "role": "客户",
+        "text": "噢"
+      },
+      {
+        "turn_index": 34,
+        "role": "催收员",
+        "text": "噢，噢。但是我们主要还是要把话题放到您的逾期的最低款上面。因为我们银行也是给了您方案的嘛，您的情况也是能够理解的，对吧？",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 35,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 36,
+        "role": "催收员",
+        "text": "把逾期解决了，后续您想要还全款？",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 37,
+        "role": "客户",
+        "text": "之前你们跟我说的吗？"
+      },
+      {
         "turn_index": 38,
         "role": "催收员",
-        "text": "先生，前面也不是我在跟您联系的，我们的工作人员一直都是有在轮换的。嗯，那这样，先生，您想后期还全款的话呢，您的这个诉求我了解到了。然后我下来了会帮你去申请一下，如果有结果了我就联系您，如果没有结果我就不联系您了。然后您这边呢，您准备一下您的逾期的一个还款，您周转到后就还进来440块钱，张先生。",
+        "text": "先生，前面也不是我在跟您联系的，我们的工作人员一直都是有在轮换的。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          38,
-          39
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 39,
+        "role": "催收员",
+        "text": "嗯，那这样，先生，您想后期还全款的话呢，您的这个诉求我了解到了。然后我下来了会帮你去申请一下，如果有结果了我就联系您，如果没有结果我就不联系您了。然后您这边呢，您准备一下您的逾期的一个还款，您周转到后就还进来440块钱，张先生。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 40,
@@ -5054,15 +5609,16 @@
       {
         "turn_index": 41,
         "role": "催收员",
-        "text": "明白了，明白的。那您的情况我这边了解了。张先生，如果有合适的方案，我会再给您来电话的。好的，好的。您的情况，呃，这边了解了，张先生，嗯。",
+        "text": "明白了，明白的。那您的情况我这边了解了。张先生，如果有合适的方案，我会再给您来电话的。",
         "action": "closure",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          41,
-          42
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 42,
+        "role": "催收员",
+        "text": "好的，好的。您的情况，呃，这边了解了，张先生，嗯。"
       }
     ]
   },
@@ -5079,19 +5635,60 @@
         "willingness": null
       },
       {
+        "turn_index": 1,
+        "role": "客户",
+        "text": "喂。"
+      },
+      {
         "turn_index": 2,
         "role": "催收员",
-        "text": "呃，先生，您好，这里是招商银行信用卡中心，就目前您的个人信用卡账户逾期最低款项还有一个954元，到目前为止还是没有处理到位。先生这边看您还款之后还是可以尝试刷卡使用一下。就是您避免此次逾期导致您的这张卡片无法正常使用。先生这边建议您可以补交一下您这个逾期最低款项954元吗？",
+        "text": "呃，先生，您好，这里是招商银行信用卡中心，就目前您的个人信用卡账户逾期最低款项还有一个954元，到目前为止还是没有处理到位。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          2,
-          4,
-          6,
-          8
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 3,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 4,
+        "role": "催收员",
+        "text": "先生这边看您还款之后还是可以尝试刷卡使用一下。",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 5,
+        "role": "客户",
+        "text": "好的"
+      },
+      {
+        "turn_index": 6,
+        "role": "催收员",
+        "text": "就是您避免此次逾期导致您的这张卡片无法正常使用。",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 7,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 8,
+        "role": "催收员",
+        "text": "先生这边建议您可以补交一下您这个逾期最低款项954元吗？",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 9,
@@ -5217,11 +5814,7 @@
       {
         "turn_index": 21,
         "role": "客户",
-        "text": "行行行，谢谢啊。拜拜。",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "行行行，谢谢啊。拜拜。"
       }
     ]
   },
@@ -5236,6 +5829,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 1,
+        "role": "客户",
+        "text": "是，你哪位？"
       },
       {
         "turn_index": 2,
@@ -5353,6 +5951,11 @@
     "call_id": "2317802700405371586",
     "turns": [
       {
+        "turn_index": 0,
+        "role": "客户",
+        "text": "喂"
+      },
+      {
         "turn_index": 1,
         "role": "催收员",
         "text": "喂您好，请问是张先生吗？",
@@ -5360,6 +5963,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 2,
+        "role": "客户",
+        "text": "是是，嗯。"
       },
       {
         "turn_index": 3,
@@ -5382,15 +5990,25 @@
       {
         "turn_index": 5,
         "role": "催收员",
-        "text": "呃，是这样的，方案倒是有，但协商的方案比逾期最低额高一点点。目前每个月可以给您申请一个方案，就是每个月固定还一个金额。",
+        "text": "呃，是这样的，方案倒是有，但协商的方案比逾期最低额高一点点。",
         "action": "information",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          5,
-          7
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 6,
+        "role": "客户",
+        "text": "嗯，然后呢？"
+      },
+      {
+        "turn_index": 7,
+        "role": "催收员",
+        "text": "目前每个月可以给您申请一个方案，就是每个月固定还一个金额。",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 8,
@@ -5413,11 +6031,7 @@
       {
         "turn_index": 10,
         "role": "客户",
-        "text": "还有利息吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "还有利息吗？"
       },
       {
         "turn_index": 11,
@@ -5442,15 +6056,20 @@
       {
         "turn_index": 13,
         "role": "催收员",
-        "text": "比如说您今天还一下，是不是？看一下哈。您目前这个款项按理说需要在4月5号就处理了，就是5月5号处理目前逾期，也就是说您处理之后……",
+        "text": "比如说您今天还一下，是不是？",
         "action": "pressure",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          13,
-          14
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 14,
+        "role": "催收员",
+        "text": "看一下哈。您目前这个款项按理说需要在4月5号就处理了，就是5月5号处理目前逾期，也就是说您处理之后……",
+        "action": "information",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 15,
@@ -5486,11 +6105,7 @@
       {
         "turn_index": 18,
         "role": "催收员",
-        "text": "您稍等，我看一下。是4月30号给您说的，是吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "您稍等，我看一下。是4月30号给您说的，是吗？"
       },
       {
         "turn_index": 19,
@@ -5535,11 +6150,7 @@
       {
         "turn_index": 23,
         "role": "客户",
-        "text": "您好？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "您好？"
       },
       {
         "turn_index": 24,
@@ -5576,6 +6187,11 @@
         "facts": [],
         "emotions": [],
         "willingness": null
+      },
+      {
+        "turn_index": 1,
+        "role": "客户",
+        "text": "嗯。"
       },
       {
         "turn_index": 2,
@@ -5632,6 +6248,16 @@
         "willingness": null
       },
       {
+        "turn_index": 1,
+        "role": "客户",
+        "text": "喂你好"
+      },
+      {
+        "turn_index": 2,
+        "role": "客户",
+        "text": "对"
+      },
+      {
         "turn_index": 3,
         "role": "客户",
         "text": "现在现在没钱了",
@@ -5645,11 +6271,7 @@
       {
         "turn_index": 4,
         "role": "催收员",
-        "text": "噢，是什么情况吗？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "噢，是什么情况吗？"
       },
       {
         "turn_index": 5,
@@ -5694,20 +6316,12 @@
       {
         "turn_index": 9,
         "role": "客户",
-        "text": "我欠100多的，不是欠这10000多了？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "我欠100多的，不是欠这10000多了？"
       },
       {
         "turn_index": 10,
         "role": "催收员",
-        "text": "146",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "146"
       },
       {
         "turn_index": 11,
@@ -5721,11 +6335,7 @@
       {
         "turn_index": 12,
         "role": "催收员",
-        "text": "呃，您声音有点小声，您说什么？",
-        "action": null,
-        "facts": [],
-        "emotions": [],
-        "willingness": null
+        "text": "呃，您声音有点小声，您说什么？"
       },
       {
         "turn_index": 13,
@@ -5739,17 +6349,49 @@
       {
         "turn_index": 14,
         "role": "催收员",
-        "text": "逾期这个过几天？那信用卡呢？是没办法担保要求您愿意还的。时间上肯定是没有办法说给您去做一个推迟。哈，先生，您现在的话不挂电话在线把这个146还进来，我这边马上给您去撤案，后续您仍可以按照最低还款缓解资金压力。您看是通过微信还是掌上生活还款呢？",
-        "action": null,
+        "text": "逾期这个过几天？"
+      },
+      {
+        "turn_index": 15,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 16,
+        "role": "催收员",
+        "text": "那信用卡呢？是没办法担保要求您愿意还的。时间上肯定是没有办法说给您去做一个推迟。",
+        "action": "pressure",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          14,
-          16,
-          18,
-          20
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 17,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 18,
+        "role": "催收员",
+        "text": "哈，先生，您现在的话不挂电话在线把这个146还进来，我这边马上给您去撤案，后续您仍可以按照最低还款缓解资金压力。",
+        "action": "pressure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
+      },
+      {
+        "turn_index": 19,
+        "role": "客户",
+        "text": "嗯"
+      },
+      {
+        "turn_index": 20,
+        "role": "催收员",
+        "text": "您看是通过微信还是掌上生活还款呢？",
+        "action": "plan_proposal",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       },
       {
         "turn_index": 21,
@@ -5765,15 +6407,25 @@
       {
         "turn_index": 22,
         "role": "催收员",
-        "text": "如果说您确实是需要时间的话，请您在今明2天之内把您这个E招贷146还进来。如果说确实处理不了两个账户的一个全款11958.28，邀请您提前准备好，风险是联动的，到时候您处理的不光光是您的E招贷，两个账户都是需要您还款的。好吧。嗯，好，那您这边抓紧时间，这边就先不打扰您了。",
+        "text": "如果说您确实是需要时间的话，请您在今明2天之内把您这个E招贷146还进来。如果说确实处理不了两个账户的一个全款11958.28，邀请您提前准备好，风险是联动的，到时候您处理的不光光是您的E招贷，两个账户都是需要您还款的。好吧。",
         "action": "pressure",
         "facts": [],
         "emotions": [],
-        "willingness": null,
-        "merged_from": [
-          22,
-          24
-        ]
+        "willingness": null
+      },
+      {
+        "turn_index": 23,
+        "role": "客户",
+        "text": "明白我明白"
+      },
+      {
+        "turn_index": 24,
+        "role": "催收员",
+        "text": "嗯，好，那您这边抓紧时间，这边就先不打扰您了。",
+        "action": "closure",
+        "facts": [],
+        "emotions": [],
+        "willingness": null
       }
     ]
   }
