@@ -1,107 +1,165 @@
 import importlib.util
 import json
 import os
+import re
 from collections import defaultdict
 
 
 CLOSING_ACTIONS = {"closure", "goodbye"}
 
-ACK_KEYWORDS = {"嗯", "好", "对", "是", "哦", "噢", "啊", "喂", "嗯嗯", "好好", "对对", "是的", "明白", "知道", "了解", "嗯好", "好嗯", "嗯对", "对嗯"}
+
+def _word_count(text):
+    cleaned = re.sub(r"[，。、！？；：\u201c\u201d\u2018\u2019（）\s]", "", text)
+    return len(cleaned)
 
 
-def _is_acknowledgment(turn):
-    text = turn.get("text", "").strip()
-    if len(text) > 6:
-        return False
-    state = turn.get("state")
-    has_annotation = False
-    if state:
-        if state.get("facts"):
-            has_annotation = True
-        if state.get("emotions"):
-            has_annotation = True
-        if state.get("willingness"):
-            has_annotation = True
-    if has_annotation:
-        return False
-    return text in ACK_KEYWORDS or any(text.startswith(kw) for kw in ACK_KEYWORDS if len(kw) <= 2)
-
-
-def _looks_like_fragment(text):
-    text = text.strip()
-    if not text:
-        return False
-    last = text[-1]
-    if last in {'，', ',', '…', '、', '；', ';'}:
-        return True
-    if last in {'？', '?', '！', '!', '。', '.', '”', '"', '』', '」', ')', '）'}:
-        return False
-    return True
-
-
-def _merge_collector_fragments(turns):
-    merged = []
-    collector_buffer = []
-    last_was_ack = False
-
-    def flush_buffer():
-        nonlocal collector_buffer
-        if not collector_buffer:
-            return
-        if len(collector_buffer) == 1:
-            merged.append(collector_buffer[0])
-        else:
-            first = collector_buffer[0]
-            combined_text = "".join(t["text"] for t in collector_buffer)
-            indices = [t["turn_index"] for t in collector_buffer]
-            merged_turn = dict(first)
-            merged_turn["text"] = combined_text
-            merged_turn["merged_from"] = indices
-            for t in collector_buffer:
-                state = t.get("state") or {}
-                action = state.get("action")
-                if action and not merged_turn.get("state", {}).get("action"):
-                    merged_state = dict(merged_turn.get("state") or {})
-                    merged_state["action"] = action
-                    merged_turn["state"] = merged_state
-                    merged_turn["collector_action"] = action
+def _find_merge_candidates(turns):
+    candidates = []
+    i = 0
+    while i < len(turns):
+        if turns[i]["role"] == "催收员":
+            group_indices = [i]
+            interruptions = []
+            j = i + 1
+            while j < len(turns):
+                if turns[j]["role"] == "催收员":
+                    group_indices.append(j)
+                    j += 1
+                elif turns[j]["role"] == "客户" and _word_count(turns[j]["text"]) < 6:
+                    if j + 1 < len(turns) and turns[j + 1]["role"] == "催收员":
+                        interruptions.append(j)
+                        j += 1
+                    else:
+                        break
+                else:
                     break
-            merged.append(merged_turn)
-        collector_buffer = []
-
-    for turn in turns:
-        if turn["role"] == "催收员":
-            state = turn.get("state") or {}
-            is_greeting = state.get("action") == "greeting"
-            if is_greeting and collector_buffer:
-                flush_buffer()
-            if collector_buffer and last_was_ack and not _looks_like_fragment(collector_buffer[-1]["text"]):
-                flush_buffer()
-            collector_buffer.append(turn)
-            last_was_ack = False
-            if is_greeting:
-                flush_buffer()
-        elif turn["role"] == "客户" and _is_acknowledgment(turn):
-            if collector_buffer:
-                state = collector_buffer[-1].get("state") or {}
-                if state.get("action") == "greeting":
-                    flush_buffer()
-                    merged.append(turn)
-                    last_was_ack = False
-                    continue
-                if not _looks_like_fragment(collector_buffer[-1]["text"]):
-                    flush_buffer()
-                    last_was_ack = True
-                    continue
-            last_was_ack = True
-            continue
+            if len(group_indices) >= 2:
+                candidates.append({
+                    "collector_indices": group_indices,
+                    "interruption_indices": interruptions,
+                })
+            i = j
         else:
-            flush_buffer()
-            last_was_ack = False
-            merged.append(turn)
+            i += 1
+    return candidates
 
-    flush_buffer()
-    return merged
+
+def _build_merge_prompt(turns, group):
+    parts = []
+    for idx in group["collector_indices"]:
+        parts.append(f"催收员: {turns[idx]['text']}")
+    for idx in group["interruption_indices"]:
+        parts.insert(
+            group["collector_indices"].index(
+                next(c for c in group["collector_indices"] if c > idx)
+            ),
+            f"客户: {turns[idx]['text']}",
+        )
+    dialog_text = "\n".join(f"催收员: {turns[i]['text']}" for i in group["collector_indices"])
+    interruptions_text = ""
+    if group["interruption_indices"]:
+        interruptions_text = "\n".join(
+            f"[客户说: {turns[i]['text']}]" for i in group["interruption_indices"]
+        )
+    prompt = f"""判断以下催收员的连续话语是否应该合并为一个完整表述。
+
+重要：默认应KEEP。只有当你非常确定这些话语是同一个未说完的句子被客户打断后继续时才MERGE。如果有任何犹豫，选择KEEP。
+
+催收员话语:
+{dialog_text}
+{interruptions_text}
+
+合并规则 (偏向KEEP，只有明确是同一话题才MERGE):
+- 如果这些话语明确在延续同一个方案解释或同一个论点论证 → MERGE
+- 如果客户只是简短应答(嗯/好)而催收员接着说同一方案的下一句 → MERGE
+- 如果催收员在不同客户回应后转向了不同论点 → KEEP
+- 如果客户提出了新的观点或异议 → KEEP
+- 如果话语之间有客户实质性插话(提问/反驳/新信息) → KEEP
+- 如果不确定 → KEEP
+
+回复JSON:
+{{"decision": "MERGE或KEEP", "reason": "简要说明"}}"""
+    return prompt
+
+
+def _llm_should_merge(turns, group):
+    from llm_client import call_deepseek_json
+    from retry import retry_call
+    prompt = _build_merge_prompt(turns, group)
+    result = retry_call(call_deepseek_json, prompt)
+    decision = result.get("decision", "KEEP").upper()
+    return decision == "MERGE", result.get("reason", "")
+
+
+def _merge_turns(turns, group, call_id):
+    indices = group["collector_indices"]
+    first = turns[indices[0]]
+    merged_text = " ".join(turns[i]["text"] for i in indices)
+    actions = []
+    for i in indices:
+        action = (turns[i].get("state") or {}).get("action")
+        if action:
+            actions.append(action)
+    primary_action = actions[0] if actions else None
+    last_willingness = None
+    for i in reversed(indices):
+        w = (turns[i].get("state") or {}).get("willingness")
+        if w:
+            last_willingness = w
+            break
+    merged_ids = [f"{call_id}_t{turns[i]['turn_index']}" for i in indices]
+    entry = {
+        "script_text": merged_text,
+        "script_id": f"{call_id}_t{first['turn_index']}_merged",
+        "source_call_ids": [call_id],
+        "customer_willingness": last_willingness,
+        "merged_from": merged_ids,
+    }
+    if primary_action:
+        entry["collector_action"] = primary_action
+    return entry
+
+
+def _apply_merges(turns, call_id, merge_decisions=None):
+    candidates = _find_merge_candidates(turns)
+    if not candidates:
+        return turns
+    remove_indices = set()
+    merge_entries = {}
+    for group in candidates:
+        key = tuple(group["collector_indices"])
+        cache_key = (call_id, key)
+        if merge_decisions is not None and cache_key in merge_decisions:
+            should_merge = merge_decisions[cache_key]
+        else:
+            should_merge, _ = _llm_should_merge(turns, group)
+            if merge_decisions is not None:
+                merge_decisions[cache_key] = should_merge
+        if should_merge:
+            first_idx = group["collector_indices"][0]
+            merge_entries[first_idx] = _merge_turns(turns, group, call_id)
+            for idx in group["collector_indices"][1:]:
+                remove_indices.add(idx)
+            for idx in group["interruption_indices"]:
+                state = turns[idx].get("state") or {}
+                if not state.get("facts") and not state.get("emotions"):
+                    remove_indices.add(idx)
+    result = []
+    for i, turn in enumerate(turns):
+        if i in remove_indices:
+            continue
+        if i in merge_entries:
+            merged = merge_entries[i]
+            result.append({
+                "turn_index": turn["turn_index"],
+                "role": "催收员",
+                "text": merged["script_text"],
+                "state": turn.get("state", {}),
+                "_merged_entry": merged,
+            })
+        else:
+            result.append(turn)
+    return result
 
 
 def _load_rewarded():
@@ -199,7 +257,7 @@ def _merge_sentences(existing, new_entries):
             existing.append(entry)
 
 
-def build_tree(records):
+def build_tree(records, merge_decisions=None):
     root = {
         "state_id": "initial_contact",
         "branch_key": {},
@@ -210,27 +268,22 @@ def build_tree(records):
     for record in records:
         call_id = record.get("call_id", "")
         turns = record.get("turns_annotated", [])
-        turns = _merge_collector_fragments(turns)
+
+        if merge_decisions is not None:
+            turns = _apply_merges(turns, call_id, merge_decisions)
 
         has_closing = False
 
         for turn in turns:
             if turn["role"] == "催收员" and turn.get("state", {}).get("action") == "greeting":
-                merged_from = turn.get("merged_from")
-                if merged_from and len(merged_from) > 1:
-                    script_id = f"{call_id}_t{merged_from[0]}_t{merged_from[-1]}"
-                else:
-                    script_id = f"{call_id}_t{turn['turn_index']}"
                 entry = {
                     "script_text": turn["text"],
-                    "script_id": script_id,
+                    "script_id": f"{call_id}_t{turn['turn_index']}",
                     "source_call_ids": [call_id],
                     "customer_willingness": None,
                     "gesture_type": "opening",
                     "collector_action": "greeting",
                 }
-                if merged_from and len(merged_from) > 1:
-                    entry["merged_from"] = merged_from
                 _merge_sentences(root["sentence_pool"], [entry])
 
         segments = _extract_segments(turns, call_id)
@@ -322,25 +375,24 @@ def _extract_segments(turns, call_id):
                 is_closing = False
 
         elif turn["role"] == "催收员":
-            action = (state or {}).get("action")
-            if action == "greeting":
-                continue
-            merged_from = turn.get("merged_from")
-            if merged_from and len(merged_from) > 1:
-                script_id = f"{call_id}_t{merged_from[0]}_t{merged_from[-1]}"
+            if turn.get("_merged_entry"):
+                entry = dict(turn["_merged_entry"])
+                entry["customer_willingness"] = last_willingness
+                current_sentences.append(entry)
+                action = entry.get("collector_action")
             else:
-                script_id = f"{call_id}_t{turn['turn_index']}"
-            entry = {
-                "script_text": turn["text"],
-                "script_id": script_id,
-                "source_call_ids": [call_id],
-                "customer_willingness": last_willingness,
-            }
-            if merged_from and len(merged_from) > 1:
-                entry["merged_from"] = merged_from
-            if action:
-                entry["collector_action"] = action
-            current_sentences.append(entry)
+                action = (state or {}).get("action")
+                if action == "greeting":
+                    continue
+                entry = {
+                    "script_text": turn["text"],
+                    "script_id": f"{call_id}_t{turn['turn_index']}",
+                    "source_call_ids": [call_id],
+                    "customer_willingness": last_willingness,
+                }
+                if action:
+                    entry["collector_action"] = action
+                current_sentences.append(entry)
             if action in CLOSING_ACTIONS:
                 is_closing = True
 
@@ -681,13 +733,40 @@ def find_node(tree, state_key):
     return None
 
 
+def _load_merge_cache():
+    cache_path = os.path.join(os.path.dirname(__file__), "merge_decisions.json")
+    if os.path.exists(cache_path):
+        with open(cache_path, encoding="utf-8") as f:
+            raw = json.load(f)
+        cache = {}
+        for k, v in raw.items():
+            parts = k.split(":")
+            call_id = parts[0]
+            indices = tuple(int(x) for x in parts[1].split(","))
+            cache[(call_id, indices)] = v
+        return cache
+    return {}
+
+
+def _save_merge_cache(cache):
+    cache_path = os.path.join(os.path.dirname(__file__), "merge_decisions.json")
+    raw = {}
+    for (call_id, indices), decision in cache.items():
+        key = f"{call_id}:{','.join(str(i) for i in indices)}"
+        raw[key] = decision
+    with open(cache_path, "w", encoding="utf-8") as f:
+        json.dump(raw, f, indent=2, ensure_ascii=False)
+
+
 def write_decision_tree(records=None, output_path=None):
     if records is None:
         records = _load_rewarded()
     if output_path is None:
         output_path = os.path.join(os.path.dirname(__file__), "decision_tree.json")
 
-    tree = build_tree(records)
+    merge_cache = _load_merge_cache()
+    tree = build_tree(records, merge_decisions=merge_cache)
+    _save_merge_cache(merge_cache)
     _split_composite_nodes(tree)
     _merge_sibling_facts(tree)
     _collapse_redundant_facts(tree)
@@ -700,46 +779,6 @@ def write_decision_tree(records=None, output_path=None):
     return _count_nodes(tree)
 
 
-def write_dialog_records(records=None, output_path=None):
-    if records is None:
-        records = _load_rewarded()
-    if output_path is None:
-        output_path = os.path.join(os.path.dirname(__file__), "dialog_records.json")
-
-    dialog_records = []
-    for record in records:
-        call_id = record.get("call_id", "")
-        turns = record.get("turns_annotated", [])
-        merged_turns = _merge_collector_fragments(turns)
-
-        dialog_turns = []
-        for t in merged_turns:
-            state = t.get("state") or {}
-            entry = {
-                "turn_index": t["turn_index"],
-                "role": t["role"],
-                "text": t["text"],
-                "action": state.get("action"),
-                "facts": state.get("facts", []),
-                "emotions": state.get("emotions", []),
-                "willingness": state.get("willingness"),
-            }
-            merged_from = t.get("merged_from")
-            if merged_from and len(merged_from) > 1:
-                entry["merged_from"] = merged_from
-            dialog_turns.append(entry)
-
-        dialog_records.append({
-            "call_id": call_id,
-            "turns": dialog_turns,
-        })
-
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(dialog_records, f, indent=2, ensure_ascii=False)
-
-    return len(dialog_records)
-
-
 def _count_nodes(node):
     count = 1
     for child in node.get("children", []):
@@ -749,6 +788,4 @@ def _count_nodes(node):
 
 if __name__ == "__main__":
     count = write_decision_tree()
-    dlg_count = write_dialog_records()
     print(f"Wrote decision tree with {count} nodes to decision_tree.json")
-    print(f"Wrote {dlg_count} dialog records to dialog_records.json")
