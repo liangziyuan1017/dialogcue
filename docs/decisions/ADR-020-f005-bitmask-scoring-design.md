@@ -20,14 +20,14 @@ Three design choices for F005:
 
 2. **Intersection merge for multi-source sentences**: Sentences with multiple source_call_ids use bitwise AND of all source constraints. Conservative: only universally-present constraints are set.
 
-3. **HWR (Laplace-smoothed) + SAS (DeepSeek embedding cosine)**: Two quality scores per sentence. UC and CSI deferred.
+3. **HWR (Laplace-smoothed) + SAS (TF-IDF cosine similarity)**: Two quality scores per sentence. UC and CSI deferred. SAS uses local character bigram TF-IDF + cosine similarity (no external API).
 
 ## Why
 
 - Bitmask enables O(1) AND filtering at retrieval time vs O(n) dict comparison
 - Intersection merge is the correct conservative semantics: a sentence's bitmask represents constraints present in ALL its source conversations, avoiding false specificity
 - Laplace smoothing `(wins+1)/(total+2)` handles sparse data (6 R=1 / 25 R=0) without 0/0
-- SAS uses existing DeepSeek API infrastructure (`llm_client.py`), no new dependencies
+- SAS uses character bigram TF-IDF + cosine similarity (numpy only), no external API dependency. DeepSeek does not offer an embedding endpoint; local TF-IDF is deterministic and sufficient for intra-node script similarity.
 
 ## Tradeoff
 
@@ -36,5 +36,6 @@ Three design choices for F005:
 | Union merge for multi-source | Too permissive — sentence used in both mortgage and non-mortgage contexts would require mortgage, excluding valid non-mortgage queries |
 | Per-source bitmask list | Breaks O(1) single-integer filtering; requires list iteration |
 | No smoothing (raw wins/total) | 0/0 for unused sentences; 1/1=1.0 for single R=1 is overconfident |
-| TF-IDF instead of embeddings | Embeddings capture semantic similarity between collector scripts; TF-IDF is term-matching only |
+| DeepSeek embeddings for SAS | DeepSeek API has no embedding endpoint (only chat models deepseek-v4-flash/pro) |
+| TF-IDF instead of embeddings | Adopted — character bigram TF-IDF is deterministic, no API dependency, sufficient for intra-node similarity |
 | Compute UC/CSI now | Requires causal analysis and data not available at 31-record scale |
