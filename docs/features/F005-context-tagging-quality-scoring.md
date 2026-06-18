@@ -1,7 +1,7 @@
 ---
 id: F005
 name: Context Tagging & Quality Scoring
-status: planned
+status: review
 owner: agent
 source: plan_feature_base.md
 created: 2026-06-18
@@ -59,17 +59,17 @@ Augmented decision tree written to `/src/decision_tree_scored.json`. Structure i
 
 ## Acceptance Criteria
 
-- [ ] Every sentence in decision_tree_scored.json has `bg_constraints` dict with 5 fields
-- [ ] Every sentence has `bg_bitmask` integer (0–31)
-- [ ] `bg_bitmask` correctly encodes the 5 boolean fields
-- [ ] Every sentence has `win_rate` ≥ 0 and ≤ 1
-- [ ] `win_rate` uses Laplace smoothing: (wins + 1) / (total + 2)
-- [ ] Every sentence has `sas` ≥ 0 and ≤ 1
-- [ ] `sas` computed via DeepSeek embedding cosine similarity
-- [ ] `uplift_score` = 0 and `csi` = 0 with `deferred: true` on every sentence
-- [ ] Bitmask AND filtering: sentence with bitmask S is compatible with context bitmask C iff (S & C) == S
-- [ ] All 31 conversations represented in scored tree
-- [ ] Output file: `/src/decision_tree_scored.json`
+- [x] Every sentence in decision_tree_scored.json has `bg_constraints` dict with 5 fields
+- [x] Every sentence has `bg_bitmask` integer (0–31)
+- [x] `bg_bitmask` correctly encodes the 5 boolean fields
+- [x] Every sentence has `win_rate` ≥ 0 and ≤ 1
+- [x] `win_rate` uses Laplace smoothing: (wins + 1) / (total + 2)
+- [x] Every sentence has `sas` ≥ 0 and ≤ 1
+- [x] `sas` computed via character bigram TF-IDF cosine similarity (DeepSeek has no embedding endpoint; see ADR-020)
+- [x] `uplift_score` = 0 and `csi` = 0 with `deferred: true` on every sentence
+- [x] Bitmask AND filtering: sentence with bitmask S is compatible with context bitmask C iff (S & C) == S
+- [x] All 31 conversations represented in scored tree
+- [x] Output file: `/src/decision_tree_scored.json`
 
 ## Dependencies
 
