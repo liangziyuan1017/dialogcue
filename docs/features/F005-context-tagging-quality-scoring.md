@@ -1,7 +1,7 @@
 ---
 id: F005
 name: Context Tagging & Quality Scoring
-status: kickoff
+status: planned
 owner: agent
 source: plan_feature_base.md
 created: 2026-06-18
@@ -84,7 +84,13 @@ Augmented decision tree written to `/src/decision_tree_scored.json`. Structure i
 
 ## Design Decisions
 
-(To be filled during Discussion + Design Gate)
+- **5 bitmask fields from 9 context fields**: Only boolean-derivable fields are bitmask-encoded (has_auto_loan, has_mortgage, has_negotiation_history, social_insurance_stable, credit_rating_good). Numeric fields (total_debt, external_debt, days_delinquent) and list fields (available_plans) remain in bg_constraints dict for potential range/list filtering in F006.
+- **Intersection merge for multi-source sentences**: 28 sentences have multiple source_call_ids. Their bg_constraints use bitwise AND (intersection) of all source conversation constraints — only constraints present in ALL source conversations are set. This is conservative: intersection=0 means the sentence was used in diverse contexts and is broadly applicable.
+- **Bitmask compatibility check**: `(sentence_bitmask & query_bitmask) == sentence_bitmask` — every constraint the sentence requires must be present in the query context. A sentence with bitmask 0 is universally compatible.
+- **HWR with Laplace smoothing**: `(wins + 1) / (total + 2)`. With 6 R=1 / 25 R=0 across 31 records, Laplace smoothing prevents 0/0 and provides reasonable priors. A sentence used in 1 R=1 conversation gets HWR = 2/3 ≈ 0.67; a sentence used in 1 R=0 conversation gets HWR = 1/3 ≈ 0.33.
+- **SAS via DeepSeek embedding cosine similarity**: Within each node's sentence pool, the sentence with highest HWR is the reference. SAS = cosine_similarity(embed(sentence), embed(reference)). If only 1 sentence in pool, SAS = 1.0. Uses existing `llm_client.py` DeepSeek API.
+- **UC and CSI deferred**: `uplift_score = 0` and `csi = 0` with `deferred: true`. These require causal analysis and additional data not available at 31-record scale.
+- **Output preserves tree structure**: `decision_tree_scored.json` is identical to `decision_tree.json` with additional fields (`bg_constraints`, `bg_bitmask`, `win_rate`, `sas`, `uplift_score`, `csi`) on each sentence entry. No structural changes to nodes or edges.
 
 ## Files
 
