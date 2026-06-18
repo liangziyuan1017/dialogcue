@@ -27,9 +27,22 @@ def _is_acknowledgment(turn):
     return text in ACK_KEYWORDS or any(text.startswith(kw) for kw in ACK_KEYWORDS if len(kw) <= 2)
 
 
+def _looks_like_fragment(text):
+    text = text.strip()
+    if not text:
+        return False
+    last = text[-1]
+    if last in {'，', ',', '…', '、', '；', ';'}:
+        return True
+    if last in {'？', '?', '！', '!', '。', '.', '”', '"', '』', '」', ')', '）'}:
+        return False
+    return True
+
+
 def _merge_collector_fragments(turns):
     merged = []
     collector_buffer = []
+    last_was_ack = False
 
     def flush_buffer():
         nonlocal collector_buffer
@@ -44,6 +57,15 @@ def _merge_collector_fragments(turns):
             merged_turn = dict(first)
             merged_turn["text"] = combined_text
             merged_turn["merged_from"] = indices
+            for t in collector_buffer:
+                state = t.get("state") or {}
+                action = state.get("action")
+                if action and not merged_turn.get("state", {}).get("action"):
+                    merged_state = dict(merged_turn.get("state") or {})
+                    merged_state["action"] = action
+                    merged_turn["state"] = merged_state
+                    merged_turn["collector_action"] = action
+                    break
             merged.append(merged_turn)
         collector_buffer = []
 
@@ -53,7 +75,10 @@ def _merge_collector_fragments(turns):
             is_greeting = state.get("action") == "greeting"
             if is_greeting and collector_buffer:
                 flush_buffer()
+            if collector_buffer and last_was_ack and not _looks_like_fragment(collector_buffer[-1]["text"]):
+                flush_buffer()
             collector_buffer.append(turn)
+            last_was_ack = False
             if is_greeting:
                 flush_buffer()
         elif turn["role"] == "客户" and _is_acknowledgment(turn):
@@ -62,10 +87,17 @@ def _merge_collector_fragments(turns):
                 if state.get("action") == "greeting":
                     flush_buffer()
                     merged.append(turn)
+                    last_was_ack = False
                     continue
+                if not _looks_like_fragment(collector_buffer[-1]["text"]):
+                    flush_buffer()
+                    last_was_ack = True
+                    continue
+            last_was_ack = True
             continue
         else:
             flush_buffer()
+            last_was_ack = False
             merged.append(turn)
 
     flush_buffer()
