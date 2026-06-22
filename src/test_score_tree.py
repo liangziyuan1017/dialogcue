@@ -56,6 +56,18 @@ class TestContextLookup:
             assert "has_negotiation_history" in ctx
             assert "available_plans" in ctx
             assert "social_insurance_stable" in ctx
+            assert "card_restricted" in ctx
+            assert "is_cash_out_customer" in ctx
+            assert "external_debt_institutions" in ctx
+            assert "interest_ratio" in ctx
+            assert "installment_ratio" in ctx
+            assert "age" in ctx
+            assert "gender" in ctx
+            assert "education" in ctx
+            assert "industry" in ctx
+            assert "has_complaint_history" in ctx
+            assert "has_legal_tools" in ctx
+            assert "is_negotiation_brain_customer" in ctx
 
     def test_known_call_id_present(self, context_lookup):
         assert "2317941550352385028" in context_lookup
@@ -109,7 +121,7 @@ class TestBitmaskEncoding:
 
     def test_bitmask_int_all_ones(self):
         bg_bitmask = {f: 1 for f in BITMASK_FIELDS}
-        assert encode_bitmask_int(bg_bitmask) == 31
+        assert encode_bitmask_int(bg_bitmask) == (1 << len(BITMASK_FIELDS)) - 1
 
     def test_bitmask_int_all_zeros(self):
         bg_bitmask = {f: 0 for f in BITMASK_FIELDS}
@@ -122,6 +134,11 @@ class TestBitmaskEncoding:
             "credit_rating": "good",
             "has_negotiation_history": True,
             "social_insurance_stable": False,
+            "card_restricted": True,
+            "is_cash_out_customer": False,
+            "has_complaint_history": False,
+            "has_legal_tools": True,
+            "is_negotiation_brain_customer": False,
         }
         bg = _extract_bg_constraints(ctx)
         assert bg["has_auto_loan"] is True
@@ -129,6 +146,11 @@ class TestBitmaskEncoding:
         assert bg["credit_rating_good"] is True
         assert bg["has_negotiation_history"] is True
         assert bg["social_insurance_stable"] is False
+        assert bg["card_restricted"] is True
+        assert bg["is_cash_out_customer"] is False
+        assert bg["has_complaint_history"] is False
+        assert bg["has_legal_tools"] is True
+        assert bg["is_negotiation_brain_customer"] is False
 
     def test_credit_rating_not_good(self):
         ctx = {"credit_rating": "moderate"}
@@ -157,10 +179,11 @@ class TestBitmaskEncoding:
         assert bg["credit_rating_good"] is True
 
     def test_bitmask_int_range(self, context_lookup):
+        max_mask = (1 << len(BITMASK_FIELDS)) - 1
         for cid, ctx in context_lookup.items():
             bg = _extract_bg_constraints(ctx)
             mask = encode_bitmask(bg)
-            assert 0 <= encode_bitmask_int(mask) <= 31
+            assert 0 <= encode_bitmask_int(mask) <= max_mask
 
 
 class TestBgBackground:
@@ -185,7 +208,7 @@ class TestBgBackground:
 
     def test_all_7_fields_present(self, customer_info_lookup):
         bg = compute_bg_background(["2317941550352385028"], customer_info_lookup)
-        assert len(bg) == 7
+        assert len(bg) == len(BG_BACKGROUND_FIELDS)
 
 
 class TestHWR:
@@ -289,8 +312,9 @@ class TestScoreSentencePool:
         ]
         _score_sentence_pool(pool, context_lookup, reward_lookup, customer_info_lookup)
         s = pool[0]
+        max_mask = (1 << len(BITMASK_FIELDS)) - 1
         assert isinstance(s["bg_bitmask_int"], int)
-        assert 0 <= s["bg_bitmask_int"] <= 31
+        assert 0 <= s["bg_bitmask_int"] <= max_mask
 
     def test_bg_background_has_fields(self, context_lookup, reward_lookup, customer_info_lookup):
         pool = [

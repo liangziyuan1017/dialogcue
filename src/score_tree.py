@@ -52,6 +52,11 @@ BITMASK_FIELDS = [
     "has_negotiation_history",
     "social_insurance_stable",
     "credit_rating_good",
+    "card_restricted",
+    "is_cash_out_customer",
+    "has_complaint_history",
+    "has_legal_tools",
+    "is_negotiation_brain_customer",
 ]
 
 
@@ -62,6 +67,11 @@ def _extract_bg_constraints(context):
         "has_negotiation_history": bool(context.get("has_negotiation_history", False)),
         "social_insurance_stable": bool(context.get("social_insurance_stable", False)),
         "credit_rating_good": context.get("credit_rating") == "good",
+        "card_restricted": bool(context.get("card_restricted", False)),
+        "is_cash_out_customer": bool(context.get("is_cash_out_customer", False)),
+        "has_complaint_history": bool(context.get("has_complaint_history", False)),
+        "has_legal_tools": bool(context.get("has_legal_tools", False)),
+        "is_negotiation_brain_customer": bool(context.get("is_negotiation_brain_customer", False)),
     }
 
 
@@ -101,6 +111,11 @@ BG_BACKGROUND_FIELDS = [
     ("is_cash_out", "是否为套现客户"),
     ("is_restricted", "是否管制"),
     ("complaint_history", "历史投诉情况"),
+    ("external_debt_institutions", "外部共债机构数"),
+    ("interest_ratio", "利息占欠款比例"),
+    ("installment_ratio", "分期金额占欠款比例"),
+    ("legal_tools", "当前可使用的法务工具"),
+    ("negotiation_brain", "是否谈判大脑客户"),
 ]
 
 

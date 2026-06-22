@@ -662,7 +662,19 @@ results = [
       "available_plans": [
         "reduction"
       ],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": False,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 9,
+      "interest_ratio": 0.04,
+      "installment_ratio": 0.0,
+      "age": 49,
+      "gender": "女",
+      "education": "unknown",
+      "industry": "专业性事务所",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -1138,7 +1150,19 @@ results = [
         "reduction",
         "mina"
       ],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": True,
+      "is_cash_out_customer": True,
+      "external_debt_institutions": 19,
+      "interest_ratio": 0.03,
+      "installment_ratio": 0.0,
+      "age": 50,
+      "gender": "男",
+      "education": "other",
+      "industry": "个体经营",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -1622,7 +1646,19 @@ results = [
         "reduction",
         "mina"
       ],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": False,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 4,
+      "interest_ratio": 0.04,
+      "installment_ratio": 0.43,
+      "age": 49,
+      "gender": "男",
+      "education": "unknown",
+      "industry": "金融机构",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -1785,7 +1821,19 @@ results = [
       "external_debt": 0,
       "has_negotiation_history": False,
       "available_plans": [],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": False,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 0,
+      "interest_ratio": 0.0,
+      "installment_ratio": 0.0,
+      "age": 48,
+      "gender": "女",
+      "education": "unknown",
+      "industry": "医疗卫生",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -2166,7 +2214,19 @@ results = [
         "reduction",
         "mina"
       ],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 18,
+      "interest_ratio": 0.03,
+      "installment_ratio": 0.71,
+      "age": 58,
+      "gender": "男",
+      "education": "college",
+      "industry": "高新技术制造业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -2262,7 +2322,19 @@ results = [
         "reduction",
         "mina"
       ],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": False,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 13,
+      "interest_ratio": 0.02,
+      "installment_ratio": 0.37,
+      "age": 44,
+      "gender": "男",
+      "education": "unknown",
+      "industry": "学生",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -2674,7 +2746,19 @@ results = [
       "available_plans": [
         "reduction"
       ],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 7,
+      "interest_ratio": 0.02,
+      "installment_ratio": 0.0,
+      "age": 48,
+      "gender": "女",
+      "education": "unknown",
+      "industry": "制造业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -2941,7 +3025,19 @@ results = [
       "available_plans": [
         "reduction"
       ],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 10,
+      "interest_ratio": 0.0,
+      "installment_ratio": 0.0,
+      "age": 46,
+      "gender": "男",
+      "education": "bachelor",
+      "industry": "商业贸易",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -3132,7 +3228,19 @@ results = [
       "available_plans": [
         "reduction"
       ],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 41,
+      "interest_ratio": 0.0,
+      "installment_ratio": 0.96,
+      "age": 48,
+      "gender": "男",
+      "education": "unknown",
+      "industry": "高新技术制造业",
+      "has_complaint_history": False,
+      "has_legal_tools": True,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -3266,7 +3374,19 @@ results = [
       "external_debt": 2644,
       "has_negotiation_history": True,
       "available_plans": [],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 12,
+      "interest_ratio": 0.0,
+      "installment_ratio": 0.0,
+      "age": 51,
+      "gender": "男",
+      "education": "college",
+      "industry": "制造业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -3359,7 +3479,19 @@ results = [
       "external_debt": 37115,
       "has_negotiation_history": False,
       "available_plans": [],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": False,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 13,
+      "interest_ratio": 0.02,
+      "installment_ratio": 0.0,
+      "age": 45,
+      "gender": "男",
+      "education": "master",
+      "industry": "专业性事务所",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -3468,7 +3600,19 @@ results = [
       "external_debt": 8090,
       "has_negotiation_history": False,
       "available_plans": [],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": False,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 8,
+      "interest_ratio": 0.0,
+      "installment_ratio": 0.0,
+      "age": 45,
+      "gender": "女",
+      "education": "other",
+      "industry": "商业贸易",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -4031,7 +4175,19 @@ results = [
         "reduction",
         "mina"
       ],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 21,
+      "interest_ratio": 0.0,
+      "installment_ratio": 0.0,
+      "age": 49,
+      "gender": "男",
+      "education": "bachelor",
+      "industry": "公用事业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -4204,7 +4360,19 @@ results = [
       "available_plans": [
         "reduction"
       ],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": False,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 16,
+      "interest_ratio": 0.02,
+      "installment_ratio": 0.0,
+      "age": 53,
+      "gender": "男",
+      "education": "unknown",
+      "industry": "高新技术制造业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -4429,7 +4597,19 @@ results = [
       "available_plans": [
         "reduction"
       ],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": False,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 31,
+      "interest_ratio": 0.04,
+      "installment_ratio": 0.0,
+      "age": 41,
+      "gender": "男",
+      "education": "master",
+      "industry": "服务类行业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -4571,7 +4751,19 @@ results = [
       "available_plans": [
         "reduction"
       ],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": False,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 4,
+      "interest_ratio": 0.03,
+      "installment_ratio": 0.0,
+      "age": 49,
+      "gender": "男",
+      "education": "unknown",
+      "industry": "建筑业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -4726,7 +4918,19 @@ results = [
       "available_plans": [
         "reduction"
       ],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 31,
+      "interest_ratio": 0.04,
+      "installment_ratio": 0.0,
+      "age": 53,
+      "gender": "男",
+      "education": "college",
+      "industry": "高新技术制造业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -4885,7 +5089,19 @@ results = [
       "external_debt": 202666,
       "has_negotiation_history": False,
       "available_plans": [],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 30,
+      "interest_ratio": 0.02,
+      "installment_ratio": 0.17,
+      "age": 55,
+      "gender": "男",
+      "education": "college",
+      "industry": "高新技术制造业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -5360,7 +5576,19 @@ results = [
         "reduction",
         "mina"
       ],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 3,
+      "interest_ratio": 0.02,
+      "installment_ratio": 0.0,
+      "age": 56,
+      "gender": "女",
+      "education": "college",
+      "industry": "商业贸易",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -5470,7 +5698,19 @@ results = [
       "available_plans": [
         "reduction"
       ],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 9,
+      "interest_ratio": 0.04,
+      "installment_ratio": 0.0,
+      "age": 46,
+      "gender": "男",
+      "education": "unknown",
+      "industry": "建筑业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -5625,7 +5865,19 @@ results = [
       "available_plans": [
         "reduction"
       ],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 6,
+      "interest_ratio": 0.02,
+      "installment_ratio": 0.01,
+      "age": 47,
+      "gender": "女",
+      "education": "unknown",
+      "industry": "公用事业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -5739,7 +5991,19 @@ results = [
       "available_plans": [
         "reduction"
       ],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 6,
+      "interest_ratio": 0.05,
+      "installment_ratio": 0.0,
+      "age": 45,
+      "gender": "男",
+      "education": "bachelor",
+      "industry": "公用事业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -5866,7 +6130,19 @@ results = [
       "external_debt": 252473,
       "has_negotiation_history": False,
       "available_plans": [],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": False,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 5,
+      "interest_ratio": 0.05,
+      "installment_ratio": 0.0,
+      "age": 45,
+      "gender": "男",
+      "education": "bachelor",
+      "industry": "商业贸易",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -6057,7 +6333,19 @@ results = [
       "available_plans": [
         "reduction"
       ],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 12,
+      "interest_ratio": 0.0,
+      "installment_ratio": 0.0,
+      "age": 46,
+      "gender": "女",
+      "education": "college",
+      "industry": "传媒体育娱乐",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -6180,7 +6468,19 @@ results = [
       "external_debt": 28001,
       "has_negotiation_history": False,
       "available_plans": [],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 13,
+      "interest_ratio": 0.03,
+      "installment_ratio": 0.0,
+      "age": 57,
+      "gender": "男",
+      "education": "college",
+      "industry": "制造业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -6560,7 +6860,19 @@ results = [
       "available_plans": [
         "reduction"
       ],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 16,
+      "interest_ratio": 0.02,
+      "installment_ratio": 0.0,
+      "age": 41,
+      "gender": "男",
+      "education": "unknown",
+      "industry": "制造业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -6794,7 +7106,19 @@ results = [
         "reduction",
         "mina"
       ],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": False,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 15,
+      "interest_ratio": 0.03,
+      "installment_ratio": 0.0,
+      "age": 48,
+      "gender": "男",
+      "education": "bachelor",
+      "industry": "服务类行业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -6962,7 +7286,19 @@ results = [
       "available_plans": [
         "reduction"
       ],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 1,
+      "interest_ratio": 0.02,
+      "installment_ratio": 0.1,
+      "age": 42,
+      "gender": "男",
+      "education": "college",
+      "industry": "制造业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -7226,7 +7562,19 @@ results = [
         "reduction",
         "mina"
       ],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 14,
+      "interest_ratio": 0.0,
+      "installment_ratio": 0.0,
+      "age": 48,
+      "gender": "男",
+      "education": "college",
+      "industry": "制造业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -7330,7 +7678,19 @@ results = [
       "external_debt": 650378,
       "has_negotiation_history": True,
       "available_plans": [],
-      "social_insurance_stable": True
+      "social_insurance_stable": True,
+      "card_restricted": True,
+      "is_cash_out_customer": True,
+      "external_debt_institutions": 11,
+      "interest_ratio": 0.03,
+      "installment_ratio": 0.0,
+      "age": 48,
+      "gender": "女",
+      "education": "unknown",
+      "industry": "服务类行业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   },
   {
@@ -7560,7 +7920,19 @@ results = [
       "external_debt": 0,
       "has_negotiation_history": False,
       "available_plans": [],
-      "social_insurance_stable": False
+      "social_insurance_stable": False,
+      "card_restricted": True,
+      "is_cash_out_customer": False,
+      "external_debt_institutions": 0,
+      "interest_ratio": 0.0,
+      "installment_ratio": 0.0,
+      "age": 55,
+      "gender": "男",
+      "education": "college",
+      "industry": "高新技术制造业",
+      "has_complaint_history": False,
+      "has_legal_tools": False,
+      "is_negotiation_brain_customer": False
     }
   }
 ]

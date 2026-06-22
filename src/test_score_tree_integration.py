@@ -64,10 +64,11 @@ class TestIntegrationAllSentencesScored:
                 assert s["bg_bitmask"][f] in (0, 1)
 
     def test_every_sentence_has_bg_bitmask_int(self, scored_tree):
+        max_mask = (1 << len(BITMASK_FIELDS)) - 1
         for s in _all_sentences(scored_tree):
             assert "bg_bitmask_int" in s
             assert isinstance(s["bg_bitmask_int"], int)
-            assert 0 <= s["bg_bitmask_int"] <= 31
+            assert 0 <= s["bg_bitmask_int"] <= max_mask
 
     def test_bitmask_int_consistent_with_dict(self, scored_tree):
         for s in _all_sentences(scored_tree):
@@ -100,21 +101,23 @@ class TestIntegrationAllSentencesScored:
 
 class TestBitmaskFiltering:
     def test_subset_compatibility(self, scored_tree):
+        all_bits = (1 << len(BITMASK_FIELDS)) - 1
         for s in _all_sentences(scored_tree):
             sb = s["bg_bitmask_int"]
-            query = 0b11111
+            query = all_bits
             assert (sb & query) == sb
 
     def test_zero_bitmask_universal(self, scored_tree):
+        all_bits = (1 << len(BITMASK_FIELDS)) - 1
         zero_mask = [s for s in _all_sentences(scored_tree) if s["bg_bitmask_int"] == 0]
         assert len(zero_mask) > 0
         for s in zero_mask:
-            for query in [0b00000, 0b00001, 0b11111]:
+            for query in [0, 1, all_bits]:
                 assert (s["bg_bitmask_int"] & query) == s["bg_bitmask_int"]
 
     def test_bitmask_filter_produces_subset(self, scored_tree):
         all_sentences = _all_sentences(scored_tree)
-        query = 0b00001
+        query = 0b0000000001
         compatible = [s for s in all_sentences if (s["bg_bitmask_int"] & query) == s["bg_bitmask_int"]]
         assert len(compatible) <= len(all_sentences)
         assert len(compatible) > 0

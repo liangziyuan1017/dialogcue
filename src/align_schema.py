@@ -60,6 +60,21 @@ def _parse_external_debt(text):
     return int(match.group(1)) if match else 0
 
 
+def _parse_percentage(text):
+    match = re.search(r"(\d+)%", str(text))
+    return float(match.group(1)) / 100.0 if match else 0.0
+
+
+def _parse_external_debt_institutions(text):
+    match = re.search(r"共(\d+)家", str(text))
+    return int(match.group(1)) if match else 0
+
+
+def _map_education(text):
+    mapping = {"未填": "unknown", "高中": "high_school", "大专": "college", "本科": "bachelor", "硕士": "master", "博士": "phd"}
+    return mapping.get(str(text).strip(), "other")
+
+
 def build_context(customer_info, mob_typ):
     return {
         "has_auto_loan": _parse_bool_has(customer_info.get("他行是否有车贷", ""), "有车贷")
@@ -74,6 +89,18 @@ def build_context(customer_info, mob_typ):
         "available_plans": _parse_available_plans(customer_info.get("当前可使用的协商方案", "")),
         "social_insurance_stable": "有社保" in customer_info.get("社保缴纳情况", "")
         and "灵活就业" not in customer_info.get("社保缴纳情况", ""),
+        "card_restricted": customer_info.get("是否管制", "") != "可正常使用卡片",
+        "is_cash_out_customer": customer_info.get("是否为套现客户", "") != "非套现客户",
+        "external_debt_institutions": _parse_external_debt_institutions(customer_info.get("外部共债机构数", "")),
+        "interest_ratio": _parse_percentage(customer_info.get("利息占欠款比例", "0%")),
+        "installment_ratio": _parse_percentage(customer_info.get("分期金额占欠款比例", "0%")),
+        "age": _parse_int(customer_info.get("年龄", "0")),
+        "gender": customer_info.get("性别", ""),
+        "education": _map_education(customer_info.get("学历", "")),
+        "industry": customer_info.get("行业", ""),
+        "has_complaint_history": "没有" not in customer_info.get("历史投诉情况", "没有"),
+        "has_legal_tools": customer_info.get("当前可使用的法务工具", "") != "无可用的法务工具",
+        "is_negotiation_brain_customer": customer_info.get("是否谈判大脑客户", "") == "Y",
     }
 
 
