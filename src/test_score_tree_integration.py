@@ -92,6 +92,11 @@ class TestIntegrationAllSentencesScored:
             assert "sas" in s
             assert 0 <= s["sas"] <= 1
 
+    def test_every_sentence_has_conversation_context(self, scored_tree):
+        for s in _all_sentences(scored_tree):
+            assert "conversation_context" in s
+            assert isinstance(s["conversation_context"], str)
+
     def test_every_sentence_has_deferred_fields(self, scored_tree):
         for s in _all_sentences(scored_tree):
             assert s["uplift_score"] == 0

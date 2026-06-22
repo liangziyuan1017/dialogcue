@@ -208,30 +208,6 @@ def compute_context_similarity(current_context, stored_context):
     return float(min(max(dot / (norm0 * norm1), 0.0), 1.0))
 
 
-def add_conversation_context(tree, aligned_records=None):
-    if aligned_records is None:
-        return tree
-    record_lookup = {r["call_id"]: r for r in aligned_records}
-    def walk(node):
-        for s in node.get("sentence_pool", []):
-            contexts = []
-            for cid in s.get("source_call_ids", []):
-                rec = record_lookup.get(cid)
-                if rec:
-                    turns = rec.get("turns_annotated", [])
-                    texts = [t.get("text", "") for t in turns]
-                    context_text = " ".join(texts[-20:])
-                    contexts.append(context_text)
-            if contexts:
-                s["conversation_context"] = contexts[0]
-            else:
-                s["conversation_context"] = ""
-        for child in node.get("children", []):
-            walk(child)
-    walk(tree)
-    return tree
-
-
 def compute_bg_boost(sentence_bg, query_bg):
     boost = 0.0
     if sentence_bg.get("industry") and query_bg.get("industry"):
@@ -267,12 +243,11 @@ def _rank_limited(pool, conversation_context="", context_missing=False):
             s["_sort_secondary"] = s.get("sas", 0)
             s["_sort_tertiary"] = 0
         else:
-            if "conversation_context_similarity" not in s:
-                stored = s.get("conversation_context", "")
-                if stored:
-                    s["conversation_context_similarity"] = compute_context_similarity(conversation_context, stored)
-                else:
-                    s["conversation_context_similarity"] = 0.0
+            stored = s.get("conversation_context", "")
+            if stored and "conversation_context_similarity" not in s:
+                s["conversation_context_similarity"] = compute_context_similarity(conversation_context, stored)
+            elif "conversation_context_similarity" not in s:
+                s["conversation_context_similarity"] = 0.0
             s["_sort_primary"] = s["conversation_context_similarity"]
             s["_sort_secondary"] = s.get("win_rate", 0)
             s["_sort_tertiary"] = s.get("sas", 0)

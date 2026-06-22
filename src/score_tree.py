@@ -46,6 +46,49 @@ def build_reward_lookup(records=None):
     return {r["call_id"]: r["reward"] for r in records}
 
 
+def build_turns_lookup(records=None):
+    if records is None:
+        records = _load_output_aligned()
+    return {r["call_id"]: r.get("turns_annotated", []) for r in records}
+
+
+def _extract_conversation_context(script_text, turns, window=20):
+    if not turns:
+        return ""
+    script_prefix = script_text[:30] if script_text else ""
+    match_idx = -1
+    for i, t in enumerate(turns):
+        text = t.get("text", "")
+        if script_prefix and text.startswith(script_prefix):
+            match_idx = i
+            break
+    if match_idx == -1:
+        match_idx = len(turns)
+    start = max(0, match_idx - window)
+    context_turns = turns[start:match_idx]
+    return " ".join(t.get("text", "") for t in context_turns)
+
+
+def build_conversation_context_lookup(tree, turns_lookup=None):
+    if turns_lookup is None:
+        turns_lookup = build_turns_lookup()
+    context_map = {}
+    def walk(node):
+        for s in node.get("sentence_pool", []):
+            call_ids = s.get("source_call_ids", [])
+            contexts = []
+            for cid in call_ids:
+                turns = turns_lookup.get(cid, [])
+                ctx = _extract_conversation_context(s.get("script_text", ""), turns)
+                if ctx:
+                    contexts.append(ctx)
+            context_map[s.get("script_id", "")] = contexts[0] if contexts else ""
+        for child in node.get("children", []):
+            walk(child)
+    walk(tree)
+    return context_map
+
+
 BITMASK_FIELDS = [
     "has_auto_loan",
     "has_mortgage",
@@ -208,7 +251,7 @@ def compute_sas_for_pool(sentences, embeddings_map=None):
     return scores
 
 
-def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_info_lookup):
+def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup=None):
     for s in sentence_pool:
         call_ids = s.get("source_call_ids", [])
         bg = compute_bg_constraints(call_ids, context_lookup)
@@ -221,19 +264,22 @@ def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_
         s["uplift_score"] = 0
         s["csi"] = 0
         s["deferred"] = True
+        if conv_ctx_lookup is not None:
+            s["conversation_context"] = conv_ctx_lookup.get(s.get("script_id", ""), "")
     sas_scores = compute_sas_for_pool(sentence_pool)
     for s, sas in zip(sentence_pool, sas_scores):
         s["sas"] = sas
     return sentence_pool
 
 
-def score_tree(tree, context_lookup, reward_lookup, customer_info_lookup):
+def score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup=None):
     def _walk(node):
         _score_sentence_pool(
             node.get("sentence_pool", []),
             context_lookup,
             reward_lookup,
             customer_info_lookup,
+            conv_ctx_lookup,
         )
         for child in node.get("children", []):
             _walk(child)
@@ -249,7 +295,9 @@ def write_scored_tree(output_path=None):
     context_lookup = build_context_lookup()
     reward_lookup = build_reward_lookup()
     customer_info_lookup = build_customer_info_lookup()
-    scored = score_tree(tree, context_lookup, reward_lookup, customer_info_lookup)
+    turns_lookup = build_turns_lookup()
+    conv_ctx_lookup = build_conversation_context_lookup(tree, turns_lookup)
+    scored = score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup)
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(scored, f, indent=2, ensure_ascii=False)
     return scored

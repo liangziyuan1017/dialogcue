@@ -9,7 +9,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 from retrieval_engine import (
     BITMASK_FIELDS,
     BG_BACKGROUND_FIELDS,
-    add_conversation_context,
     aggregate_pools,
     build_node_index,
     compute_bg_boost,

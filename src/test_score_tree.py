@@ -9,9 +9,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 from score_tree import (
     BITMASK_FIELDS,
     BG_BACKGROUND_FIELDS,
+    build_conversation_context_lookup,
     build_context_lookup,
     build_customer_info_lookup,
     build_reward_lookup,
+    build_turns_lookup,
     compute_bg_background,
     compute_bg_constraints,
     compute_hwr,
@@ -22,6 +24,7 @@ from score_tree import (
     score_tree,
     _extract_bg_constraints,
     _extract_bg_background,
+    _extract_conversation_context,
     _score_sentence_pool,
 )
 
@@ -377,3 +380,50 @@ class TestScoreTree:
                 check(child)
         check(scored)
         assert missing == []
+
+    def test_all_sentences_have_conversation_context(self, context_lookup, reward_lookup, customer_info_lookup):
+        with open(os.path.join(os.path.dirname(__file__), "decision_tree.json"), encoding="utf-8") as f:
+            tree = json.load(f)
+        turns_lookup = build_turns_lookup()
+        conv_ctx_lookup = build_conversation_context_lookup(tree, turns_lookup)
+        scored = score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup)
+        missing = []
+        def check(node):
+            for s in node.get("sentence_pool", []):
+                if "conversation_context" not in s:
+                    missing.append(s.get("script_id"))
+            for child in node.get("children", []):
+                check(child)
+        check(scored)
+        assert missing == []
+
+
+class TestConversationContext:
+    def test_extract_with_matching_turn(self):
+        turns = [
+            {"text": "你好"},
+            {"text": "请问您是张先生吗"},
+            {"text": "您有一笔欠款需要处理"},
+        ]
+        ctx = _extract_conversation_context("您有一笔欠款需要处理", turns)
+        assert "请问您是张先生吗" in ctx
+
+    def test_extract_empty_turns(self):
+        assert _extract_conversation_context("hello", []) == ""
+
+    def test_extract_no_match_uses_all_previous(self):
+        turns = [
+            {"text": "第一句"},
+            {"text": "第二句"},
+            {"text": "第三句"},
+        ]
+        ctx = _extract_conversation_context("不存在", turns)
+        assert "第一句" in ctx
+        assert "第二句" in ctx
+
+    def test_build_conversation_context_lookup(self):
+        with open(os.path.join(os.path.dirname(__file__), "decision_tree.json"), encoding="utf-8") as f:
+            tree = json.load(f)
+        turns_lookup = build_turns_lookup()
+        ctx_lookup = build_conversation_context_lookup(tree, turns_lookup)
+        assert len(ctx_lookup) > 0
