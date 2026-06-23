@@ -40,7 +40,7 @@ F000 ──► F001 ──► F003 ──► F004 ──► F005 ──► F006
 
 **Depends on:** F000
 
-**Goal:** Map raw records from `/data/output_manual.py` to SOP-aligned schema — derive `turns_annotated`, `reward` (null), `state_transitions` (empty), and `context` constraint dict from `customer_info` fields. Output to `/src/output_aligned.py`.
+**Goal:** Map raw records from `/data/output_manual.py` to SOP-aligned schema — derive `turns_annotated`, `reward` (null), `state_transitions` (empty), and `context` constraint dict from `customer_info` fields. Output to `/src/f001_schema_alignment/output_aligned.py`.
 
 **Passing criteria:**
 - All 31 records present
@@ -60,7 +60,7 @@ F000 ──► F001 ──► F003 ──► F004 ──► F005 ──► F006
 
 **Depends on:** F001
 
-**Goal:** Determine R ∈ {0, 1} per conversation — LLM detects repayment commitment triggers in final turns, performs counterfactual verification to credit the preceding collector action, cross-validates against `plan_evaluation`. Output to `/src/output_rewarded.py`.
+**Goal:** Determine R ∈ {0, 1} per conversation — LLM detects repayment commitment triggers in final turns, performs counterfactual verification to credit the preceding collector action, cross-validates against `plan_evaluation`. Output to `/src/f003_reward_labeling/output_rewarded.py`.
 
 **Passing criteria:**
 - Every record has `reward` ∈ {0, 1}
@@ -89,12 +89,13 @@ F000 ──► F001 ──► F003 ──► F004 ──► F005 ──► F006
 
 **Depends on:** F004
 
-**Goal:** Tag each sentence with `bg_constraints` from source conversation's customer profile, encode as bitmask for O(1) filtering. Compute HWR (Laplace-smoothed) and SAS (DeepSeek embedding cosine similarity). UC and CSI deferred. Output to `/src/decision_tree_scored.json`.
+**Goal:** Tag each sentence with `bg_constraints` from source conversation's customer profile, encode as bitmask for O(1) filtering. Compute HWR (node-level aggregation with sentence-level blending) and SAS (TF-IDF cosine similarity). UC and CSI deferred. Output to `/src/decision_tree_scored.json`.
 
 **Passing criteria:**
 - Every sentence has `bg_constraints` dict with all 5 bitmask fields
 - Every sentence has `bg_bitmask` integer
-- Every sentence has `win_rate` (HWR_smoothed) ≥ 0
+- Every sentence has `win_rate` (blended HWR) ≥ 0
+- Every sentence has `win_rate_node` (node-level HWR) ≥ 0
 - Every sentence has `sas` ≥ 0
 - `uplift_score` = 0 and `csi` = 0 with `deferred: true`
 - Bitmask AND filtering produces correct subset
@@ -105,15 +106,29 @@ F000 ──► F001 ──► F003 ──► F004 ──► F005 ──► F006
 
 **Depends on:** F005
 
-**Goal:** Build `recommend()` function — given real-time customer utterance + context, extract state via LLM, traverse decision tree (exact → fallback → soft match via embeddings), hard-filter by bitmask, rank by HWR (primary) + SAS (secondary), return top-1 script. Output to `/src/retrieval_engine.py`.
+**Goal:** Build `recommend()` function — given real-time customer utterance + context, extract state via LLM, compute path signature from state, look up node via hash index (O(1)), hard-filter sentences by bitmask, rank by HWR (primary) + SAS (secondary), return top-1 script. Output to `/src/f006_retrieval_engine/retrieval_engine.py`.
+
+**Architecture:** No graph traversal at retrieval time. The decision tree is a **key-value lookup problem**: each node's position is fully determined by its path signature (e.g., `f:financial_hardship|e:pleading|a:pressure`). Precompute `path_signature` for every node at build time. At retrieval time, compute the signature from the customer state and do a single hash lookup. This is O(1) regardless of tree size.
+
+**Retrieval pipeline:**
+1. **State extraction**: LLM extracts facts + emotions from customer utterance → state vector
+2. **Path computation**: Derive path signature from state (deterministic, no tree walk)
+3. **Node lookup**: Hash map `signature → node` — O(1)
+4. **Fallback**: If exact signature miss, strip tags progressively (same as current `_strip_key`) and retry — O(depth) worst case
+5. **Sentence retrieval**: Get node's `sentence_pool` — O(1) pointer
+6. **Context filter**: Bitmask AND: `sentence.bg_bitmask_int & query_bitmask == sentence.bg_bitmask_int` — O(pool_size), typically <20
+7. **Rank**: Sort by `win_rate` desc, `sas` desc — O(pool_size log pool_size)
+8. **Return**: Top-1 script
+
+**Why not Neo4j:** This is a tree with deterministic paths, not a graph with arbitrary relationships. Queries are point lookups by path signature, not traversals. Neo4j's property graph model and ACID overhead add latency without benefit. SQLite (or in-memory hash map) gives O(1) lookup with far less overhead.
 
 **Passing criteria:**
 - `recommend()` returns `{ script_text, state_id, win_rate, confidence }`
-- Exact state match returns sentence from matched node's pool
+- Exact state match returns sentence from matched node's pool via hash lookup
 - Fallback (tag removal) returns sentence from sub-state node
-- Soft matching returns sentence from semantically closest node
 - Context filtering excludes sentences with incompatible bitmask
 - Ranking prefers higher HWR; SAS breaks ties
+- Retrieval latency < 50ms (hash lookup + filter + sort, no LLM in hot path)
 
 ---
 
@@ -121,10 +136,99 @@ F000 ──► F001 ──► F003 ──► F004 ──► F005 ──► F006
 
 **Depends on:** F005
 
-**Goal:** Document migration path from 31 → 10,000 records — PostgreSQL schema, DeBERTa fine-tuning (Solution A), Milvus/pgvector index (Solution B), batch metrics pipeline, ONNX + C++ trie optimization. Output to `/src/scaling_architecture.md`.
+**Goal:** Document migration path from 31 → 100,000+ nodes. The key insight: retrieval is O(1) hash lookup regardless of tree size (F006 architecture). Scaling challenges are storage, build-time, and index maintenance — not retrieval latency.
+
+**Scaling dimensions:**
+
+| Dimension | Current (31 records) | Target (10K+ records) | Solution |
+|-----------|---------------------|----------------------|----------|
+| Nodes | 315 | 100,000+ | Tree grows with record diversity, not linearly with records |
+| Storage | JSON file (2MB) | SQLite with indexed `path_signature` column | O(1) lookup via covering index |
+| Build time | ~30s (with LLM merge) | Batch LLM + incremental rebuild | Only rebuild affected subtrees on new data |
+| Child lookup | Linear scan of `children[]` | Hash map `branch_key → child` per node | O(1) child resolution |
+| Sentence pool | In-memory array | SQLite `sentences` table with `node_id` FK | Filter + rank via SQL with bitmask index |
+| Context filter | Python loop | SQLite bitwise op: `bg_bitmask_int & ? == bg_bitmask_int` | Indexed with expression index |
+| Retrieval | JSON load + tree walk | Hash lookup or SQL `SELECT ... WHERE path_signature = ?` | O(1) or O(log N) with B-tree |
+
+**Architecture at scale:**
+
+```
+Build time:
+  records → merge_collector_turns → build_tree → score_tree → SQLite
+
+Storage (SQLite):
+  nodes(id, path_signature, branch_key, parent_id, depth, type)
+  sentences(id, node_id, script_text, bg_bitmask_int, win_rate, sas, ...)
+  Index: nodes.path_signature UNIQUE
+  Index: sentences.node_id
+  Index: sentences.bg_bitmask_int  (for bitmask filter)
+
+Retrieval (hot path, no LLM):
+  state → path_signature → SELECT from nodes WHERE path_signature = ?
+         → SELECT from sentences WHERE node_id = ? AND (bg_bitmask_int & ?) = bg_bitmask_int
+         → ORDER BY win_rate DESC, sas DESC LIMIT 1
+```
+
+**Migration steps:**
+
+1. **JSON → SQLite**: Write `build_tree` output to SQLite instead of JSON. Add `path_signature` column. Same retrieval logic, different storage.
+2. **Hash index for child lookup**: Replace `children[]` linear scan with `dict[branch_key] → child` per node. O(1) child resolution during tree build and retrieval.
+3. **Incremental rebuild**: On new records, only rebuild affected subtrees (identified by changed branch keys). Cache unchanged subtrees.
+4. **Batch LLM merge**: Process merge candidates in batches (current: sequential). Use merge cache to avoid re-calling LLM for unchanged groups.
+5. **Expression index for bitmask**: SQLite `CREATE INDEX ... ON sentences(bg_bitmask_int & <query>)` for fast context filtering at scale.
+
+**Why SQLite over PostgreSQL/Milvus/Neo4j:**
+- **PostgreSQL**: Overkill for single-table lookups. SQLite is serverless, embedded, and faster for point queries.
+- **Milvus/pgvector**: Vector search is only needed for soft/fallback matching (Step 4 of retrieval), not the primary path. Add later if needed.
+- **Neo4j**: This is a tree, not a graph. No cycles, no arbitrary edges, no multi-hop traversals. Neo4j's overhead (property graph, ACID, Bolt protocol) adds latency without benefit.
+
+**Commercial & open-source options for later discussion:**
+
+### Hot Path — O(1) Node Lookup
+
+| Option | Latency | Notes |
+|--------|---------|-------|
+| **Redis / Valkey** | <1ms | In-memory hash map. Valkey is the Linux Foundation fork after Redis went dual-license. Use for `path_signature → node_id` + cached sentence pools |
+| **Dragonfly** | <1ms | Redis-compatible, 25x faster on multi-key ops. Drop-in replacement for high-concurrency retrieval |
+| **KeyDB** | <1ms | Redis fork with multithread I/O. Simpler than Dragonfly |
+
+### Storage & Analytical Filter
+
+| Option | Best For | Notes |
+|--------|----------|-------|
+| **DuckDB** | Bitmask AND filter + ORDER BY on large pools | Columnar, embedded like SQLite but 10-100x faster on analytical queries. Zero-copy vectorized filter on bitmask + rank |
+| **Turso (libSQL)** | Global edge deployment, read-heavy | SQLite-compatible, embedded replicas. If engine needs to be close to collectors |
+| **SurrealDB** | Replacing Redis + SQLite + vector DB with one tool | Multi-model (document + graph + vector), Rust-based, single binary. Hash lookup + bitmask filter + vector search in one query |
+
+### Soft/Fallback Matching — Vector Similarity
+
+| Option | Latency | Notes |
+|--------|---------|-------|
+| **Qdrant** | <10ms | Rust-based, gRPC + REST. Payload filtering (bitmask) during vector search — eliminates two-step retrieve-then-filter |
+| **Weaviate** | <20ms | GraphQL + REST, built-in vectorizer modules. Skip managing embeddings separately |
+| **LanceDB** | <5ms | Serverless, embedded, Rust-based, zero-copy. Like DuckDB but for vectors. No server to run |
+| **ChromaDB** | <15ms | Python-native, simplest to prototype. Weaker at scale (>1M vectors) |
+
+### Search Engine — Full-Text + Vector Hybrid
+
+| Option | Notes |
+|--------|-------|
+| **Elasticsearch 8 / OpenSearch** | BM25 text search + kNN vector search + bitmask filter. Overkill for pure path lookup, but powerful for "find similar sentences across whole tree" |
+| **Meilisearch** | Simpler than ES, typo-tolerant search. If collectors type partial queries instead of engine extracting state |
+
+### Recommended Stack
+
+**Two-layer (covers 95% of retrieval at <5ms):**
+1. **Redis/Valkey** — hot-path O(1) lookup (`path_signature → node_id`, `node_id → sentence_pool`)
+2. **DuckDB** — analytical filter-rank (bitmask AND + ORDER BY win_rate DESC, sas DESC)
+
+**One-tool alternative:** **SurrealDB** — hash lookup + bitmask filter + vector search in single query against single database. Less operational complexity, younger ecosystem.
+
+**Add later if needed:** **Qdrant** for soft/fallback matching at scale.
 
 **Passing criteria:**
 - Covers all 5 migration steps
 - Each step has before/after architecture
-- Latency targets stated (Solution A: <500ms, Solution B: <2s)
-- Data format migration from `.py` to PostgreSQL DDL specified
+- Retrieval latency target: < 50ms at 100K nodes (hash/SQL lookup, no traversal)
+- Storage migration from JSON to SQLite DDL specified
+- Build-time strategy for incremental rebuild documented

@@ -20,7 +20,7 @@ class ReusableTCPServer(socketserver.TCPServer):
 
 
 with ReusableTCPServer(("", PORT), NoCacheHandler) as httpd:
-    url = f"http://localhost:{PORT}/tree_explorer.html"
+    url = f"http://localhost:{PORT}/ui/tree_explorer.html"
     print(f"Tree Explorer: {url}")
     webbrowser.open(url)
     httpd.serve_forever()

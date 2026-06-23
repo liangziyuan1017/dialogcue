@@ -37,7 +37,7 @@ Steps are internal implementation rhythm, NOT delivery batches.
 ```markdown
 # [Feature Name] Implementation Plan
 
-**Feature:** F0xx — `docs/features/F0xx-xxx.md`
+**Feature:** F0xx — `docs/features/F0xx/xxx.md`
 **Goal:** [One sentence — must match feat doc]
 **Acceptance Criteria:** [从 feat doc 逐条抄过来]
 **Architecture:** [2-3 sentences about approach]
@@ -77,7 +77,7 @@ N/A — reference-only module.
 
 After writing the implementation plan:
 - Update `docs/features/Fxxx-*.md`:
-  - Add `## Implementation Plan` section linking to `docs/features/Fxxx-implementation-plan.md`
+  - Add `## Implementation Plan` section linking to `docs/features/Fxxx/implementation-plan.md`
   - Set `status: planned`
   - Update `updated:` timestamp
 

@@ -1,6 +1,6 @@
 # Feature Doc 标准模板
 
-> **用途**：新 Feature 立项时复制此模板到 `docs/features/F{NNN}-{slug}.md`
+> **用途**：新 Feature 立项时复制此模板到 `docs/features/F{NNN}/{slug}.md`
 > **为什么规范化**：Mission Hub 的 Feature Progress Dashboard 需要从 feature docs 自动提取 Phase 进度、AC 完成度、依赖关系、风险等。格式统一 = parser 可靠。
 > **决策来源**：F058 Phase I — KD-6（2026-03-10）
 
@@ -82,7 +82,7 @@ created: {YYYY-MM-DD}
 
 | 类型 | 路径 | 说明 |
 |------|------|------|
-| **Feature** | `docs/features/F0xx-xxx.md` | {关联说明} |
+| **Feature** | `docs/features/F0xx/xxx.md` | {关联说明} |
 ```
 
 ---

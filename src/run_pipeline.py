@@ -42,8 +42,8 @@ LLM_STEPS = [
 ANALYSIS_OUTPUTS = {
     "analyze_collector_turns": DATA_DIR / "collector_analysis.json",
     "analyze_customer_turns": DATA_DIR / "customer_analysis.json",
-    "align_schema": BASE_DIR / "output_aligned.py",
-    "reward_label": BASE_DIR / "output_rewarded.py",
+    "align_schema": BASE_DIR / "f001_schema_alignment" / "output_aligned.py",
+    "reward_label": BASE_DIR / "f003_reward_labeling" / "output_rewarded.py",
 }
 
 
@@ -59,7 +59,9 @@ def _write_py_results(results: list[dict], path: Path) -> None:
     """Write results as a Python file with `results = [...]`."""
     with open(path, "w", encoding="utf-8") as f:
         f.write("results = ")
-        f.write(json.dumps(results, ensure_ascii=False, indent=2))
+        text = json.dumps(results, ensure_ascii=False, indent=2)
+        text = text.replace(": null", ": None").replace(": true", ": True").replace(": false", ": False")
+        f.write(text)
         f.write("\n")
 
 
@@ -127,7 +129,7 @@ def run_pipeline(input_file: Path) -> None:
 
     # --- Step 5: analyze_collector_turns ---
     print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Running analyze_collector_turns...")
-    import analyze_collector_turns as act
+    import f003_reward_labeling.analyze_collector_turns as act
     collector_result = act.analyze_collector_turns(records)
     collector_out = ANALYSIS_OUTPUTS["analyze_collector_turns"]
     with open(collector_out, "w", encoding="utf-8") as f:
@@ -137,7 +139,7 @@ def run_pipeline(input_file: Path) -> None:
 
     # --- Step 6: analyze_customer_turns ---
     print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Running analyze_customer_turns...")
-    import analyze_customer_turns as acust
+    import f003_reward_labeling.analyze_customer_turns as acust
     customer_result = acust.analyze_customer_turns(records)
     customer_out = ANALYSIS_OUTPUTS["analyze_customer_turns"]
     with open(customer_out, "w", encoding="utf-8") as f:
@@ -154,14 +156,14 @@ def run_pipeline(input_file: Path) -> None:
     print("=" * 60)
 
     print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Aligning schema...")
-    import align_schema as als
+    import f001_schema_alignment.align_schema as als
     aligned = als.align_all(records)
     aligned_out = ANALYSIS_OUTPUTS["align_schema"]
     _write_py_results(aligned, aligned_out)
     print(f"  Aligned {len(aligned)} records → {aligned_out.name}")
 
     print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Running reward_label...")
-    import reward_label as rl
+    import f003_reward_labeling.reward_label as rl
     rewarded = rl.label_all(aligned)
     reward_out = ANALYSIS_OUTPUTS["reward_label"]
     _write_py_results(rewarded, reward_out)
@@ -204,21 +206,21 @@ def _run_skip_llm(args) -> None:
     print(f"Loaded {len(records)} records. Running analysis and reward phases...")
 
     # Phase 2
-    import analyze_collector_turns as act
+    import f003_reward_labeling.analyze_collector_turns as act
     collector_result = act.analyze_collector_turns(records)
     with open(ANALYSIS_OUTPUTS["analyze_collector_turns"], "w", encoding="utf-8") as f:
         json.dump(collector_result, f, ensure_ascii=False, indent=2)
 
-    import analyze_customer_turns as acust
+    import f003_reward_labeling.analyze_customer_turns as acust
     customer_result = acust.analyze_customer_turns(records)
     with open(ANALYSIS_OUTPUTS["analyze_customer_turns"], "w", encoding="utf-8") as f:
         json.dump(customer_result, f, ensure_ascii=False, indent=2)
 
     # Phase 3
-    import align_schema as als
+    import f001_schema_alignment.align_schema as als
     aligned = als.align_all(records)
     _write_py_results(aligned, ANALYSIS_OUTPUTS["align_schema"])
-    import reward_label as rl
+    import f003_reward_labeling.reward_label as rl
     rewarded = rl.label_all(aligned)
     _write_py_results(rewarded, ANALYSIS_OUTPUTS["reward_label"])
     print("Done.")

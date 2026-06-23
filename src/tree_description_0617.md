@@ -411,7 +411,7 @@ Most customers are **conditional** or **weak** — they'll pay under certain con
 
 ## 12. How the Tree Is Built (Algorithm)
 
-Source: `src/build_decision_tree.py:105-173`
+Source: `src/f004_decision_tree/build_decision_tree.py:105-173`
 
 ```
 build_tree(records):
@@ -443,7 +443,7 @@ build_tree(records):
 
 ## 13. How the Tree Is Searched (Retrieval)
 
-Source: `src/build_decision_tree.py:396-412`
+Source: `src/f004_decision_tree/build_decision_tree.py:396-412`
 
 The `find_node(tree, state_key)` function uses a **4-level fallback strategy**:
 

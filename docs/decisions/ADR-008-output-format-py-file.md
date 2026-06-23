@@ -14,7 +14,7 @@ schema_version: 1
 
 ## What
 
-Write aligned output to `src/output_aligned.py` as `results = [...]` — a Python file with a top-level list variable, matching the format of `data/output_manual.py` and `src/output_labeled.py`.
+Write aligned output to `src/f001_schema_alignment/output_aligned.py` as `results = [...]` — a Python file with a top-level list variable, matching the format of `data/output_manual.py` and `src/f001_schema_alignment/output_labeled.py`.
 
 ## Why
 
