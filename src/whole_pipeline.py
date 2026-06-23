@@ -31,7 +31,7 @@ LLM_STEPS = [
     {
         "name": "data_merge",
         "script": DATA_DIR / "(llm) data_merge.py",
-        "default_output": "data_merged_output.py",
+        "default_output": "output_merged.py",
     },
 ]
 
