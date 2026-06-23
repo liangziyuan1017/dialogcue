@@ -1,6 +1,6 @@
 # F003: Reward Labeling — Implementation Plan
 
-**Feature:** F003 — `docs/features/F003/reward-labeling.md`
+**Feature:** F003 — `docs/features/F003-reward-labeling.md`
 **Goal:** Determine R ∈ {0, 1} per conversation via LLM detection of repayment commitment triggers, counterfactual verification, and cross-validation against plan_evaluation.
 **Acceptance Criteria:**
 - All 31 records have `reward` ∈ {0, 1}

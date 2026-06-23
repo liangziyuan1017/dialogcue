@@ -1,6 +1,6 @@
 # F005: Context Tagging & Quality Scoring — Implementation Plan
 
-**Feature:** F005 — `docs/features/F005/context-tagging-quality-scoring.md`
+**Feature:** F005 — `docs/features/F005-context-tagging-quality-scoring.md`
 **Goal:** Augment decision tree sentences with context bitmask (O(1) filtering), historical win rate (HWR), and script alignment score (SAS). Output to `/src/decision_tree_scored.json`.
 **Acceptance Criteria:**
 - Every sentence in decision_tree_scored.json has `bg_constraints` dict with 5 fields

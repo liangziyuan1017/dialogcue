@@ -1,6 +1,6 @@
 # F000: State Keyword Discovery — Implementation Plan
 
-**Feature:** F000 — `docs/features/F000/state-keyword-discovery.md`
+**Feature:** F000 — `docs/features/F000-state-keyword-discovery.md`
 **Goal:** Analyze all turns across 31 records to discover fact groups, emotion groups, collector action groups, and data-driven willingness levels from real data. Output taxonomy to `/src/state_keywords.json`.
 **Acceptance Criteria:** See F000 feature doc (AC-A1 through AC-C5)
 **Architecture:** Single DeepSeek LLM pass over all customer and collector turns. LLM classifies each turn, results are aggregated into groups with frequency counts. A second LLM call defines willingness levels from the aggregated willingness signals. Output is a single JSON taxonomy file.

@@ -1,6 +1,6 @@
 ## Quality Gate Report
 
-Spec: `docs/features/F000/state-keyword-discovery.md`
+Spec: `docs/features/F000-state-keyword-discovery.md`
 原始需求: "examine the most frequent fact, emotion and define several level of willingness with explanation on why it is classified as so" + "group them into groups and list keywords examples...suggest some typical debt-collector keywords or states"
 检查时间: 2026-06-09
 

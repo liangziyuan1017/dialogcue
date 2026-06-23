@@ -1416,22 +1416,6 @@
                                             "payment_history",
                                             "request_installment"
                                           ]
-                                        },
-                                        {
-                                          "script_text": "嗯，这边的话就建议您尽量在规定时间内还款。因为你本次逾期然后产生的循环利息已经大概是2200多，2300块钱左右。违约金就有1400多。",
-                                          "script_id": "2317941550352385028_t19",
-                                          "source_call_ids": [
-                                            "2317941550352385028"
-                                          ],
-                                          "customer_willingness": null,
-                                          "collector_action": "pressure",
-                                          "fact_context": [
-                                            "ability_to_pay",
-                                            "financial_hardship",
-                                            "income_statement",
-                                            "payment_history",
-                                            "request_installment"
-                                          ]
                                         }
                                       ],
                                       "children": [],
@@ -1505,21 +1489,6 @@
                                             ]
                                           },
                                           "sentence_pool": [
-                                            {
-                                              "script_text": "要返还什么？",
-                                              "script_id": "2317941550352385028_t23",
-                                              "source_call_ids": [
-                                                "2317941550352385028"
-                                              ],
-                                              "customer_willingness": null,
-                                              "fact_context": [
-                                                "ability_to_pay",
-                                                "financial_hardship",
-                                                "income_statement",
-                                                "payment_history",
-                                                "request_installment"
-                                              ]
-                                            },
                                             {
                                               "script_text": "要返还什么？",
                                               "script_id": "2317941550352385028_t23",
@@ -4471,17 +4440,6 @@
                       "collector_action": "closure",
                       "gesture_type": "ending",
                       "fact_context": []
-                    },
-                    {
-                      "script_text": "嗯，我这边会帮您备注登记一下，好吧。那您这边以后续的实际方案为主。",
-                      "script_id": "2322104580207445086_t18",
-                      "source_call_ids": [
-                        "2322104580207445086"
-                      ],
-                      "customer_willingness": "negotiating",
-                      "collector_action": "closure",
-                      "gesture_type": "ending",
-                      "fact_context": []
                     }
                   ],
                   "children": [],
@@ -5637,20 +5595,6 @@
                     "action": "empathy"
                   },
                   "sentence_pool": [
-                    {
-                      "script_text": "噢，就是周转比较困难呀。那这样吧，先生，就是您说的，如果确实要14号的话可能不太行，因为您这边的话，下个账单都要出来了，您这边还款入账也是需要时间的。",
-                      "script_id": "2322183380033009849_t16",
-                      "source_call_ids": [
-                        "2322183380033009849"
-                      ],
-                      "customer_willingness": null,
-                      "collector_action": "empathy",
-                      "fact_context": [
-                        "financial_hardship",
-                        "promise_date",
-                        "promise_to_pay"
-                      ]
-                    },
                     {
                       "script_text": "噢，就是周转比较困难呀。那这样吧，先生，就是您说的，如果确实要14号的话可能不太行，因为您这边的话，下个账单都要出来了，您这边还款入账也是需要时间的。",
                       "script_id": "2322183380033009849_t16",
@@ -10559,26 +10503,6 @@
                                             "repayment_capacity",
                                             "urgency"
                                           ]
-                                        },
-                                        {
-                                          "script_text": "呃，是这样的哈，因为确实之前没有联系上您嘛，现在有一个方案可以提供到给您，就想问一下您这个循环利息和违约金，您这边能够承担吗？",
-                                          "script_id": "2322766810312803172_t16",
-                                          "source_call_ids": [
-                                            "2322766810312803172"
-                                          ],
-                                          "customer_willingness": null,
-                                          "collector_action": "plan_proposal",
-                                          "fact_context": [
-                                            "collection_effort",
-                                            "debtor_delay",
-                                            "external_debt",
-                                            "external_debt_uncollected",
-                                            "financial_hardship",
-                                            "interest_accumulation",
-                                            "negotiating_with_others",
-                                            "repayment_capacity",
-                                            "urgency"
-                                          ]
                                         }
                                       ],
                                       "children": [],
@@ -10880,52 +10804,6 @@
                                                                 "special_circumstance",
                                                                 "urgency"
                                                               ]
-                                                            },
-                                                            {
-                                                              "script_text": "您这个已出的循环利息跟违约金，您也可以在您的掌上生活APP上可以看到，是一个59097.81的一个金额。 597.81的一个金额。",
-                                                              "script_id": "2322766810312803172_t28_merged",
-                                                              "source_call_ids": [
-                                                                "2322766810312803172"
-                                                              ],
-                                                              "customer_willingness": null,
-                                                              "merged_from": [
-                                                                "2322766810312803172_t28",
-                                                                "2322766810312803172_t30"
-                                                              ],
-                                                              "collector_action": "information",
-                                                              "fact_context": [
-                                                                "collection_effort",
-                                                                "debtor_delay",
-                                                                "external_debt",
-                                                                "external_debt_uncollected",
-                                                                "financial_hardship",
-                                                                "interest_accumulation",
-                                                                "negotiating_with_others",
-                                                                "repayment_capacity",
-                                                                "special_circumstance",
-                                                                "urgency"
-                                                              ]
-                                                            },
-                                                            {
-                                                              "script_text": "唉呀，这个是您5月份已出的。",
-                                                              "script_id": "2322766810312803172_t32",
-                                                              "source_call_ids": [
-                                                                "2322766810312803172"
-                                                              ],
-                                                              "customer_willingness": null,
-                                                              "collector_action": "information",
-                                                              "fact_context": [
-                                                                "collection_effort",
-                                                                "debtor_delay",
-                                                                "external_debt",
-                                                                "external_debt_uncollected",
-                                                                "financial_hardship",
-                                                                "interest_accumulation",
-                                                                "negotiating_with_others",
-                                                                "repayment_capacity",
-                                                                "special_circumstance",
-                                                                "urgency"
-                                                              ]
                                                             }
                                                           ],
                                                           "children": [],
@@ -10974,27 +10852,6 @@
                                                                 "special_circumstance",
                                                                 "urgency"
                                                               ]
-                                                            },
-                                                            {
-                                                              "script_text": "嗯，是这样的哈，方案提供出来是肯定是有时效性且有名额性的。这边，您这个逾期最低是17080.03。您在今天中午之前能够周转得到吗？",
-                                                              "script_id": "2322766810312803172_t22",
-                                                              "source_call_ids": [
-                                                                "2322766810312803172"
-                                                              ],
-                                                              "customer_willingness": null,
-                                                              "collector_action": "plan_proposal",
-                                                              "fact_context": [
-                                                                "collection_effort",
-                                                                "debtor_delay",
-                                                                "external_debt",
-                                                                "external_debt_uncollected",
-                                                                "financial_hardship",
-                                                                "interest_accumulation",
-                                                                "negotiating_with_others",
-                                                                "repayment_capacity",
-                                                                "special_circumstance",
-                                                                "urgency"
-                                                              ]
                                                             }
                                                           ],
                                                           "children": [],
@@ -11023,31 +10880,6 @@
                                                             "action": "pressure"
                                                           },
                                                           "sentence_pool": [
-                                                            {
-                                                              "script_text": "呃，女士，这个没有办法，最迟中午，今天中午12点，需要您去周转到您这个逾期最低。 您稍等嘛，我给您查一下，好吧。",
-                                                              "script_id": "2322766810312803172_t24_merged",
-                                                              "source_call_ids": [
-                                                                "2322766810312803172"
-                                                              ],
-                                                              "customer_willingness": "conditional",
-                                                              "merged_from": [
-                                                                "2322766810312803172_t24",
-                                                                "2322766810312803172_t26"
-                                                              ],
-                                                              "collector_action": "pressure",
-                                                              "fact_context": [
-                                                                "collection_effort",
-                                                                "debtor_delay",
-                                                                "external_debt",
-                                                                "external_debt_uncollected",
-                                                                "financial_hardship",
-                                                                "interest_accumulation",
-                                                                "negotiating_with_others",
-                                                                "repayment_capacity",
-                                                                "special_circumstance",
-                                                                "urgency"
-                                                              ]
-                                                            },
                                                             {
                                                               "script_text": "呃，女士，这个没有办法，最迟中午，今天中午12点，需要您去周转到您这个逾期最低。 您稍等嘛，我给您查一下，好吧。",
                                                               "script_id": "2322766810312803172_t24_merged",
@@ -15030,30 +14862,6 @@
                         "prior_contact_attempt",
                         "unresolved_issue"
                       ]
-                    },
-                    {
-                      "script_text": "嗯。",
-                      "script_id": "2317662270201974818_t12",
-                      "source_call_ids": [
-                        "2317662270201974818"
-                      ],
-                      "customer_willingness": null,
-                      "fact_context": [
-                        "prior_contact_attempt",
-                        "unresolved_issue"
-                      ]
-                    },
-                    {
-                      "script_text": "嗯。",
-                      "script_id": "2317662270201974818_t12",
-                      "source_call_ids": [
-                        "2317662270201974818"
-                      ],
-                      "customer_willingness": null,
-                      "fact_context": [
-                        "prior_contact_attempt",
-                        "unresolved_issue"
-                      ]
                     }
                   ],
                   "children": [
@@ -15176,32 +14984,6 @@
                                 "prior_contact_attempt",
                                 "unresolved_issue"
                               ]
-                            },
-                            {
-                              "script_text": "嗯嗯，对。",
-                              "script_id": "2317662270201974818_t19",
-                              "source_call_ids": [
-                                "2317662270201974818"
-                              ],
-                              "customer_willingness": null,
-                              "fact_context": [
-                                "financial_hardship",
-                                "prior_contact_attempt",
-                                "unresolved_issue"
-                              ]
-                            },
-                            {
-                              "script_text": "嗯，对。",
-                              "script_id": "2317662270201974818_t21",
-                              "source_call_ids": [
-                                "2317662270201974818"
-                              ],
-                              "customer_willingness": null,
-                              "fact_context": [
-                                "financial_hardship",
-                                "prior_contact_attempt",
-                                "unresolved_issue"
-                              ]
                             }
                           ],
                           "children": [
@@ -15211,21 +14993,6 @@
                                 "action": "information"
                               },
                               "sentence_pool": [
-                                {
-                                  "script_text": "嗯，是因为3月29号嘛，您的那个……之前给您办理的那个特殊优惠方案，不是每个月让您还600多块钱就可以了嘛。然后3月20号……呃，可是您的逾期在您的缴款截止日前以及缴款截止日后，我们都有在跟您发短信以及打电话，从来都没沟通过。",
-                                  "script_id": "2317662270201974818_t23",
-                                  "source_call_ids": [
-                                    "2317662270201974818"
-                                  ],
-                                  "customer_willingness": null,
-                                  "collector_action": "information",
-                                  "fact_context": [
-                                    "financial_hardship",
-                                    "missed_contact_explanation",
-                                    "prior_contact_attempt",
-                                    "unresolved_issue"
-                                  ]
-                                },
                                 {
                                   "script_text": "嗯，是因为3月29号嘛，您的那个……之前给您办理的那个特殊优惠方案，不是每个月让您还600多块钱就可以了嘛。然后3月20号……呃，可是您的逾期在您的缴款截止日前以及缴款截止日后，我们都有在跟您发短信以及打电话，从来都没沟通过。",
                                   "script_id": "2317662270201974818_t23",
@@ -15261,21 +15028,6 @@
                                 "action": "plan_proposal"
                               },
                               "sentence_pool": [
-                                {
-                                  "script_text": "嗯，先生，这样吧，就是考虑到您的这个情况的话呢，银行也是愿意帮助您的，不会不管您的。所以说，考虑到您的这个情况呢，您产生的还没有出来的利息违约金，我这边申请一下给您减免掉，也算是帮一下您嘛。麻烦您报一下身份证后四位。",
-                                  "script_id": "2317662270201974818_t24",
-                                  "source_call_ids": [
-                                    "2317662270201974818"
-                                  ],
-                                  "customer_willingness": null,
-                                  "collector_action": "plan_proposal",
-                                  "fact_context": [
-                                    "financial_hardship",
-                                    "missed_contact_explanation",
-                                    "prior_contact_attempt",
-                                    "unresolved_issue"
-                                  ]
-                                },
                                 {
                                   "script_text": "嗯，先生，这样吧，就是考虑到您的这个情况的话呢，银行也是愿意帮助您的，不会不管您的。所以说，考虑到您的这个情况呢，您产生的还没有出来的利息违约金，我这边申请一下给您减免掉，也算是帮一下您嘛。麻烦您报一下身份证后四位。",
                                   "script_id": "2317662270201974818_t24",
@@ -15643,18 +15395,6 @@
                 "action": "legal_threat"
               },
               "sentence_pool": [
-                {
-                  "script_text": "好的，这边帮您登记一下。另外，今天下午五点半系统会进行应查账，之后会审核您的车产、房产、工资等。如果审核到您本人有还款能力却不还款，后端部门不排除会强行扣款，这个需要提醒您注意。",
-                  "script_id": "2321297800428938546_t8",
-                  "source_call_ids": [
-                    "2321297800428938546"
-                  ],
-                  "customer_willingness": null,
-                  "collector_action": "legal_threat",
-                  "fact_context": [
-                    "salary_delay"
-                  ]
-                },
                 {
                   "script_text": "好的，这边帮您登记一下。另外，今天下午五点半系统会进行应查账，之后会审核您的车产、房产、工资等。如果审核到您本人有还款能力却不还款，后端部门不排除会强行扣款，这个需要提醒您注意。",
                   "script_id": "2321297800428938546_t8",
@@ -16273,66 +16013,6 @@
           "fact_context": []
         },
         {
-          "script_text": "您能听到我说话吗先生？",
-          "script_id": "2322802090338590101_t18",
-          "source_call_ids": [
-            "2322802090338590101"
-          ],
-          "customer_willingness": null,
-          "gesture_type": "ending",
-          "fact_context": []
-        },
-        {
-          "script_text": "您能听到我说话吗先生？",
-          "script_id": "2322802090338590101_t18",
-          "source_call_ids": [
-            "2322802090338590101"
-          ],
-          "customer_willingness": null,
-          "gesture_type": "ending",
-          "fact_context": []
-        },
-        {
-          "script_text": "您能听到我说话吗先生？",
-          "script_id": "2322802090338590101_t18",
-          "source_call_ids": [
-            "2322802090338590101"
-          ],
-          "customer_willingness": null,
-          "gesture_type": "ending",
-          "fact_context": []
-        },
-        {
-          "script_text": "您能听到我说话吗先生？",
-          "script_id": "2322802090338590101_t18",
-          "source_call_ids": [
-            "2322802090338590101"
-          ],
-          "customer_willingness": null,
-          "gesture_type": "ending",
-          "fact_context": []
-        },
-        {
-          "script_text": "您能听到我说话吗先生？",
-          "script_id": "2322802090338590101_t18",
-          "source_call_ids": [
-            "2322802090338590101"
-          ],
-          "customer_willingness": null,
-          "gesture_type": "ending",
-          "fact_context": []
-        },
-        {
-          "script_text": "您能听到我说话吗先生？",
-          "script_id": "2322802090338590101_t18",
-          "source_call_ids": [
-            "2322802090338590101"
-          ],
-          "customer_willingness": null,
-          "gesture_type": "ending",
-          "fact_context": []
-        },
-        {
           "script_text": "嗯，好的，好的，先生。那您的情况呢，我这边了解了。",
           "script_id": "2317662270201974818_t30",
           "source_call_ids": [
@@ -16481,28 +16161,6 @@
               "fact_context": []
             },
             {
-              "script_text": "嗯，我这边会帮您备注登记一下，好吧。那您这边以后续的实际方案为主。",
-              "script_id": "2322104580207445086_t18",
-              "source_call_ids": [
-                "2322104580207445086"
-              ],
-              "customer_willingness": "negotiating",
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "嗯，我这边会帮您备注登记一下，好吧。那您这边以后续的实际方案为主。",
-              "script_id": "2322104580207445086_t18",
-              "source_call_ids": [
-                "2322104580207445086"
-              ],
-              "customer_willingness": "negotiating",
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
               "script_text": "好，好，我这边会帮您备注登记，那您这边以后续实际方案为主。好吧，先生。会帮您反馈一下的。那这边就先不打扰您了，再见。",
               "script_id": "2322104580207445086_t20",
               "source_call_ids": [
@@ -16547,234 +16205,12 @@
               "fact_context": []
             },
             {
-              "script_text": "好的，先生，如果您能够周转，就请您还入，如果的确没有办法周转，那么逾期不良的记录银行这边是正常上报，届时我们给您来电确认您的个人相关信息，就请您电话保持畅通。",
-              "script_id": "2322003390316382406_t68",
-              "source_call_ids": [
-                "2322003390316382406"
-              ],
-              "customer_willingness": "conditional",
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "这边尽快处理哈，因为我也不想给您太多压力。 之前给您说过了，后面会面临停卡或者降额的风险。 如果您目前在我行的欠款比较多，后续一旦找到停卡审核部门，可能会正式开启全款销售相关流程，到时候您的资金压力会进一步加大。 而且如果您在其他银行有外债，这边一旦停卡，其他银行可能也会把您视为风险客户，停掉您的卡片或者降额。",
-              "script_id": "2322802090338590101_t6_merged",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": "conditional",
-              "merged_from": [
-                "2322802090338590101_t6",
-                "2322802090338590101_t8",
-                "2322802090338590101_t10",
-                "2322802090338590101_t12"
-              ],
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "嗯，那这边先不打扰您了。你尽快想办法吧。",
-              "script_id": "2322802090338590101_t20",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "那这边先不打扰您了，祝您生活愉快，再见。",
-              "script_id": "2322802090338590101_t24",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "那您抓紧时间，打扰您了。祝您生活愉快，再见。",
-              "script_id": "2322254460585889026_t7",
-              "source_call_ids": [
-                "2322254460585889026"
-              ],
-              "customer_willingness": "weak",
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "这边尽快处理哈，因为我也不想给您太多压力。 之前给您说过了，后面会面临停卡或者降额的风险。 如果您目前在我行的欠款比较多，后续一旦找到停卡审核部门，可能会正式开启全款销售相关流程，到时候您的资金压力会进一步加大。 而且如果您在其他银行有外债，这边一旦停卡，其他银行可能也会把您视为风险客户，停掉您的卡片或者降额。",
-              "script_id": "2322802090338590101_t6_merged",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": "conditional",
-              "merged_from": [
-                "2322802090338590101_t6",
-                "2322802090338590101_t8",
-                "2322802090338590101_t10",
-                "2322802090338590101_t12"
-              ],
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "嗯，那这边先不打扰您了。你尽快想办法吧。",
-              "script_id": "2322802090338590101_t20",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "那这边先不打扰您了，祝您生活愉快，再见。",
-              "script_id": "2322802090338590101_t24",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "那您抓紧时间，打扰您了。祝您生活愉快，再见。",
-              "script_id": "2322254460585889026_t7",
-              "source_call_ids": [
-                "2322254460585889026"
-              ],
-              "customer_willingness": "weak",
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "这边尽快处理哈，因为我也不想给您太多压力。 之前给您说过了，后面会面临停卡或者降额的风险。 如果您目前在我行的欠款比较多，后续一旦找到停卡审核部门，可能会正式开启全款销售相关流程，到时候您的资金压力会进一步加大。 而且如果您在其他银行有外债，这边一旦停卡，其他银行可能也会把您视为风险客户，停掉您的卡片或者降额。",
-              "script_id": "2322802090338590101_t6_merged",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": "conditional",
-              "merged_from": [
-                "2322802090338590101_t6",
-                "2322802090338590101_t8",
-                "2322802090338590101_t10",
-                "2322802090338590101_t12"
-              ],
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "嗯，那这边先不打扰您了。你尽快想办法吧。",
-              "script_id": "2322802090338590101_t20",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "那这边先不打扰您了，祝您生活愉快，再见。",
-              "script_id": "2322802090338590101_t24",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "那您抓紧时间，打扰您了。祝您生活愉快，再见。",
-              "script_id": "2322254460585889026_t7",
-              "source_call_ids": [
-                "2322254460585889026"
-              ],
-              "customer_willingness": "weak",
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
               "script_text": "嗯，还没周转到是吧？好的先生，那我帮您记录一下，另外您需要上传相关材料过来，然后做一个……",
               "script_id": "2321996150207448387_t4",
               "source_call_ids": [
                 "2321996150207448387"
               ],
               "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "嗯，还没周转到是吧？好的先生，那我帮您记录一下，另外您需要上传相关材料过来，然后做一个……",
-              "script_id": "2321996150207448387_t4",
-              "source_call_ids": [
-                "2321996150207448387"
-              ],
-              "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "这边尽快处理哈，因为我也不想给您太多压力。 之前给您说过了，后面会面临停卡或者降额的风险。 如果您目前在我行的欠款比较多，后续一旦找到停卡审核部门，可能会正式开启全款销售相关流程，到时候您的资金压力会进一步加大。 而且如果您在其他银行有外债，这边一旦停卡，其他银行可能也会把您视为风险客户，停掉您的卡片或者降额。",
-              "script_id": "2322802090338590101_t6_merged",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": "conditional",
-              "merged_from": [
-                "2322802090338590101_t6",
-                "2322802090338590101_t8",
-                "2322802090338590101_t10",
-                "2322802090338590101_t12"
-              ],
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "嗯，那这边先不打扰您了。你尽快想办法吧。",
-              "script_id": "2322802090338590101_t20",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "那这边先不打扰您了，祝您生活愉快，再见。",
-              "script_id": "2322802090338590101_t24",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "那您抓紧时间，打扰您了。祝您生活愉快，再见。",
-              "script_id": "2322254460585889026_t7",
-              "source_call_ids": [
-                "2322254460585889026"
-              ],
-              "customer_willingness": "weak",
               "collector_action": "closure",
               "gesture_type": "ending",
               "fact_context": []
@@ -16786,106 +16222,6 @@
                 "2321931470032850074"
               ],
               "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "这边尽快处理哈，因为我也不想给您太多压力。 之前给您说过了，后面会面临停卡或者降额的风险。 如果您目前在我行的欠款比较多，后续一旦找到停卡审核部门，可能会正式开启全款销售相关流程，到时候您的资金压力会进一步加大。 而且如果您在其他银行有外债，这边一旦停卡，其他银行可能也会把您视为风险客户，停掉您的卡片或者降额。",
-              "script_id": "2322802090338590101_t6_merged",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": "conditional",
-              "merged_from": [
-                "2322802090338590101_t6",
-                "2322802090338590101_t8",
-                "2322802090338590101_t10",
-                "2322802090338590101_t12"
-              ],
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "嗯，那这边先不打扰您了。你尽快想办法吧。",
-              "script_id": "2322802090338590101_t20",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "那这边先不打扰您了，祝您生活愉快，再见。",
-              "script_id": "2322802090338590101_t24",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "那您抓紧时间，打扰您了。祝您生活愉快，再见。",
-              "script_id": "2322254460585889026_t7",
-              "source_call_ids": [
-                "2322254460585889026"
-              ],
-              "customer_willingness": "weak",
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "这边尽快处理哈，因为我也不想给您太多压力。 之前给您说过了，后面会面临停卡或者降额的风险。 如果您目前在我行的欠款比较多，后续一旦找到停卡审核部门，可能会正式开启全款销售相关流程，到时候您的资金压力会进一步加大。 而且如果您在其他银行有外债，这边一旦停卡，其他银行可能也会把您视为风险客户，停掉您的卡片或者降额。",
-              "script_id": "2322802090338590101_t6_merged",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": "conditional",
-              "merged_from": [
-                "2322802090338590101_t6",
-                "2322802090338590101_t8",
-                "2322802090338590101_t10",
-                "2322802090338590101_t12"
-              ],
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "嗯，那这边先不打扰您了。你尽快想办法吧。",
-              "script_id": "2322802090338590101_t20",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "那这边先不打扰您了，祝您生活愉快，再见。",
-              "script_id": "2322802090338590101_t24",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "closure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "那您抓紧时间，打扰您了。祝您生活愉快，再见。",
-              "script_id": "2322254460585889026_t7",
-              "source_call_ids": [
-                "2322254460585889026"
-              ],
-              "customer_willingness": "weak",
               "collector_action": "closure",
               "gesture_type": "ending",
               "fact_context": []
@@ -17050,72 +16386,6 @@
             "action": "legal_threat"
           },
           "sentence_pool": [
-            {
-              "script_text": "特别提醒您，在逾期账务审核期前，请你务必保持电话畅通，避免银行联系不到您可能外呼紧急联系人转告您回电，到时候可能会怀疑您本人故意逃避银行债务催缴。",
-              "script_id": "2322802090338590101_t22",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "legal_threat",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "特别提醒您，在逾期账务审核期前，请你务必保持电话畅通，避免银行联系不到您可能外呼紧急联系人转告您回电，到时候可能会怀疑您本人故意逃避银行债务催缴。",
-              "script_id": "2322802090338590101_t22",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "legal_threat",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "特别提醒您，在逾期账务审核期前，请你务必保持电话畅通，避免银行联系不到您可能外呼紧急联系人转告您回电，到时候可能会怀疑您本人故意逃避银行债务催缴。",
-              "script_id": "2322802090338590101_t22",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "legal_threat",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "特别提醒您，在逾期账务审核期前，请你务必保持电话畅通，避免银行联系不到您可能外呼紧急联系人转告您回电，到时候可能会怀疑您本人故意逃避银行债务催缴。",
-              "script_id": "2322802090338590101_t22",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "legal_threat",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "特别提醒您，在逾期账务审核期前，请你务必保持电话畅通，避免银行联系不到您可能外呼紧急联系人转告您回电，到时候可能会怀疑您本人故意逃避银行债务催缴。",
-              "script_id": "2322802090338590101_t22",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "legal_threat",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "特别提醒您，在逾期账务审核期前，请你务必保持电话畅通，避免银行联系不到您可能外呼紧急联系人转告您回电，到时候可能会怀疑您本人故意逃避银行债务催缴。",
-              "script_id": "2322802090338590101_t22",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "legal_threat",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
             {
               "script_text": "特别提醒您，在逾期账务审核期前，请你务必保持电话畅通，避免银行联系不到您可能外呼紧急联系人转告您回电，到时候可能会怀疑您本人故意逃避银行债务催缴。",
               "script_id": "2322802090338590101_t22",
@@ -17317,270 +16587,6 @@
                 "2318767580460372761_t36",
                 "2318767580460372761_t38"
               ],
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "是明天吗？昨天不是给我说的是3天内处理吗？",
-              "script_id": "2322802090338590101_t4",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "到时候您资金压力会更大，这边还是建议尽快处理一下。",
-              "script_id": "2322802090338590101_t14",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "想办法把它处理一下，3680块钱，明白吗？",
-              "script_id": "2322802090338590101_t16",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "嗯，因为之前我们有给您发过短信，这个……您今天晚上能抽1分钟时间补一下吗？",
-              "script_id": "2322254460585889026_t5",
-              "source_call_ids": [
-                "2322254460585889026"
-              ],
-              "customer_willingness": "weak",
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "是明天吗？昨天不是给我说的是3天内处理吗？",
-              "script_id": "2322802090338590101_t4",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "到时候您资金压力会更大，这边还是建议尽快处理一下。",
-              "script_id": "2322802090338590101_t14",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "想办法把它处理一下，3680块钱，明白吗？",
-              "script_id": "2322802090338590101_t16",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "嗯，因为之前我们有给您发过短信，这个……您今天晚上能抽1分钟时间补一下吗？",
-              "script_id": "2322254460585889026_t5",
-              "source_call_ids": [
-                "2322254460585889026"
-              ],
-              "customer_willingness": "weak",
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "是明天吗？昨天不是给我说的是3天内处理吗？",
-              "script_id": "2322802090338590101_t4",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "到时候您资金压力会更大，这边还是建议尽快处理一下。",
-              "script_id": "2322802090338590101_t14",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "想办法把它处理一下，3680块钱，明白吗？",
-              "script_id": "2322802090338590101_t16",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "嗯，因为之前我们有给您发过短信，这个……您今天晚上能抽1分钟时间补一下吗？",
-              "script_id": "2322254460585889026_t5",
-              "source_call_ids": [
-                "2322254460585889026"
-              ],
-              "customer_willingness": "weak",
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "是明天吗？昨天不是给我说的是3天内处理吗？",
-              "script_id": "2322802090338590101_t4",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "到时候您资金压力会更大，这边还是建议尽快处理一下。",
-              "script_id": "2322802090338590101_t14",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "想办法把它处理一下，3680块钱，明白吗？",
-              "script_id": "2322802090338590101_t16",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "嗯，因为之前我们有给您发过短信，这个……您今天晚上能抽1分钟时间补一下吗？",
-              "script_id": "2322254460585889026_t5",
-              "source_call_ids": [
-                "2322254460585889026"
-              ],
-              "customer_willingness": "weak",
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "是明天吗？昨天不是给我说的是3天内处理吗？",
-              "script_id": "2322802090338590101_t4",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "到时候您资金压力会更大，这边还是建议尽快处理一下。",
-              "script_id": "2322802090338590101_t14",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "想办法把它处理一下，3680块钱，明白吗？",
-              "script_id": "2322802090338590101_t16",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "嗯，因为之前我们有给您发过短信，这个……您今天晚上能抽1分钟时间补一下吗？",
-              "script_id": "2322254460585889026_t5",
-              "source_call_ids": [
-                "2322254460585889026"
-              ],
-              "customer_willingness": "weak",
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "是明天吗？昨天不是给我说的是3天内处理吗？",
-              "script_id": "2322802090338590101_t4",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "到时候您资金压力会更大，这边还是建议尽快处理一下。",
-              "script_id": "2322802090338590101_t14",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "想办法把它处理一下，3680块钱，明白吗？",
-              "script_id": "2322802090338590101_t16",
-              "source_call_ids": [
-                "2322802090338590101"
-              ],
-              "customer_willingness": null,
-              "collector_action": "pressure",
-              "gesture_type": "ending",
-              "fact_context": []
-            },
-            {
-              "script_text": "嗯，因为之前我们有给您发过短信，这个……您今天晚上能抽1分钟时间补一下吗？",
-              "script_id": "2322254460585889026_t5",
-              "source_call_ids": [
-                "2322254460585889026"
-              ],
-              "customer_willingness": "weak",
               "collector_action": "pressure",
               "gesture_type": "ending",
               "fact_context": []

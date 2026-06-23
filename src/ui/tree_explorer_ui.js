@@ -269,8 +269,11 @@ function showNodeInfo(node){
   if(inf.length) inf.forEach(f=>h+=`<span class="ni-tag fact">${esc(f)}</span>`);
   else h+=`<span style="color:#64748b">∅</span>`;
   h+=`</div>`;
-  const pool=node.sentence_pool||[];
-  h+=`<div class="ni-section"><div class="ni-title">Sentences (${pool.length})</div>`;
+  const rawPool=node.sentence_pool||[];
+  const seen=new Set();
+  const pool=[];
+  for(const s of rawPool){const k=s.script_text||'';if(!seen.has(k)){seen.add(k);pool.push(s);}}
+  h+=`<div class="ni-section"><div class="ni-title">Sentences (${pool.length}${pool.length<rawPool.length?' (deduped from '+rawPool.length+')':''})</div>`;
   pool.slice(0,10).forEach(s=>{
     let tags='';
     if(s.collector_action) tags+=`<span class="flow-tag action" style="margin-right:3px">${esc(s.collector_action)}</span>`;

@@ -1,7 +1,7 @@
 ---
 id: F004
 name: Decision Tree Construction
-status: review
+status: complete
 owner: agent
 source: plan_feature_base.md
 created: 2026-06-11

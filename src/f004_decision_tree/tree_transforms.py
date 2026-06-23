@@ -35,6 +35,17 @@ def _ensure_leaf_termination(node, _visited=None):
             _ensure_leaf_termination(child, _visited)
 
 
+def _dedup_pool(pool):
+    seen = set()
+    result = []
+    for s in pool:
+        k = s.get("script_text", "")
+        if k not in seen:
+            seen.add(k)
+            result.append(s)
+    return result
+
+
 def _consolidate_endpoints(root):
     normal_end = {
         "state_id": "normal_end",
@@ -63,6 +74,7 @@ def _consolidate_endpoints(root):
     _collect_ending_sentences(root, ending_sentences)
     for s in ending_sentences:
         normal_end["sentence_pool"].append(s)
+    normal_end["sentence_pool"] = _dedup_pool(normal_end["sentence_pool"])
     if not normal_end["sentence_pool"]:
         normal_end["sentence_pool"].append({
             "script_text": "[正常结束]",
@@ -279,6 +291,7 @@ def _deduplicate_nodes(node, _visited=None):
         if identity in seen:
             existing = seen[identity]
             existing.setdefault("sentence_pool", []).extend(child.get("sentence_pool", []))
+            existing["sentence_pool"] = _dedup_pool(existing["sentence_pool"])
             existing.setdefault("children", []).extend(child.get("children", []))
         else:
             seen[identity] = child
@@ -346,6 +359,7 @@ def _collapse_redundant_facts(node, accumulated_facts=None, accumulated_emotions
                 parent_sentences = node.get("sentence_pool", [])
                 child_sentences = child.get("sentence_pool", [])
                 parent_sentences.extend(child_sentences)
+                node["sentence_pool"] = _dedup_pool(parent_sentences)
                 for grandchild in child.get("children", []):
                     new_children.append(grandchild)
                 changed = True

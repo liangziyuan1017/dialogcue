@@ -1,6 +1,6 @@
 # F004: Decision Tree Construction — Implementation Plan
 
-**Feature:** F004 — `docs/features/F004/decision-tree-construction.md`
+**Feature:** F004 — `docs/features/F004-decision-tree-construction.md`
 **Goal:** Add opening/ending gesture support to the decision tree. The tree has exactly 1 opening node (root) and 2 consolidated end nodes (`normal_end` + `abrupt_end`) as direct children of root. All properly-closed dialogs converge into `normal_end`; all dialogs without closings converge into `abrupt_end`.
 **Acceptance Criteria:**
 - Root node sentence_pool entries have `gesture_type: "opening"` for greeting sentences

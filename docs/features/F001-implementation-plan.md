@@ -1,6 +1,6 @@
 # F001: Data Schema Alignment — Implementation Plan
 
-**Feature:** F001 — `docs/features/F001/data-schema-alignment.md`
+**Feature:** F001 — `docs/features/F001-data-schema-alignment.md`
 **Goal:** Map raw records from `/data/output_manual.py` to SOP-aligned schema with `turns_annotated`, `reward`, `state_transitions`, `context`.
 **Acceptance Criteria:**
 - All 31 records present in output
