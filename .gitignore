@@ -20,3 +20,6 @@ opencode.json
 plan.md
 plan_feature_base.md
 pyproject.toml
+.worktrees/
+data/collector_analysis.json
+data/customer_analysis.json

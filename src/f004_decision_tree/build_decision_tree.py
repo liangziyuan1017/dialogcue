@@ -1,260 +1,22 @@
 import importlib.util
 import json
 import os
-import re
 from collections import defaultdict
 
-
-CLOSING_ACTIONS = {"closure", "goodbye"}
-
-
-MAX_MERGED_WORDS = 150
-
-
-def _word_count(text):
-    cleaned = re.sub(r"[，。、！？；：\u201c\u201d\u2018\u2019（）\s]", "", text)
-    return len(cleaned)
-
-
-ACK_MAX_WORDS = 15
-
-
-def _is_ack_interruption(turn):
-    if turn["role"] != "客户":
-        return False
-    if turn.get("label") == 1:
-        return False
-    state = turn.get("state") or {}
-    if state.get("facts") or state.get("emotions"):
-        return False
-    return _word_count(turn["text"]) <= ACK_MAX_WORDS
-
-
-def _find_merge_candidates(turns):
-    candidates = []
-    i = 0
-    while i < len(turns):
-        if turns[i]["role"] == "催收员":
-            group_indices = [i]
-            interruptions = []
-            skipped_label1 = []
-            j = i + 1
-            while j < len(turns):
-                if turns[j]["role"] == "催收员":
-                    group_indices.append(j)
-                    j += 1
-                elif turns[j].get("label") == 1:
-                    skipped_label1.append(j)
-                    j += 1
-                elif _is_ack_interruption(turns[j]):
-                    if j + 1 < len(turns) and (turns[j + 1]["role"] == "催收员" or turns[j + 1].get("label") == 1):
-                        interruptions.append(j)
-                        j += 1
-                    else:
-                        break
-                else:
-                    break
-            if len(group_indices) >= 2:
-                candidates.append({
-                    "collector_indices": group_indices,
-                    "interruption_indices": interruptions,
-                    "skipped_label1_indices": skipped_label1,
-                })
-            i = j
-        else:
-            i += 1
-    return candidates
-
-
-def _build_merge_prompt(turns, group):
-    indices = group["collector_indices"]
-    lines = []
-    for i, idx in enumerate(indices):
-        wc = _word_count(turns[idx]["text"])
-        lines.append(f"  [{i}] ({wc}字) 催收员: {turns[idx]['text']}")
-    for idx in group["interruption_indices"]:
-        next_ci = next(c for c in indices if c > idx)
-        i = indices.index(next_ci)
-        lines.insert(i, f"  [客户说: {turns[idx]['text']}]")
-    turn_list = "\n".join(lines)
-    prompt = f"""将这些催收员连续话语分组。同一组的会合并为一个句子，不同组保留独立。
-
-约束：每个合并组的总字数不能超过{MAX_MERGED_WORDS}字。
-
-催收员话语:
-{turn_list}
-
-分组规则 (偏向不合并，只有明确是同一话题才合并):
-- 同一方案解释的连续话语 → 合并（如果总字数≤{MAX_MERGED_WORDS}）
-- 客户只是简短应答(嗯/好)后催收员继续同一方案 → 合并
-- 不同论点/话题 → 分开
-- 客户提出新观点/异议 → 分开
-- 不确定 → 分开
-
-回复JSON:
-{{"groups": [[0,1],[2],[3]], "reason": "简要说明"}}
-groups是索引列表，每个子列表是一个合并组。单独的话语用单元素列表如[2]。"""
-    return prompt
-
-
-def _enforce_word_limit(turns, collector_indices, partition):
-    final = []
-    for g in partition:
-        if len(g) <= 1:
-            final.append(g)
-            continue
-        current_sub = [g[0]]
-        current_words = _word_count(turns[collector_indices[g[0]]]["text"])
-        for k in range(1, len(g)):
-            w = _word_count(turns[collector_indices[g[k]]]["text"])
-            if current_words + w <= MAX_MERGED_WORDS:
-                current_sub.append(g[k])
-                current_words += w
-            else:
-                final.append(current_sub)
-                current_sub = [g[k]]
-                current_words = w
-        final.append(current_sub)
-    return final
-
-
-def _ensure_same_action_merged(turns, indices, partition):
-    actions = [(turns[idx].get("state") or {}).get("action") for idx in indices]
-    idx_to_group = {}
-    for gi, g in enumerate(partition):
-        for idx in g:
-            idx_to_group[idx] = gi
-    changed = True
-    while changed:
-        changed = False
-        for i in range(len(indices) - 1):
-            if actions[i] and actions[i] == actions[i + 1]:
-                gi = idx_to_group.get(i)
-                gj = idx_to_group.get(i + 1)
-                if gi is not None and gj is not None and gi != gj:
-                    partition[gi] = partition[gi] + partition[gj]
-                    partition[gj] = []
-                    for idx in partition[gi]:
-                        idx_to_group[idx] = gi
-                    changed = True
-    return [g for g in partition if g]
-
-
-def _llm_should_merge(turns, group):
-    from infra.llm_client import call_deepseek_json
-    from infra.retry import retry_call
-    indices = group["collector_indices"]
-    if len(indices) <= 1:
-        return [[0]]
-    actions = []
-    for idx in indices:
-        action = (turns[idx].get("state") or {}).get("action")
-        actions.append(action)
-    if len(set(a for a in actions if a)) == 1 and any(actions):
-        return _enforce_word_limit(turns, indices, [list(range(len(indices)))])
-    prompt = _build_merge_prompt(turns, group)
-    try:
-        result = retry_call(call_deepseek_json, prompt, max_retries=3)
-        groups = result.get("groups", [[i] for i in range(len(indices))])
-    except Exception:
-        groups = [[i] for i in range(len(indices))]
-    if not groups:
-        return [[i] for i in range(len(indices))]
-    validated = []
-    seen = set()
-    for g in groups:
-        if not isinstance(g, list):
-            continue
-        clean = [i for i in g if isinstance(i, int) and 0 <= i < len(indices) and i not in seen]
-        if clean:
-            validated.append(clean)
-            seen.update(clean)
-    for i in range(len(indices)):
-        if i not in seen:
-            validated.append([i])
-    validated = _ensure_same_action_merged(turns, indices, validated)
-    return _enforce_word_limit(turns, indices, validated)
-
-
-def _merge_turns(turns, indices, call_id):
-    first = turns[indices[0]]
-    merged_text = " ".join(turns[i]["text"] for i in indices)
-    actions = []
-    for i in indices:
-        action = (turns[i].get("state") or {}).get("action")
-        if action:
-            actions.append(action)
-    primary_action = actions[0] if actions else None
-    last_willingness = None
-    for i in reversed(indices):
-        w = (turns[i].get("state") or {}).get("willingness")
-        if w:
-            last_willingness = w
-            break
-    merged_ids = [f"{call_id}_t{turns[i]['turn_index']}" for i in indices]
-    entry = {
-        "script_text": merged_text,
-        "script_id": f"{call_id}_t{first['turn_index']}_merged",
-        "source_call_ids": [call_id],
-        "customer_willingness": last_willingness,
-        "merged_from": merged_ids,
-    }
-    if primary_action:
-        entry["collector_action"] = primary_action
-    return entry
-
-
-def _apply_merges(turns, call_id, merge_decisions=None):
-    candidates = _find_merge_candidates(turns)
-    if not candidates:
-        return turns
-    remove_indices = set()
-    merge_entries = {}
-    for group in candidates:
-        key = tuple(group["collector_indices"])
-        cache_key = (call_id, key)
-        if merge_decisions is not None and cache_key in merge_decisions:
-            partition = merge_decisions[cache_key]
-            partition = _enforce_word_limit(turns, group["collector_indices"], partition)
-        else:
-            partition = _llm_should_merge(turns, group)
-            if merge_decisions is not None:
-                merge_decisions[cache_key] = partition
-        collector_indices = group["collector_indices"]
-        interruption_indices = group["interruption_indices"]
-        for idx in group.get("skipped_label1_indices", []):
-            remove_indices.add(idx)
-        for sub in partition:
-            if len(sub) <= 1:
-                continue
-            abs_indices = [collector_indices[i] for i in sub]
-            first_idx = abs_indices[0]
-            merge_entries[first_idx] = _merge_turns(turns, abs_indices, call_id)
-            for idx in abs_indices[1:]:
-                remove_indices.add(idx)
-            for a, b in zip(abs_indices, abs_indices[1:]):
-                for int_idx in interruption_indices:
-                    if a < int_idx < b:
-                        state = turns[int_idx].get("state") or {}
-                        if not state.get("facts") and not state.get("emotions"):
-                            remove_indices.add(int_idx)
-    result = []
-    for i, turn in enumerate(turns):
-        if i in remove_indices:
-            continue
-        if i in merge_entries:
-            merged = merge_entries[i]
-            result.append({
-                "turn_index": turn["turn_index"],
-                "role": "催收员",
-                "text": merged["script_text"],
-                "state": turn.get("state", {}),
-                "_merged_entry": merged,
-            })
-        else:
-            result.append(turn)
-    return result
-
+from f004_decision_tree.merge_collector import (
+    CLOSING_ACTIONS, MAX_MERGED_WORDS, ACK_MAX_WORDS,
+    _word_count, _is_ack_interruption, _find_merge_candidates,
+    _build_merge_prompt, _enforce_word_limit, _ensure_same_action_merged,
+    _llm_should_merge, _merge_turns, _apply_merges,
+)
+from f004_decision_tree.tree_transforms import (
+    _make_abrupt_end_node, _ensure_leaf_termination, _consolidate_endpoints,
+    _collect_ending_sentences, _strip_terminal_nodes, _ensure_abrupt_end,
+    _split_composite_nodes, _merge_sibling_facts, _split_by_action,
+    _propagate_facts, _collapse_redundant_facts, _propagate_sentences,
+    _sort_keywords, _find_node_by_branch_key, _branch_key_to_str,
+    _strip_key, _subset_match, _search_node,
+)
 
 def _load_rewarded():
     data_path = os.path.join(os.path.dirname(__file__), "..", "f003_reward_labeling", "output_rewarded.py")
@@ -262,7 +24,6 @@ def _load_rewarded():
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod.results
-
 
 def _make_branch_key(state):
     key = {}
@@ -273,26 +34,6 @@ def _make_branch_key(state):
     if emotions:
         key["emotions"] = sorted(emotions)
     return key
-
-
-def _find_node_by_branch_key(node, target_key):
-    if node.get("branch_key") == target_key:
-        return node
-    for child in node.get("children", []):
-        result = _find_node_by_branch_key(child, target_key)
-        if result is not None:
-            return result
-    return None
-
-
-def _branch_key_to_str(key):
-    parts = []
-    if "facts" in key:
-        parts.append(f"f:{','.join(key['facts'])}")
-    if "emotions" in key:
-        parts.append(f"e:{','.join(key['emotions'])}")
-    return "|".join(parts) if parts else "no_facts_no_emotions"
-
 
 def extract_state_paths(record):
     turns = record.get("turns_annotated", [])
@@ -330,7 +71,6 @@ def extract_state_paths(record):
 
     return paths
 
-
 def _merge_sentences(existing, new_entries):
     by_key = defaultdict(list)
     for entry in existing:
@@ -349,7 +89,6 @@ def _merge_sentences(existing, new_entries):
         else:
             by_key[k].append(entry)
             existing.append(entry)
-
 
 def build_tree(records, merge_decisions=None):
     root = {
@@ -443,7 +182,6 @@ def build_tree(records, merge_decisions=None):
     _consolidate_endpoints(root)
     return root
 
-
 def _extract_segments(turns, call_id):
     segments = []
     current_branch_key = {}
@@ -498,316 +236,6 @@ def _extract_segments(turns, call_id):
 
     return segments
 
-
-def _make_abrupt_end_node():
-    return {
-        "state_id": "abrupt_end",
-        "branch_key": {"abrupt": True},
-        "sentence_pool": [
-            {
-                "script_text": "[对话未正常结束]",
-                "script_id": "abrupt_end_marker",
-                "source_call_ids": [],
-                "customer_willingness": None,
-                "gesture_type": "ending",
-            }
-        ],
-        "children": [],
-        "gesture_type": "ending",
-    }
-
-
-def _ensure_leaf_termination(node):
-    children = node.get("children", [])
-    if not children:
-        is_end = node.get("state_id") == "abrupt_end" or any(
-            s.get("gesture_type") == "ending" for s in node.get("sentence_pool", [])
-        )
-        if not is_end:
-            node["children"] = [_make_abrupt_end_node()]
-    else:
-        for child in children:
-            _ensure_leaf_termination(child)
-
-
-def _consolidate_endpoints(root):
-    normal_end = {
-        "state_id": "normal_end",
-        "branch_key": {"end_type": "normal"},
-        "sentence_pool": [],
-        "children": [],
-        "gesture_type": "ending",
-    }
-    abrupt_end = {
-        "state_id": "abrupt_end",
-        "branch_key": {"end_type": "abrupt"},
-        "sentence_pool": [
-            {
-                "script_text": "[对话未正常结束]",
-                "script_id": "abrupt_end_marker",
-                "source_call_ids": [],
-                "customer_willingness": None,
-                "gesture_type": "ending",
-            }
-        ],
-        "children": [],
-        "gesture_type": "ending",
-    }
-
-    ending_sentences = []
-    _collect_ending_sentences(root, ending_sentences)
-    for s in ending_sentences:
-        normal_end["sentence_pool"].append(s)
-    if not normal_end["sentence_pool"]:
-        normal_end["sentence_pool"].append({
-            "script_text": "[正常结束]",
-            "script_id": "normal_end_marker",
-            "source_call_ids": [],
-            "customer_willingness": None,
-            "gesture_type": "ending",
-        })
-
-    _strip_terminal_nodes(root)
-
-    root["children"].append(normal_end)
-    root["children"].append(abrupt_end)
-
-
-def _collect_ending_sentences(node, results):
-    for s in node.get("sentence_pool", []):
-        if s.get("gesture_type") == "ending" and s.get("script_text") != "[对话未正常结束]":
-            results.append(s)
-    for child in node.get("children", []):
-        _collect_ending_sentences(child, results)
-
-
-def _strip_terminal_nodes(node):
-    children = node.get("children", [])
-    to_remove = []
-    for i, child in enumerate(children):
-        sid = child.get("state_id", "")
-        if sid == "abrupt_end" or sid == "normal_end":
-            to_remove.append(i)
-            continue
-        _strip_terminal_nodes(child)
-    for i in sorted(to_remove, reverse=True):
-        _collect_ending_sentences(children[i], node.get("_ending_buf", []))
-        children.pop(i)
-
-
-def _ensure_abrupt_end(node, call_id, turns):
-    for child in node.get("children", []):
-        if child.get("state_id") == "abrupt_end":
-            return
-    node.setdefault("children", []).append(_make_abrupt_end_node())
-
-
-def _split_composite_nodes(node):
-    new_children = []
-    for child in node.get("children", []):
-        _split_composite_nodes(child)
-        facts = child.get("branch_key", {}).get("facts", [])
-        emotions = child.get("branch_key", {}).get("emotions", [])
-        if len(facts) <= 1 and not emotions:
-            new_children.append(child)
-            continue
-        sorted_facts = sorted(facts)
-        sorted_emotions = sorted(emotions)
-        chain = []
-        for i, fact in enumerate(sorted_facts):
-            is_last = i == len(sorted_facts) - 1
-            n = {
-                "state_id": f"f:{fact}",
-                "branch_key": {"facts": [fact]},
-                "sentence_pool": [] if not is_last else [],
-                "children": [] if not is_last else [],
-            }
-            chain.append(n)
-        if sorted_emotions:
-            emotion_node = {
-                "state_id": f"e:{','.join(sorted_emotions)}",
-                "branch_key": {"emotions": sorted_emotions},
-                "sentence_pool": child.get("sentence_pool", []),
-                "children": child.get("children", []),
-            }
-            if chain:
-                chain[-1]["children"] = [emotion_node]
-            else:
-                chain.append(emotion_node)
-        else:
-            if chain:
-                chain[-1]["sentence_pool"] = child.get("sentence_pool", [])
-                chain[-1]["children"] = child.get("children", [])
-        for j in range(len(chain) - 1):
-            if not chain[j].get("children"):
-                chain[j]["children"] = [chain[j + 1]]
-            else:
-                chain[j]["children"].append(chain[j + 1])
-        new_children.append(chain[0])
-    node["children"] = new_children
-
-
-def _merge_sibling_facts(node):
-    children = node.get("children", [])
-    merged = {}
-    others = []
-    for child in children:
-        facts = child.get("branch_key", {}).get("facts", [])
-        emotions = child.get("branch_key", {}).get("emotions", [])
-        if len(facts) == 1 and not emotions:
-            key = facts[0]
-            if key not in merged:
-                merged[key] = child
-            else:
-                existing = merged[key]
-                if not existing.get("sentence_pool"):
-                    existing["sentence_pool"] = child.get("sentence_pool", [])
-                for c in child.get("children", []):
-                    existing.setdefault("children", []).append(c)
-        else:
-            others.append(child)
-    for child in list(merged.values()) + others:
-        _merge_sibling_facts(child)
-    node["children"] = list(merged.values()) + others
-
-
-def _split_by_action(node):
-    for child in node.get("children", []):
-        _split_by_action(child)
-    pool = node.get("sentence_pool", [])
-    if not pool:
-        return
-    bk = node.get("branch_key", {})
-    has_facts = bool(bk.get("facts"))
-    has_emotions = bool(bk.get("emotions"))
-    force_split = has_facts or has_emotions
-    by_action = {}
-    unassigned = []
-    for s in pool:
-        action = s.get("collector_action")
-        if action:
-            by_action.setdefault(action, []).append(s)
-        else:
-            unassigned.append(s)
-    if not force_split and len(by_action) <= 1:
-        return
-    node["sentence_pool"] = unassigned
-    action_children = []
-    for action in sorted(by_action):
-        action_node = {
-            "state_id": f"a:{action}",
-            "branch_key": {"action": action},
-            "sentence_pool": by_action[action],
-            "children": [],
-        }
-        action_children.append(action_node)
-    node["children"] = action_children + node.get("children", [])
-
-
-def _propagate_facts(node, accumulated_facts):
-    own_facts = node.get("branch_key", {}).get("facts", [])
-    node["inherited_facts"] = list(accumulated_facts)
-    for entry in node.get("sentence_pool", []):
-        entry["fact_context"] = list(accumulated_facts)
-    merged = sorted(set(accumulated_facts) | set(own_facts))
-    for child in node.get("children", []):
-        _propagate_facts(child, merged)
-
-
-def _collapse_redundant_facts(node, accumulated_facts=None):
-    if accumulated_facts is None:
-        accumulated_facts = set()
-    own_facts = set(node.get("branch_key", {}).get("facts", []))
-    changed = True
-    while changed:
-        changed = False
-        new_children = []
-        for child in node.get("children", []):
-            child_facts = set(child.get("branch_key", {}).get("facts", []))
-            child_emotions = child.get("branch_key", {}).get("emotions", [])
-            child_action = child.get("branch_key", {}).get("action", {})
-            is_redundant_fact = (
-                child_facts
-                and not child_emotions
-                and not child_action
-                and child_facts.issubset(accumulated_facts | own_facts)
-            )
-            if is_redundant_fact:
-                parent_sentences = node.get("sentence_pool", [])
-                child_sentences = child.get("sentence_pool", [])
-                parent_sentences.extend(child_sentences)
-                for grandchild in child.get("children", []):
-                    new_children.append(grandchild)
-                changed = True
-            else:
-                new_children.append(child)
-        node["children"] = new_children
-    current_facts = accumulated_facts | own_facts
-    for child in node["children"]:
-        _collapse_redundant_facts(child, current_facts)
-
-
-def _propagate_sentences(node, parent_pool=None):
-    pool = node.get("sentence_pool", [])
-    if not pool and parent_pool:
-        node["sentence_pool"] = list(parent_pool)
-    for child in node.get("children", []):
-        _propagate_sentences(child, pool if pool else parent_pool)
-
-
-def _sort_keywords(node):
-    for key in ("facts", "emotions"):
-        if key in node.get("branch_key", {}):
-            node["branch_key"][key] = sorted(node["branch_key"][key])
-    for entry in node.get("sentence_pool", []):
-        if "source_call_ids" in entry:
-            entry["source_call_ids"] = sorted(entry["source_call_ids"])
-    for child in node.get("children", []):
-        _sort_keywords(child)
-
-
-def _strip_key(key, level):
-    stripped = dict(key)
-    if level >= 1:
-        stripped.pop("emotions", None)
-    if level >= 2:
-        facts = stripped.get("facts", [])
-        if facts:
-            stripped["facts"] = facts[:-1]
-    if level >= 3:
-        stripped.pop("facts", None)
-    return stripped
-
-
-def _subset_match(node_key, target_key):
-    for k, v in target_key.items():
-        node_v = node_key.get(k)
-        if node_v is None:
-            continue
-        if isinstance(v, list):
-            if not all(item in node_v for item in v):
-                return False
-        else:
-            if node_v != v:
-                return False
-    return True
-
-
-def _search_node(node, target_key, subset=False):
-    bk = node.get("branch_key", {})
-    if subset:
-        if _subset_match(bk, target_key):
-            return node
-    else:
-        if bk == target_key:
-            return node
-    for child in node.get("children", []):
-        result = _search_node(child, target_key, subset)
-        if result is not None:
-            return result
-    return None
-
-
 def find_node(tree, state_key):
     result = _search_node(tree, state_key)
     if result is not None:
@@ -825,7 +253,6 @@ def find_node(tree, state_key):
             return result
 
     return None
-
 
 def _load_merge_cache():
     cache_path = os.path.join(os.path.dirname(__file__), "merge_decisions.json")
@@ -846,7 +273,6 @@ def _load_merge_cache():
         return cache
     return {}
 
-
 def _save_merge_cache(cache):
     cache_path = os.path.join(os.path.dirname(__file__), "merge_decisions.json")
     raw = {}
@@ -855,7 +281,6 @@ def _save_merge_cache(cache):
         raw[key] = decision
     with open(cache_path, "w", encoding="utf-8") as f:
         json.dump(raw, f, indent=2, ensure_ascii=False)
-
 
 def write_decision_tree(records=None, output_path=None):
     if records is None:
@@ -877,13 +302,11 @@ def write_decision_tree(records=None, output_path=None):
 
     return _count_nodes(tree)
 
-
 def _count_nodes(node):
     count = 1
     for child in node.get("children", []):
         count += _count_nodes(child)
     return count
-
 
 if __name__ == "__main__":
     count = write_decision_tree()
