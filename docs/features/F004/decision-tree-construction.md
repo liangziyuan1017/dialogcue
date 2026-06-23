@@ -5,7 +5,7 @@ status: review
 owner: agent
 source: plan_feature_base.md
 created: 2026-06-11
-updated: 2026-06-17
+updated: 2026-06-23
 depends_on: F003
 ---
 
@@ -39,16 +39,13 @@ Every dialog has a **start node** and converges to one of two **end nodes**:
 
 Nodes = collector action points. Branches = customer (facts, emotions). Willingness tags each sentence. A new decision point is created ONLY when the customer introduces new facts or new emotions. Willingness-only changes (e.g., conditional → negotiating) do NOT create new branches.
 
-### Current Tree Statistics (2026-06-17)
+### Current Tree Statistics (2026-06-23)
 
 | Metric | Value |
 |--------|-------|
-| Total nodes | 315 |
-| Leaf nodes | 204 |
+| Total nodes | 309 |
+| DAG shared nodes | 9 |
 | Max depth | 17 |
-| Single-child nodes | 16 |
-| Multi-child nodes | 95 |
-| Single-child ratio | 14.4% |
 | Opening gesture sentences | 217 |
 | Ending gesture sentences | 345 |
 | Non-gesture sentences | 772 |
@@ -102,6 +99,11 @@ Nodes = collector action points. Branches = customer (facts, emotions). Willingn
 - [x] Collector turns with `state=None` captured (not silently dropped)
 - [x] Customer turns with facts/emotions but no following collector create branch nodes (empty sentence pool)
 - [x] Multiple greeting turns per record all captured (no early break)
+- [x] No duplicate nodes with same `(inherited_facts, inherited_emotions, branch_key)` identity (sibling dedup)
+- [x] Every node has `node_id`, `inherited_facts`, `inherited_emotions`
+- [x] No redundant emotion nodes (own emotion never in inherited_emotions)
+- [x] DAG shared nodes render as single Cytoscape node with multiple incoming edges
+- [x] No cycles in tree structure (cycle prevention in registry reuse)
 
 ## Dependencies
 
@@ -111,6 +113,8 @@ Nodes = collector action points. Branches = customer (facts, emotions). Willingn
 
 - [plan_feature_base.md](../../plan_feature_base.md) — F004 spec
 - [ADR-011](../../decisions/ADR-011-decision-tree-approach.md) — Architecture decision
+- [ADR-021](../../decisions/ADR-021-node-identity-dedup.md) — Node identity dedup with DAG support
+- [ADR-022](../../decisions/ADR-022-redundant-emotion-collapse.md) — Redundant emotion collapse
 
 ## Implementation Plan
 
@@ -147,12 +151,17 @@ See [implementation-plan.md](implementation-plan.md)
 - **View mode renderer**: Dedicated `buildViewGraph` for dialog path view. Walks dialog sequence in order, assigns each node a consecutive row (Y = row × 320). Back edges (return to earlier state) render as dashed slate lines with source offset rightward to avoid crossing. Uses `preset` layout with `cy.fit(undefined, 80)` for comfortable zoom level.
 - **No-cache HTTP server**: `serve_tree.py` uses `NoCacheHandler` (Cache-Control: no-store) and `ReusableTCPServer` (allow_reuse_address) for fresh data on every reload.
 - **LLM-guided collector turn merging**: Before segment extraction, `_apply_merges()` preprocesses dialogs to merge fragmented collector turns. Two-phase strategy: (1) `_find_merge_candidates()` identifies merge groups using Rule A (consecutive collector), Rule B (ack-only interruption: no facts/emotions, ≤15 words), and Rule C (label-1 turns treated as absent); (2) `_llm_should_merge()` partitions each group into merge subgroups. Same-action consecutive turns auto-merge without LLM. `_ensure_same_action_merged` post-processes LLM results to enforce this. Hard constraint: `MAX_MERGED_WORDS=150` — each merged output ≤150 Chinese characters, enforced by `_enforce_word_limit()` greedy splitting. Cache in `merge_decisions.json` avoids re-calling LLM.
+- **Node identity deduplication (ADR-021)**: Nodes are identified by `(inherited_facts, inherited_emotions, branch_key)`. Two nodes with the same identity are the same semantic state. A global `node_registry` in `build_tree()` prevents creating duplicate nodes. Cycle prevention via `_is_ancestor` check. Post-transform `_deduplicate_nodes` catches any remaining sibling duplicates.
+- **DAG tree structure**: The tree is a DAG — nodes with the same identity can appear under multiple parents. All recursive walkers use `_visited` sets for cycle protection. The UI uses `node_id` (SHA-256 hash of identity) as the Cytoscape node ID, rendering shared nodes once with multiple incoming edges.
+- **Redundant emotion collapse (ADR-022)**: `_collapse_redundant_facts` extended to also collapse emotion nodes whose emotions are already in the accumulated parent emotions (e.g., `anger → anger` → collapse to `anger`). Symmetric with fact collapse. Uses `accumulated_emotions` tracking.
+- **Pipeline output filenames**: LLM step output filenames match actual files in `data/`: `output_2.py`, `output_logic.py`, `output_complete.py`, `output_merged.py`.
 
 ## Files
 
 | File | Purpose |
 |------|---------|
-| `src/f004_decision_tree/build_decision_tree.py` | Decision tree construction logic with LLM-guided merge (860 lines) |
+| `src/f004_decision_tree/build_decision_tree.py` | Decision tree construction with registry dedup and cycle prevention |
+| `src/f004_decision_tree/tree_transforms.py` | Tree transforms with DAG-safe visited tracking and emotion collapse |
 | `src/test_build_decision_tree.py` | Unit tests (613 lines, 34 tests) |
 | `src/test_record_coverage.py` | Record-level coverage tests (436 lines, 10 tests) |
 | `src/test_ui_rendering.py` | UI rendering type/shape/color/depth tests (396 lines, 20 tests) |

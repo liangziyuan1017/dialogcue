@@ -74,18 +74,23 @@ The old model produced chains because willingness created spurious branches. In 
 - Local tree building preserves path continuity (no global node reuse)
 - Fact-by-fact walking eliminates composite branch keys entirely
 - Redundant fact collapse removes duplicate branches where facts are restated
+- Redundant emotion collapse removes duplicate branches where emotions are restated (ADR-022)
+- Node identity dedup merges semantically identical nodes across the tree (ADR-021)
+- Tree is a DAG: nodes with same `(inherited_facts, inherited_emotions, branch_key)` are shared
+- UI renders DAG using `node_id` — shared nodes appear once with multiple incoming edges
+- All recursive tree walkers have `_visited` cycle protection for DAG safety
 - state=None collector turns captured without `collector_action` key (58 turns, 14.5% of collector speech)
 - Empty-sentence segments ensure all facts/emotions from data are represented as nodes
 - Safe terminal stripping prevents cascading deletion of valid branches
 - All action nodes (including empathy/pressure) render consistently as action type (diamond, amber)
 
-### Current Dimensions (2026-06-17)
+### Current Dimensions (2026-06-23)
 
 | Dimension | Count | Examples |
 |-----------|-------|----------|
 | Branch key actions | 7 | closure, empathy, greeting, information, legal_threat, plan_proposal, pressure |
 | Branch key facts | 53 | financial_hardship, unemployment, multiple_debts, request_installment, no_installment, ... |
 | Branch key emotions | 23 | anxiety, anger, helplessness, pleading, insistence, urgency, ... |
-| Total nodes | 333 | |
-| Leaf nodes | 222 | |
+| Total nodes | 309 | |
+| DAG shared nodes | 9 | Nodes with multiple parents |
 | Max depth | 17 | |

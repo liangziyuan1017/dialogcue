@@ -1,11 +1,12 @@
 ---
 id: ADR-018
 title: Redundant Fact Collapse with Inherited Facts Propagation
-status: accepted
+status: superseded
 created: 2026-06-17
-updated: 2026-06-17
+updated: 2026-06-23
 decision_type: architecture
 feature_ids: [F004]
+superseded_by: ADR-022
 ---
 
 # ADR-018: Redundant Fact Collapse with Inherited Facts Propagation
@@ -37,3 +38,7 @@ Two post-processing steps:
 - Every sentence entry has `fact_context` list
 - Collapse is iterative — may require multiple passes for cascading redundancies
 - Pipeline order: `_split_composite_nodes → _merge_sibling_facts → _collapse_redundant_facts → _split_by_action → _propagate_facts`
+
+## Supersession
+
+ADR-022 extends this to also collapse redundant **emotion** nodes (e.g., `anger → anger`), tracking `accumulated_emotions` in addition to `accumulated_facts`. The function name `_collapse_redundant_facts` is unchanged but now handles both facts and emotions.
