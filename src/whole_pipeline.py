@@ -16,17 +16,17 @@ LLM_STEPS = [
     {
         "name": "data_clean_2",
         "script": DATA_DIR / "(llm) data_clean_2.py",
-        "default_output": "data_clean_2_output.py",
+        "default_output": "output_2.py",
     },
     {
         "name": "data_logic",
         "script": DATA_DIR / "(llm) data_logic.py",
-        "default_output": "data_logic_output.py",
+        "default_output": "output_logic.py",
     },
     {
         "name": "data_complete",
         "script": DATA_DIR / "(llm) data_complete.py",
-        "default_output": "data_complete_output.py",
+        "default_output": "output_complete.py",
     },
     {
         "name": "data_merge",
