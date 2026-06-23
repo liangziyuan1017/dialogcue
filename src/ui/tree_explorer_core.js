@@ -1,4 +1,4 @@
-let cy, treeData, nodeMap={}, dialogData=[], currentDialog=null, tracePath=[], traceIdx=-1, playTimer=null, isPlaying=false, cachedTurnNodeMap=null, viewingDialog=false;
+let cy, treeData, nodeMap={}, dialogData=[], currentDialog=null, tracePath=[], traceIdx=-1, playTimer=null, isPlaying=false, cachedTurnNodeMap=null, viewingDialog=false, addedNodeIds=new Set(), addedEdgeKeys=new Set();
 
 const CY_STYLE=[
   {selector:'node[type="opening"]',style:{'shape':'round-rectangle','width':280,'height':44,'background-color':'#052e16','border-color':'#22c55e','border-width':2,'label':'data(label)','text-halign':'center','text-valign':'center','color':'#4ade80','font-size':14,'font-weight':600,'font-family':'-apple-system,sans-serif','text-wrap':'wrap','text-max-width':260}},
@@ -32,18 +32,22 @@ function nodeType(node,depth){
 }
 
 function indexTree(node,parentId=null,depth=0){
-  const id=node.state_id+'_'+Math.random().toString(36).slice(2,6);
+  const id=node.node_id||(node.state_id+'_'+Math.random().toString(36).slice(2,6));
   node._id=id;node._parentId=parentId;node._depth=depth;node._type=nodeType(node,depth);
-  nodeMap[id]=node;
+  if(!nodeMap[id]) nodeMap[id]=node;
   (node.children||[]).forEach(c=>indexTree(c,id,depth+1));
 }
 
 function treeToCytoscape(node,pid=null,depth=0){
   const id=node._id, type=node._type, pool=node.sentence_pool||[], kids=node.children||[];
   let label=node.state_id.replace(/^[afe]:/,'');
-  const cyNodes=[{data:{id,label,type,nodeRef:id,poolSize:pool.length}}];
+  const cyNodes=[];
   const cyEdges=[];
   const crossEdges=[];
+  if(!addedNodeIds.has(id)){
+    cyNodes.push({data:{id,label,type,nodeRef:id,poolSize:pool.length}});
+    addedNodeIds.add(id);
+  }
   if(pid!==null){
     const bk=node.branch_key||{};
     let bl='';
@@ -54,7 +58,11 @@ function treeToCytoscape(node,pid=null,depth=0){
     if(bk.end_type==='normal') bl='normal end';
     if(bk.end_type==='abrupt') bl='abrupt end';
     if(!bl) bl='∅';
-    cyEdges.push({data:{source:pid,target:id,label:bl,weight:1}});
+    const ek=pid+'->'+id;
+    if(!addedEdgeKeys.has(ek)){
+      cyEdges.push({data:{source:pid,target:id,label:bl,weight:1}});
+      addedEdgeKeys.add(ek);
+    }
   }
   for(const child of kids){
     const sub=treeToCytoscape(child,id,depth+1);
@@ -67,7 +75,11 @@ function treeToCytoscape(node,pid=null,depth=0){
   if(actionKids.length&&nonActionKids.length){
     for(const ak of actionKids){
       for(const nak of nonActionKids){
-        crossEdges.push({data:{source:ak._id,target:nak._id,label:'',weight:0,classes:'action-flow'}});
+        const ek=ak._id+'->'+nak._id;
+        if(!addedEdgeKeys.has(ek)){
+          crossEdges.push({data:{source:ak._id,target:nak._id,label:'',weight:0,classes:'action-flow'}});
+          addedEdgeKeys.add(ek);
+        }
       }
     }
   }
@@ -86,9 +98,10 @@ function addLeafToEndEdges(elements,crossEdges,treeData){
       const hasClosing=(node.sentence_pool||[]).some(s=>s.collector_action==='closure'||s.collector_action==='goodbye');
       const endId=hasClosing?normalId:abruptId;
       const ek=srcId+'->'+endId;
-      if(!existingEdges.has(ek)){
+      if(!existingEdges.has(ek)&&!addedEdgeKeys.has(ek)){
         crossEdges.push({data:{source:srcId,target:endId,label:'',weight:0,classes:'action-flow'}});
         existingEdges.add(ek);
+        addedEdgeKeys.add(ek);
       }
     }
   }
@@ -201,7 +214,7 @@ function enforceParentAboveChild(sep){
   });
 }
 
-function countNodes(n){return 1+(n.children||[]).reduce((s,c)=>s+countNodes(c),0);}
+function countNodes(n,visited=new Set()){if(visited.has(n._id))return 0;visited.add(n._id);return 1+(n.children||[]).reduce((s,c)=>s+countNodes(c,visited),0);}
 
 Promise.all([
   fetch('../f005_context_scoring/decision_tree_scored.json?_='+Date.now()).then(r=>r.json()),
@@ -209,6 +222,9 @@ Promise.all([
 ]).then(([tree,dialogs])=>{
   treeData=tree;
   dialogData=dialogs;
+  nodeMap={};
+  addedNodeIds=new Set();
+  addedEdgeKeys=new Set();
   indexTree(tree);
   const{nodes,edges,crossEdges}=treeToCytoscape(tree);
   addLeafToEndEdges({nodes,edges},crossEdges,tree);

@@ -15,7 +15,8 @@ from f004_decision_tree.tree_transforms import (
     _split_composite_nodes, _merge_sibling_facts, _split_by_action,
     _propagate_facts, _collapse_redundant_facts, _propagate_sentences,
     _sort_keywords, _find_node_by_branch_key, _branch_key_to_str,
-    _strip_key, _subset_match, _search_node,
+    _strip_key, _subset_match, _search_node, _deduplicate_nodes,
+    _make_identity, _compute_node_id,
 )
 
 def _load_rewarded():
@@ -90,6 +91,15 @@ def _merge_sentences(existing, new_entries):
             by_key[k].append(entry)
             existing.append(entry)
 
+def _is_ancestor(node, target):
+    if node is target:
+        return True
+    for child in node.get("children", []):
+        if _is_ancestor(child, target):
+            return True
+    return False
+
+
 def build_tree(records, merge_decisions=None):
     root = {
         "state_id": "initial_contact",
@@ -97,6 +107,7 @@ def build_tree(records, merge_decisions=None):
         "sentence_pool": [],
         "children": [],
     }
+    node_registry = {}
 
     for record in records:
         call_id = record.get("call_id", "")
@@ -122,6 +133,8 @@ def build_tree(records, merge_decisions=None):
         segments = _extract_segments(turns, call_id)
 
         current_node = root
+        accumulated_facts = []
+        accumulated_emotions = []
         for seg in segments:
             branch_key = seg["branch_key"]
             seg_facts = branch_key.get("facts", [])
@@ -132,39 +145,69 @@ def build_tree(records, merge_decisions=None):
             else:
                 for fact in seg_facts:
                     single_bk = {"facts": [fact]}
+                    child_identity = _make_identity(accumulated_facts, accumulated_emotions, single_bk)
+
+                    if child_identity in node_registry:
+                        matching = node_registry[child_identity]
+                        if _is_ancestor(matching, current_node):
+                            current_node = matching
+                            accumulated_facts = sorted(set(accumulated_facts) | {fact})
+                            continue
+                    else:
+                        children = current_node.setdefault("children", [])
+                        matching = None
+                        for child in children:
+                            if child.get("branch_key") == single_bk:
+                                matching = child
+                                break
+                        if matching is None:
+                            matching = {
+                                "state_id": f"f:{fact}",
+                                "branch_key": single_bk,
+                                "sentence_pool": [],
+                                "children": [],
+                                "node_id": _compute_node_id(child_identity),
+                            }
+                        node_registry[child_identity] = matching
+
                     children = current_node.setdefault("children", [])
-                    matching = None
-                    for child in children:
-                        if child.get("branch_key") == single_bk:
-                            matching = child
-                            break
-                    if matching is None:
-                        matching = {
-                            "state_id": f"f:{fact}",
-                            "branch_key": single_bk,
-                            "sentence_pool": [],
-                            "children": [],
-                        }
+                    if matching not in children:
                         children.append(matching)
                     current_node = matching
+                    accumulated_facts = sorted(set(accumulated_facts) | {fact})
 
                 for emotion in seg_emotions:
                     single_bk = {"emotions": [emotion]}
+                    child_identity = _make_identity(accumulated_facts, accumulated_emotions, single_bk)
+
+                    if child_identity in node_registry:
+                        matching = node_registry[child_identity]
+                        if _is_ancestor(matching, current_node):
+                            current_node = matching
+                            accumulated_emotions = sorted(set(accumulated_emotions) | {emotion})
+                            continue
+                    else:
+                        children = current_node.setdefault("children", [])
+                        matching = None
+                        for child in children:
+                            if child.get("branch_key") == single_bk:
+                                matching = child
+                                break
+                        if matching is None:
+                            matching = {
+                                "state_id": f"e:{emotion}",
+                                "branch_key": single_bk,
+                                "sentence_pool": [],
+                                "children": [],
+                                "node_id": _compute_node_id(child_identity),
+                            }
+                        node_registry[child_identity] = matching
+
                     children = current_node.setdefault("children", [])
-                    matching = None
-                    for child in children:
-                        if child.get("branch_key") == single_bk:
-                            matching = child
-                            break
-                    if matching is None:
-                        matching = {
-                            "state_id": f"e:{emotion}",
-                            "branch_key": single_bk,
-                            "sentence_pool": [],
-                            "children": [],
-                        }
+                    if matching not in children:
                         children.append(matching)
                     current_node = matching
+                    accumulated_emotions = sorted(set(accumulated_emotions) | {emotion})
 
                 _merge_sentences(current_node["sentence_pool"], seg["sentences"])
 
@@ -295,17 +338,24 @@ def write_decision_tree(records=None, output_path=None):
     _merge_sibling_facts(tree)
     _collapse_redundant_facts(tree)
     _split_by_action(tree)
-    _propagate_facts(tree, [])
+    _propagate_facts(tree, [], [])
+    _deduplicate_nodes(tree)
 
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(tree, f, indent=2, ensure_ascii=False)
 
     return _count_nodes(tree)
 
-def _count_nodes(node):
+def _count_nodes(node, visited=None):
+    if visited is None:
+        visited = set()
+    node_id = id(node)
+    if node_id in visited:
+        return 0
+    visited.add(node_id)
     count = 1
     for child in node.get("children", []):
-        count += _count_nodes(child)
+        count += _count_nodes(child, visited)
     return count
 
 if __name__ == "__main__":

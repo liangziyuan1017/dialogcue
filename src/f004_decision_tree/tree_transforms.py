@@ -16,7 +16,13 @@ def _make_abrupt_end_node():
     }
 
 
-def _ensure_leaf_termination(node):
+def _ensure_leaf_termination(node, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
     children = node.get("children", [])
     if not children:
         is_end = node.get("state_id") == "abrupt_end" or any(
@@ -26,7 +32,7 @@ def _ensure_leaf_termination(node):
             node["children"] = [_make_abrupt_end_node()]
     else:
         for child in children:
-            _ensure_leaf_termination(child)
+            _ensure_leaf_termination(child, _visited)
 
 
 def _consolidate_endpoints(root):
@@ -72,15 +78,27 @@ def _consolidate_endpoints(root):
     root["children"].append(abrupt_end)
 
 
-def _collect_ending_sentences(node, results):
+def _collect_ending_sentences(node, results, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
     for s in node.get("sentence_pool", []):
         if s.get("gesture_type") == "ending" and s.get("script_text") != "[对话未正常结束]":
             results.append(s)
     for child in node.get("children", []):
-        _collect_ending_sentences(child, results)
+        _collect_ending_sentences(child, results, _visited)
 
 
-def _strip_terminal_nodes(node):
+def _strip_terminal_nodes(node, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
     children = node.get("children", [])
     to_remove = []
     for i, child in enumerate(children):
@@ -88,7 +106,7 @@ def _strip_terminal_nodes(node):
         if sid == "abrupt_end" or sid == "normal_end":
             to_remove.append(i)
             continue
-        _strip_terminal_nodes(child)
+        _strip_terminal_nodes(child, _visited)
     for i in sorted(to_remove, reverse=True):
         _collect_ending_sentences(children[i], node.get("_ending_buf", []))
         children.pop(i)
@@ -101,10 +119,16 @@ def _ensure_abrupt_end(node, call_id, turns):
     node.setdefault("children", []).append(_make_abrupt_end_node())
 
 
-def _split_composite_nodes(node):
+def _split_composite_nodes(node, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
     new_children = []
     for child in node.get("children", []):
-        _split_composite_nodes(child)
+        _split_composite_nodes(child, _visited)
         facts = child.get("branch_key", {}).get("facts", [])
         emotions = child.get("branch_key", {}).get("emotions", [])
         if len(facts) <= 1 and not emotions:
@@ -146,7 +170,13 @@ def _split_composite_nodes(node):
     node["children"] = new_children
 
 
-def _merge_sibling_facts(node):
+def _merge_sibling_facts(node, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
     children = node.get("children", [])
     merged = {}
     others = []
@@ -166,13 +196,19 @@ def _merge_sibling_facts(node):
         else:
             others.append(child)
     for child in list(merged.values()) + others:
-        _merge_sibling_facts(child)
+        _merge_sibling_facts(child, _visited)
     node["children"] = list(merged.values()) + others
 
 
-def _split_by_action(node):
+def _split_by_action(node, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
     for child in node.get("children", []):
-        _split_by_action(child)
+        _split_by_action(child, _visited)
     pool = node.get("sentence_pool", [])
     if not pool:
         return
@@ -203,27 +239,96 @@ def _split_by_action(node):
     node["children"] = action_children + node.get("children", [])
 
 
-def _propagate_facts(node, accumulated_facts):
+import hashlib
+
+
+def _make_identity(inherited_facts, inherited_emotions, branch_key):
+    bk_items = tuple(sorted(
+        (k, tuple(v) if isinstance(v, list) else v) for k, v in branch_key.items()
+    ))
+    return (tuple(sorted(inherited_facts)), tuple(sorted(inherited_emotions)), bk_items)
+
+
+def _compute_node_id(identity):
+    h = hashlib.sha256(str(identity).encode()).hexdigest()[:12]
+    return f"n_{h}"
+
+
+def _node_identity(node):
+    inherited_facts = tuple(sorted(node.get("inherited_facts", [])))
+    inherited_emotions = tuple(sorted(node.get("inherited_emotions", [])))
+    bk = node.get("branch_key", {})
+    bk_items = tuple(sorted(
+        (k, tuple(v) if isinstance(v, list) else v) for k, v in bk.items()
+    ))
+    return (inherited_facts, inherited_emotions, bk_items)
+
+
+def _deduplicate_nodes(node, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
+    children = node.get("children", [])
+    seen = {}
+    merged = []
+    for child in children:
+        identity = _node_identity(child)
+        if identity in seen:
+            existing = seen[identity]
+            existing.setdefault("sentence_pool", []).extend(child.get("sentence_pool", []))
+            existing.setdefault("children", []).extend(child.get("children", []))
+        else:
+            seen[identity] = child
+            merged.append(child)
+    node["children"] = merged
+    for child in node["children"]:
+        _deduplicate_nodes(child, _visited)
+
+
+def _propagate_facts(node, accumulated_facts, accumulated_emotions=None, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
     own_facts = node.get("branch_key", {}).get("facts", [])
+    own_emotions = node.get("branch_key", {}).get("emotions", [])
     node["inherited_facts"] = list(accumulated_facts)
+    node["inherited_emotions"] = list(accumulated_emotions)
+    identity = _make_identity(node["inherited_facts"], node["inherited_emotions"], node.get("branch_key", {}))
+    node["node_id"] = _compute_node_id(identity)
     for entry in node.get("sentence_pool", []):
         entry["fact_context"] = list(accumulated_facts)
-    merged = sorted(set(accumulated_facts) | set(own_facts))
+    merged_facts = sorted(set(accumulated_facts) | set(own_facts))
+    merged_emotions = sorted(set(accumulated_emotions) | set(own_emotions))
     for child in node.get("children", []):
-        _propagate_facts(child, merged)
+        _propagate_facts(child, merged_facts, merged_emotions, _visited)
 
 
-def _collapse_redundant_facts(node, accumulated_facts=None):
+def _collapse_redundant_facts(node, accumulated_facts=None, accumulated_emotions=None, _visited=None):
     if accumulated_facts is None:
         accumulated_facts = set()
+    if accumulated_emotions is None:
+        accumulated_emotions = set()
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
     own_facts = set(node.get("branch_key", {}).get("facts", []))
+    own_emotions = set(node.get("branch_key", {}).get("emotions", []))
     changed = True
     while changed:
         changed = False
         new_children = []
         for child in node.get("children", []):
             child_facts = set(child.get("branch_key", {}).get("facts", []))
-            child_emotions = child.get("branch_key", {}).get("emotions", [])
+            child_emotions = set(child.get("branch_key", {}).get("emotions", []))
             child_action = child.get("branch_key", {}).get("action", {})
             is_redundant_fact = (
                 child_facts
@@ -231,7 +336,13 @@ def _collapse_redundant_facts(node, accumulated_facts=None):
                 and not child_action
                 and child_facts.issubset(accumulated_facts | own_facts)
             )
-            if is_redundant_fact:
+            is_redundant_emotion = (
+                child_emotions
+                and not child_facts
+                and not child_action
+                and child_emotions.issubset(accumulated_emotions | own_emotions)
+            )
+            if is_redundant_fact or is_redundant_emotion:
                 parent_sentences = node.get("sentence_pool", [])
                 child_sentences = child.get("sentence_pool", [])
                 parent_sentences.extend(child_sentences)
@@ -242,19 +353,32 @@ def _collapse_redundant_facts(node, accumulated_facts=None):
                 new_children.append(child)
         node["children"] = new_children
     current_facts = accumulated_facts | own_facts
+    current_emotions = accumulated_emotions | own_emotions
     for child in node["children"]:
-        _collapse_redundant_facts(child, current_facts)
+        _collapse_redundant_facts(child, current_facts, current_emotions, _visited)
 
 
-def _propagate_sentences(node, parent_pool=None):
+def _propagate_sentences(node, parent_pool=None, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
     pool = node.get("sentence_pool", [])
     if not pool and parent_pool:
         node["sentence_pool"] = list(parent_pool)
     for child in node.get("children", []):
-        _propagate_sentences(child, pool if pool else parent_pool)
+        _propagate_sentences(child, pool if pool else parent_pool, _visited)
 
 
-def _sort_keywords(node):
+def _sort_keywords(node, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
     for key in ("facts", "emotions"):
         if key in node.get("branch_key", {}):
             node["branch_key"][key] = sorted(node["branch_key"][key])
@@ -262,7 +386,7 @@ def _sort_keywords(node):
         if "source_call_ids" in entry:
             entry["source_call_ids"] = sorted(entry["source_call_ids"])
     for child in node.get("children", []):
-        _sort_keywords(child)
+        _sort_keywords(child, _visited)
 
 
 def _find_node_by_branch_key(node, target_key):
