@@ -39,11 +39,23 @@ def run_pipeline(input_file: Path) -> None:
     merged_file = prev_output
 
     print("\n" + "=" * 60)
-    print("PHASE 2: Collector & Customer Turn Analysis")
+    print("PHASE 1.5: Keyword Discovery & Turn Labeling")
     print("=" * 60)
 
     records = _load_py_results(merged_file)
     print(f"Loaded {len(records)} records from {merged_file.name}")
+
+    print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Running discover_keywords...")
+    import f000_keyword_discovery.discover_keywords as dk
+    taxonomy = dk.discover_keywords(records)
+    print(f"  Facts: {len(taxonomy.get('facts', []))}, "
+          f"Emotions: {len(taxonomy.get('emotions', []))}, "
+          f"Actions: {len(taxonomy.get('collector_actions', []))}, "
+          f"Willingness levels: {len(taxonomy.get('willingness_levels', []))}")
+
+    print("\n" + "=" * 60)
+    print("PHASE 2: Collector & Customer Turn Analysis")
+    print("=" * 60)
 
     print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Running analyze_collector_turns...")
     import f003_reward_labeling.analyze_collector_turns as act

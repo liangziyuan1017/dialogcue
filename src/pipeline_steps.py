@@ -57,10 +57,14 @@ def _write_py_results(results: list[dict], path: Path) -> None:
 
 
 def _run_llm_step(step: dict, data_file: Path, output_file: Path) -> None:
+    existing_pythonpath = subprocess.os.environ.get("PYTHONPATH", "")
+    infra_path = str(BASE_DIR / "infra")
+    new_pythonpath = f"{infra_path}:{existing_pythonpath}" if existing_pythonpath else infra_path
     env = {
         **subprocess.os.environ,
         "DATA_FILE": str(data_file),
         "OUTPUT_FILE": str(output_file),
+        "PYTHONPATH": new_pythonpath,
     }
     print(f"[{datetime.now():%Y-%m-%d %H:%M:%S}] Running {step['name']}...")
     print(f"  DATA_FILE   = {data_file}")

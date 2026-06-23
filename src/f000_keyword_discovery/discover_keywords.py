@@ -17,8 +17,9 @@ from f000_keyword_discovery.keyword_prompts import (
 from infra.llm_client import call_deepseek_json
 
 
-def discover_keywords(output_path: str = None, labeled_output_path: str = None) -> dict:
-    records = load_records()
+def discover_keywords(records=None, output_path: str = None, labeled_output_path: str = None) -> dict:
+    if records is None:
+        records = load_records()
     labeled_records = copy.deepcopy(records)
 
     customer_turns = []
