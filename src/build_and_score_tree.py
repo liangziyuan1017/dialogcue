@@ -31,7 +31,7 @@ def run(args) -> None:
     if args.merged_file:
         merged = args.merged_file.resolve()
     else:
-        merged = DATA_DIR / "data_merged_output.py"
+        merged = DATA_DIR / "output_merged.py"
     if not merged.exists():
         print(f"Merged file not found: {merged}")
         return
@@ -113,7 +113,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--merged-file", type=Path, default=None,
-        help="Path to merged output (default: data/data_merged_output.py)",
+        help="Path to merged output (default: data/output_merged.py)",
     )
     run(parser.parse_args())
 
