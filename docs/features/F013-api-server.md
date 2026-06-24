@@ -1,7 +1,7 @@
 ---
 name: F013
 title: REST API + Socket.IO Server
-status: planned
+status: review
 depends_on: [F010, F011, F012]
 created: 2026-06-24
 updated: 2026-06-24

@@ -1,7 +1,7 @@
 ---
 name: F012
 title: State Extraction Module — LLM-first + Keyword Fallback
-status: planned
+status: review
 depends_on: [F010, F011]
 created: 2026-06-24
 updated: 2026-06-24
