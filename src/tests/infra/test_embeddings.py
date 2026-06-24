@@ -1,6 +1,6 @@
 import numpy as np
 from unittest.mock import patch, MagicMock
-from infra.embeddings import embed_single, embed_texts
+from infra.embeddings import embed_single, embed_texts, EMBEDDING_MODEL
 
 
 def _mock_embedding_response(vectors):
@@ -41,10 +41,10 @@ def test_embed_single_nonzero_norm():
 def test_embed_single_calls_correct_model():
     mock_client = MagicMock()
     mock_client.embeddings.create.return_value = _mock_embedding_response([DUMMY_VEC])
-    with patch("infra.embeddings._get_client", return_value=mock_client):
+    with patch("infra.embeddings._get_embed_client", return_value=mock_client):
         embed_single("hello")
     call_kwargs = mock_client.embeddings.create.call_args
-    assert call_kwargs[1]["model"] == "deepseek-chat"
+    assert call_kwargs[1]["model"] == EMBEDDING_MODEL
     assert call_kwargs[1]["input"] == "hello"
 
 

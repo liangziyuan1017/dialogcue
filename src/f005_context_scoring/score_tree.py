@@ -175,7 +175,9 @@ def _collect_tree_nodes(tree, parent_id_map=None):
 def _collect_tree_sentences(tree):
     sentences = []
     def walk(node):
+        state_id = node.get("state_id", "")
         for s in node.get("sentence_pool", []):
+            s["_node_state_id"] = state_id
             sentences.append(s)
         for child in node.get("children", []):
             walk(child)
@@ -192,12 +194,11 @@ def write_scored_tree(output_path=None, db=None):
     customer_info_lookup = build_customer_info_lookup()
     turns_lookup = build_turns_lookup()
     conv_ctx_lookup = build_conversation_context_lookup(tree, turns_lookup)
-    scored = score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup, embed_fn=embed_texts)
+    scored = score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup, embed_fn=embed_texts if db is not None else None)
 
     all_sentences = _collect_tree_sentences(scored)
     for s in all_sentences:
         s["context_vec_id"] = s.get("script_id", "")
-        s.pop("_context_vec", None)
 
     if db is not None:
         all_nodes = _collect_tree_nodes(scored)
@@ -209,7 +210,7 @@ def write_scored_tree(output_path=None, db=None):
                 node_sig_to_id[n["path_signature"]] = row["id"]
         db_sentences = []
         for s in all_sentences:
-            node_sig = s.get("state_id", "")
+            node_sig = s.get("_node_state_id", "")
             node_id = node_sig_to_id.get(node_sig, 1)
             db_sentences.append({
                 "script_id": s.get("script_id", ""),
@@ -244,6 +245,10 @@ def write_scored_tree(output_path=None, db=None):
                         (kr["group_name"], kr["category"], kr["keyword"], kr["frequency"]),
                     )
                 cur.close()
+
+    for s in all_sentences:
+        s.pop("_context_vec", None)
+        s.pop("_node_state_id", None)
 
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(scored, f, indent=2, ensure_ascii=False)

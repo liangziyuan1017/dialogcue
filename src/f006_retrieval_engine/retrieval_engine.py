@@ -169,7 +169,9 @@ def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_co
 
     if db is not None and nodes:
         first_node = nodes[0]
-        node_id = first_node.get("_db_node_id", 1)
+        state_id = first_node.get("state_id", "")
+        node_row = db.get_node_by_signature(state_id)
+        node_id = node_row["id"] if node_row else 1
         pool = db.get_sentences_by_node(node_id)
     else:
         pool = aggregate_pools(nodes)

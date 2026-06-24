@@ -60,7 +60,17 @@ async def lifespan(app: FastAPI):
     app.state.db = _init_db()
     app.state.taxonomy = _init_taxonomy()
     app.state.hash_index = _init_hash_index(app.state.db)
+    tree = _load_scored_tree()
+    app.state.tree = tree
+    app.state.index = build_node_index(tree)
+    app.state.keyword_freq = _compute_keyword_freq(app.state.index)
     yield
+
+
+def _load_scored_tree():
+    path = os.path.join(os.path.dirname(__file__), "..", "f005_context_scoring", "decision_tree_scored.json")
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
 
 
 app = FastAPI(lifespan=lifespan)
@@ -80,38 +90,44 @@ async def recommend_endpoint(req: RecommendRequest):
 
     facts = merged["facts"]
     emotions = merged["emotions"]
-    actions = merged["actions"]
-    signature = "|".join(sorted(facts + emotions + actions))
-
-    node_id = app.state.hash_index.get(signature, 1)
+    branch_key_values = emotions + merged["actions"]
 
     query_bitmask = _compute_bitmask(req.context)
     query_vec = embed_single(req.conversation_context) if req.conversation_context else [0.0] * 768
 
-    candidates = app.state.db.search_similar(query_vec, node_id=node_id, query_bitmask=query_bitmask, limit=50)
-
-    from f006_retrieval_engine.retrieval_ranking import rank_sentences, RANKING_WEIGHTS
-    ranked = rank_sentences(candidates, query_vec=query_vec, db=app.state.db, query_bg=req.context)
+    result = recommend(
+        inherited_facts=facts,
+        branch_key_values=branch_key_values,
+        query_bitmask=query_bitmask,
+        conversation_context=req.conversation_context,
+        query_bg=req.context,
+        tree=app.state.tree,
+        index=app.state.index,
+        keyword_freq=app.state.keyword_freq,
+        db=app.state.db,
+        query_vec=query_vec,
+        conversation_state=merged,
+    )
 
     latency_ms = int((time.time() - start) * 1000)
 
-    if not ranked:
+    if result is None:
         return {"error": "no recommendation found", "latency_ms": latency_ms}
 
-    top = ranked[0]
+    from f006_retrieval_engine.retrieval_ranking import RANKING_WEIGHTS
     return {
-        "script_text": top.get("script_text", ""),
-        "script_id": top.get("script_id", ""),
-        "state_id": signature,
-        "win_rate": top.get("win_rate", 0),
-        "vec_score": top.get("vec_score", 0),
-        "sas": top.get("sas", 0),
-        "final_score": top.get("final_score", 0),
-        "confidence": top.get("confidence", 1.0),
+        "script_text": result.get("script_text", ""),
+        "script_id": result.get("script_id", ""),
+        "state_id": result.get("state_id", ""),
+        "win_rate": result.get("win_rate", 0),
+        "vec_score": result.get("vec_score", 0),
+        "sas": result.get("sas", 0),
+        "final_score": result.get("final_score", 0),
+        "confidence": result.get("confidence", 1.0),
         "extraction_method": extraction.get("method", "unknown"),
         "conversation_state": merged,
         "ranking_weights": RANKING_WEIGHTS,
-        "fallbacks": [],
+        "fallbacks": result.get("fallbacks", []),
         "latency_ms": latency_ms,
     }
 
