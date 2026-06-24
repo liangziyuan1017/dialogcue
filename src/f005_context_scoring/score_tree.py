@@ -101,7 +101,7 @@ def build_conversation_context_lookup(tree, turns_lookup=None):
     return context_map
 
 
-def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup=None):
+def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup=None, embed_fn=None):
     for s in sentence_pool:
         call_ids = s.get("source_call_ids", [])
         bg = compute_bg_constraints(call_ids, context_lookup)
@@ -119,10 +119,15 @@ def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_
     sas_scores = compute_sas_for_pool(sentence_pool)
     for s, sas in zip(sentence_pool, sas_scores):
         s["sas"] = sas
+    if embed_fn is not None:
+        texts = [s.get("script_text", "") for s in sentence_pool]
+        vecs = embed_fn(texts)
+        for s, vec in zip(sentence_pool, vecs):
+            s["_context_vec"] = vec
     return sentence_pool
 
 
-def score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup=None):
+def score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup=None, embed_fn=None):
     def _walk(node):
         _score_sentence_pool(
             node.get("sentence_pool", []),
@@ -130,6 +135,7 @@ def score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_c
             reward_lookup,
             customer_info_lookup,
             conv_ctx_lookup,
+            embed_fn=embed_fn,
         )
         for child in node.get("children", []):
             _walk(child)
