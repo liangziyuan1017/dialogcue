@@ -5,9 +5,8 @@ from collections import defaultdict
 from .retrieval_ranking import (
     BITMASK_FIELDS,
     BG_BACKGROUND_FIELDS,
-    RANKING_STRATEGY,
+    RANKING_WEIGHTS,
     compute_bg_boost,
-    compute_context_similarity,
     rank_sentences,
 )
 
@@ -136,13 +135,17 @@ def relax_bitmask(pool, query_bitmask):
     return [], relaxations, fallbacks
 
 
-def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_context, query_bg, strategy=RANKING_STRATEGY, tree=None, index=None, keyword_freq=None):
+def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_context, query_bg,
+              tree=None, index=None, keyword_freq=None, db=None, query_vec=None,
+              conversation_state=None):
     if tree is None:
         tree = _load_scored_tree()
     if index is None:
         index = build_node_index(tree)
     if keyword_freq is None:
         keyword_freq = _compute_keyword_freq(index)
+    if conversation_state is None:
+        conversation_state = {"facts": [], "emotions": [], "actions": []}
 
     confidence = 1.0
     fallbacks = []
@@ -164,7 +167,12 @@ def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_co
     if not nodes:
         return None
 
-    pool = aggregate_pools(nodes)
+    if db is not None and nodes:
+        first_node = nodes[0]
+        node_id = first_node.get("_db_node_id", 1)
+        pool = db.get_sentences_by_node(node_id)
+    else:
+        pool = aggregate_pools(nodes)
 
     if not pool:
         d_pool, d_conf, d_fb = descend_for_sentences(nodes)
@@ -197,9 +205,9 @@ def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_co
         if not filtered:
             return None
 
-    ranked = rank_sentences(filtered, strategy=strategy,
-                            conversation_context=conversation_context,
+    ranked = rank_sentences(filtered, query_vec=query_vec, db=db,
                             query_bg=query_bg,
+                            conversation_context=conversation_context,
                             context_missing=context_missing)
 
     if not ranked:
@@ -219,10 +227,12 @@ def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_co
         "state_id": top.get("state_id", ""),
         "win_rate": top.get("win_rate", 0),
         "sas": top.get("sas", 0),
-        "conversation_context_similarity": top.get("conversation_context_similarity", 0),
+        "vec_score": top.get("vec_score", 0),
+        "final_score": top.get("final_score", 0),
         "confidence": round(confidence_val, 2),
-        "strategy": strategy,
+        "ranking_weights": RANKING_WEIGHTS,
         "fallbacks": fallbacks,
+        "conversation_state": conversation_state,
     }
 
 
@@ -237,10 +247,9 @@ if __name__ == "__main__":
         query_bitmask=0,
         conversation_context="客户说没有钱",
         query_bg={},
-        strategy="limited",
         tree=tree, index=index, keyword_freq=keyword_freq,
     )
     if result:
-        print(f"Recommend: {result['script_id']} (confidence={result['confidence']}, fallbacks={result['fallbacks']})")
+        print(f"Recommend: {result['script_id']} (confidence={result['confidence']}, final_score={result['final_score']:.4f})")
     else:
         print("No recommendation")
