@@ -1,7 +1,7 @@
 import numpy as np
 
 
-RANKING_STRATEGY = "limited"
+RANKING_WEIGHTS = {"win_rate": 0.40, "vec_score": 0.30, "sas": 0.15, "bg_boost": 0.15}
 
 
 BITMASK_FIELDS = [
@@ -33,51 +33,19 @@ BG_BACKGROUND_FIELDS = [
 ]
 
 
-def _char_ngrams(text, n=2):
-    chars = list(text)
-    return ["".join(chars[i:i+n]) for i in range(len(chars) - n + 1)]
-
-
-def _build_tfidf_vector(text, vocab, idf):
-    ngrams = _char_ngrams(text)
-    vec = np.zeros(len(vocab))
-    for ng in ngrams:
-        if ng in vocab:
-            vec[vocab[ng]] += 1
-    total = vec.sum()
-    if total > 0:
-        vec /= total
-    vec *= idf
-    return vec
-
-
-def compute_context_similarity(current_context, stored_context):
-    if not current_context or not stored_context:
-        return 0.0
-    texts = [current_context, stored_context]
-    all_ngrams = [_char_ngrams(t) for t in texts]
-    vocab = {}
-    for ngrams in all_ngrams:
-        for ng in ngrams:
-            if ng not in vocab:
-                vocab[ng] = len(vocab)
-    if not vocab:
-        return 0.0
-    df = np.zeros(len(vocab))
-    for ngrams in all_ngrams:
-        seen = set()
-        for ng in ngrams:
-            if ng not in seen:
-                df[vocab[ng]] += 1
-                seen.add(ng)
-    idf = np.log((2 + 1) / (df + 1)) + 1
-    vecs = [_build_tfidf_vector(t, vocab, idf) for t in texts]
-    dot = np.dot(vecs[0], vecs[1])
-    norm0 = np.linalg.norm(vecs[0])
-    norm1 = np.linalg.norm(vecs[1])
-    if norm0 == 0 or norm1 == 0:
-        return 0.0
-    return float(min(max(dot / (norm0 * norm1), 0.0), 1.0))
+def compute_vec_similarity(query_vec: list[float], candidate_script_ids: list[str], db) -> dict[str, float]:
+    if not candidate_script_ids:
+        return {}
+    candidate_vecs = db.get_vectors(candidate_script_ids)
+    query = np.array(query_vec, dtype=np.float32)
+    q_norm = np.linalg.norm(query)
+    scores = {}
+    for sid, vec in candidate_vecs.items():
+        v = np.array(vec, dtype=np.float32)
+        dot = float(np.dot(query, v))
+        v_norm = float(np.linalg.norm(v))
+        scores[sid] = dot / (q_norm * v_norm) if q_norm > 0 and v_norm > 0 else 0.0
+    return scores
 
 
 def compute_bg_boost(sentence_bg, query_bg):
@@ -108,59 +76,34 @@ def _safe_int(val):
         return 0
 
 
-def _rank_limited(pool, conversation_context="", context_missing=False):
-    for s in pool:
-        if context_missing or not conversation_context:
-            s["_sort_primary"] = s.get("win_rate", 0)
-            s["_sort_secondary"] = s.get("sas", 0)
-            s["_sort_tertiary"] = 0
-        else:
-            stored = s.get("conversation_context", "")
-            if stored and "conversation_context_similarity" not in s:
-                s["conversation_context_similarity"] = compute_context_similarity(conversation_context, stored)
-            elif "conversation_context_similarity" not in s:
-                s["conversation_context_similarity"] = 0.0
-            s["_sort_primary"] = s["conversation_context_similarity"]
-            s["_sort_secondary"] = s.get("win_rate", 0)
-            s["_sort_tertiary"] = s.get("sas", 0)
-    pool.sort(key=lambda s: (-s.get("_sort_primary", 0), -s.get("_sort_secondary", 0), -s.get("_sort_tertiary", 0)))
-    for s in pool:
-        s.pop("_sort_primary", None)
-        s.pop("_sort_secondary", None)
-        s.pop("_sort_tertiary", None)
-    return pool
-
-
-def _rank_full(pool, conversation_context="", query_bg=None, context_missing=False):
-    if query_bg is None:
-        query_bg = {}
-    for s in pool:
-        if not context_missing and conversation_context:
-            if "conversation_context_similarity" not in s:
-                stored = s.get("conversation_context", "")
-                if stored:
-                    s["conversation_context_similarity"] = compute_context_similarity(conversation_context, stored)
-                else:
-                    s["conversation_context_similarity"] = 0.0
-        else:
-            s["conversation_context_similarity"] = s.get("conversation_context_similarity", 0.0)
-        s_bg = s.get("bg_background", {})
-        s["_bg_boost"] = compute_bg_boost(s_bg, query_bg)
-        s["_sort_primary"] = s.get("win_rate", 0)
-        s["_sort_secondary"] = s["conversation_context_similarity"]
-        s["_sort_tertiary"] = s.get("sas", 0) + s["_bg_boost"]
-    pool.sort(key=lambda s: (-s.get("_sort_primary", 0), -s.get("_sort_secondary", 0), -s.get("_sort_tertiary", 0)))
-    for s in pool:
-        s.pop("_sort_primary", None)
-        s.pop("_sort_secondary", None)
-        s.pop("_sort_tertiary", None)
-        s.pop("_bg_boost", None)
-    return pool
-
-
-def rank_sentences(pool, strategy=RANKING_STRATEGY, conversation_context="", query_bg=None, context_missing=False):
+def rank_sentences(pool, query_vec=None, db=None, query_bg=None, conversation_context="", context_missing=False):
     if not pool:
         return []
-    if strategy == "limited":
-        return _rank_limited(list(pool), conversation_context=conversation_context, context_missing=context_missing)
-    return _rank_full(list(pool), conversation_context=conversation_context, query_bg=query_bg, context_missing=context_missing)
+    pool = list(pool)
+    if query_bg is None:
+        query_bg = {}
+
+    script_ids = [s.get("script_id", "") for s in pool]
+    vec_scores = {}
+    if query_vec is not None and db is not None and script_ids:
+        vec_scores = compute_vec_similarity(query_vec, script_ids, db)
+
+    for s in pool:
+        sid = s.get("script_id", "")
+        s["vec_score"] = vec_scores.get(sid, 0.0)
+        s_bg = s.get("bg_background", {}) or {}
+        bg_boost = compute_bg_boost(s_bg, query_bg)
+        s["_bg_boost_val"] = bg_boost
+        s["final_score"] = (
+            RANKING_WEIGHTS["win_rate"] * s.get("win_rate", 0)
+            + RANKING_WEIGHTS["vec_score"] * s["vec_score"]
+            + RANKING_WEIGHTS["sas"] * s.get("sas", 0)
+            + RANKING_WEIGHTS["bg_boost"] * bg_boost
+        )
+
+    pool.sort(key=lambda s: -s.get("final_score", 0))
+
+    for s in pool:
+        s.pop("_bg_boost_val", None)
+
+    return pool

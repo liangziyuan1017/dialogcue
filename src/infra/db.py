@@ -165,6 +165,19 @@ class SentenceDB:
         cur.close()
         return [dict(r) for r in rows]
 
+    def get_vectors(self, script_ids: list[str]) -> dict[str, list[float]]:
+        if not script_ids:
+            return {}
+        cur = self._conn.cursor()
+        placeholders = ",".join(["%s"] * len(script_ids))
+        cur.execute(
+            f"SELECT script_id, embedding FROM sentences WHERE script_id IN ({placeholders})",
+            tuple(script_ids),
+        )
+        rows = cur.fetchall()
+        cur.close()
+        return {r[0]: list(r[1]) if r[1] is not None else [0.0] * 768 for r in rows}
+
     def keyword_search(self, query_text: str, limit: int = 20) -> list[dict]:
         if not query_text.strip():
             return []

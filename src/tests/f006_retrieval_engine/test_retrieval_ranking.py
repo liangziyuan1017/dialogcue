@@ -1,13 +1,14 @@
 import json
 import os
+from unittest.mock import MagicMock
 
 import pytest
 
-from f006_retrieval_engine.retrieval_engine import (
+from f006_retrieval_engine.retrieval_ranking import (
+    RANKING_WEIGHTS,
     compute_bg_boost,
-    compute_context_similarity,
+    compute_vec_similarity,
     rank_sentences,
-    recommend,
 )
 
 
@@ -35,18 +36,43 @@ def keyword_freq(index):
     return freq
 
 
-class TestContextSimilarity:
-    def test_identical_context(self):
-        sim = compute_context_similarity("客户说没有钱无法还款", "客户说没有钱无法还款")
-        assert sim == pytest.approx(1.0, abs=1e-6)
+class TestRankingWeights:
+    def test_has_correct_keys(self):
+        assert set(RANKING_WEIGHTS.keys()) == {"win_rate", "vec_score", "sas", "bg_boost"}
 
-    def test_different_context(self):
-        sim = compute_context_similarity("客户说没有钱无法还款", "催收员建议办理分期付款")
-        assert 0.0 <= sim < 1.0
+    def test_sums_to_one(self):
+        assert sum(RANKING_WEIGHTS.values()) == pytest.approx(1.0, abs=1e-9)
 
-    def test_range(self):
-        sim = compute_context_similarity("你好", "再见")
-        assert 0.0 <= sim <= 1.0
+    def test_values(self):
+        assert RANKING_WEIGHTS["win_rate"] == 0.40
+        assert RANKING_WEIGHTS["vec_score"] == 0.30
+        assert RANKING_WEIGHTS["sas"] == 0.15
+        assert RANKING_WEIGHTS["bg_boost"] == 0.15
+
+
+class TestVecSimilarity:
+    def test_returns_dict_of_scores(self):
+        mock_db = MagicMock()
+        mock_db.get_vectors.return_value = {
+            "s1": [1.0, 0.0] + [0.0] * 766,
+            "s2": [0.0, 1.0] + [0.0] * 766,
+        }
+        query_vec = [1.0, 0.0] + [0.0] * 766
+        scores = compute_vec_similarity(query_vec, ["s1", "s2"], mock_db)
+        assert isinstance(scores, dict)
+        assert "s1" in scores
+        assert "s2" in scores
+        assert scores["s1"] == pytest.approx(1.0, abs=1e-6)
+        assert scores["s2"] == pytest.approx(0.0, abs=1e-6)
+
+    def test_orthogonal_vectors_zero_similarity(self):
+        mock_db = MagicMock()
+        mock_db.get_vectors.return_value = {
+            "s1": [0.0, 1.0] + [0.0] * 766,
+        }
+        query_vec = [1.0, 0.0] + [0.0] * 766
+        scores = compute_vec_similarity(query_vec, ["s1"], mock_db)
+        assert scores["s1"] == pytest.approx(0.0, abs=1e-6)
 
 
 class TestBgBoost:
@@ -67,74 +93,61 @@ class TestBgBoost:
 
 
 class TestRankSentences:
-    def test_limited_context_first(self):
+    def test_unified_fusion_ranking(self):
+        mock_db = MagicMock()
+        mock_db.get_vectors.return_value = {
+            "s1": [1.0] + [0.0] * 767,
+            "s2": [0.5] + [0.0] * 767,
+        }
         pool = [
-            {"script_id": "s1", "win_rate": 0.8, "sas": 0.5, "conversation_context_similarity": 0.3, "bg_bitmask_int": 0},
-            {"script_id": "s2", "win_rate": 0.3, "sas": 0.5, "conversation_context_similarity": 0.9, "bg_bitmask_int": 0},
+            {"script_id": "s1", "win_rate": 0.5, "sas": 0.5, "bg_background": {}, "bg_bitmask_int": 0},
+            {"script_id": "s2", "win_rate": 0.9, "sas": 0.5, "bg_background": {}, "bg_bitmask_int": 0},
         ]
-        ranked = rank_sentences(pool, strategy="limited", conversation_context="some context")
-        assert ranked[0]["script_id"] == "s2"
-
-    def test_full_winrate_first(self):
-        pool = [
-            {"script_id": "s1", "win_rate": 0.8, "sas": 0.5, "conversation_context_similarity": 0.3, "bg_bitmask_int": 0},
-            {"script_id": "s2", "win_rate": 0.3, "sas": 0.5, "conversation_context_similarity": 0.9, "bg_bitmask_int": 0},
-        ]
-        ranked = rank_sentences(pool, strategy="full", conversation_context="some context")
-        assert ranked[0]["script_id"] == "s1"
+        ranked = rank_sentences(pool, query_vec=[1.0] + [0.0] * 767, db=mock_db, query_bg={})
+        assert len(ranked) == 2
+        assert "final_score" in ranked[0]
+        assert "vec_score" in ranked[0]
+        assert ranked[0]["final_score"] >= ranked[1]["final_score"]
 
     def test_empty_pool(self):
-        assert rank_sentences([], strategy="limited") == []
+        assert rank_sentences([]) == []
 
     def test_single_sentence(self):
+        mock_db = MagicMock()
+        mock_db.get_vectors.return_value = {"s1": [0.1] * 768}
         pool = [
-            {"script_id": "s1", "win_rate": 0.5, "sas": 0.5, "conversation_context_similarity": 0.5, "bg_bitmask_int": 0},
+            {"script_id": "s1", "win_rate": 0.5, "sas": 0.5, "bg_background": {}, "bg_bitmask_int": 0},
         ]
-        ranked = rank_sentences(pool, strategy="limited")
+        ranked = rank_sentences(pool, query_vec=[0.1] * 768, db=mock_db, query_bg={})
         assert len(ranked) == 1
+        assert "final_score" in ranked[0]
+
+    def test_final_score_formula(self):
+        mock_db = MagicMock()
+        mock_db.get_vectors.return_value = {"s1": [1.0] + [0.0] * 767}
+        pool = [
+            {"script_id": "s1", "win_rate": 0.8, "sas": 0.6, "bg_background": {"industry": "A"}, "bg_bitmask_int": 0},
+        ]
+        ranked = rank_sentences(pool, query_vec=[1.0] + [0.0] * 767, db=mock_db, query_bg={"industry": "A"})
+        s = ranked[0]
+        bg_boost = compute_bg_boost({"industry": "A"}, {"industry": "A"})
+        expected = 0.40 * 0.8 + 0.30 * s["vec_score"] + 0.15 * 0.6 + 0.15 * bg_boost
+        assert s["final_score"] == pytest.approx(expected, abs=1e-6)
 
 
-class TestRecommend:
-    def test_exact_match(self, tree, index, keyword_freq):
-        result = recommend(
-            inherited_facts=[], branch_key_values=["closure"],
-            query_bitmask=1023, conversation_context="客户说没有钱",
-            query_bg={}, strategy="limited",
-            tree=tree, index=index, keyword_freq=keyword_freq,
-        )
-        assert result is not None
-        assert "script_text" in result
-        assert result["confidence"] == 1.0
-        assert result["fallbacks"] == []
+class TestNoOldFunctions:
+    def test_compute_context_similarity_removed(self):
+        import f006_retrieval_engine.retrieval_ranking as mod
+        assert not hasattr(mod, "compute_context_similarity")
 
-    def test_key_drop_fallback(self, tree, index, keyword_freq):
-        result = recommend(
-            inherited_facts=["nonexistent_xyz"], branch_key_values=[],
-            query_bitmask=1023, conversation_context="客户说没有钱",
-            query_bg={}, strategy="limited",
-            tree=tree, index=index, keyword_freq=keyword_freq,
-        )
-        assert result is not None
-        assert "key_drop" in result["fallbacks"]
+    def test_rank_limited_removed(self):
+        import f006_retrieval_engine.retrieval_ranking as mod
+        assert not hasattr(mod, "_rank_limited")
 
-    def test_bitmask_filter(self, tree, index, keyword_freq):
-        result = recommend(
-            inherited_facts=[], branch_key_values=["greeting"],
-            query_bitmask=1023, conversation_context="客户说你好",
-            query_bg={}, strategy="limited",
-            tree=tree, index=index, keyword_freq=keyword_freq,
-        )
-        assert result is not None
+    def test_rank_full_removed(self):
+        import f006_retrieval_engine.retrieval_ranking as mod
+        assert not hasattr(mod, "_rank_full")
 
-    def test_output_schema(self, tree, index, keyword_freq):
-        result = recommend(
-            inherited_facts=[], branch_key_values=["closure"],
-            query_bitmask=1023, conversation_context="客户说没有钱",
-            query_bg={}, strategy="full",
-            tree=tree, index=index, keyword_freq=keyword_freq,
-        )
-        assert result is not None
-        for field in ["script_text", "script_id", "state_id", "win_rate", "sas",
-                      "conversation_context_similarity", "confidence", "strategy", "fallbacks"]:
-            assert field in result, f"missing {field}"
-        assert result["strategy"] == "full"
+    def test_ranking_strategy_removed(self):
+        import f006_retrieval_engine.retrieval_ranking as mod
+        assert not hasattr(mod, "RANKING_STRATEGY")
