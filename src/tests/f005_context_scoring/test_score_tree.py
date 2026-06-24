@@ -303,3 +303,64 @@ class TestEmbeddingInScorePool:
         ]
         _score_sentence_pool(pool, {}, {}, {}, conv_ctx_lookup={})
         assert "_context_vec" not in pool[0]
+
+
+class TestWriteScoredTreeWithDB:
+    def test_calls_upsert_nodes_and_sentences(self):
+        from unittest.mock import MagicMock, patch
+        mock_db = MagicMock()
+        mock_db.upsert_nodes = MagicMock()
+        mock_db.upsert_sentences = MagicMock()
+        with patch("f005_context_scoring.score_tree._load_decision_tree") as mock_tree, \
+             patch("f005_context_scoring.score_tree.build_context_lookup", return_value={}), \
+             patch("f005_context_scoring.score_tree.build_reward_lookup", return_value={}), \
+             patch("f005_context_scoring.score_tree.build_customer_info_lookup", return_value={}), \
+             patch("f005_context_scoring.score_tree.build_turns_lookup", return_value={}), \
+             patch("f005_context_scoring.score_tree.build_conversation_context_lookup", return_value={}), \
+             patch("f005_context_scoring.score_tree.embed_texts", return_value=[]), \
+             patch("f005_context_scoring.score_tree._load_state_keywords", return_value={}):
+            mock_tree.return_value = {
+                "state_id": "root", "branch_key": {}, "inherited_facts": [],
+                "sentence_pool": [{"script_text": "hi", "script_id": "s1", "source_call_ids": []}],
+                "children": [],
+            }
+            from f005_context_scoring.score_tree import write_scored_tree
+            import tempfile, os
+            with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
+                tmp = f.name
+            try:
+                write_scored_tree(output_path=tmp, db=mock_db)
+                mock_db.upsert_nodes.assert_called_once()
+                mock_db.upsert_sentences.assert_called_once()
+            finally:
+                os.unlink(tmp)
+
+    def test_json_has_context_vec_id_not_context_vec(self):
+        from unittest.mock import MagicMock, patch
+        with patch("f005_context_scoring.score_tree._load_decision_tree") as mock_tree, \
+             patch("f005_context_scoring.score_tree.build_context_lookup", return_value={}), \
+             patch("f005_context_scoring.score_tree.build_reward_lookup", return_value={}), \
+             patch("f005_context_scoring.score_tree.build_customer_info_lookup", return_value={}), \
+             patch("f005_context_scoring.score_tree.build_turns_lookup", return_value={}), \
+             patch("f005_context_scoring.score_tree.build_conversation_context_lookup", return_value={}), \
+             patch("f005_context_scoring.score_tree.embed_texts", return_value=[[0.1]*768]), \
+             patch("f005_context_scoring.score_tree._load_state_keywords", return_value={}):
+            mock_tree.return_value = {
+                "state_id": "root", "branch_key": {}, "inherited_facts": [],
+                "sentence_pool": [{"script_text": "hi", "script_id": "s1", "source_call_ids": []}],
+                "children": [],
+            }
+            from f005_context_scoring.score_tree import write_scored_tree
+            import tempfile, os, json
+            with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
+                tmp = f.name
+            try:
+                write_scored_tree(output_path=tmp, db=None)
+                with open(tmp, encoding="utf-8") as f:
+                    data = json.load(f)
+                s = data["sentence_pool"][0]
+                assert "context_vec_id" in s
+                assert s["context_vec_id"] == "s1"
+                assert "_context_vec" not in s
+            finally:
+                os.unlink(tmp)

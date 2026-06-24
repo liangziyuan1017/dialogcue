@@ -15,6 +15,7 @@ from f005_context_scoring.scoring_metrics import (
     encode_bitmask,
     encode_bitmask_int,
 )
+from infra.embeddings import embed_texts
 
 
 def _load_py(filepath):
@@ -36,6 +37,14 @@ def _load_output_rewarded():
 
 def _load_decision_tree():
     path = os.path.join(os.path.dirname(__file__), "..", "f004_decision_tree", "decision_tree.json")
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _load_state_keywords():
+    path = os.path.join(os.path.dirname(__file__), "..", "f000_keyword_discovery", "state_keywords.json")
+    if not os.path.exists(path):
+        return {}
     with open(path, encoding="utf-8") as f:
         return json.load(f)
 
@@ -144,7 +153,37 @@ def score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_c
     return tree
 
 
-def write_scored_tree(output_path=None):
+def _collect_tree_nodes(tree, parent_id_map=None):
+    if parent_id_map is None:
+        parent_id_map = {}
+    nodes = []
+    def walk(node, parent_sig=None, depth=0):
+        sig = node.get("state_id", "")
+        nodes.append({
+            "state_id": node.get("state_id", ""),
+            "path_signature": sig,
+            "branch_key": node.get("branch_key", {}),
+            "parent_id": parent_id_map.get(parent_sig) if parent_sig else None,
+            "depth": depth,
+        })
+        for child in node.get("children", []):
+            walk(child, parent_sig=sig, depth=depth + 1)
+    walk(tree)
+    return nodes
+
+
+def _collect_tree_sentences(tree):
+    sentences = []
+    def walk(node):
+        for s in node.get("sentence_pool", []):
+            sentences.append(s)
+        for child in node.get("children", []):
+            walk(child)
+    walk(tree)
+    return sentences
+
+
+def write_scored_tree(output_path=None, db=None):
     if output_path is None:
         output_path = os.path.join(os.path.dirname(__file__), "decision_tree_scored.json")
     tree = _load_decision_tree()
@@ -153,7 +192,59 @@ def write_scored_tree(output_path=None):
     customer_info_lookup = build_customer_info_lookup()
     turns_lookup = build_turns_lookup()
     conv_ctx_lookup = build_conversation_context_lookup(tree, turns_lookup)
-    scored = score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup)
+    scored = score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup, embed_fn=embed_texts)
+
+    all_sentences = _collect_tree_sentences(scored)
+    for s in all_sentences:
+        s["context_vec_id"] = s.get("script_id", "")
+        s.pop("_context_vec", None)
+
+    if db is not None:
+        all_nodes = _collect_tree_nodes(scored)
+        db.upsert_nodes(all_nodes)
+        node_sig_to_id = {}
+        for n in all_nodes:
+            row = db.get_node_by_signature(n["path_signature"])
+            if row:
+                node_sig_to_id[n["path_signature"]] = row["id"]
+        db_sentences = []
+        for s in all_sentences:
+            node_sig = s.get("state_id", "")
+            node_id = node_sig_to_id.get(node_sig, 1)
+            db_sentences.append({
+                "script_id": s.get("script_id", ""),
+                "node_id": node_id,
+                "script_text": s.get("script_text", ""),
+                "bg_bitmask_int": s.get("bg_bitmask_int", 0),
+                "win_rate": s.get("win_rate", 0),
+                "sas": s.get("sas", 0),
+                "bg_background": s.get("bg_background"),
+                "conversation_context": s.get("conversation_context", ""),
+                "embedding": s.get("_context_vec") or [0.0] * 768,
+            })
+        db.upsert_sentences(db_sentences)
+
+        keywords = _load_state_keywords()
+        if keywords:
+            kw_rows = []
+            for category in ["facts", "emotions", "collector_actions"]:
+                for group in keywords.get(category, []):
+                    for kw in group.get("keywords", []):
+                        kw_rows.append({
+                            "group_name": group.get("group_name", ""),
+                            "category": category,
+                            "keyword": kw,
+                            "frequency": group.get("frequency", 0),
+                        })
+            if kw_rows:
+                cur = db._conn.cursor()
+                for kr in kw_rows:
+                    cur.execute(
+                        "INSERT INTO taxonomy_keywords (group_name, category, keyword, frequency) VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING",
+                        (kr["group_name"], kr["category"], kr["keyword"], kr["frequency"]),
+                    )
+                cur.close()
+
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(scored, f, indent=2, ensure_ascii=False)
     return scored
