@@ -94,7 +94,15 @@ async def recommend_endpoint(req: RecommendRequest):
     branch_key_values = emotions + merged["actions"]
 
     query_bitmask = _compute_bitmask(req.context)
-    query_vec = embed_single(req.conversation_context) if req.conversation_context else [0.0] * 768
+    embed_fallback = False
+    if req.conversation_context:
+        try:
+            query_vec = embed_single(req.conversation_context)
+        except Exception:
+            query_vec = [0.0] * 768
+            embed_fallback = True
+    else:
+        query_vec = [0.0] * 768
 
     result = recommend(
         inherited_facts=facts,
@@ -114,6 +122,12 @@ async def recommend_endpoint(req: RecommendRequest):
 
     if result is None:
         return {"error": "no recommendation found", "latency_ms": latency_ms}
+
+    if embed_fallback:
+        result["confidence"] = max(result.get("confidence", 1.0) - 0.1, 0.0)
+        result.setdefault("fallbacks", [])
+        if "embed_fail" not in result["fallbacks"]:
+            result["fallbacks"].append("embed_fail")
 
     from f006_retrieval_engine.retrieval_ranking import RANKING_WEIGHTS
     return {
@@ -174,7 +188,10 @@ def customer_turn(sid, data):
     signature = "|".join(sorted(merged["facts"] + merged["emotions"] + merged["actions"]))
     node_id = app.state.hash_index.get(signature, 1)
     query_bitmask = _compute_bitmask(session["context"])
-    query_vec = embed_single(conv_ctx) if conv_ctx else [0.0] * 768
+    try:
+        query_vec = embed_single(conv_ctx) if conv_ctx else [0.0] * 768
+    except Exception:
+        query_vec = [0.0] * 768
 
     candidates = app.state.db.search_similar(query_vec, node_id=node_id, query_bitmask=query_bitmask, limit=50)
     from f006_retrieval_engine.retrieval_ranking import rank_sentences, RANKING_WEIGHTS

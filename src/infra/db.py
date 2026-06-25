@@ -38,6 +38,7 @@ class SentenceDB:
             )
         """)
         cur.execute("CREATE INDEX IF NOT EXISTS idx_nodes_path_sig ON nodes(path_signature)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_nodes_parent ON nodes(parent_id)")
 
         cur.execute("""
             CREATE TABLE IF NOT EXISTS sentences (
