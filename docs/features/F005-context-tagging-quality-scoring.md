@@ -36,10 +36,11 @@ Numeric fields (total_debt, external_debt, days_delinquent) and list fields (ava
 
 ### Quality Scoring
 
-Compute two scores per sentence:
+Compute three scores per sentence:
 
 1. **HWR (Historical Win Rate)** — Node-level aggregation with sentence-level blending. Node HWR = Laplace-smoothed win rate across all conversations passing through the node. Sentence `win_rate = weight * sentence_hwr + (1 - weight) * node_hwr` where `weight = n / (n + 2)`. For low-n sentences (1-2 calls), the node baseline dominates; for high-n sentences (5+ calls), the sentence-specific rate dominates. `win_rate_node` stored for transparency.
-2. **SAS (Script Alignment Score)** — DeepSeek embedding cosine similarity between the sentence and the most successful script (highest HWR) in the same node's pool.
+2. **SAS (Script Alignment Score)** — Char bigram TF-IDF cosine similarity between the sentence and the most successful script (highest HWR) in the same node's pool. No external API — deterministic, sufficient for intra-pool diversity.
+3. **Conversation Context Embedding** — DeepSeek embedding of `conversation_context` → 768-dim float32 vector stored in `embedding` field. Used at retrieval time (F006) for pgvector cosine similarity (`vec_score`). Captures cross-conversation semantic matching beyond surface character overlap.
 
 Deferred metrics:
 - **UC (Uplift Contribution)** = 0 with `deferred: true`
@@ -56,6 +57,7 @@ Augmented decision tree written to `/src/decision_tree_scored.json`. Structure i
 - Every sentence has `win_rate` (blended HWR) ≥ 0
 - Every sentence has `win_rate_node` (node-level HWR) ≥ 0
 - Every sentence has `sas` ≥ 0
+- Every sentence has `embedding` (768-dim float32 list)
 - `uplift_score` = 0 and `csi` = 0 with `deferred: true`
 - Bitmask AND filtering produces correct subset
 
@@ -68,7 +70,8 @@ Augmented decision tree written to `/src/decision_tree_scored.json`. Structure i
 - [ ] `win_rate` blends sentence-level and node-level HWR: `weight * sentence_hwr + (1 - weight) * node_hwr` where `weight = n / (n + 2)`
 - [ ] Every sentence has `win_rate_node` ≥ 0 and ≤ 1
 - [ ] Every sentence has `sas` ≥ 0 and ≤ 1
-- [ ] `sas` computed via DeepSeek embedding cosine similarity
+- [ ] `sas` computed via char bigram TF-IDF cosine similarity
+- [ ] Every sentence has `embedding` field (768-dim float32 list from DeepSeek embedding API)
 - [ ] `uplift_score` = 0 and `csi` = 0 with `deferred: true` on every sentence
 - [ ] Bitmask AND filtering: sentence with bitmask S is compatible with context bitmask C iff (S & C) == S
 - [ ] All 31 conversations represented in scored tree
@@ -95,7 +98,8 @@ See [implementation-plan.md](implementation-plan.md)
 - **Intersection merge for multi-source sentences**: 28 sentences have multiple source_call_ids. Their bg_constraints use bitwise AND (intersection) of all source conversation constraints — only constraints present in ALL source conversations are set. This is conservative: intersection=0 means the sentence was used in diverse contexts and is broadly applicable.
 - **Bitmask compatibility check**: `(sentence_bitmask & query_bitmask) == sentence_bitmask` — every constraint the sentence requires must be present in the query context. A sentence with bitmask 0 is universally compatible.
 - **HWR with node-level aggregation**: Sentence-level HWR is unreliable for sentences appearing in only 1-2 calls. Instead, compute node HWR from all `source_call_ids` across the node's entire sentence pool, then blend: `win_rate = weight * sentence_hwr + (1 - weight) * node_hwr` where `weight = n / (n + 2)` (shrinks toward node baseline for low-n sentences). Node HWR stored as `win_rate_node` for transparency. Laplace smoothing `(wins + 1) / (total + 2)` prevents 0/0.
-- **SAS via DeepSeek embedding cosine similarity**: Within each node's sentence pool, the sentence with highest HWR is the reference. SAS = cosine_similarity(embed(sentence), embed(reference)). If only 1 sentence in pool, SAS = 1.0. Uses existing `llm_client.py` DeepSeek API.
+- **SAS via char bigram TF-IDF cosine similarity**: Within each node's sentence pool, the sentence with highest HWR is the reference. SAS = cosine_similarity(embed(sentence), embed(reference)). If only 1 sentence in pool, SAS = 1.0. Uses local char bigram TF-IDF + numpy cosine (no external API).
+- **DeepSeek embedding for conversation context**: Each sentence's `conversation_context` (~100 words) is embedded via DeepSeek embedding API → 768-dim vector stored in `embedding` field. At retrieval time, pgvector cosine similarity provides `vec_score` for cross-conversation semantic matching. This captures meaning beyond surface character overlap that TF-IDF char-bigram misses.
 - **UC and CSI deferred**: `uplift_score = 0` and `csi = 0` with `deferred: true`. These require causal analysis and additional data not available at 31-record scale.
 - **Output preserves tree structure**: `decision_tree_scored.json` is identical to `decision_tree.json` with additional fields (`bg_constraints`, `bg_bitmask`, `bg_bitmask_int`, `bg_background`, `win_rate`, `win_rate_node`, `sas`, `uplift_score`, `csi`) on each sentence entry. No structural changes to nodes or edges.
 - **Score display in UI**: `tree_explorer.html` loads `decision_tree_scored.json` and renders HWR/SAS as colored progress bars per sentence (green ≥60%/70%, amber 40-60%/40-70%, red <40%). Context bitmask shown as binary string. Bars use absolute-positioned fill inside track for unified appearance.

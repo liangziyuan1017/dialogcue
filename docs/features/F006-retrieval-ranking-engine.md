@@ -40,19 +40,20 @@ The retrieval engine:
 Precompute at build time:
 
 ```
-node_index: dict[tuple[tuple[str, ...], tuple[str, ...]], list[node]]
+node_index: dict[tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]], list[node]]
 ```
 
-Key = `(tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)))`.
+Key = `(tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)), tuple(sorted(inherited_emotions)))`.
 
 - `inherited_facts`: sorted alphabetically from the node's `inherited_facts` field
 - `branch_key_values`: sorted alphabetically from the node's `branch_key` values (flattening lists: `{"facts": ["a", "b"]}` → `["a", "b"]`, `{"action": "closure"}` → `["closure"]`)
+- `inherited_emotions`: sorted alphabetically from the node's `inherited_emotions` field
 
-Both components are sorted independently, so any permutation of input keywords produces the same key. 267 unique keys → 315 nodes. 34 keys map to multiple nodes (aggregation cases).
+All three components are sorted independently, so any permutation of input keywords produces the same key. `inherited_emotions` is required: without it, 31 key collisions occur (e.g., `a:closure` under `['disappointment']` vs `['anger']` must not aggregate). The tree's own dedup identity (`tree_transforms.py:_make_identity`) already uses all three components. Willingness is tracked in conversation state but **not** in the node key.
 
 ### Retrieval Pipeline
 
-1. **Key computation**: Sort `inherited_facts` alphabetically + sort `branch_key` values alphabetically → `(facts_tuple, bk_tuple)` — O(1)
+1. **Key computation**: Sort `inherited_facts` alphabetically + sort `branch_key` values alphabetically + sort `inherited_emotions` alphabetically → `(facts_tuple, bk_tuple, emotions_tuple)` — O(1)
 2. **Node lookup**: Hash map `key → list[node]` — O(1)
 3. **Key fallback**: If exact key not in index, drop the least-frequent keyword from `inherited_facts` and retry — O(|facts|) worst case
 4. **Pool aggregation**: Collect `sentence_pool` from all matched nodes — O(nodes × pool_size)
@@ -86,40 +87,33 @@ confidence = 1.0
 ```
 Minimum: 0.0.
 
-### Dual Ranking Strategy
+### Weighted Fusion Ranking
 
-Two strategies switchable via `RANKING_STRATEGY`:
+```python
+RANKING_WEIGHTS = {
+    "win_rate": 0.40,
+    "vec_score": 0.30,
+    "sas": 0.15,
+    "bg_boost": 0.15,
+}
+```
 
-#### `limited` strategy (current 31-record dataset)
+`final_score = 0.40 × win_rate + 0.30 × vec_score + 0.15 × sas + 0.15 × bg_boost`
 
-| Stage | Signal | Rationale |
-|-------|--------|-----------|
-| 1 | `bg_bitmask` AND | Hard filter — eliminate incompatible sentences |
-| 2 | `conversation_context_similarity` DESC | With 1–3 samples per sentence, win_rate is mostly Laplace noise. Conversation context is the only reliable signal. |
-| 3 | `win_rate` DESC | Proven effectiveness as secondary — weak signal at this scale |
-| 4 | `sas` DESC | Tiebreak — intra-pool redundancy avoidance |
+**Strategy switch** (`limited` vs `full`) controls only `bg_boost` applicability:
+- `limited`: `bg_boost = 0.0` (too sparse for profile matching at 31 records)
+- `full`: `bg_boost` computed from profile similarity
 
-**Fallback when context unavailable**: Skip stage 2, promote win_rate to primary.
+**Fallback when embedding unavailable**: Set `vec_score = 0`, redistribute weight to `win_rate`. −0.1 confidence.
 
-#### `full` strategy (10K+ records at scale)
+### Conversation Context Similarity (pgvector)
 
-| Stage | Signal | Rationale |
-|-------|--------|-----------|
-| 1 | `bg_bitmask` AND | Hard filter — eliminate incompatible sentences |
-| 2 | `win_rate` DESC | Proven effectiveness is king — with 200+ samples, highly reliable |
-| 3 | `conversation_context_similarity` DESC | Re-rank within clusters of similar win_rate |
-| 4 | `bg_background` soft boost + `sas` DESC | Profile personalization + tiebreak |
-
-**Fallback when context unavailable**: Skip stage 3 (win_rate already primary).
-
-### Conversation Context Similarity
-
-Each sentence has `source_call_ids` → look up original conversations, extract ~100 words before the sentence was used. Store as `conversation_context` field per sentence in the scored tree.
+Each sentence has `source_call_ids` → look up original conversations, extract ~100 words before the sentence was used. Store as `conversation_context` field per sentence in the scored tree. At F005 build time, compute `embed(conversation_context)` via DeepSeek embedding API → 768-dim vector stored in PostgreSQL `embedding` column with pgvector HNSW index.
 
 At retrieval time:
-1. Compute TF-IDF char-bigram embedding of the current conversation's last ~100 words
-2. Compute cosine similarity against each candidate sentence's stored `conversation_context` embedding
-3. Use as ranking signal (position depends on strategy)
+1. Compute `embed(query_context)` via DeepSeek embedding API for the current conversation's last ~100 words
+2. Compute `vec_score = 1 - (embedding <=> query_vec)` via pgvector cosine similarity
+3. Use as ranking signal in weighted fusion
 
 ### bg_background Soft Boost (full strategy only)
 
@@ -135,14 +129,15 @@ At retrieval time:
 ```python
 RANKING_STRATEGY = "limited"  # or "full"
 
-def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_context, query_bg, strategy=RANKING_STRATEGY):
-    key = (tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)))
+def recommend(inherited_facts, branch_key_values, inherited_emotions, query_bitmask, conversation_context, query_bg, strategy=RANKING_STRATEGY):
+    key = (tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)), tuple(sorted(inherited_emotions)))
     nodes = lookup_by_key(key, node_index)               # step 1-3
     pool = aggregate_pools(nodes)                         # step 4-6
     filtered = filter_by_bitmask(pool, query_bitmask)     # step 5-6
-    if strategy == "limited":
-        return _rank_limited(filtered, conversation_context)
-    return _rank_full(filtered, conversation_context, query_bg)
+    vec_score = compute_vec_score(filtered, conversation_context)  # pgvector
+    bg_boost = compute_bg_boost(...) if strategy == "full" else 0.0
+    final_score = 0.40 * win_rate + 0.30 * vec_score + 0.15 * sas + 0.15 * bg_boost
+    return top_by_final_score(filtered)
 ```
 
 ### Output
@@ -153,8 +148,9 @@ def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_co
     "script_id": str,
     "state_id": str,
     "win_rate": float,
+    "vec_score": float,
     "sas": float,
-    "conversation_context_similarity": float,
+    "final_score": float,
     "confidence": float,
     "strategy": str,
     "fallbacks": [str],
@@ -167,20 +163,20 @@ def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_co
 - Fact set match returns aggregated pool from all sibling nodes
 - Fallback (fact drop) returns pool from broader fact set
 - Bitmask filtering excludes sentences with incompatible bitmask (hard filter)
-- `limited` strategy ranks conversation_context_similarity first, then win_rate
-- `full` strategy ranks win_rate first, then conversation_context_similarity, then bg_background boost
-- SAS is tiebreak in both strategies
+- Weighted fusion: `final_score = 0.40 × win_rate + 0.30 × vec_score + 0.15 × sas + 0.15 × bg_boost`
+- `limited` strategy: bg_boost = 0.0
+- `full` strategy: bg_boost computed from profile similarity
 - Confidence decreases with each fallback activated
-- Retrieval latency < 50ms (hash lookup + filter + sort, no LLM in hot path)
+- Retrieval latency < 150ms (hash lookup + embed API + filter + sort)
 
 ## Acceptance Criteria
 
-- [ ] `build_node_index()` creates index: 267 unique keys → 315 nodes
-- [ ] Key is `(tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)))` — permutation-insensitive
+- [ ] `build_node_index()` creates index with 3-tuple keys: `(inherited_facts, branch_key_values, inherited_emotions)`
+- [ ] Key is `(tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)), tuple(sorted(inherited_emotions)))` — permutation-insensitive
 - [ ] `lookup_by_key(key, index)` returns all nodes matching key — O(1)
 - [ ] `aggregate_pools(nodes)` collects all sentences from all matched nodes
 - [ ] `add_conversation_context()` extracts and stores ~100-word context per sentence
-- [ ] `recommend(inherited_facts, branch_key_values, query_bitmask, conversation_context, query_bg, strategy)` returns top-1 script with all output fields
+- [ ] `recommend(inherited_facts, branch_key_values, inherited_emotions, query_bitmask, conversation_context, query_bg, strategy)` returns top-1 script with all output fields
 - [ ] Exact key match returns aggregated pool (confidence=1.0, fallbacks=[])
 - [ ] Fallback 1: key drop finds broader key (fallbacks=["key_drop"])
 - [ ] Fallback 2: empty pool descends to nearest descendants with sentences (fallbacks=["descend"])
@@ -190,14 +186,17 @@ def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_co
 - [ ] Fallback 5: missing conversation context adjusts ranking (fallbacks=["context_missing"])
 - [ ] Fallback 6: completely empty tree returns None (confidence=0.0)
 - [ ] Bitmask hard filter: incompatible sentences excluded
-- [ ] `limited` strategy: context_similarity → win_rate → sas
-- [ ] `full` strategy: win_rate → context_similarity → bg_background boost + sas
+- [ ] Weighted fusion: `final_score = 0.40 * win_rate + 0.30 * vec_score + 0.15 * sas + 0.15 * bg_boost`
+- [ ] `limited` strategy: bg_boost = 0.0
+- [ ] `full` strategy: bg_boost computed from profile similarity
+- [ ] `vec_score` computed via pgvector cosine similarity
 - [ ] `bg_background` soft boost computed correctly (industry +0.05, education +0.02, debt +0.03, age +0.02)
 - [ ] `bg_background` boost not applied in `limited` strategy
 - [ ] Confidence formula: 1.0 − (key_drops×0.1) − (descend_levels×0.05) − (bitmask_relax×0.05) − (context_missing×0.1), minimum 0.0
-- [ ] No LLM call in hot path
-- [ ] All 267 keys reachable via some (inherited_facts, branch_key_values) pair
-- [ ] Conversation context cosine similarity computed via TF-IDF char-bigram
+- [ ] No LLM call for state extraction in hot path (state is pre-extracted by caller)
+- [ ] DeepSeek embedding API call for `vec_score` is the only API in hot path
+- [ ] All keys reachable via some (inherited_facts, branch_key_values, inherited_emotions) pair
+- [ ] Conversation context cosine similarity computed via pgvector on DeepSeek embeddings
 - [ ] Output file: `/src/f006_retrieval_engine/retrieval_engine.py`
 
 ## Dependencies
@@ -214,19 +213,19 @@ See [implementation-plan.md](implementation-plan.md)
 
 ## Design Decisions
 
-- **Node index by (inherited_facts, branch_key_values)**: The lookup key combines `inherited_facts` and `branch_key` values, both sorted alphabetically. Sorting ensures permutation insensitivity: `["financial_hardship", "multiple_debts"]` and `["multiple_debts", "financial_hardship"]` produce the same key. 267 unique keys → 315 nodes. 34 keys map to multiple nodes (aggregation cases where the same conversational context appears at different tree positions).
-- **Emotions and willingness NOT in key**: The tree uses facts and branch keys to identify conversational position. Emotions and willingness are branching dimensions within a key — they don't determine which node, they determine which sentences are available at that node.
+- **Node index by (inherited_facts, branch_key_values, inherited_emotions)**: The lookup key combines `inherited_facts`, `branch_key` values, and `inherited_emotions`, all sorted alphabetically. Sorting ensures permutation insensitivity. `inherited_emotions` is required: without it, 31 key collisions occur (e.g., `a:closure` under `['disappointment']` vs `['anger']` must not aggregate). The tree's own dedup identity (`tree_transforms.py:_make_identity`) already uses all three components.
+- **Willingness not in key**: Willingness is a scalar (not a list) and represents the customer's current repayment intent. It's tracked in conversation state but doesn't determine node identity — it's a soft signal, not a branching dimension.
 - **Aggregate pool from matching nodes**: When a key matches multiple nodes, we pull sentences from ALL of them and rank across the combined pool. This gives the ranker more candidates and avoids premature filtering by tree position.
 - **Descend fallback (not parent walk)**: When matched nodes have empty pools but have children, walk DOWN the tree (BFS) to find the nearest descendants with sentences. This is the correct direction — we've already matched the customer's facts, so the next scripts come from deeper in the tree (more specific actions/emotions), not from going back up. All siblings at the same depth are included: e.g., "unemployed" → "has kids" (empty) → {"not married", "married"} both contribute sentences.
 - **Key-drop fallback after exhausted descend**: If descending finds no sentences at any depth (all descendants are routing-only nodes), then fall back to dropping a keyword from `inherited_facts` (least-frequent first) and retrying the lookup. This handles degenerate branches.
 - **Bitmask relaxation, not removal**: When bitmask filter eliminates all sentences, relax one bit at a time (least significant first). Preserves the most important constraints while finding compatible sentences.
 - **Bitmask AND as hard filter**: `(sentence_bitmask & query_bitmask) == sentence_bitmask` — eliminates objectively wrong recommendations regardless of ranking.
-- **Dual strategy with switch**: `limited` (context-first) for sparse data; `full` (win_rate-first) for scaled data.
-- **Context missing fallback**: `limited` mode promotes win_rate to primary; `full` mode no change.
+- **Weighted fusion ranking**: `final_score = 0.40 × win_rate + 0.30 × vec_score + 0.15 × sas + 0.15 × bg_boost`. All four signals contribute simultaneously rather than staged sorting. `vec_score` from pgvector captures cross-conversation semantic similarity. Strategy switch (`limited`/`full`) controls only `bg_boost` applicability.
+- **Context missing fallback**: Set `vec_score = 0`, redistribute weight to `win_rate`. −0.1 confidence.
 - **bg_background as soft boost (full only)**: Shifts ranking toward profile-matching sentences without excluding viable ones. Excluded in limited mode due to sparsity.
-- **SAS as tiebreak only**: Intra-pool similarity to highest-HWR sentence — redundancy avoidance, not relevance.
+- **SAS as intra-pool diversity**: Intra-pool similarity to highest-HWR sentence — redundancy avoidance, not relevance. Uses TF-IDF char-bigram (no API).
 - **Confidence from fallback depth**: Additive formula with `fallbacks` list for transparency.
-- **No LLM in hot path**: `recommend()` accepts pre-extracted facts, keeping hot path LLM-free and < 50ms.
+- **DeepSeek embedding in hot path**: `vec_score` requires one embedding API call per recommendation. This is the only API call in the hot path (state extraction is done by the caller).
 
 ## Files
 
