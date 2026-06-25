@@ -345,7 +345,7 @@ Tree structure (309 nodes, 782 sentences):
 }
 ```
 
-**Key**: `branch_key` is a dict with one key — either `"facts"`, `"emotions"`, or `"action"` — containing the state group that led to this branch. `inherited_facts` accumulates facts from ancestor nodes. `inherited_emotions` accumulates emotions from ancestor nodes. The `state` label on customer turns may also include a `willingness` field (e.g. `"conditional"`, `"negotiating"`, `"strong"`) from F000's willingness levels — willingness is tracked in conversation state but is not used in the node key or tree structure.
+**Key**: `branch_key` is a dict with one key — either `"facts"` or `"emotions"` — containing the state group that led to this branch. `inherited_facts` accumulates facts from ancestor nodes. `inherited_emotions` accumulates emotions from ancestor nodes. The `state` label on customer turns may also include a `willingness` field (e.g. `"conditional"`, `"negotiating"`, `"strong"`) from F000's willingness levels — willingness is tracked in conversation state but is not used in the node key or tree structure.
 
 ### Step 1.6: F005 — Context Scoring + Embedding + Database Load
 
