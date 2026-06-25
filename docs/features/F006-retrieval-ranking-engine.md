@@ -67,11 +67,12 @@ Both components are sorted independently, so any permutation of input keywords p
 
 | # | Failure point | Cause | Fallback | Confidence impact |
 |---|--------------|-------|----------|-------------------|
-| 1 | **Key miss** | `(sorted_facts, sorted_bk)` not in `node_index` | Drop least-frequent keyword from `inherited_facts`, recompute key, retry. Repeat until match or empty facts. | Each drop: −0.1 |
+| 1 | **Key miss** | `(sorted_facts, sorted_bk, sorted_emotions)` not in `node_index` | Drop least-frequent keyword from `inherited_facts`, recompute key, retry. Repeat until match or empty facts. | Each drop: −0.1 |
 | 2 | **Empty pool — descend** | All matched nodes have empty `sentence_pool` but have children | Walk DOWN tree (BFS): collect sentences from nearest descendants with non-empty pools. All siblings at the same depth are included. E.g., "unemployed" → "has kids" (empty) → {"not married", "married"} (both have sentences) → collect from both. | Each level: −0.05 |
 | 3 | **Empty pool — key drop** | Descend found no sentences at any depth | Drop least-frequent keyword from `inherited_facts`, retry from key lookup. | Each drop: −0.1 |
 | 4 | **Bitmask eliminates all** | No sentence passes `(sb & qb) == sb` | Clear lowest set bit in query bitmask, retry. Continue until match or bitmask=0. | Each bit: −0.05 |
-| 5 | **Context missing** | No conversation context provided (first turn) | Skip context similarity ranking. `limited`: promote win_rate to primary. `full`: no change. | −0.1 |
+| 5 | **Context missing** | No conversation context provided (first turn) | Set `vec_score = 0`, redistribute weight to `win_rate`. | −0.1 |
+| 5b | **Embed fail** | LLM embedding API fails | Set `vec_score = 0`, rank by `win_rate` + `sas` only. | −0.1 |
 | 6 | **No sentences at all** | No sentences found at any depth, even at root | Return `None` with confidence 0.0. | 0.0 |
 
 **Descend fallback detail**: BFS from matched nodes' children. At each depth level, check all nodes at that level. If any have non-empty pools, collect from all of them (siblings at the same depth are equally valid next steps). If all are empty, descend one more level. This handles the case where intermediate routing nodes (facts/emotions) have no sentences but their action children do.
@@ -83,6 +84,7 @@ confidence = 1.0
            − (descend_levels × 0.05)
            − (bitmask_relaxations × 0.05)
            − (context_missing × 0.1)
+           − (embed_fail × 0.1)
 ```
 Minimum: 0.0.
 
@@ -154,10 +156,12 @@ def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_co
     "state_id": str,
     "win_rate": float,
     "sas": float,
-    "conversation_context_similarity": float,
+    "vec_score": float,
+    "final_score": float,
     "confidence": float,
-    "strategy": str,
+    "ranking_weights": dict,
     "fallbacks": [str],
+    "conversation_state": dict,
 }
 ```
 
