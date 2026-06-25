@@ -304,6 +304,8 @@ def _deduplicate_nodes(node, _visited=None):
 def _propagate_facts(node, accumulated_facts, accumulated_emotions=None, _visited=None):
     if _visited is None:
         _visited = set()
+    if accumulated_emotions is None:
+        accumulated_emotions = []
     nid = id(node)
     if nid in _visited:
         return
