@@ -23,6 +23,7 @@ class ConversationState(BaseModel):
     facts: list[str]
     emotions: list[str]
     actions: list[str]
+    willingness: str | None = None
 
 
 class RecommendRequest(BaseModel):

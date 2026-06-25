@@ -11,7 +11,7 @@ Taxonomy:
 
 Utterance: {utterance}
 
-Return JSON with keys: facts (list of group_names), emotions (list of group_names), actions (list of group_names), confidence (0-1).
+Return JSON with keys: facts (list of group_names), emotions (list of group_names), actions (list of group_names), willingness (string or null: resistant, weak, conditional, negotiating, cooperative, strong), confidence (0-1).
 Only include group_names that actually appear in the taxonomy."""
 
     result = call_deepseek_json(prompt, temperature=0.1)
@@ -19,6 +19,7 @@ Only include group_names that actually appear in the taxonomy."""
         "facts": result.get("facts", []),
         "emotions": result.get("emotions", []),
         "actions": result.get("actions", []),
+        "willingness": result.get("willingness", None),
         "confidence": result.get("confidence", 0.5),
         "method": "llm",
     }
@@ -28,7 +29,7 @@ def extract_state_keyword(utterance: str, taxonomy: dict, db=None) -> dict:
     if db is None:
         return {"facts": [], "emotions": [], "actions": [], "confidence": 0.0, "method": "keyword"}
 
-    matches = db.keyword_search(utterance, limit=20)
+    matches = db.taxonomy_keyword_search(utterance, limit=20)
     facts = []
     emotions = []
     actions = []
@@ -43,7 +44,7 @@ def extract_state_keyword(utterance: str, taxonomy: dict, db=None) -> dict:
             actions.append(group)
 
     confidence = min(0.3 + 0.1 * len(matches), 0.8) if matches else 0.1
-    return {"facts": facts, "emotions": emotions, "actions": actions, "confidence": confidence, "method": "keyword"}
+    return {"facts": facts, "emotions": emotions, "actions": actions, "willingness": None, "confidence": confidence, "method": "keyword"}
 
 
 def extract_state(utterance: str, taxonomy: dict, db=None) -> dict:
@@ -65,4 +66,9 @@ def merge_state(existing_state: dict, new_extraction: dict) -> dict:
                 merged.append(item)
                 seen.add(item)
         result[key] = merged
+    new_willingness = new_extraction.get("willingness")
+    if new_willingness is not None:
+        result["willingness"] = new_willingness
+    else:
+        result["willingness"] = existing_state.get("willingness")
     return result

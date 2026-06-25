@@ -208,3 +208,22 @@ class SentenceDB:
             rows = cur.fetchall()
         cur.close()
         return [dict(r) for r in rows]
+
+    def taxonomy_keyword_search(self, query_text: str, limit: int = 20) -> list[dict]:
+        if not query_text.strip():
+            return []
+        tokens = " | ".join(query_text.split())
+        cur = self._conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            """
+            SELECT group_name, category, keyword, ts_rank(tsv, to_tsquery('simple', %s)) AS rank
+            FROM taxonomy_keywords
+            WHERE tsv @@ to_tsquery('simple', %s)
+            ORDER BY rank DESC
+            LIMIT %s
+            """,
+            (tokens, tokens, limit),
+        )
+        rows = cur.fetchall()
+        cur.close()
+        return [dict(r) for r in rows]

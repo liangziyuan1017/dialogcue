@@ -28,7 +28,7 @@ def index(tree):
 @pytest.fixture
 def keyword_freq(index):
     freq = {}
-    for (facts, bk), nodes in index.items():
+    for (facts, bk, _emo), nodes in index.items():
         for kw in facts + bk:
             freq[kw] = freq.get(kw, 0) + 1
     return freq
@@ -100,7 +100,7 @@ class TestConversationState:
             query_bg={}, tree=tree, index=index, keyword_freq=keyword_freq,
         )
         assert result is not None
-        assert result["conversation_state"] == {"facts": [], "emotions": [], "actions": []}
+        assert result["conversation_state"] == {"facts": [], "emotions": [], "actions": [], "willingness": None}
 
 
 class TestFallbacksStillWork:

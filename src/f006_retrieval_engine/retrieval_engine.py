@@ -27,8 +27,10 @@ def _flatten_branch_key(branch_key):
     return vals
 
 
-def _compute_key(inherited_facts, branch_key_values):
-    return (tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)))
+def _compute_key(inherited_facts, branch_key_values, inherited_emotions=None):
+    if inherited_emotions is None:
+        inherited_emotions = []
+    return (tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)), tuple(sorted(inherited_emotions)))
 
 
 def build_node_index(tree):
@@ -36,7 +38,8 @@ def build_node_index(tree):
     def walk(node):
         facts = node.get("inherited_facts", [])
         bk_vals = _flatten_branch_key(node.get("branch_key", {}))
-        key = _compute_key(facts, bk_vals)
+        emotions = node.get("inherited_emotions", [])
+        key = _compute_key(facts, bk_vals, emotions)
         index[key].append(node)
         for child in node.get("children", []):
             walk(child)
@@ -46,14 +49,14 @@ def build_node_index(tree):
 
 def _compute_keyword_freq(index):
     freq = {}
-    for (facts, bk), nodes in index.items():
+    for (facts, bk, _emo), nodes in index.items():
         for kw in facts + bk:
             freq[kw] = freq.get(kw, 0) + 1
     return freq
 
 
-def lookup_by_key(inherited_facts, branch_key_values, index):
-    key = _compute_key(inherited_facts, branch_key_values)
+def lookup_by_key(inherited_facts, branch_key_values, index, inherited_emotions=None):
+    key = _compute_key(inherited_facts, branch_key_values, inherited_emotions)
     return index.get(key, [])
 
 
@@ -64,14 +67,15 @@ def aggregate_pools(nodes):
     return pool
 
 
-def lookup_with_fallback(inherited_facts, branch_key_values, index, keyword_freq):
+def lookup_with_fallback(inherited_facts, branch_key_values, index, keyword_freq, inherited_emotions=None):
     confidence = 1.0
     fallbacks = []
     facts = list(inherited_facts)
     bk = list(branch_key_values)
+    emo = list(inherited_emotions) if inherited_emotions else []
 
     while True:
-        nodes = lookup_by_key(facts, bk, index)
+        nodes = lookup_by_key(facts, bk, index, inherited_emotions=emo)
         if nodes:
             return nodes, confidence, fallbacks
         if not facts:
@@ -137,7 +141,7 @@ def relax_bitmask(pool, query_bitmask):
 
 def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_context, query_bg,
               tree=None, index=None, keyword_freq=None, db=None, query_vec=None,
-              conversation_state=None):
+              conversation_state=None, inherited_emotions=None):
     if tree is None:
         tree = _load_scored_tree()
     if index is None:
@@ -145,7 +149,9 @@ def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_co
     if keyword_freq is None:
         keyword_freq = _compute_keyword_freq(index)
     if conversation_state is None:
-        conversation_state = {"facts": [], "emotions": [], "actions": []}
+        conversation_state = {"facts": [], "emotions": [], "actions": [], "willingness": None}
+    if inherited_emotions is None:
+        inherited_emotions = conversation_state.get("emotions", [])
 
     confidence = 1.0
     fallbacks = []
@@ -155,7 +161,7 @@ def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_co
         confidence -= 0.1
         fallbacks.append("context_missing")
 
-    nodes, n_conf, n_fb = lookup_with_fallback(inherited_facts, branch_key_values, index, keyword_freq)
+    nodes, n_conf, n_fb = lookup_with_fallback(inherited_facts, branch_key_values, index, keyword_freq, inherited_emotions=inherited_emotions)
     confidence = min(confidence, n_conf) if n_conf < 1.0 else confidence
     if n_conf < 1.0:
         confidence = 1.0
@@ -168,11 +174,13 @@ def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_co
         return None
 
     if db is not None and nodes:
-        first_node = nodes[0]
-        state_id = first_node.get("state_id", "")
-        node_row = db.get_node_by_signature(state_id)
-        node_id = node_row["id"] if node_row else 1
-        pool = db.get_sentences_by_node(node_id)
+        pool = []
+        for node in nodes:
+            state_id = node.get("state_id", "")
+            node_row = db.get_node_by_signature(state_id)
+            node_id = node_row["id"] if node_row else None
+            if node_id:
+                pool.extend(db.get_sentences_by_node(node_id))
     else:
         pool = aggregate_pools(nodes)
 

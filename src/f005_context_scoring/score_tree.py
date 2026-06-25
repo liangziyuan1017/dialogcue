@@ -157,17 +157,18 @@ def _collect_tree_nodes(tree, parent_id_map=None):
     if parent_id_map is None:
         parent_id_map = {}
     nodes = []
-    def walk(node, parent_sig=None, depth=0):
-        sig = node.get("state_id", "")
+    def walk(node, parent_path="", depth=0):
+        state_id = node.get("state_id", "")
+        path_sig = f"{parent_path}/{state_id}" if parent_path else state_id
         nodes.append({
-            "state_id": node.get("state_id", ""),
-            "path_signature": sig,
+            "state_id": state_id,
+            "path_signature": path_sig,
             "branch_key": node.get("branch_key", {}),
-            "parent_id": parent_id_map.get(parent_sig) if parent_sig else None,
+            "parent_id": parent_id_map.get(parent_path) if parent_path else None,
             "depth": depth,
         })
         for child in node.get("children", []):
-            walk(child, parent_sig=sig, depth=depth + 1)
+            walk(child, parent_path=path_sig, depth=depth + 1)
     walk(tree)
     return nodes
 
