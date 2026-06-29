@@ -63,11 +63,29 @@ matched_data.jsonl
 | `align_schema.py` | **Step 7a — Schema Alignment.** Enriches pipeline records with structured context (credit rating, debt info, available plans, etc.) and per-turn `state` annotations from `output_labeled.py`. Output → `output_aligned.py`. |
 | `reward_label.py` | **Step 7b — Reward Labeling.** Determines if a customer made a repayment commitment (R=1) or not (R=0). Provides explanation of the causal chain when a commitment is detected. Output → `output_rewarded.py`. |
 
-### Shared Utilities
+### Retrieval & Recommendation (Phase 4)
 
 | File | Description |
 |------|-------------|
-| `llm_client.py` | Shared DeepSeek API client. Loads `DEEPSEEK_API_KEY` from `.env` via `python-dotenv`. Exports `_get_client()`, `call_deepseek()` (raw text) and `call_deepseek_json()` (parsed JSON response). Used by all LLM-dependent scripts. |
+| `f005_context_scoring/score_tree.py` | **Context scoring.** Scores the decision tree with BG constraints, bitmask, win rate, SAS, conversation context, and embeddings. Writes `decision_tree_scored.json` with `context_vec_id` per sentence. Optionally populates PostgreSQL via `SentenceDB`. |
+| `f005_context_scoring/scoring_metrics.py` | Scoring metric functions: BG constraint extraction, bitmask encoding, win rate (HWR), SAS (TF-IDF), cosine similarity. |
+| `f006_retrieval_engine/retrieval_ranking.py` | **Unified fusion ranking.** Computes `final_score = 0.40*win_rate + 0.30*vec_score + 0.15*sas + 0.15*bg_boost`. Vector similarity via `compute_vec_similarity()` against PostgreSQL-stored embeddings. |
+| `f006_retrieval_engine/retrieval_engine.py` | **Retrieval engine.** Node lookup with key-drop fallback, bitmask filtering with relaxation, descend fallback, and PostgreSQL-backed candidate retrieval. Returns `vec_score`, `final_score`, `conversation_state`. |
+| `f006_retrieval_engine/state_extraction.py` | **LLM-first state extraction.** Extracts facts/emotions/actions from customer utterance using DeepSeek with taxonomy context. Keyword fallback via PostgreSQL tsvector FTS. `merge_state()` for conversation state accumulation. |
+
+### API Server (Phase 5)
+
+| File | Description |
+|------|-------------|
+| `api/server.py` | **FastAPI + Socket.IO server.** `POST /recommend` endpoint: extract_state → merge_state → path signature lookup → vector search → fusion ranking → top-1 recommendation. Socket.IO events: `start_session`, `customer_turn`, `collector_turn`, `end_session` with automatic state accumulation. |
+
+### Infrastructure
+
+| File | Description |
+|------|-------------|
+| `infra/llm_client.py` | Shared DeepSeek API client. Loads `DEEPSEEK_API_KEY` from `.env` via `python-dotenv`. Exports `_get_client()`, `call_deepseek()` (raw text) and `call_deepseek_json()` (parsed JSON response). Used by all LLM-dependent scripts. |
+| `infra/embeddings.py` | **DeepSeek embedding client.** `embed_texts()` for batch embedding, `embed_single()` for query-time. Returns 768-dim vectors. |
+| `infra/db.py` | **PostgreSQL + pgvector client (`SentenceDB`).** Schema: `nodes`, `sentences` (with HNSW vector index, tsvector FTS, trigram), `taxonomy_keywords`. Methods: `upsert_nodes`, `upsert_sentences`, `get_sentences_by_node`, `search_similar` (hybrid bitmask + vector), `keyword_search`, `get_vectors`, `taxonomy_keyword_search`. |
 | `run_pipeline.py` | **Pipeline orchestrator.** Runs all 7 steps in sequence. Supports one-shot execution and time-based scheduling with configurable forbidden hours. |
 
 ### Data & Output Files
@@ -96,7 +114,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 # Install dependencies
-pip install openai python-dotenv
+pip install -e .
 ```
 
 Set your DeepSeek API key in `.env`:
@@ -104,6 +122,29 @@ Set your DeepSeek API key in `.env`:
 ```
 DEEPSEEK_API_KEY=sk-your-key-here
 ```
+
+### PostgreSQL + pgvector
+
+The retrieval engine and API server require PostgreSQL with the `pgvector` and `pg_trgm` extensions.
+
+```bash
+# Install PostgreSQL (macOS)
+brew install postgresql@16
+brew services start postgresql@16
+
+# Install pgvector extension
+pg_config --pgxsdir  # verify PG is available
+git clone --branch v0.7.4 https://github.com/pgvector/pgvector.git
+cd pgvector && make && make install
+
+# Create database
+createdb icbc
+
+# Set connection string (default)
+export PG_DSN="dbname=icbc user=postgres"
+```
+
+Tables and indexes are created automatically by `SentenceDB.create_tables()` on startup.
 
 All LLM scripts load the API key from `.env` via `llm_client.py` — no hardcoded keys.
 
@@ -333,3 +374,56 @@ If this field was renamed or removed, update this line accordingly.
 | Field read in aligned output | `align_schema.py` | 94–102 (`align_record`) |
 | `customer_info` sub-field keys | `align_schema.py` | 63–74 (`build_context`) |
 | `plan_evaluation` in reward check | `reward_label.py` | 161 (`cross_validate`) |
+
+---
+
+## PostgreSQL Schema
+
+The retrieval engine stores scored tree data in PostgreSQL for vector similarity search and FTS:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS vector;       -- 768-dim embeddings
+CREATE EXTENSION IF NOT EXISTS pg_trgm;      -- trigram fuzzy search
+
+-- Decision tree nodes
+CREATE TABLE nodes (
+  id              SERIAL PRIMARY KEY,
+  state_id        TEXT NOT NULL,
+  path_signature  TEXT NOT NULL UNIQUE,
+  branch_key      JSONB,
+  parent_id       INTEGER REFERENCES nodes(id),
+  depth           INTEGER NOT NULL DEFAULT 0
+);
+
+-- Scored sentences with embeddings
+CREATE TABLE sentences (
+  id                  SERIAL PRIMARY KEY,
+  script_id           TEXT NOT NULL UNIQUE,
+  node_id             INTEGER NOT NULL REFERENCES nodes(id),
+  script_text         TEXT NOT NULL,
+  bg_bitmask_int      INTEGER NOT NULL DEFAULT 0,
+  win_rate            REAL NOT NULL DEFAULT 0,
+  sas                 REAL NOT NULL DEFAULT 0,
+  bg_background       JSONB,
+  conversation_context TEXT,
+  embedding           vector(768),
+  script_tsv          tsvector GENERATED ALWAYS AS (to_tsvector('simple', script_text)) STORED
+);
+-- HNSW index for fast cosine similarity search
+CREATE INDEX idx_sentences_embedding ON sentences USING hnsw (embedding vector_cosine_ops)
+  WITH (m = 16, ef_construction = 64);
+-- GIN index for full-text search
+CREATE INDEX idx_sentences_tsv ON sentences USING gin (script_tsv);
+-- Trigram index for fuzzy matching
+CREATE INDEX idx_sentences_script_text_trgm ON sentences USING gin (script_text gin_trgm_ops);
+
+-- Taxonomy keywords for state extraction
+CREATE TABLE taxonomy_keywords (
+  id          SERIAL PRIMARY KEY,
+  group_name  TEXT NOT NULL,
+  category    TEXT NOT NULL,
+  keyword     TEXT NOT NULL,
+  frequency   INTEGER NOT NULL DEFAULT 0,
+  tsv         tsvector GENERATED ALWAYS AS (to_tsvector('simple', keyword)) STORED
+);
+```
