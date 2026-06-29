@@ -5,7 +5,7 @@ from f000_keyword_discovery.load_data import load_records
 def _load_labeled():
     import importlib.util
     import os
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f001_schema_alignment", "output_labeled.py")
+    data_path = os.path.join(os.path.dirname(__file__), "../..", "f000_keyword_discovery", "data", "output_labeled.py")
     spec = importlib.util.spec_from_file_location("output_labeled", data_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)

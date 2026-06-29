@@ -1,12 +1,8 @@
 # SCBGE Guideline: Debt Collection Script Recommendation System
 
-> **SCBGE** = Script-recommendation Context-Bitmask Generation Engine.
-> This document is the comprehensive project guideline. It documents every
-> processing phase end-to-end: what each phase does, why it was designed that
-> way, all data inputs and outputs (with samples), the design considerations and
-> decisions behind each step, the latency budget, fallback hierarchy, scaling
-> path, and a full ADR index. Feature docs and ADRs remain the authoritative
-> source for detail; this guideline synthesizes them into one navigable whole.
+> This document is the comprehensive project guideline. It documents every processing phase end-to-end: what each phase does, why it was designed that way, all data inputs and outputs (with samples), the design considerations and decisions behind each step, the latency budget, fallback hierarchy, scaling path, and a full ADR index. 
+
+> Feature docs and ADRs remain the authoritative source for detail; this guideline synthesizes them into one navigable whole.
 
 ---
 
@@ -14,44 +10,23 @@
 
 ### Problem
 
-Debt-collection call centers need to recommend, in real time, the single best
-collector response given the customer's current utterance and the conversation
-so far. There is no off-the-shelf model: the domain is Chinese-language,
-highly regulated, and the "best" response is historically grounded (which
-collector scripts actually led to repayment), not stylistically preferred.
+Debt-collection call centers need to recommend, in real time, the single best collector response given the customer's current utterance and the conversation so far. There is no off-the-shelf model: the domain is Chinese-language, highly regulated, and the "best" response is historically grounded (which collector scripts actually led to repayment), not stylistically preferred.
 
 ### Approach
 
 Build a two-phase system:
 
-1. **Offline (Phase 1 — Ingest):** Mine 31 historical call recordings to
-   discover a state taxonomy (facts, emotions, willingness, collector actions),
-   label every turn, score each conversation for repayment reward, construct a
-   collector decision tree keyed by customer state, tag each tree sentence with
-   a customer-profile bitmask + quality scores + semantic embedding, and load
-   everything into PostgreSQL + pgvector.
+1. **Offline (Phase 1 — Ingest):** Mine 31 historical call recordings to discover a state taxonomy (facts, emotions, willingness, collector actions), label every turn, score each conversation for repayment reward, construct a collector decision tree keyed by customer state, tag each tree sentence with a customer-profile bitmask + quality scores + semantic embedding, and load everything into PostgreSQL + pgvector.
 
-2. **Online (Phase 2 — Retrieve):** For each `POST /recommend` call, extract
-   the customer's state from their utterance (LLM-first, keyword fallback),
-   accumulate it into the conversation state, compute a permutation-insensitive
-   node key, look up matching tree nodes O(1), aggregate their sentence pools,
-   hard-filter by bitmask, and rank the survivors by unified weighted fusion
-   (`0.40·win_rate + 0.30·vec_score + 0.15·sas + 0.15·bg_boost`). Return the
-   top-1 collector script.
+2. **Online (Phase 2 — Retrieve):** For each `POST /recommend` call, extract the customer's state from their utterance (LLM-first, keyword fallback), accumulate it into the conversation state, compute a permutation-insensitive node key, look up matching tree nodes O(1), aggregate their sentence pools, hard-filter by bitmask, and rank the survivors by unified weighted fusion (`0.40·win_rate + 0.30·vec_score + 0.15·sas + 0.15·bg_boost`). Return the top-1 collector script.
 
 ### Architecture
 
-- **Database**: PostgreSQL + pgvector + pg_trgm — single database for metadata,
-  1024-dim vectors, 10-bit bitmask filtering, and full-text search.
-- **Embeddings**: bge-m3 (1024-dim) served locally via Ollama, OpenAI-compatible
-  API. No external per-call cost; offline-capable (ADR-024).
-- **LLM**: DeepSeek for offline taxonomy discovery / reward labeling / turn
-  labelling, and for the single online state-extraction call in the hot path.
-- **API**: FastAPI, `POST /recommend` (REST, caller manages conversation state)
-  + Socket.IO session interface (server manages state accumulation
-  automatically). See F009.
-- **UI tooling**: F010 — Postman-style mock panel + pipeline trace + sentence
-  pool inspector, served at `/ui`. See [Tooling](#tooling-f010-ui--debug-endpoint).
+- **Database**: PostgreSQL + pgvector + pg_trgm — single database for metadata, 1024-dim vectors, 10-bit bitmask filtering, and full-text search.
+- **Embeddings**: bge-m3 (1024-dim) served locally via Ollama, OpenAI-compatible API. No external per-call cost; offline-capable (ADR-024).
+- **LLM**: DeepSeek for offline taxonomy discovery / reward labeling / turn labelling, and for the single online state-extraction call in the hot path.
+- **API**: FastAPI, `POST /recommend` (REST, caller manages conversation state) + Socket.IO session interface (server manages state accumulation automatically). See F009.
+- **UI tooling**: F010 — Postman-style mock panel + pipeline trace + sentence pool inspector, served at `/ui`. See [Tooling](#tooling-f010-ui--debug-endpoint).
 
 ### Feature Map
 
@@ -112,7 +87,9 @@ decision_tree_scored.json  (backward-compat JSON)                               
 PostgreSQL: nodes │ sentences (embedding vector(1024), tsvector) │ taxonomy_keywords  │
         │                                                                            │
         ▼  F008 + F006 + F009  (online retrieval)                                    │
-POST /recommend  →  state extraction  →  node lookup  →  bitmask filter  →  vector rank  →  top-1 script
+POST /recommend  →  state extraction  →  relabel  →  node lookup  →  bitmask filter  →  vector rank  →  top-1 script
+                                          ↑__________________|
+                                            *_relabeled grows (ADR-026)
 ```
 
 ### Architecture Decisions Summary
@@ -218,7 +195,7 @@ labelled; filler turns ("嗯", "对", "好") are left unlabeled.
 - **KD-2 / ADR-002**: Group same-meaning keyword variants under canonical names
   (e.g. "没钱" ≈ "经济困难") to prevent sentence-pool fragmentation.
 - **KD-3 / ADR-003**: Include suggested domain keywords (`source: "suggested"`,
-  freq 0) for rare-but-critical states not in 31 records.
+  freq 0) for rare-but-critical states not in 31 records. (since the suggested ones are not rare cases, there are similar ones in the observed data, these are removed)
 - **KD-4 / ADR-004**: Discover collector action types from data too — fixed
   7-type enum didn't match observed Chinese collector behavior.
 - **KD-5 / ADR-005**: Willingness level count is data-driven (natural
@@ -280,9 +257,7 @@ labelled; filler turns ("嗯", "对", "好") are left unlabeled.
 
 **Output 2**: `/src/f001_schema_alignment/output_labeled.py` (per-turn state labels)
 
-> **Note**: This is an F000-produced artifact. It is written under the
-> `f001_schema_alignment/` directory because F001 consumes it immediately, but
-> it is generated by F000's labelling pass, not by F001.
+> **Note**: This is an F000-produced artifact. It is written under the `f001_schema_alignment/` directory because F001 consumes it immediately, but it is generated by F000's labelling pass, not by F001.
 
 493 of 805 turns are labeled with `state` dicts. Customer turns get `state: {facts: [...], emotions: [...], willingness: "..."}`. Collector turns get `state: {action: "..."}`. Unlabeled turns (filler like "嗯", "对", "好") omit `state`.
 
@@ -308,22 +283,13 @@ results = [
 
 #### What this does
 
-Maps the 31 raw records from the collection-system schema to a SOP-aligned
-schema with `turns_annotated`, `reward`, `state_transitions`, and a derived
-`context` constraint dict. Carries F000's state labels into each turn
-(493/805 labeled) so the aligned schema is a superset of prior outputs, not a
-lossy transformation.
+Maps the 31 raw records from the collection-system schema to a SOP-aligned schema with `turns_annotated`, `reward`, `state_transitions`, and a derived `context` constraint dict. Carries F000's state labels into each turn (493/805 labeled) so the aligned schema is a superset of prior outputs, not a lossy transformation.
 
 #### Design considerations & decisions
 
-- **ADR-006**: Map 27 raw Chinese `customer_info` fields → 21 typed English
-  `context` fields (boolean bitmask fields + numeric/categorical fields).
-  Expanded 9→21 fields on 2026-06-22.
-- **ADR-007**: Carry F000 state labels into `turns_annotated` — aligned schema
-  is a superset, not lossy; preserves data lineage.
-- **ADR-008**: Output format is a `.py` file with `results = [...]` for
-  consistency with the existing pipeline (loaded via `importlib`); JSON would
-  break downstream loading.
+- **ADR-006**: Map 27 raw Chinese `customer_info` fields → 21 typed English `context` fields (boolean bitmask fields + numeric/categorical fields). Expanded 9→21 fields on 2026-06-22.
+- **ADR-007**: Carry F000 state labels into `turns_annotated` — aligned schema is a superset, not lossy; preserves data lineage.
+- **ADR-008**: Output format is a `.py` file with `results = [...]` for consistency with the existing pipeline (loaded via `importlib`); JSON would break downstream loading.
 - **Review Note (resolved)**: Include F000 state labels in `turns_annotated`.
 
 **Input**: `/data/matched_data.jsonl` + `state_keywords.json` + `output_labeled.py`
@@ -414,19 +380,13 @@ results = [
 
 #### What this does
 
-Assigns a binary reward R ∈ {0,1} per conversation via LLM detection of
-repayment-commitment triggers in the final turns, with counterfactual
-verification crediting the preceding collector action. Output: 6 R=1, 25 R=0
-of 31 records.
+Assigns a binary reward R ∈ {0,1} per conversation via LLM detection of repayment-commitment triggers in the final turns, with counterfactual verification crediting the preceding collector action. Output: 6 R=1, 25 R=0 of 31 records. 
+
 
 #### Design considerations & decisions
 
-- **ADR-010**: Reward labeling via LLM with counterfactual verification —
-  manual labeling doesn't scale; LLM + counterfactual + cross-validation
-  against `plan_evaluation` gives consistency and auditability.
-- **Review Note (resolved)**: `reward_action_credit` includes an `explanation`
-  field (<100 words) describing the causal flow from trigger to credited
-  collector action.
+- **ADR-010**: Reward labeling via LLM with counterfactual verification — manual labeling doesn't scale; LLM + counterfactual + cross-validation against `plan_evaluation` gives consistency and auditability.
+- **Review Note (resolved)**: since the counterfactual verification outputs a single action turn which does not really convey useful information in a glance, the success may be credited to the strategy used throughout the conversation. `reward_action_credit` includes an `explanation` field (<100 words) describing the causal flow from trigger to credited collector action.
 
 **Input**: `output_aligned.py`
 
@@ -473,46 +433,24 @@ Same structure as `output_aligned.py`, but:
 
 #### What this does
 
-Builds a collector decision tree (309 nodes, 782 sentences, max depth 17) where
-nodes are collector action points, branches are customer facts/emotions, and
-willingness is a per-sentence label. Conversations are decomposed into segments
-of (customer branch key → collector sentences), walked fact-by-fact to create
-single-key nodes, then transformed (action splitting, redundant fact/emotion
-collapse, node-identity dedup) into a DAG.
+Builds a collector decision tree (309 nodes, 782 sentences, max depth 17) where nodes are collector action points, branches are customer facts/emotions, and willingness is a per-sentence label. Conversations are decomposed into segments of (customer branch key → collector sentences), walked fact-by-fact to create single-key nodes, then transformed (action splitting, redundant fact/emotion collapse, node-identity dedup) into a DAG.
 
 #### Design considerations & decisions
 
-- **ADR-011**: Nodes = collector action points, branches = customer
-  (facts, emotions), willingness = sentence label. Eliminated chain structure
-  (single-child ratio 14.4%). Consolidated `initial_contact` root +
-  `normal_end` / `abrupt_end` terminals.
-- **ADR-012**: `collector_action` field on sentence entries — UI display + O(1)
-  action filtering without traversing to parent.
-- **ADR-015**: Local tree building (no global node reuse) — global reuse broke
-  path continuity; match only against `current_node` children.
-- **ADR-016**: Fact-by-fact walking — walk each fact/emotion one at a time,
-  creating single-key nodes; eliminates composite-node bugs.
-- **ADR-017**: Action node splitting — force-split pools into `a:xxx` children
-  for fact/emotion parents; uniform `fact→emotion→action→sentences` structure.
-- **ADR-018 (superseded by ADR-022)**: Redundant fact collapse with
-  `inherited_facts` propagation.
-- **ADR-019**: `state=None` collector turns captured without synthetic
-  `other` label (58 turns, 14.5%) — merged into parent pool.
-- **ADR-021**: Node identity dedup — identity =
-  `(inherited_facts, inherited_emotions, branch_key)`; DAG with cycle
-  protection via `_is_ancestor`.
-- **ADR-022**: Redundant emotion collapse — extends ADR-018 to collapse
-  `anger → anger` nested emotion paths.
-- **ADR-023**: Sentence pool dedup at transform boundaries — `_dedup_pool` by
-  `script_text` after every `.extend()`.
-- **Willingness as sentence label, not branch key**: same (facts, emotions) =
-  same decision point regardless of willingness.
-- **Segment-based extraction**: each conversation decomposed into
-  (customer branch key → collector sentences), not individual turns.
-- **LLM-guided collector turn merging**: merge fragmented consecutive collector
-  turns before segment extraction; hard limit `MAX_MERGED_WORDS=150`.
-- **Start/end node model**: exactly 1 opening root + 2 consolidated end nodes
-  as direct children of root; clean vertical structure.
+- **ADR-011**: Nodes = collector action points, branches = customer (facts, emotions), willingness = sentence label. Eliminated chain structure (single-child ratio 14.4%). Consolidated `initial_contact` root + `normal_end` / `abrupt_end` terminals.
+- **ADR-012**: `collector_action` field on sentence entries — UI display + O(1) action filtering without traversing to parent.
+- **ADR-015**: Local tree building (no global node reuse) — global reuse broke path continuity; match only against `current_node` children.
+- **ADR-016**: Fact-by-fact walking — walk each fact/emotion one at a time, creating single-key nodes; eliminates composite-node bugs.
+- **ADR-017**: Action node splitting — force-split pools into `a:xxx` children for fact/emotion parents; uniform `fact→emotion→action→sentences` structure.
+- **ADR-018 (superseded by ADR-022)**: Redundant fact collapse with `inherited_facts` propagation.
+- **ADR-019**: `state=None` collector turns captured without synthetic other` label (58 turns, 14.5%) — merged into parent pool.
+- **ADR-021**: Node identity dedup — identity = `(inherited_facts, inherited_emotions, branch_key)`; DAG with cycle protection via `_is_ancestor`.
+- **ADR-022**: Redundant emotion collapse — extends ADR-018 to collapse `anger → anger` nested emotion paths.
+- **ADR-023**: Sentence pool dedup at transform boundaries — `_dedup_pool` by `script_text` after every `.extend()`.
+- **Willingness as sentence label, not branch key**: same (facts, emotions) = same decision point regardless of willingness.
+- **Segment-based extraction**: each conversation decomposed into (customer branch key → collector sentences), not individual turns.
+- **LLM-guided collector turn merging**: merge fragmented consecutive collector turns before segment extraction; hard limit `MAX_MERGED_WORDS=150`.
+- **Start/end node model**: exactly 1 opening root + 2 consolidated end nodes as direct children of root; clean vertical structure.
 
 **Input**: `output_rewarded.py`
 
@@ -596,32 +534,15 @@ Tree structure (309 nodes, 782 sentences):
 
 #### What this does
 
-Tags each tree sentence with a 10-bit `bg_bitmask` (customer profile
-constraints) for O(1) filtering, computes two quality scores (HWR =
-Laplace-smoothed blended win rate; SAS = char-bigram TF-IDF cosine within
-pool), extracts the ~100-word conversation context preceding each script,
-embeds it via bge-m3 (1024-dim), and loads nodes + sentences + taxonomy into
-PostgreSQL.
+Tags each tree sentence with a 10-bit `bg_bitmask` (customer profile constraints) for O(1) filtering, computes two quality scores (HWR = Laplace-smoothed blended win rate; SAS = char-bigram TF-IDF cosine within pool), extracts the ~100-word conversation context preceding each script, embeds it via bge-m3 (1024-dim), and loads nodes + sentences + taxonomy into PostgreSQL.
 
 #### Design considerations & decisions
 
-- **ADR-020**: 10-bit bitmask for O(1) AND filtering; intersection merge for
-  multi-source sentences (conservative — only constraints in ALL source
-  conversations are set); Laplace-smoothed HWR; char-bigram TF-IDF SAS
-  (numpy only, no external API). Expanded 5→10 bits on 2026-06-22.
-- **ADR-024**: bge-m3 via Ollama replaces char-ngram TF-IDF for semantic
-  similarity — captures meaning ("没钱" ≈ "经济困难"); local/no-cost/offline;
-  pgvector hybrid; unified ranking replaces dual-strategy.
-- **HWR with node-level aggregation**: sentence-level HWR unreliable for
-  sentences in only 1-2 calls; blend `weight * sentence_hwr + (1-weight) *
-  node_hwr` where `weight = n/(n+2)`.
-- **UC and CSI deferred**: `uplift_score = 0`, `csi = 0` with `deferred: true`
-  — require causal analysis unavailable at 31-record scale.
-- **F007 design**: Ollama for local embeddings (no per-call cost);
-  OpenAI-compatible API (reuse `openai` client); Python-side ranking
-  (`bg_boost` needs JSONB dict comparison); pgvector for hybrid vector+bitmask+FTS
-  in one query; optional embedding in `score_tree.py` (backward compat when
-  `db=None`).
+- **ADR-020**: 10-bit bitmask for O(1) AND filtering; intersection merge for multi-source sentences (conservative — only constraints in ALL source conversations are set); Laplace-smoothed HWR; char-bigram TF-IDF SAS (numpy only, no external API). Expanded 5→10 bits on 2026-06-22.
+- **ADR-024**: bge-m3 via Ollama replaces char-ngram TF-IDF for semantic similarity — captures meaning ("没钱" ≈ "经济困难"); local/no-cost/offline; pgvector hybrid; unified ranking replaces dual-strategy.
+- **HWR with node-level aggregation**: sentence-level HWR unreliable for sentences in only 1-2 calls; blend `weight * sentence_hwr + (1-weight) * node_hwr` where `weight = n/(n+2)`.
+- **UC and CSI deferred**: `uplift_score = 0`, `csi = 0` with `deferred: true` — require causal analysis unavailable at 31-record scale.
+- **F007 design**: Ollama for local embeddings (no per-call cost); OpenAI-compatible API (reuse `openai` client); Python-side ranking (`bg_boost` needs JSONB dict comparison); pgvector for hybrid vector+bitmask+FTS in one query; optional embedding in `score_tree.py` (backward compat when `db=None`).
 
 **Input**: `decision_tree.json` + `output_aligned.py` + `output_rewarded.py`
 
@@ -756,22 +677,13 @@ node_index = {
 
 #### What this does
 
-Exposes the recommendation pipeline over two interfaces: `POST /recommend`
-(REST, single-turn — the caller manages conversation state and passes it back
-each call) and a Socket.IO session interface (server manages state
-accumulation automatically across `start_session` / `customer_turn` /
-`collector_turn` / `end_session` events). Both run the same 7-step pipeline.
+Exposes the recommendation pipeline over two interfaces: `POST /recommend` (REST, single-turn — the caller manages conversation state and passes it back each call) and a Socket.IO session interface (server manages state accumulation automatically across `start_session` / `customer_turn` / `collector_turn` / `end_session` events). Both run the same 7-step pipeline.
 
 #### Design considerations & decisions
 
-- **F009**: FastAPI chosen (already in `pyproject.toml`). Socket.IO added for
-  stateful session management so the call platform doesn't have to track
-  conversation state client-side.
-- **No LLM in ranking hot path** beyond the single F008 state-extraction call
-  (ADR-009 eliminated the second LLM pass).
-- **Fallback hierarchy**: 6 levels — path signature miss → root; bitmask empty
-  → relax; LLM fail → keyword; embed fail → win_rate+sas only; all exhausted
-  → 404. See [Fallback Hierarchy](#fallback-hierarchy).
+- **F009**: FastAPI chosen (already in `pyproject.toml`). Socket.IO added for stateful session management so the call platform doesn't have to track conversation state client-side.
+- **No LLM in ranking hot path** beyond the single F008 state-extraction call (ADR-009 eliminated the second LLM pass).
+- **Fallback hierarchy**: 6 levels — path signature miss → root; bitmask empty → relax; LLM fail → keyword; embed fail → win_rate+sas only; all exhausted → 404. See [Fallback Hierarchy](#fallback-hierarchy).
 
 ```
 POST /recommend
@@ -784,9 +696,9 @@ POST /recommend
   "customer_utterance": "我现在真的没钱还，能不能分期",
   "conversation_context": "招商银行信用卡中心来电 请问是张女士吗 是的 告知逾期金额 客户说经济困难 没钱还",
   "conversation_state": {
-    "facts": ["financial_hardship"],
-    "emotions": [],
-    "actions": [],
+    "branch_key": {"facts": ["financial_hardship"]},
+    "inherited_facts": [],
+    "inherited_emotions": [],
     "willingness": null
   },
   "context": {
@@ -815,7 +727,7 @@ POST /recommend
 **Field descriptions:**
 - `customer_utterance`: The customer's most recent turn text
 - `conversation_context`: Aggregated text of the past ~100 words of dialog (both customer and collector turns)
-- `conversation_state`: Accumulated state from prior turns in this call. Caller passes back the `conversation_state` from the previous API response. Note: F002 (LLM State Extraction) was eliminated per ADR-009 — offline labeling relies on F000's manual annotations (493/805 turns). Online extraction (Step 2.1) is the only LLM call in the hot path.
+- `conversation_state`: **Path-structured** state `{branch_key, inherited_facts, inherited_emotions, willingness}` mirroring the tree's node identity (ADR-021). Caller passes back the `conversation_state` from the previous API response. `branch_key` is the most recent branching decision; `inherited_facts`/`inherited_emotions` accumulate from ancestors. Note: F002 (LLM State Extraction) was eliminated per ADR-009; online extraction (Step 2.1) is the only LLM call in the hot path (plus at most one relabel call per ADR-026).
 - `context`: Customer profile from `customer_info`, transformed to the `context` dict format (ADR-006: 21 fields mapped from Chinese `customer_info`)
 
 ---
@@ -824,64 +736,29 @@ POST /recommend
 
 #### What this does
 
-Extracts the customer's state (facts, emotions, actions, willingness) from
-their utterance using DeepSeek LLM as the primary path, with PostgreSQL
-tsvector keyword search as fallback when the LLM fails. This is the only LLM
-call in the hot path.
+Extracts the customer's state (facts, emotions, actions, willingness) from their utterance using DeepSeek LLM as the primary path (**open-set** for facts/emotions per ADR-026, **closed-set** for willingness), then normalizes extracted labels through a synchronous relabel pipeline. PostgreSQL tsvector keyword search is the fallback when the LLM fails.
 
 #### Design considerations & decisions
 
-- **ADR-009**: Eliminated F002 (a second offline LLM state-extraction pass) —
-  F000's 493/805 manual annotations are sufficient offline; online extraction
-  is the single LLM call in the hot path.
-- **F008**: LLM-first with keyword fallback — DeepSeek for semantic extraction,
-  tsvector keyword scan via `taxonomy_keywords` table when LLM unavailable.
-- **State accumulation rules**: deduplicate, preserve insertion order, append
-  new items; willingness is a scalar (overwrite with latest non-null).
+- **ADR-026**: Open-set extraction for facts/emotions — the LLM extracts whatever labels best describe the utterance, unconstrained by a predefined list. Willingness remains closed-set (6 ordered levels per ADR-005).
+- **Synchronous relabel pipeline** (ADR-026): each extracted label is checked against `*_descriptions` (canonical set) → `*_relabeled` CSV (existing mapping) → if no mapping, `llm_relabel` runs synchronously to generate one and appends it to `*_relabeled`. Worst-case latency ~2x on novel labels; rare in steady state as the cache grows.
+- **ADR-009**: Eliminated F002 (a second offline LLM state-extraction pass) — online extraction + at most one relabel call is the only LLM work in the hot path.
+- **F008**: LLM-first with keyword fallback — DeepSeek for semantic extraction, tsvector keyword scan via `taxonomy_keywords` table when LLM unavailable.
+- **State accumulation rules**: path-structured (see Step 2.2); willingness is a scalar (overwrite with latest non-null).
 
 **Primary path**: DeepSeek LLM call
 
 ```
-Prompt to DeepSeek:
+Prompt to DeepSeek (ADR-026: open-set for facts/emotions, closed-set for willingness):
 ---
-You are a state extraction engine for a debt collection call system.
+Extract the customer's state from the following utterance.
 
-Given a customer's utterance, extract which of the following state groups apply.
+Extract facts and emotions FREELY — use whatever labels best describe the
+customer's situation and emotional state. Do NOT limit yourself to a predefined
+list. Use snake_case English labels (e.g. "financial_hardship",
+"request_installment", "income_delay").
 
-FACTS (customer's situation):
-- financial_hardship: customer has no money, economic difficulty
-- request_installment: customer asks about installment plans
-- multiple_debts: customer has debts across multiple institutions
-- salary_delay: customer's salary hasn't been paid yet
-- income_statement: customer describes their income
-- ability_to_pay: customer claims they can pay
-- account_frozen: customer's accounts are frozen
-- prior_contact_attempt: customer was contacted before
-- previous_agreement: customer had a prior agreement
-- high_interest: customer complains about high interest
-- bankruptcy: customer mentions bankruptcy
-- illness: customer is ill
-- family_illness: customer's family member is ill
-
-EMOTIONS (customer's emotional state):
-- pleading: customer is begging or pleading
-- resistant: customer is refusing or resisting
-- anxious: customer is worried or anxious
-- angry: customer is angry or hostile
-- cooperative: customer is willing to cooperate
-- disappointment: customer is disappointed
-- distress: customer is distressed
-- frustration: customer is frustrated
-
-COLLECTOR ACTIONS (what the collector did):
-- empathy: collector showed empathy
-- pressure: collector applied pressure
-- information: collector provided information
-- plan_proposal: collector proposed a payment plan
-- greeting: collector greeted the customer
-- closure: collector attempted to close
-
-WILLINGNESS (customer's repayment intent):
+WILLINGNESS (pick exactly one or null):
 - resistant: refuses to pay
 - weak: acknowledges but resists
 - conditional: will pay if conditions met
@@ -894,13 +771,18 @@ Customer utterance: "我现在真的没钱还，能不能分期"
 Return JSON: {"facts": [...], "emotions": [...], "actions": [...], "willingness": "..." or null, "confidence": 0.0-1.0}
 ---
 
-DeepSeek response:
+DeepSeek response (raw, pre-relabel):
 {
   "facts": ["request_installment"],
   "emotions": ["pleading"],
   "willingness": "conditional",
   "confidence": 0.9
 }
+
+→ Relabel pipeline (synchronous, ADR-026):
+  1. "request_installment" ∈ facts_descriptions? → check facts_relabeled.csv → maps to "installment_request"
+  2. "pleading" ∈ emotions_descriptions? → check emotions_relabeled.csv → maps to "negotiation"
+  3. Final: {"facts": ["installment_request"], "emotions": ["negotiation"], "willingness": "conditional"}
 ```
 
 **Fallback path** (only if LLM fails): PostgreSQL tsvector keyword search
@@ -924,7 +806,7 @@ LIMIT 10;
 }
 ```
 
-**Latency**: ~800-1200ms (LLM) | ~5ms (keyword fallback)
+**Latency**: ~800-1200ms (extraction LLM) + 0ms (relabel cache hit) | ~1600-2400ms (novel label, relabel LLM) | ~5ms (keyword fallback)
 
 ---
 
@@ -932,28 +814,39 @@ LIMIT 10;
 
 #### What this does
 
-Merges the new extraction into the existing conversation state: deduplicate,
-preserve first-seen order, append new items; willingness is a scalar that
-overwrites with the latest non-null value.
+Merges the new extraction into the existing **path-structured** conversation
+state: `{branch_key, inherited_facts, inherited_emotions, willingness}`. The
+state mirrors the tree's own node structure (ADR-021) — `branch_key` is the
+most recent branching decision, `inherited_facts`/`inherited_emotions`
+accumulate from ancestors. This unifies online retrieval with offline tree
+building (ADR-015): both walk paths.
 
 #### Design considerations & decisions
 
-- **F008**: Insertion-order preservation ensures stable node-key computation
-  across turns; dedup prevents state list growth from repeated mentions.
-- **Willingness as scalar**: overwrites (not appended) — it represents the
-  customer's current intent, not history.
+- **ADR-021 / ADR-015**: Path-structured state mirrors tree node identity
+  `(inherited_facts, branch_key, inherited_emotions)`. Online retrieval walks
+  the same path structure the tree was built with.
+- **Step 2.3 becomes a no-op**: the state *is* the key, not derived from it.
+- **Insertion order**: preserved within `inherited_facts`/`inherited_emotions`
+  for F010 trace readability — **cosmetic, not functional** (the node key is
+  `tuple(sorted(...))`, permutation-insensitive, so
+  `(bankrupt, angry, unemployed)` and `(bankrupt, unemployed, angry)` produce
+  the same key).
+- **Willingness as scalar**: overwrites (not appended) — represents current
+  intent, not history.
 
-**Rules:**
-- Deduplicate: if a fact/emotion/action already exists, don't add it again
-- Preserve order: first-seen items stay first
-- Append new items to the end of their respective lists
-- Willingness: overwrite with the latest non-null value (it's a scalar, not a list)
+**Accumulation logic:**
+- New fact → promote current `branch_key` fact to `inherited_facts`, set `branch_key = {"facts": [new_fact]}`
+- New emotion → promote current `branch_key` to inherited, set `branch_key = {"emotions": [new_emotion]}`
+- New action → set `branch_key = {"action": new_action}` (actions are the current move, not accumulated)
+- Willingness → overwrite if non-null
+- Deduplicate: if a fact/emotion already in `inherited_facts`/`inherited_emotions` ∪ `branch_key`, skip
 
 ```
 existing_state = {
-  facts: ["financial_hardship"],     ← from turn 2
-  emotions: [],
-  actions: [],
+  branch_key: {"facts": ["financial_hardship"]},   ← from turn 2
+  inherited_facts: [],
+  inherited_emotions: [],
   willingness: null
 }
 
@@ -965,9 +858,9 @@ new_extraction = {
 }
 
 merged_state = {
-  facts: ["financial_hardship", "request_installment"],
-  emotions: ["pleading"],
-  actions: [],
+  branch_key: {"emotions": ["pleading"]},            ← latest branch
+  inherited_facts: ["financial_hardship", "request_installment"],
+  inherited_emotions: [],
   willingness: "conditional"
 }
 ```
@@ -980,10 +873,9 @@ merged_state = {
 
 #### What this does
 
-Derives a deterministic, permutation-insensitive lookup key from the
-accumulated conversation state: a 3-tuple
-`(inherited_facts, branch_key_values, inherited_emotions)`, each component
-sorted alphabetically.
+**No-op** — the path-structured state *is* the node identity key. The
+`(inherited_facts, branch_key_values, inherited_emotions)` triple (ADR-021) is
+read directly from the state, not derived from flat lists.
 
 #### Design considerations & decisions
 
@@ -1012,41 +904,51 @@ key = (("financial_hardship", "request_installment"), (), ("pleading",))
 
 ---
 
-### Step 2.4: Node Lookup (O(1) hash, with aggregation)
+### Step 2.4: Node Lookup (subset-match, with aggregation)
 
 #### What this does
 
-Looks up nodes by the computed key in the in-memory `node_index` hash map.
-When a key matches multiple nodes (34 of 267 keys do), aggregates all their
-sentence pools into a single candidate pool. Falls back through a 4-level
-cascade on key miss.
+Looks up nodes by the path-structured state's label set. On exact match,
+aggregates all matching nodes' sentence pools. On miss, falls back through
+**best subset match** (drop emotions first, then facts), pooling all nodes at
+the largest matching subset size. Keeps **descend** for the empty-pool case.
 
 #### Design considerations & decisions
 
+- **Best subset match** (replaces key-drop): if 5 labels and no perfect match,
+  find 4-label matches (position-independent), then 3, 2, 1. Pool all nodes
+  matching at the largest subset size, capped at N=50 candidates.
+- **Drop emotions first, then facts**: emotional context is relaxed before fact
+  specificity — facts define *what situation*, emotions define *how they feel*;
+  in fallback, preserve the situation longer. This is the inverse of ADR-022's
+  build-time concern (which kept emotions in the key to avoid aggregating
+  different emotional contexts). At retrieval fallback, we accept that
+  relaxation deliberately.
+- **Descend (kept for empty-pool)**: if matched nodes have empty pools but have
+  children, BFS down tree to nearest non-empty pools, −0.05 per level. This
+  handles a different case than subset match (empty pool, not key miss).
 - **F006**: Aggregate all sibling pools — avoids premature filtering by tree
-  position; multiple nodes sharing a key represent the same conversational
-  context at different tree positions.
-- **Fallback cascade**: (1) key drop — drop least-frequent fact, −0.1
-  confidence; (2) descend — BFS down tree to nearest non-empty pools, −0.05
-  per level; (3) key drop after exhausted descend; (4) root fallback, −0.2.
-- **Descend (not parent walk)**: walking DOWN finds more-specific scripts;
-  walking UP would over-generalize.
+  position.
 
 ```python
-nodes = node_index[(("financial_hardship", "request_installment"), (), ("pleading",))]
-# → [node_42, node_58]  — multiple nodes may share the same key
+# Exact match: label set {financial_hardship, request_installment, pleading}
+nodes = label_set_index[frozenset({"financial_hardship", "request_installment", "pleading"})]
+# → [node_42, node_58]  — pool all
 ```
 
-When a key matches multiple nodes, **aggregate all their sentence pools** into a single candidate pool (F006: avoids premature filtering by tree position).
+**Fallback cascade** (if exact label-set miss):
 
-**Fallback cascade** (if exact key miss):
+1. **Best subset match — drop emotions first**: try all (n-1)-emotion subsets,
+   then (n-2), ... then all emotions dropped, then drop 1 fact, 2 facts, ...
+   Pool all nodes matching at the first successful subset size (cap N=50).
+   Confidence: `1.0 − 0.1 × n_dropped`.
+2. **Descend fallback**: If matched nodes have empty pools but have children,
+   walk DOWN the tree (BFS) to nearest descendants with non-empty pools. All
+   siblings at the same depth are included. Each level: −0.05 confidence.
+3. **Root fallback**: If all subsets exhausted, use root node
+   (`initial_contact`). 0.2 confidence.
 
-1. **Key drop**: Drop the least-frequent keyword from `inherited_facts`, recompute key, retry. Each drop: −0.1 confidence.
-2. **Descend fallback**: If matched nodes have empty pools but have children, walk DOWN the tree (BFS) to nearest descendants with non-empty pools. All siblings at the same depth are included. Each level: −0.05 confidence.
-3. **Key drop after exhausted descend**: If descend finds nothing at any depth, drop another keyword and retry from key lookup.
-4. **Root fallback**: If all keywords stripped, use root node (`initial_contact`). −0.2 confidence.
-
-**Latency**: <1ms (hash lookup) | O(depth) with fallback
+**Latency**: <1ms (label-set lookup) | O(C(n,k) × keys) with subset fallback
 
 ---
 
@@ -1054,19 +956,12 @@ When a key matches multiple nodes, **aggregate all their sentence pools** into a
 
 #### What this does
 
-Fetches candidate sentences from PostgreSQL by `node_id`, then hard-filters
-by bitmask: a sentence is compatible iff all its required constraints are
-satisfied by the query (`sentence.bg_bitmask_int & query_bitmask ==
-sentence.bg_bitmask_int`). Relaxes the bitmask one bit at a time if all
-candidates are eliminated.
+Fetches candidate sentences from PostgreSQL by `node_id`, then hard-filters by bitmask: a sentence is compatible iff all its required constraints are satisfied by the query (`sentence.bg_bitmask_int & query_bitmask == sentence.bg_bitmask_int`). Relaxes the bitmask one bit at a time if all candidates are eliminated.
 
 #### Design considerations & decisions
 
-- **ADR-020**: Bitmask AND as hard filter — eliminates objectively wrong
-  recommendations regardless of ranking. A sentence with bitmask 0 is
-  universally compatible.
-- **F006**: Bitmask relaxation (not removal) — clear lowest set bit one at
-  a time, −0.05 per relaxation, when filter eliminates all sentences.
+- **ADR-020**: Bitmask AND as hard filter — eliminates objectively wrong recommendations regardless of ranking. A sentence with bitmask 0 is universally compatible.
+- **F006**: Bitmask relaxation (not removal) — clear lowest set bit one at a time, −0.05 per relaxation, when filter eliminates all sentences.
 
 **Bitmask encoding** from `context` dict:
 
@@ -1119,17 +1014,12 @@ WHERE node_id = ANY(ARRAY[42, 58])
 
 #### What this does
 
-Embeds the query conversation context with bge-m3 (1024-dim), then computes
-cosine similarity against each candidate's stored embedding via pgvector.
-Can be done as a single SQL query (combining steps 2.5+2.6+2.7) or fetch +
-compute in Python (needed for `bg_boost`).
+Embeds the query conversation context with bge-m3 (1024-dim), then computes cosine similarity against each candidate's stored embedding via pgvector. Can be done as a single SQL query (combining steps 2.5+2.6+2.7) or fetch + compute in Python (needed for `bg_boost`).
 
 #### Design considerations & decisions
 
-- **ADR-024**: bge-m3 via Ollama replaces char-ngram TF-IDF for semantic
-  similarity — captures meaning, local/no-cost/offline, 1024-dim.
-- **F007**: pgvector HNSW index for O(log N) approximate KNN; hybrid
-  vector+bitmask+FTS in one PostgreSQL query.
+- **ADR-024**: bge-m3 via Ollama replaces char-ngram TF-IDF for semantic similarity — captures meaning, local/no-cost/offline, 1024-dim.
+- **F007**: pgvector HNSW index for O(log N) approximate KNN; hybrid vector+bitmask+FTS in one PostgreSQL query.
 
 **Step 2.6.1**: Embed the query conversation context
 
@@ -1164,25 +1054,14 @@ Fetch candidates with embeddings from PG, compute `vec_score` + `bg_boost` + `fi
 
 #### What this does
 
-Ranks the filtered candidates by unified weighted fusion:
-`0.40·win_rate + 0.30·vec_score + 0.15·sas + 0.15·bg_boost`. Returns the
-top-1 script. `bg_boost` is a soft profile-match bonus computed in Python
-(industry, education, debt range, age).
+Ranks the filtered candidates by unified weighted fusion: `0.40·win_rate + 0.30·vec_score + 0.15·sas + 0.15·bg_boost`. Returns the top-1 script. `bg_boost` is a soft profile-match bonus computed in Python (industry, education, debt range, age).
 
 #### Design considerations & decisions
 
-- **ADR-024 / F006**: Unified weighted fusion replaces the previous
-  dual-strategy (`limited`/`full`) switch — vector similarity provides a
-  meaningful semantic signal at any data scale, making the strategy switch
-  unnecessary.
-- **F006**: `win_rate` (0.40) is the strongest signal — proven effectiveness;
-  `vec_score` (0.30) — semantic relevance; `sas` (0.15) — intra-pool
-  redundancy avoidance (tiebreak); `bg_boost` (0.15) — profile personalization
-  (soft, not a hard filter).
-- **F007**: Python-side ranking because `bg_boost` requires JSONB dict
-  comparison not expressible in SQL (~1ms tradeoff for flexibility).
-- **Embedding fallback**: if embedding unavailable, set `vec_score = 0`,
-  redistribute weight to `win_rate`.
+- **ADR-024 / F006**: Unified weighted fusion replaces the previous dual-strategy (`limited`/`full`) switch — vector similarity provides a meaningful semantic signal at any data scale, making the strategy switch unnecessary.
+- **F006**: `win_rate` (0.40) is the strongest signal — proven effectiveness; `vec_score` (0.30) — semantic relevance; `sas` (0.15) — intra-pool redundancy avoidance (tiebreak); `bg_boost` (0.15) — profile personalization (soft, not a hard filter).
+- **F007**: Python-side ranking because `bg_boost` requires JSONB dict comparison not expressible in SQL (~1ms tradeoff for flexibility).
+- **Embedding fallback**: if embedding unavailable, set `vec_score = 0`, redistribute weight to `win_rate`.
 
 **Signals:**
 
@@ -1429,7 +1308,7 @@ POST /recommend
 }
 ```
 
-**Processing:**
+**Processing:** #jiani
 1. LLM → `{facts: ["request_installment"], emotions: ["disappointment"], willingness: "conditional", confidence: 0.9, method: "llm"}`
 2. State accumulation:
    - existing: `{facts: ["financial_hardship"], emotions: [], actions: [], willingness: null}`
@@ -1593,7 +1472,9 @@ and ADR-025.
 
 | Step | Latency | Notes |
 |---|---|---|
-| State extraction (LLM) | 800-1200ms | Dominated by DeepSeek API call |
+| State extraction (LLM) | 800-1200ms | DeepSeek API call (open-set, ADR-026) |
+| Label normalization (relabel) | 0ms (cache hit) | `*_descriptions` / `*_relabeled` lookup |
+| Label relabel (novel, sync LLM) | 800-1200ms | Conditional — only when label not in cache (ADR-026) |
 | State accumulation | <1ms | In-memory set operations |
 | Node key computation | <1ms | Sort + tuple |
 | Node lookup + aggregation | <1ms | Hash map O(1) + pool merge |
@@ -1609,14 +1490,12 @@ and ADR-025.
 
 | # | Condition | Fallback | Confidence Impact |
 |---|---|---|---|
-| 1 | Exact key miss | Drop least-frequent keyword from `inherited_facts`, retry | −0.1 per drop |
+| 1 | Exact label-set miss | Best subset match: drop emotions first (all k-1 emotion subsets), then facts. Pool all matches at largest subset size (cap N=50) | −0.1 per dropped label |
 | 2 | Empty pool — descend | Walk DOWN tree (BFS): collect sentences from nearest descendants with non-empty pools | −0.05 per level |
-| 3 | Descend exhausted → key drop | Drop another keyword from `inherited_facts`, retry from key lookup | −0.1 per drop |
-| 4 | Bitmask filter returns empty | Relax bitmask (drop lowest bit) | −0.05 per relaxation |
-| 5 | LLM embedding fails | Rank by `win_rate` + `sas` only (no `vec_score`) | −0.1 |
-| 6 | All fallbacks exhausted | Return null (no recommendation) | 0.0 |
+| 3 | LLM embedding fails | Rank by `win_rate` + `sas` only (no `vec_score`) | −0.1 |
+| 4 | All fallbacks exhausted | Return null (no recommendation) | 0.0 |
 
-**Confidence formula**: `1.0 − (key_drops × 0.1) − (descend_levels × 0.05) − (bitmask_relaxations × 0.05) − (embed_fail × 0.1)`, minimum 0.0
+**Confidence formula**: `1.0 − (dropped_labels × 0.1) − (descend_levels × 0.05) − (embed_fail × 0.1)`, minimum 0.0
 
 ---
 
@@ -1753,3 +1632,4 @@ Authoritative decision records. Each is one line here; see
 | [ADR-023](docs/decisions/ADR-023-sentence-pool-dedup.md) | Sentence pool dedup | `_dedup_pool` by `script_text` after every `.extend()` in 3 transforms; fixes data for all consumers. |
 | [ADR-024](docs/decisions/ADR-024-embedding-architecture.md) | Embedding architecture | bge-m3 via Ollama (1024-dim, OpenAI-compatible) replaces char-ngram TF-IDF; local/no-cost/offline; unified ranking replaces dual-strategy. |
 | [ADR-025](docs/decisions/ADR-025-f010-ui-architecture.md) | F010 UI architecture | Vanilla JS + FastAPI StaticFiles; no build step; CodeMirror 6 + Tailwind via CDN; same server/port; `/recommend/debug` endpoint. |
+| [ADR-026](docs/decisions/ADR-026-open-set-extraction-relabel.md) | Open-set extraction + sync relabel | Open-set extraction for facts/emotions (free-form labels), closed-set for willingness; synchronous relabel pipeline normalizes through `*_descriptions` → `*_relabeled` → `llm_relabel`; self-extending taxonomy. |

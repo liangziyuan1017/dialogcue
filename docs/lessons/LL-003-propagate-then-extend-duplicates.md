@@ -1,8 +1,12 @@
 ---
 id: LL-003
 title: Propagate-then-extend creates silent duplicates
-date: 2026-06-23
-feature: F004
+doc_kind: lesson
+feature_ids: [F004]
+topics: [tree-transforms, dedup, sentence-pool]
+status: accepted
+created: 2026-06-23
+schema_version: 1
 trigger: tree_transforms._collapse_redundant_facts, _deduplicate_nodes, _consolidate_endpoints
 ---
 

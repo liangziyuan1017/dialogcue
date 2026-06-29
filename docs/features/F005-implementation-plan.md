@@ -3,9 +3,9 @@
 **Feature:** F005 — `docs/features/F005-context-tagging-quality-scoring.md`
 **Goal:** Augment decision tree sentences with context bitmask (O(1) filtering), historical win rate (HWR), and script alignment score (SAS). Output to `/src/decision_tree_scored.json`.
 **Acceptance Criteria:**
-- Every sentence in decision_tree_scored.json has `bg_constraints` dict with 5 fields
-- Every sentence has `bg_bitmask` integer (0–31)
-- `bg_bitmask` correctly encodes the 5 boolean fields
+- Every sentence in decision_tree_scored.json has `bg_constraints` dict with 10 fields
+- Every sentence has `bg_bitmask` integer (0–1023)
+- `bg_bitmask` correctly encodes the 10 boolean fields
 - Every sentence has `win_rate` ≥ 0 and ≤ 1
 - `win_rate` uses Laplace smoothing: (wins + 1) / (total + 2)
 - Every sentence has `sas` ≥ 0 and ≤ 1
@@ -51,7 +51,7 @@
 
 **Step 1: Write failing test** — test `_encode_bitmask(context)` returns correct integer for known context dicts; test `_compute_bg_constraints(call_ids, context_lookup)` returns intersection of constraints for multi-source sentences; test `_compute_bg_bitmask(bg_constraints)` returns correct integer
 **Step 2: Run test to verify it fails**
-**Step 3: Implement** — `_encode_bitmask(context)` maps 5 boolean fields to bits; `_compute_bg_constraints()` collects per-source bitmasks and ANDs them; `_compute_bg_bitmask()` converts dict to integer
+**Step 3: Implement** — `_encode_bitmask(context)` maps 10 boolean fields to bits; `_compute_bg_constraints()` collects per-source bitmasks and ANDs them; `_compute_bg_bitmask()` converts dict to integer
 **Step 4: Run test to verify it passes**
 **Step 5: Commit**
 
@@ -110,6 +110,6 @@
 - Create: `src/test_score_tree_integration.py`
 
 **Step 1: Run score_tree.py** to generate decision_tree_scored.json from real data
-**Step 2: Write integration tests** — verify all 868 sentences have bg_constraints (5 fields), bg_bitmask (0–31), win_rate (0–1), sas (0–1), uplift_score=0, csi=0, deferred=true; verify all 31 call_ids represented; verify bitmask AND filtering correctness
+**Step 2: Write integration tests** — verify all 868 sentences have bg_constraints (10 fields), bg_bitmask (0–1023), win_rate (0–1), sas (0–1), uplift_score=0, csi=0, deferred=true; verify all 31 call_ids represented; verify bitmask AND filtering correctness
 **Step 3: Run integration tests**
 **Step 4: Commit**

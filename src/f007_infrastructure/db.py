@@ -5,6 +5,9 @@ import psycopg2
 import psycopg2.extras
 from pgvector.psycopg2 import register_vector
 
+from f007_infrastructure.embeddings import EMBEDDING_DIM
+from f007_infrastructure.config import get as _cfg
+
 
 class SentenceDB:
     def __init__(self, dsn: str):
@@ -51,16 +54,16 @@ class SentenceDB:
                 sas                 REAL NOT NULL DEFAULT 0,
                 bg_background       JSONB,
                 conversation_context TEXT,
-                embedding           vector(768),
+                embedding           vector(%d),
                 script_tsv          tsvector GENERATED ALWAYS AS (to_tsvector('simple', script_text)) STORED
             )
-        """)
+        """ % EMBEDDING_DIM)
         cur.execute("CREATE INDEX IF NOT EXISTS idx_sentences_node_id ON sentences(node_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_sentences_bg_bitmask ON sentences(bg_bitmask_int)")
         cur.execute("""
             CREATE INDEX IF NOT EXISTS idx_sentences_embedding ON sentences USING hnsw (embedding vector_cosine_ops)
-            WITH (m = 16, ef_construction = 64)
-        """)
+            WITH (m = %d, ef_construction = %d)
+        """ % (_cfg("hnsw.m", 16), _cfg("hnsw.ef_construction", 64)))
         cur.execute("CREATE INDEX IF NOT EXISTS idx_sentences_tsv ON sentences USING gin (script_tsv)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_sentences_script_text_trgm ON sentences USING gin (script_text gin_trgm_ops)")
 
@@ -107,6 +110,7 @@ class SentenceDB:
     def upsert_sentences(self, sentences: list[dict]):
         if not sentences:
             return
+        self._ensure_vector_registered()
         cur = self._conn.cursor()
         for s in sentences:
             emb = np.array(s["embedding"], dtype=np.float32) if s.get("embedding") else None
@@ -146,14 +150,25 @@ class SentenceDB:
         )
         rows = cur.fetchall()
         cur.close()
-        return [dict(r) for r in rows]
+        results = []
+        for r in rows:
+            d = {}
+            for k, v in dict(r).items():
+                if isinstance(v, (np.floating, np.integer)):
+                    v = float(v)
+                d[k] = v
+            results.append(d)
+        return results
 
-    def search_similar(self, query_vec: list[float], node_id: int, query_bitmask: int, limit: int = 50) -> list[dict]:
+    def search_similar(self, query_vec: list[float], node_id: int, query_bitmask: int, limit: int = None) -> list[dict]:
+        if limit is None:
+            limit = _cfg("search.vector_limit", 50)
+        self._ensure_vector_registered()
         cur = self._conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         qvec = np.array(query_vec, dtype=np.float32)
         cur.execute(
             """
-            SELECT script_id, script_text, bg_bitmask_int, win_rate, sas,
+            SELECT script_id, script_text, bg_bitmask_int, win_rate, sas, bg_background,
                    1 - (embedding <=> %s::vector) AS vec_score
             FROM sentences
             WHERE node_id = %s AND (bg_bitmask_int & %s) = bg_bitmask_int
@@ -164,11 +179,22 @@ class SentenceDB:
         )
         rows = cur.fetchall()
         cur.close()
-        return [dict(r) for r in rows]
+        results = []
+        for r in rows:
+            d = {}
+            for k, v in dict(r).items():
+                if isinstance(v, (np.floating, np.integer)):
+                    v = float(v)
+                if k == "vec_score" and v != v:
+                    v = 0.0
+                d[k] = v
+            results.append(d)
+        return results
 
     def get_vectors(self, script_ids: list[str]) -> dict[str, list[float]]:
         if not script_ids:
             return {}
+        self._ensure_vector_registered()
         cur = self._conn.cursor()
         placeholders = ",".join(["%s"] * len(script_ids))
         cur.execute(
@@ -177,9 +203,11 @@ class SentenceDB:
         )
         rows = cur.fetchall()
         cur.close()
-        return {r[0]: list(r[1]) if r[1] is not None else [0.0] * 768 for r in rows}
+        return {r[0]: list(r[1]) if r[1] is not None else [0.0] * EMBEDDING_DIM for r in rows}
 
-    def keyword_search(self, query_text: str, limit: int = 20) -> list[dict]:
+    def keyword_search(self, query_text: str, limit: int = None) -> list[dict]:
+        if limit is None:
+            limit = _cfg("search.keyword_limit", 20)
         if not query_text.strip():
             return []
         tokens = " & ".join(query_text.split())
@@ -200,30 +228,55 @@ class SentenceDB:
                 """
                 SELECT script_id, script_text, similarity(script_text, %s) AS rank
                 FROM sentences
-                WHERE script_text %% %s
+                WHERE similarity(script_text, %s) > %s
                 ORDER BY rank DESC
                 LIMIT %s
                 """,
-                (query_text, query_text, limit),
+                (query_text, query_text, _cfg("search.trigram_threshold", 0.01), limit),
             )
             rows = cur.fetchall()
         cur.close()
-        return [dict(r) for r in rows]
+        results = []
+        for r in rows:
+            d = {}
+            for k, v in dict(r).items():
+                if isinstance(v, (np.floating, np.integer)):
+                    v = float(v)
+                d[k] = v
+            results.append(d)
+        return results
 
-    def taxonomy_keyword_search(self, query_text: str, limit: int = 20) -> list[dict]:
+    def taxonomy_keyword_search(self, query_text: str, limit: int = None) -> list[dict]:
+        if limit is None:
+            limit = _cfg("search.taxonomy_limit", 20)
         if not query_text.strip():
             return []
-        tokens = " | ".join(query_text.split())
         cur = self._conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        tokens = " & ".join(query_text.split())
+        if len(tokens) > 1:
+            cur.execute(
+                """
+                SELECT group_name, category, keyword, ts_rank(tsv, to_tsquery('simple', %s)) AS rank
+                FROM taxonomy_keywords
+                WHERE tsv @@ to_tsquery('simple', %s)
+                ORDER BY rank DESC
+                LIMIT %s
+                """,
+                (tokens, tokens, limit),
+            )
+            rows = cur.fetchall()
+            if rows:
+                cur.close()
+                return [dict(r) for r in rows]
         cur.execute(
             """
-            SELECT group_name, category, keyword, ts_rank(tsv, to_tsquery('simple', %s)) AS rank
+            SELECT group_name, category, keyword, similarity(keyword, %s) AS rank
             FROM taxonomy_keywords
-            WHERE tsv @@ to_tsquery('simple', %s)
+            WHERE similarity(keyword, %s) > %s
             ORDER BY rank DESC
             LIMIT %s
             """,
-            (tokens, tokens, limit),
+            (query_text, query_text, _cfg("search.taxonomy_trigram_threshold", 0.1), limit),
         )
         rows = cur.fetchall()
         cur.close()

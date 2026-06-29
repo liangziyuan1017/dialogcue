@@ -1,5 +1,8 @@
 ---
-feature_ids: [F000]
+id: F000
+name: State Keyword Discovery
+status: complete
+owner: agent
 related_features: []
 topics: [state-extraction, taxonomy, data-analysis]
 doc_kind: spec
@@ -8,7 +11,7 @@ created: 2026-06-09
 
 # F000: State Keyword Discovery
 
-> **Status**: complete | **Owner**: agent | **Priority**: P0
+> **Priority**: P0
 
 ## Why
 
@@ -108,9 +111,9 @@ Define willingness as ordered levels (most resistant → most cooperative), wher
 
 | 类型 | 路径 | 说明 |
 |------|------|------|
-| **Plan** | `plan_feature_base.md` | Feature-wise plan with F000 as first feature |
+| **Plan** | [ROADMAP.md](../ROADMAP.md) | Dependency graph + architecture decisions |
 | **Data** | `data/output_manual.py` | Source data (31 records, 805 turns) |
 
 ## Implementation Plan
 
-→ [implementation-plan.md](implementation-plan.md)
+→ [implementation-plan.md](F000-implementation-plan.md)

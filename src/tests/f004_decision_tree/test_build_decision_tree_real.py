@@ -147,7 +147,7 @@ def test_emotion_cycle_anger_pool_has_both_sentences():
 
 def test_real_data_all_criteria():
     import importlib.util
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "output_rewarded.py")
+    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.py")
     spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -177,7 +177,7 @@ def test_real_data_all_criteria():
 
 def test_real_data_opening_gestures():
     import importlib.util
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "output_rewarded.py")
+    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.py")
     spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -190,7 +190,7 @@ def test_real_data_opening_gestures():
 
 def test_real_data_abrupt_end_exists():
     import importlib.util
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "output_rewarded.py")
+    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.py")
     spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -205,7 +205,7 @@ def test_real_data_abrupt_end_exists():
 
 def test_real_data_leaf_termination():
     import importlib.util
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "output_rewarded.py")
+    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.py")
     spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -219,7 +219,7 @@ def test_real_data_leaf_termination():
 
 def test_real_data_branches_not_chains():
     import importlib.util
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "output_rewarded.py")
+    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.py")
     spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)

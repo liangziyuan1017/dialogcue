@@ -1,10 +1,12 @@
 import os
 
-from infra.llm_client import _get_client
+from f007_infrastructure.llm_client import _get_client
+from f007_infrastructure.config import get as _cfg
 
-EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
-EMBEDDING_BASE_URL = os.environ.get("EMBEDDING_BASE_URL", "")
-EMBEDDING_API_KEY = os.environ.get("EMBEDDING_API_KEY", os.environ.get("OPENAI_API_KEY", os.environ.get("DEEPSEEK_API_KEY", "")))
+EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", _cfg("embedding.model", "bge-m3"))
+EMBEDDING_BASE_URL = os.environ.get("EMBEDDING_BASE_URL", _cfg("embedding.api_base", "http://localhost:11434/v1"))
+EMBEDDING_API_KEY = os.environ.get("EMBEDDING_API_KEY", _cfg("embedding.api_key", "ollama"))
+EMBEDDING_DIM = int(os.environ.get("EMBEDDING_DIM", str(_cfg("embedding.dimension", 1024))))
 
 
 def _get_embed_client():

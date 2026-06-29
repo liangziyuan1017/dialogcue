@@ -1,5 +1,7 @@
 import numpy as np
 
+from f007_infrastructure.config import get as _cfg
+
 
 BITMASK_FIELDS = [
     "has_auto_loan",
@@ -100,10 +102,12 @@ def compute_bg_background(call_ids, customer_info_lookup):
 
 def compute_hwr(call_ids, reward_lookup):
     if not call_ids:
-        return 0.5
+        return _cfg("hwr.default", 0.5)
+    alpha = _cfg("hwr.laplace_alpha", 1)
+    beta = _cfg("hwr.laplace_beta", 2)
     wins = sum(1 for cid in call_ids if reward_lookup.get(cid) == 1)
     total = len(call_ids)
-    return (wins + 1) / (total + 2)
+    return (wins + alpha) / (total + beta)
 
 
 def cosine_similarity(a, b):
@@ -150,10 +154,11 @@ def _build_tfidf_matrix(texts, ngram_range=2):
 
 
 def compute_sas_for_pool(sentences, embeddings_map=None):
+    ngram_n = _cfg("sas.ngram_size", 2)
     if len(sentences) <= 1:
         return [1.0] * len(sentences)
     texts = [s.get("script_text", "") for s in sentences]
-    tfidf = _build_tfidf_matrix(texts)
+    tfidf = _build_tfidf_matrix(texts, ngram_range=ngram_n)
     ref_idx = max(range(len(sentences)), key=lambda i: sentences[i].get("win_rate", 0))
     ref_vec = tfidf[ref_idx]
     scores = []

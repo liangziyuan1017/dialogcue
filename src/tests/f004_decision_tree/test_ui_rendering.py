@@ -1,7 +1,7 @@
 import json
 import os
 
-_TREE_PATH = os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "decision_tree.json")
+_TREE_PATH = os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "data", "decision_tree.json")
 
 STYLE_MAP = {
     "opening": {"shape": "round-rectangle", "bg": "#052e16", "border": "#22c55e", "text": "#4ade80"},

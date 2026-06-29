@@ -4,7 +4,7 @@ title: "Over-engineered per-turn LLM extraction when partial manual annotations 
 doc_kind: lesson
 feature_ids: [F002]
 topics: [cost, over-engineering, yagni]
-status: draft
+status: accepted
 created: 2026-06-10
 updated: 2026-06-10
 schema_version: 1
@@ -34,6 +34,6 @@ Before writing ADR/LL docs, always: (1) locate scripts via `find modules/agent-m
 
 ## Source Anchors
 
-- plan_feature_base.md F002 section (original spec)
+- docs/ROADMAP.md — F002 removal note (originally plan_feature_base.md F002 section)
 - ADR-009 (decision to eliminate F002)
 - F001 output: 493/805 turns already labeled in output_aligned.py

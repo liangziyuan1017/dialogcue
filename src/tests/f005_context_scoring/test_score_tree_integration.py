@@ -3,19 +3,21 @@ import os
 
 import pytest
 
-from f005_context_scoring.score_tree import (
+from f005_context_scoring.scoring_metrics import (
     BITMASK_FIELDS,
     BG_BACKGROUND_FIELDS,
+    encode_bitmask_int,
+)
+from f005_context_scoring.score_tree import (
     build_context_lookup,
     build_customer_info_lookup,
     build_reward_lookup,
-    encode_bitmask_int,
     score_tree,
     _load_decision_tree,
 )
 
 
-SCORED_TREE_PATH = os.path.join(os.path.dirname(__file__), "../..", "f005_context_scoring", "decision_tree_scored.json")
+SCORED_TREE_PATH = os.path.join(os.path.dirname(__file__), "../..", "f005_context_scoring", "data", "decision_tree_scored.json")
 
 
 @pytest.fixture

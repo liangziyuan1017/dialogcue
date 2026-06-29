@@ -9,37 +9,42 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+from f007_infrastructure.config import get as _cfg
+
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR.parent / "data"
+INPUT_DIR = DATA_DIR / "data_input"
+OUTPUT_DIR = DATA_DIR / "data_output"
 
 LLM_STEPS = [
     {
         "name": "data_clean_2",
-        "script": DATA_DIR / "(llm) data_clean_2.py",
+        "script": DATA_DIR / "data_cleaning" / "data_clean_2.py",
         "default_output": "output_2.py",
     },
     {
         "name": "data_logic",
-        "script": DATA_DIR / "(llm) data_logic.py",
+        "script": DATA_DIR / "data_cleaning" / "data_logic.py",
         "default_output": "output_logic.py",
     },
     {
         "name": "data_complete",
-        "script": DATA_DIR / "(llm) data_complete.py",
+        "script": DATA_DIR / "data_cleaning" / "data_complete.py",
         "default_output": "output_complete.py",
     },
     {
         "name": "data_merge",
-        "script": DATA_DIR / "(llm) data_merge.py",
+        "script": DATA_DIR / "data_cleaning" / "data_merge.py",
         "default_output": "output_merged.py",
     },
 ]
 
 ANALYSIS_OUTPUTS = {
-    "analyze_collector_turns": DATA_DIR / "collector_analysis.json",
-    "analyze_customer_turns": DATA_DIR / "customer_analysis.json",
-    "align_schema": BASE_DIR / "f001_schema_alignment" / "output_aligned.py",
-    "reward_label": BASE_DIR / "f003_reward_labeling" / "output_rewarded.py",
+    "analyze_collector_turns": BASE_DIR / "f003_reward_labeling" / "data" / "collector_analysis.json",
+    "analyze_customer_turns": BASE_DIR / "f003_reward_labeling" / "data" / "customer_analysis.json",
+    "align_schema": BASE_DIR / "f001_schema_alignment" / "data" / "output_aligned.py",
+    "reward_label": BASE_DIR / "f003_reward_labeling" / "data" / "output_rewarded.py",
+    "relabel_state": BASE_DIR / "f003_reward_labeling" / "data" / "output_relabeled.py",
 }
 
 
@@ -61,7 +66,7 @@ def _write_py_results(results: list[dict], path: Path) -> None:
 
 def _run_llm_step(step: dict, data_file: Path, output_file: Path) -> None:
     existing_pythonpath = os.environ.get("PYTHONPATH", "")
-    infra_path = str(BASE_DIR / "infra")
+    infra_path = str(BASE_DIR / "f007_infrastructure")
     new_pythonpath = f"{infra_path}:{existing_pythonpath}" if existing_pythonpath else infra_path
     env = {
         **os.environ,
@@ -100,13 +105,13 @@ def run_pipeline(input_file: Path) -> None:
     for step in LLM_STEPS:
         if step["name"] == "data_merge":
             data_file = input_file
-            merge_output = DATA_DIR / step["default_output"]
+            merge_output = OUTPUT_DIR / step["default_output"]
             if prev_output != input_file:
                 shutil.copy2(prev_output, merge_output)
                 print(f"  Pre-populated {merge_output.name} from {prev_output.name}")
         else:
             data_file = prev_output
-        output_file = DATA_DIR / step["default_output"]
+        output_file = OUTPUT_DIR / step["default_output"]
         _run_llm_step(step, data_file, output_file)
         prev_output = output_file
 
@@ -171,6 +176,19 @@ def run_pipeline(input_file: Path) -> None:
     print(f"  Rewarded (R=1): {reward_count}/{len(rewarded)}")
 
     print("\n" + "=" * 60)
+    print("PHASE 4: State Relabeling")
+    print("=" * 60)
+
+    print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Relabeling facts and emotions...")
+    import f003_reward_labeling.relabel_state as rs
+    relabeled, stats = rs.relabel_all(rewarded)
+    relabeled_out = ANALYSIS_OUTPUTS["relabel_state"]
+    _write_py_results(relabeled, relabeled_out)
+    print(f"  Relabeled output written to {relabeled_out.name}")
+    print(f"  Fact map: {stats['fact_map_size']} entries, {len(stats['facts_relabeled'])} tags relabeled")
+    print(f"  Emotion map: {stats['emotion_map_size']} entries, {len(stats['emotions_relabeled'])} tags relabeled")
+
+    print("\n" + "=" * 60)
     print(f"[{datetime.now():%Y-%m-%d %H:%M:%S}] Pipeline complete.")
     print(f"Outputs:")
     for name, out in ANALYSIS_OUTPUTS.items():
@@ -184,7 +202,7 @@ def _run_skip_llm(args) -> None:
     if args.merged_file:
         merged = args.merged_file.resolve()
     else:
-        merged = DATA_DIR / "output_merged.py"
+        merged = OUTPUT_DIR / "output_merged.py"
     if not merged.exists():
         print(f"Merged file not found: {merged}")
         sys.exit(1)
@@ -216,6 +234,10 @@ def _run_skip_llm(args) -> None:
     import f003_reward_labeling.reward_label as rl
     rewarded = rl.label_all(aligned)
     _write_py_results(rewarded, ANALYSIS_OUTPUTS["reward_label"])
+
+    import f003_reward_labeling.relabel_state as rs
+    relabeled, stats = rs.relabel_all(rewarded)
+    _write_py_results(relabeled, ANALYSIS_OUTPUTS["relabel_state"])
     print("Done.")
 
 
@@ -249,7 +271,7 @@ def main() -> None:
         "input_file",
         type=Path,
         nargs="?",
-        default=DATA_DIR / "matched_data.jsonl",
+        default=INPUT_DIR / _cfg("pipeline.default_data_file", "matched_data.jsonl"),
         help="Input data file (default: matched_data.jsonl)",
     )
     parser.add_argument(
@@ -270,7 +292,7 @@ def main() -> None:
         help="Hour (0–23) when the forbidden window ends (default: 5 if --forbid-start is set)",
     )
     parser.add_argument(
-        "--interval", type=int, default=600,
+        "--interval", type=int, default=_cfg("pipeline.scheduler_interval", 600),
         help="Sleep interval in seconds between scheduler checks (default: 600)",
     )
     args = parser.parse_args()

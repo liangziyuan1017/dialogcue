@@ -1,5 +1,5 @@
 from unittest.mock import patch, MagicMock
-from infra.llm_client import call_deepseek, call_deepseek_json
+from f007_infrastructure.llm_client import call_deepseek, call_deepseek_json
 
 
 def _mock_client(response_text):
@@ -11,14 +11,14 @@ def _mock_client(response_text):
 
 
 def test_call_deepseek_returns_string():
-    with patch("infra.llm_client._get_client", return_value=_mock_client("test response")):
+    with patch("f007_infrastructure.llm_client._get_client", return_value=_mock_client("test response")):
         result = call_deepseek("hello")
         assert isinstance(result, str)
         assert result == "test response"
 
 
 def test_call_deepseek_json_returns_dict():
-    with patch("infra.llm_client._get_client", return_value=_mock_client('{"key": "value"}')):
+    with patch("f007_infrastructure.llm_client._get_client", return_value=_mock_client('{"key": "value"}')):
         result = call_deepseek_json("hello")
         assert isinstance(result, dict)
         assert result["key"] == "value"
@@ -26,7 +26,7 @@ def test_call_deepseek_json_returns_dict():
 
 def test_call_deepseek_uses_low_temperature():
     mock_client = _mock_client("ok")
-    with patch("infra.llm_client._get_client", return_value=mock_client):
+    with patch("f007_infrastructure.llm_client._get_client", return_value=mock_client):
         call_deepseek("hello")
         call_kwargs = mock_client.chat.completions.create.call_args[1]
         assert call_kwargs["temperature"] == 0.1

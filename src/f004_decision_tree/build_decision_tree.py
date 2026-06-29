@@ -3,6 +3,7 @@ import json
 import os
 from collections import defaultdict
 
+from f007_infrastructure.config import get as _cfg
 from f004_decision_tree.merge_collector import (
     CLOSING_ACTIONS, MAX_MERGED_WORDS, ACK_MAX_WORDS,
     _word_count, _is_ack_interruption, _find_merge_candidates,
@@ -20,7 +21,7 @@ from f004_decision_tree.tree_transforms import (
 )
 
 def _load_rewarded():
-    data_path = os.path.join(os.path.dirname(__file__), "..", "f003_reward_labeling", "output_rewarded.py")
+    data_path = os.path.join(os.path.dirname(__file__), "..", "f003_reward_labeling", "data", "output_rewarded.py")
     spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -284,7 +285,7 @@ def find_node(tree, state_key):
     if result is not None:
         return result
 
-    for level in range(1, 4):
+    for level in range(1, _cfg("decision_tree.find_node_max_levels", 4)):
         stripped = _strip_key(state_key, level)
         if not stripped:
             break
@@ -298,7 +299,7 @@ def find_node(tree, state_key):
     return None
 
 def _load_merge_cache():
-    cache_path = os.path.join(os.path.dirname(__file__), "merge_decisions.json")
+    cache_path = os.path.join(os.path.dirname(__file__), "data", "merge_decisions.json")
     if os.path.exists(cache_path):
         with open(cache_path, encoding="utf-8") as f:
             raw = json.load(f)
@@ -317,7 +318,7 @@ def _load_merge_cache():
     return {}
 
 def _save_merge_cache(cache):
-    cache_path = os.path.join(os.path.dirname(__file__), "merge_decisions.json")
+    cache_path = os.path.join(os.path.dirname(__file__), "data", "merge_decisions.json")
     raw = {}
     for (call_id, indices), decision in cache.items():
         key = f"{call_id}:{','.join(str(i) for i in indices)}"
@@ -329,7 +330,7 @@ def write_decision_tree(records=None, output_path=None):
     if records is None:
         records = _load_rewarded()
     if output_path is None:
-        output_path = os.path.join(os.path.dirname(__file__), "decision_tree.json")
+        output_path = os.path.join(os.path.dirname(__file__), "data", "decision_tree.json")
 
     merge_cache = _load_merge_cache()
     tree = build_tree(records, merge_decisions=merge_cache)

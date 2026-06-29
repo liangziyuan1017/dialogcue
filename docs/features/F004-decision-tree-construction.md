@@ -3,7 +3,7 @@ id: F004
 name: Decision Tree Construction
 status: complete
 owner: agent
-source: plan_feature_base.md
+source: ROADMAP.md
 created: 2026-06-11
 updated: 2026-06-23
 depends_on: F003
@@ -111,14 +111,14 @@ Nodes = collector action points. Branches = customer (facts, emotions). Willingn
 
 ## Links
 
-- [plan_feature_base.md](../../plan_feature_base.md) — F004 spec
-- [ADR-011](../../decisions/ADR-011-decision-tree-approach.md) — Architecture decision
-- [ADR-021](../../decisions/ADR-021-node-identity-dedup.md) — Node identity dedup with DAG support
-- [ADR-022](../../decisions/ADR-022-redundant-emotion-collapse.md) — Redundant emotion collapse
+- [ROADMAP.md](../ROADMAP.md) — dependency graph + architecture decisions
+- [ADR-011](../decisions/ADR-011-decision-tree-approach.md) — Architecture decision
+- [ADR-021](../decisions/ADR-021-node-identity-dedup.md) — Node identity dedup with DAG support
+- [ADR-022](../decisions/ADR-022-redundant-emotion-collapse.md) — Redundant emotion collapse
 
 ## Implementation Plan
 
-See [implementation-plan.md](implementation-plan.md)
+See [implementation-plan.md](F004-implementation-plan.md)
 
 ## Design Decisions
 

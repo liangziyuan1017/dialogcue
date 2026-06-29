@@ -1,7 +1,7 @@
-# F011: Vector Retrieval Integration — Implementation Plan
+# F007b: Vector Retrieval Integration — Implementation Plan
 
-**Feature:** F011 — `docs/features/F011-vector-retrieval-integration.md`
-**Goal:** Wire F010 infra into F005 (embedding + PG load) and F006 (vector sim + unified ranking).
+**Feature:** F007b — `docs/features/F007b-vector-retrieval-integration.md`
+**Goal:** Wire F007 infra into F005 (embedding + PG load) and F006 (vector sim + unified ranking).
 **Acceptance Criteria:**
 - `decision_tree_scored.json` has `context_vec_id` on each sentence
 - PostgreSQL `nodes` and `sentences` populated after scoring
@@ -21,7 +21,7 @@
 - Modify: `src/f005_context_scoring/score_tree.py`
 - Modify: `src/tests/f005_context_scoring/test_score_tree.py`
 
-**Step 1: Write failing test** — test that `_score_sentence_pool()` stores `_context_vec` on each sentence when `embed_texts` is provided; test that `_context_vec` is a 768-dim list
+**Step 1: Write failing test** — test that `_score_sentence_pool()` stores `_context_vec` on each sentence when `embed_texts` is provided; test that `_context_vec` is a 1024-dim list
 **Step 2: Run test to verify it fails**
 **Step 3: Implement** — In `_score_sentence_pool()`: after computing conversation_context, batch all script_texts, call `embed_texts()` (optional param), store as `_context_vec` on each sentence
 **Step 4: Run test to verify it passes**

@@ -1,7 +1,8 @@
 import json
 from collections import defaultdict
-from infra.llm_client import call_deepseek_json
-from infra.retry import retry_call
+from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.llm_client import call_deepseek_json
+from f007_infrastructure.retry import retry_call
 
 SUGGESTED_FACTS = [
     {"group_name": "legal_threat", "keywords": ["被起诉", "法院", "律师函"], "example_turn": ""},
@@ -17,7 +18,7 @@ SUGGESTED_EMOTIONS = [
     {"group_name": "embarrassment", "keywords": ["不好意思", "丢人", "难为情"], "example_turn": ""},
 ]
 
-BATCH_SIZE = 20
+BATCH_SIZE = _cfg("batch_size.analysis", 20)
 
 
 def _build_batch_prompt(turns: list) -> str:
@@ -101,7 +102,7 @@ def analyze_customer_turns(records: list) -> dict:
         for i, turn in enumerate(dialog):
             if turn["role"] != "客户":
                 continue
-            context_start = max(0, i - 3)
+            context_start = max(0, i - _cfg("context_window.analysis_turns_before", 3))
             context_turns = dialog[context_start:i]
             all_turns.append((turn["text"], context_turns))
 

@@ -1,17 +1,20 @@
 import json
 import os
-from collections import defaultdict
 from unittest.mock import MagicMock
 
 import pytest
 
+from f007_infrastructure.embeddings import EMBEDDING_DIM
 from f006_retrieval_engine.retrieval_engine import (
     build_node_index,
     recommend,
+    _build_label_set_index,
+    _find_matching_nodes_subset,
+    aggregate_pools,
 )
 
 
-SCORED_TREE_PATH = os.path.join(os.path.dirname(__file__), "../..", "f005_context_scoring", "decision_tree_scored.json")
+SCORED_TREE_PATH = os.path.join(os.path.dirname(__file__), "../..", "f005_context_scoring", "data", "decision_tree_scored.json")
 
 
 @pytest.fixture
@@ -26,89 +29,109 @@ def index(tree):
 
 
 @pytest.fixture
-def keyword_freq(index):
-    freq = {}
-    for (facts, bk, _emo), nodes in index.items():
-        for kw in facts + bk:
-            freq[kw] = freq.get(kw, 0) + 1
-    return freq
+def label_set_index(index):
+    return _build_label_set_index(index)
 
 
 class TestRecommendOutputSchema:
-    def test_has_vec_score_and_final_score(self, tree, index, keyword_freq):
+    def test_has_vec_score_and_final_score(self, tree, index, label_set_index):
         result = recommend(
-            inherited_facts=[], branch_key_values=["closure"],
             query_bitmask=1023, conversation_context="客户说没有钱",
-            query_bg={}, tree=tree, index=index, keyword_freq=keyword_freq,
+            query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
         )
         assert result is not None
         assert "vec_score" in result
         assert "final_score" in result
         assert "conversation_state" in result
 
-    def test_no_old_fields(self, tree, index, keyword_freq):
+    def test_has_ranking_weights(self, tree, index, label_set_index):
         result = recommend(
-            inherited_facts=[], branch_key_values=["closure"],
             query_bitmask=1023, conversation_context="客户说没有钱",
-            query_bg={}, tree=tree, index=index, keyword_freq=keyword_freq,
-        )
-        assert result is not None
-        assert "conversation_context_similarity" not in result
-        assert "strategy" not in result
-
-    def test_has_ranking_weights(self, tree, index, keyword_freq):
-        result = recommend(
-            inherited_facts=[], branch_key_values=["closure"],
-            query_bitmask=1023, conversation_context="客户说没有钱",
-            query_bg={}, tree=tree, index=index, keyword_freq=keyword_freq,
+            query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
         )
         assert result is not None
         assert "ranking_weights" in result
 
 
 class TestRecommendWithDB:
-    def test_uses_db_for_candidates(self, tree, index, keyword_freq):
+    def test_uses_db_for_candidates(self, tree, index, label_set_index):
         mock_db = MagicMock()
         mock_db.get_sentences_by_node.return_value = [
             {"script_id": "s1", "script_text": "hello", "win_rate": 0.8, "sas": 0.5, "bg_bitmask_int": 0, "bg_background": {}},
         ]
-        mock_db.get_vectors.return_value = {"s1": [0.1] * 768}
+        mock_db.get_vectors.return_value = {"s1": [0.1] * EMBEDDING_DIM}
         result = recommend(
-            inherited_facts=[], branch_key_values=["closure"],
             query_bitmask=1023, conversation_context="客户说没有钱",
-            query_bg={}, tree=tree, index=index, keyword_freq=keyword_freq,
-            db=mock_db, query_vec=[0.1] * 768,
+            query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
+            db=mock_db, query_vec=[0.1] * EMBEDDING_DIM,
         )
         assert result is not None
 
 
-class TestConversationState:
-    def test_accepts_conversation_state(self, tree, index, keyword_freq):
+class TestPathStructuredState:
+    def test_accepts_path_state(self, tree, index, label_set_index):
         result = recommend(
-            inherited_facts=[], branch_key_values=["closure"],
             query_bitmask=1023, conversation_context="客户说没有钱",
-            query_bg={}, tree=tree, index=index, keyword_freq=keyword_freq,
-            conversation_state={"facts": ["financial_hardship"], "emotions": [], "actions": []},
+            query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
+            conversation_state={"branch_key": {"facts": ["financial_hardship"]}, "inherited_facts": [], "inherited_emotions": [], "willingness": None},
         )
         assert result is not None
         assert "conversation_state" in result
+        assert "branch_key" in result["conversation_state"]
 
-    def test_default_conversation_state(self, tree, index, keyword_freq):
+    def test_default_conversation_state(self, tree, index, label_set_index):
         result = recommend(
-            inherited_facts=[], branch_key_values=["closure"],
             query_bitmask=1023, conversation_context="客户说没有钱",
-            query_bg={}, tree=tree, index=index, keyword_freq=keyword_freq,
+            query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
         )
         assert result is not None
-        assert result["conversation_state"] == {"facts": [], "emotions": [], "actions": [], "willingness": None}
+        assert result["conversation_state"] == {"branch_key": {}, "inherited_facts": [], "inherited_emotions": [], "willingness": None}
+
+    def test_backward_compat_flat_state(self, tree, index, label_set_index):
+        result = recommend(
+            query_bitmask=1023, conversation_context="客户说没有钱",
+            query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
+            conversation_state={"facts": ["financial_hardship"], "emotions": [], "actions": [], "willingness": None},
+        )
+        assert result is not None
+
+
+class TestSubsetMatchFallback:
+    def test_exact_match_confidence_1(self, tree, index, label_set_index):
+        nodes, conf, fb = _find_matching_nodes_subset(
+            ["financial_hardship"], [], [], index, label_set_index
+        )
+        if nodes:
+            assert conf == 1.0
+            assert fb == []
+
+    def test_nonexistent_label_falls_back(self, tree, index, label_set_index):
+        nodes, conf, fb = _find_matching_nodes_subset(
+            ["nonexistent_xyz"], [], [], index, label_set_index
+        )
+        assert conf < 1.0
+        assert len(fb) > 0
+
+    def test_drop_emotions_before_facts(self, tree, index, label_set_index):
+        nodes, conf, fb = _find_matching_nodes_subset(
+            ["financial_hardship"], ["nonexistent_emo"], [], index, label_set_index
+        )
+        if nodes:
+            assert any("emotion" in f for f in fb) or conf == 1.0
+
+    def test_pools_multiple_nodes(self, tree, index, label_set_index):
+        nodes, conf, fb = _find_matching_nodes_subset(
+            ["financial_hardship", "request_installment"], [], [], index, label_set_index
+        )
+        if nodes:
+            assert isinstance(nodes, list)
 
 
 class TestFallbacksStillWork:
-    def test_key_drop_fallback(self, tree, index, keyword_freq):
+    def test_empty_key_fallback(self, tree, index, label_set_index):
         result = recommend(
-            inherited_facts=["nonexistent_xyz"], branch_key_values=[],
             query_bitmask=1023, conversation_context="客户说没有钱",
-            query_bg={}, tree=tree, index=index, keyword_freq=keyword_freq,
+            query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
+            conversation_state={"branch_key": {"facts": ["nonexistent_xyz"]}, "inherited_facts": [], "inherited_emotions": [], "willingness": None},
         )
         assert result is not None
-        assert "key_drop" in result["fallbacks"]

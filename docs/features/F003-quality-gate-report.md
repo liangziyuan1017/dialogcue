@@ -1,6 +1,6 @@
 ## Quality Gate Report — F003
 
-Spec: plan_feature_base.md F003
+Spec: F003-reward-labeling.md
 检查时间: 2026-06-11
 
 ### 愿景覆盖（Step 0）

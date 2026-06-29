@@ -5,7 +5,7 @@ from f004_decision_tree.build_decision_tree import _llm_should_merge, _merge_tur
 
 class TestLLMShouldMerge:
     def test_merge_response(self, monkeypatch):
-        import infra.llm_client as llm_client
+        import f007_infrastructure.llm_client as llm_client
         monkeypatch.setattr(llm_client, "call_deepseek_json", lambda p: {"groups": [[0, 1]], "reason": "same plan"})
         turns = [
             {"turn_index": 0, "role": "催收员", "text": "方案A", "state": {}},
@@ -17,7 +17,7 @@ class TestLLMShouldMerge:
         assert result == [[0, 1]]
 
     def test_keep_response(self, monkeypatch):
-        import infra.llm_client as llm_client
+        import f007_infrastructure.llm_client as llm_client
         monkeypatch.setattr(llm_client, "call_deepseek_json", lambda p: {"groups": [[0], [1]], "reason": "different topic"})
         turns = [
             {"turn_index": 0, "role": "催收员", "text": "方案A", "state": {}},
@@ -50,7 +50,7 @@ class TestLLMShouldMerge:
         assert result == [[0], [1]]
 
     def test_partial_merge_response(self, monkeypatch):
-        import infra.llm_client as llm_client
+        import f007_infrastructure.llm_client as llm_client
         monkeypatch.setattr(llm_client, "call_deepseek_json", lambda p: {"groups": [[0, 1], [2]], "reason": "first two same topic"})
         turns = [
             {"turn_index": 0, "role": "催收员", "text": "方案A", "state": {}},
@@ -62,7 +62,7 @@ class TestLLMShouldMerge:
         assert result == [[0, 1], [2]]
 
     def test_word_count_enforcement_splits_group(self, monkeypatch):
-        import infra.llm_client as llm_client
+        import f007_infrastructure.llm_client as llm_client
         long_a = "字" * 80
         long_b = "字" * 80
         long_c = "字" * 90
@@ -79,7 +79,7 @@ class TestLLMShouldMerge:
         assert result == [[0], [1], [2, 3]]
 
     def test_word_count_single_exceeds_limit_kept_alone(self, monkeypatch):
-        import infra.llm_client as llm_client
+        import f007_infrastructure.llm_client as llm_client
         very_long = "字" * 160
         short = "字" * 30
         monkeypatch.setattr(llm_client, "call_deepseek_json", lambda p: {"groups": [[0, 1]], "reason": "same"})
@@ -139,7 +139,7 @@ class TestEnsureSameActionMerged:
         assert result == [[0], [1, 2]]
 
     def test_llm_kept_same_action_separate_gets_merged(self, monkeypatch):
-        import infra.llm_client as llm_client
+        import f007_infrastructure.llm_client as llm_client
         monkeypatch.setattr(llm_client, "call_deepseek_json", lambda p: {"groups": [[0], [1], [2]], "reason": "keep all"})
         turns = [
             {"turn_index": 0, "role": "催收员", "text": "a", "state": {"action": "pressure"}},
@@ -154,7 +154,7 @@ class TestEnsureSameActionMerged:
 
 class TestApplyMerges:
     def test_merges_applied(self, monkeypatch):
-        import infra.llm_client as llm_client
+        import f007_infrastructure.llm_client as llm_client
         monkeypatch.setattr(llm_client, "call_deepseek_json", lambda p: {"groups": [[0, 1]], "reason": "same"})
         turns = [
             {"turn_index": 0, "role": "催收员", "text": "方案A", "state": {"action": "plan_proposal"}},
@@ -168,7 +168,7 @@ class TestApplyMerges:
         assert "_merged_entry" in collector_turns[0]
 
     def test_keep_preserved(self, monkeypatch):
-        import infra.llm_client as llm_client
+        import f007_infrastructure.llm_client as llm_client
         monkeypatch.setattr(llm_client, "call_deepseek_json", lambda p: {"groups": [[0], [1]], "reason": "different"})
         turns = [
             {"turn_index": 0, "role": "催收员", "text": "方案A", "state": {"action": "plan_proposal"}},
@@ -181,7 +181,7 @@ class TestApplyMerges:
         assert len(collector_turns) == 2
 
     def test_partial_merge(self, monkeypatch):
-        import infra.llm_client as llm_client
+        import f007_infrastructure.llm_client as llm_client
         monkeypatch.setattr(llm_client, "call_deepseek_json", lambda p: {"groups": [[0, 1], [2]], "reason": "first two same"})
         turns = [
             {"turn_index": 0, "role": "催收员", "text": "方案A", "state": {"action": "plan_proposal"}},
@@ -219,7 +219,7 @@ class TestApplyMerges:
         assert len(collector_turns) == 2
 
     def test_interruption_removed_only_for_merged_group(self, monkeypatch):
-        import infra.llm_client as llm_client
+        import f007_infrastructure.llm_client as llm_client
         monkeypatch.setattr(llm_client, "call_deepseek_json", lambda p: {"groups": [[0, 1], [2]], "reason": "partial"})
         turns = [
             {"turn_index": 0, "role": "催收员", "text": "方案A", "state": {"action": "plan_proposal"}},

@@ -1,6 +1,6 @@
 ## Quality Gate Report
 
-Spec: `docs/features/F011-vector-retrieval-integration.md`
+Spec: `docs/features/F007b-vector-retrieval-integration.md`
 检查时间: 2026-06-24
 
 ### 愿景覆盖

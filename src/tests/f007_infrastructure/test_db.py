@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, call, patch
-from infra.db import SentenceDB
+from f007_infrastructure.db import SentenceDB
+from f007_infrastructure.embeddings import EMBEDDING_DIM
 
 
 @pytest.fixture
@@ -23,8 +24,8 @@ def mock_conn(mock_cursor):
 
 @pytest.fixture
 def db(mock_conn):
-    with patch("infra.db.psycopg2.connect", return_value=mock_conn), \
-         patch("infra.db.register_vector"):
+    with patch("f007_infrastructure.db.psycopg2.connect", return_value=mock_conn), \
+         patch("f007_infrastructure.db.register_vector"):
         db = SentenceDB("dbname=test")
         db._conn = mock_conn
         yield db
@@ -111,12 +112,12 @@ class TestGetNodeBySignature:
 
 class TestUpsertSentences:
     def test_inserts_sentence(self, db, mock_cursor):
-        sentences = [{"script_id": "s1", "node_id": 1, "script_text": "你好", "bg_bitmask_int": 3, "win_rate": 0.5, "sas": 0.8, "embedding": [0.1] * 768}]
+        sentences = [{"script_id": "s1", "node_id": 1, "script_text": "你好", "bg_bitmask_int": 3, "win_rate": 0.5, "sas": 0.8, "embedding": [0.1] * EMBEDDING_DIM}]
         db.upsert_sentences(sentences)
         assert mock_cursor.execute.call_count > 0
 
     def test_uses_on_conflict(self, db, mock_cursor):
-        sentences = [{"script_id": "s1", "node_id": 1, "script_text": "你好", "bg_bitmask_int": 0, "win_rate": 0.5, "sas": 0.8, "embedding": [0.0] * 768}]
+        sentences = [{"script_id": "s1", "node_id": 1, "script_text": "你好", "bg_bitmask_int": 0, "win_rate": 0.5, "sas": 0.8, "embedding": [0.0] * EMBEDDING_DIM}]
         db.upsert_sentences(sentences)
         calls = [str(c) for c in mock_cursor.execute.call_args_list]
         assert any("ON CONFLICT" in c.upper() for c in calls)
@@ -146,22 +147,22 @@ class TestSearchSimilar:
         mock_cursor.fetchall.return_value = [
             {"script_id": "s1", "script_text": "hello", "vec_score": 0.95, "win_rate": 0.8, "sas": 0.7}
         ]
-        result = db.search_similar([0.1] * 768, node_id=1, query_bitmask=3, limit=10)
+        result = db.search_similar([0.1] * EMBEDDING_DIM, node_id=1, query_bitmask=3, limit=10)
         assert isinstance(result, list)
         assert "vec_score" in result[0]
 
     def test_uses_cosine_distance(self, db, mock_cursor):
-        db.search_similar([0.1] * 768, node_id=1, query_bitmask=3)
+        db.search_similar([0.1] * EMBEDDING_DIM, node_id=1, query_bitmask=3)
         calls = [str(c) for c in mock_cursor.execute.call_args_list]
         assert any("<=>" in c for c in calls)
 
     def test_applies_bitmask_filter(self, db, mock_cursor):
-        db.search_similar([0.1] * 768, node_id=1, query_bitmask=3)
+        db.search_similar([0.1] * EMBEDDING_DIM, node_id=1, query_bitmask=3)
         calls = [str(c) for c in mock_cursor.execute.call_args_list]
         assert any("bg_bitmask_int" in c for c in calls)
 
     def test_applies_limit(self, db, mock_cursor):
-        db.search_similar([0.1] * 768, node_id=1, query_bitmask=3, limit=5)
+        db.search_similar([0.1] * EMBEDDING_DIM, node_id=1, query_bitmask=3, limit=5)
         calls = [str(c) for c in mock_cursor.execute.call_args_list]
         assert any("LIMIT" in c.upper() or "5" in c for c in calls)
 

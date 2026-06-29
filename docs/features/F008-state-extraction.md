@@ -1,21 +1,22 @@
 ---
-name: F012
-title: State Extraction Module — LLM-first + Keyword Fallback
+id: F008
+name: State Extraction Module
 status: review
-depends_on: [F010, F011]
+depends_on: [F007, F007b]
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
+review_submitted: 2026-06-25
 worktree: /Users/jiani/Desktop/icbc-f010-infra-layer
 branch: feat/f010-infra-layer
 ---
 
-# F012: State Extraction Module — LLM-first + Keyword Fallback
+# F008: State Extraction Module — LLM-first + Keyword Fallback
 
 ## Goal
 
-Create `src/f006_retrieval_engine/state_extraction.py` with LLM-first state extraction, PostgreSQL keyword fallback, and state accumulation with dedup.
+Create `src/f008_state_extraction/state_extraction.py` with LLM-first state extraction, PostgreSQL keyword fallback, and state accumulation with dedup.
 
-Covers **Step 7** of `stepwise_modification.md`.
+Covers **Step 7** of [F007-F009-implementation-steps.md](F007-F009-implementation-steps.md).
 
 ## Passing Criteria
 
@@ -29,5 +30,9 @@ Covers **Step 7** of `stepwise_modification.md`.
 
 ## Files
 
-- NEW: `src/f006_retrieval_engine/state_extraction.py`
-- NEW: `src/tests/f006_retrieval_engine/test_state_extraction.py`
+- NEW: `src/f008_state_extraction/state_extraction.py`
+- NEW: `src/tests/f008_state_extraction/test_state_extraction.py`
+
+## Implementation Plan
+
+See [implementation-plan.md](F008-implementation-plan.md)

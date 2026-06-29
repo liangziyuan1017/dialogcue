@@ -1,20 +1,27 @@
 import json
 import os
 from collections import defaultdict
+from itertools import combinations
 
 from .retrieval_ranking import (
-    BITMASK_FIELDS,
-    BG_BACKGROUND_FIELDS,
     RANKING_WEIGHTS,
-    compute_bg_boost,
     rank_sentences,
 )
+from f007_infrastructure.config import get as _cfg
+
+POOL_CAP = _cfg("pool_cap", 50)
 
 
 def _load_scored_tree():
-    path = os.path.join(os.path.dirname(__file__), "..", "f005_context_scoring", "decision_tree_scored.json")
+    path = os.path.join(os.path.dirname(__file__), "..", "f005_context_scoring", "data", "decision_tree_scored.json")
     with open(path, encoding="utf-8") as f:
         return json.load(f)
+
+
+def _compute_key(inherited_facts, branch_key_values, inherited_emotions=None):
+    if inherited_emotions is None:
+        inherited_emotions = []
+    return (tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)), tuple(sorted(inherited_emotions)))
 
 
 def _flatten_branch_key(branch_key):
@@ -27,12 +34,6 @@ def _flatten_branch_key(branch_key):
     return vals
 
 
-def _compute_key(inherited_facts, branch_key_values, inherited_emotions=None):
-    if inherited_emotions is None:
-        inherited_emotions = []
-    return (tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)), tuple(sorted(inherited_emotions)))
-
-
 def build_node_index(tree):
     index = defaultdict(list)
     def walk(node):
@@ -41,23 +42,26 @@ def build_node_index(tree):
         emotions = node.get("inherited_emotions", [])
         key = _compute_key(facts, bk_vals, emotions)
         index[key].append(node)
-        for child in node.get("children", []):
+        for child in node.get("children") or []:
             walk(child)
     walk(tree)
     return dict(index)
 
 
-def _compute_keyword_freq(index):
-    freq = {}
-    for (facts, bk, _emo), nodes in index.items():
-        for kw in facts + bk:
-            freq[kw] = freq.get(kw, 0) + 1
-    return freq
+def _build_label_set_index(index):
+    label_to_nodes = {}
+    for key, nodes in index.items():
+        label_set = frozenset(key[0] + key[1] + key[2])
+        label_to_nodes.setdefault(label_set, []).extend(nodes)
+    return label_to_nodes
 
 
-def lookup_by_key(inherited_facts, branch_key_values, index, inherited_emotions=None):
-    key = _compute_key(inherited_facts, branch_key_values, inherited_emotions)
-    return index.get(key, [])
+def _build_reverse_index(index):
+    keyword_to_keys = defaultdict(set)
+    for key in index:
+        for kw in key[0] + key[1] + key[2]:
+            keyword_to_keys[kw].add(key)
+    return dict(keyword_to_keys)
 
 
 def aggregate_pools(nodes):
@@ -67,26 +71,60 @@ def aggregate_pools(nodes):
     return pool
 
 
-def lookup_with_fallback(inherited_facts, branch_key_values, index, keyword_freq, inherited_emotions=None):
-    confidence = 1.0
-    fallbacks = []
-    facts = list(inherited_facts)
-    bk = list(branch_key_values)
-    emo = list(inherited_emotions) if inherited_emotions else []
+def _find_matching_nodes_subset(all_facts, all_emotions, all_actions, index, label_set_index, pool_cap=POOL_CAP):
+    all_facts = list(all_facts)
+    all_emotions = list(all_emotions)
+    all_actions = list(all_actions)
 
-    while True:
-        nodes = lookup_by_key(facts, bk, index, inherited_emotions=emo)
-        if nodes:
-            return nodes, confidence, fallbacks
-        if not facts:
-            nodes = lookup_by_key([], bk, index)
-            if nodes:
-                return nodes, confidence, fallbacks
-            return [], confidence, fallbacks
-        least = min(facts, key=lambda f: keyword_freq.get(f, 0))
-        facts.remove(least)
-        confidence -= 0.1
-        fallbacks.append("key_drop")
+    query_items = frozenset(all_facts + all_emotions + all_actions)
+
+    if query_items and query_items in label_set_index:
+        nodes = label_set_index[query_items]
+        if aggregate_pools(nodes):
+            return nodes, 1.0, []
+
+    drop_order = []
+    n_emo = len(all_emotions)
+    n_fact = len(all_facts)
+    for total_dropped in range(1, n_emo + n_fact + 1):
+        for n_drop_e in range(min(total_dropped, n_emo), -1, -1):
+            n_drop_f = total_dropped - n_drop_e
+            if n_drop_f < 0 or n_drop_f > n_fact:
+                continue
+            drop_order.append((n_drop_e, n_drop_f))
+
+    for n_drop_e, n_drop_f in drop_order:
+        found_nodes = []
+        keep_e = n_emo - n_drop_e
+        keep_f = n_fact - n_drop_f
+
+        for emo_subset in combinations(all_emotions, keep_e):
+            for fact_subset in combinations(all_facts, keep_f):
+                label_set = frozenset(fact_subset) | frozenset(emo_subset) | frozenset(all_actions)
+                if label_set in label_set_index:
+                    found_nodes.extend(label_set_index[label_set])
+
+        if found_nodes:
+            seen_ids = set()
+            unique = []
+            for n in found_nodes:
+                sid = n.get("state_id", str(id(n)))
+                if sid not in seen_ids:
+                    seen_ids.add(sid)
+                    unique.append(n)
+
+            pool = aggregate_pools(unique)
+            if pool:
+                if len(pool) <= pool_cap:
+                    n_dropped = n_drop_e + n_drop_f
+                    conf = max(0.0, 1.0 - n_dropped * _cfg("confidence.subset_drop_penalty", 0.1))
+                    fb = ["subset_drop_emotion"] * n_drop_e + ["subset_drop_fact"] * n_drop_f
+                    return unique, conf, fb
+
+    root_nodes = label_set_index.get(frozenset(), [])
+    if root_nodes and aggregate_pools(root_nodes):
+        return root_nodes, _cfg("confidence.root_fallback", 0.2), ["root_fallback"]
+    return [], 0.0, ["no_match"]
 
 
 def descend_for_sentences(nodes):
@@ -103,11 +141,11 @@ def descend_for_sentences(nodes):
     while True:
         next_level = []
         for node in current:
-            for child in node.get("children", []):
+            for child in node.get("children") or []:
                 next_level.append(child)
         if not next_level:
             return [], confidence, fallbacks
-        confidence -= 0.05
+        confidence -= _cfg("confidence.descend_penalty", 0.05)
         fallbacks.append("descend")
         pool = []
         for node in next_level:
@@ -118,57 +156,88 @@ def descend_for_sentences(nodes):
 
 
 def filter_by_bitmask(pool, query_bitmask):
+    if query_bitmask == 0:
+        return pool
     return [s for s in pool if (s.get("bg_bitmask_int", 0) & query_bitmask) == s.get("bg_bitmask_int", 0)]
 
 
+def _bit_count(n):
+    c = 0
+    while n:
+        c += 1
+        n &= n - 1
+    return c
+
+
 def relax_bitmask(pool, query_bitmask):
-    fallbacks = []
-    relaxations = 0
-    mask = query_bitmask
-    while mask > 0:
-        lowest_bit = mask & (-mask)
-        mask &= ~lowest_bit
-        relaxations += 1
-        fallbacks.append("bitmask_relax")
-        result = filter_by_bitmask(pool, mask)
+    if query_bitmask == 0:
+        result = filter_by_bitmask(pool, 0)
+        return (result, 0, []) if result else ([], 0, [])
+
+    n_bits = _bit_count(query_bitmask)
+    candidates = []
+    for drop_count in range(1, n_bits + 1):
+        keep_count = n_bits - drop_count
+        sub = query_bitmask
+        for _ in range(drop_count):
+            lowest = sub & (-sub)
+            sub &= ~lowest
+        if sub in [c[0] for c in candidates]:
+            continue
+        matched = filter_by_bitmask(pool, sub)
+        if matched:
+            candidates.append((sub, drop_count, matched))
+
+    if not candidates:
+        result = filter_by_bitmask(pool, 0)
         if result:
-            return result, relaxations, fallbacks
-    result = filter_by_bitmask(pool, 0)
-    if result:
-        return result, relaxations, fallbacks
-    return [], relaxations, fallbacks
+            return result, n_bits, ["bitmask_relax"] * n_bits
+        return [], n_bits, ["bitmask_relax"] * n_bits
+
+    candidates.sort(key=lambda c: c[1])
+    best_sub, best_drop, best_matched = candidates[0]
+    return best_matched, best_drop, ["bitmask_relax"] * best_drop
 
 
-def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_context, query_bg,
-              tree=None, index=None, keyword_freq=None, db=None, query_vec=None,
-              conversation_state=None, inherited_emotions=None):
+def recommend(query_bitmask, conversation_context, query_bg,
+              tree=None, index=None, db=None, query_vec=None,
+              conversation_state=None, label_set_index=None):
     if tree is None:
         tree = _load_scored_tree()
     if index is None:
         index = build_node_index(tree)
-    if keyword_freq is None:
-        keyword_freq = _compute_keyword_freq(index)
-    if conversation_state is None:
-        conversation_state = {"facts": [], "emotions": [], "actions": [], "willingness": None}
-    if inherited_emotions is None:
-        inherited_emotions = conversation_state.get("emotions", [])
+    if label_set_index is None:
+        label_set_index = _build_label_set_index(index)
 
-    confidence = 1.0
+    from f008_state_extraction.state_extraction import path_state_to_flat, flat_to_path_state
+
+    if conversation_state is None:
+        conversation_state = {"branch_key": {}, "inherited_facts": [], "inherited_emotions": [], "willingness": None}
+
+    if "branch_key" in conversation_state:
+        all_facts, all_emotions, all_actions = path_state_to_flat(conversation_state)
+        path_state = conversation_state
+    else:
+        all_facts = conversation_state.get("facts", [])
+        all_emotions = conversation_state.get("emotions", [])
+        all_actions = conversation_state.get("actions", [])
+        path_state = flat_to_path_state(all_facts, all_emotions, all_actions, conversation_state.get("willingness"))
+
+    composite_state_id = "|".join(all_facts + all_emotions + all_actions)
+
     fallbacks = []
 
     context_missing = not conversation_context
     if context_missing:
-        confidence -= 0.1
         fallbacks.append("context_missing")
 
-    nodes, n_conf, n_fb = lookup_with_fallback(inherited_facts, branch_key_values, index, keyword_freq, inherited_emotions=inherited_emotions)
-    confidence = min(confidence, n_conf) if n_conf < 1.0 else confidence
-    if n_conf < 1.0:
-        confidence = 1.0
-        fallbacks = list(n_fb)
-        if context_missing:
-            confidence -= 0.1
-            fallbacks.insert(0, "context_missing")
+    nodes, n_conf, n_fb = _find_matching_nodes_subset(
+        all_facts, all_emotions, all_actions, index, label_set_index
+    )
+    confidence = n_conf
+    fallbacks.extend(n_fb)
+    if context_missing:
+        confidence -= _cfg("confidence.context_missing_penalty", 0.1)
 
     if not nodes:
         return None
@@ -176,8 +245,8 @@ def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_co
     if db is not None and nodes:
         pool = []
         for node in nodes:
-            state_id = node.get("state_id", "")
-            node_row = db.get_node_by_signature(state_id)
+            path_sig = node.get("path_signature", "") or node.get("state_id", "")
+            node_row = db.get_node_by_signature(path_sig)
             node_id = node_row["id"] if node_row else None
             if node_id:
                 pool.extend(db.get_sentences_by_node(node_id))
@@ -188,25 +257,8 @@ def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_co
         d_pool, d_conf, d_fb = descend_for_sentences(nodes)
         fallbacks.extend(d_fb)
         if not d_pool:
-            facts = list(inherited_facts)
-            while facts:
-                least = min(facts, key=lambda f: keyword_freq.get(f, 0))
-                facts.remove(least)
-                fallbacks.append("key_drop")
-                nodes2 = lookup_by_key(facts, branch_key_values, index)
-                if nodes2:
-                    pool = aggregate_pools(nodes2)
-                    if pool:
-                        break
-                    d_pool2, _, d_fb2 = descend_for_sentences(nodes2)
-                    fallbacks.extend(d_fb2)
-                    if d_pool2:
-                        pool = d_pool2
-                        break
-            if not pool:
-                return None
-        else:
-            pool = d_pool
+            return None
+        pool = d_pool
 
     filtered = filter_by_bitmask(pool, query_bitmask)
     if not filtered:
@@ -224,40 +276,34 @@ def recommend(inherited_facts, branch_key_values, query_bitmask, conversation_co
         return None
 
     top = ranked[0]
-    confidence_val = 1.0
-    confidence_val -= fallbacks.count("key_drop") * 0.1
-    confidence_val -= fallbacks.count("descend") * 0.05
-    confidence_val -= fallbacks.count("bitmask_relax") * 0.05
-    confidence_val -= fallbacks.count("context_missing") * 0.1
-    confidence_val = max(confidence_val, 0.0)
+    confidence -= fallbacks.count("descend") * _cfg("confidence.descend_penalty", 0.05)
+    confidence -= fallbacks.count("bitmask_relax") * _cfg("confidence.bitmask_relax_penalty", 0.05)
+    confidence = max(confidence, 0.0)
 
     return {
         "script_text": top.get("script_text", ""),
         "script_id": top.get("script_id", ""),
-        "state_id": top.get("state_id", ""),
+        "state_id": composite_state_id,
         "win_rate": top.get("win_rate", 0),
         "sas": top.get("sas", 0),
         "vec_score": top.get("vec_score", 0),
         "final_score": top.get("final_score", 0),
-        "confidence": round(confidence_val, 2),
+        "confidence": round(confidence, 2),
         "ranking_weights": RANKING_WEIGHTS,
         "fallbacks": fallbacks,
-        "conversation_state": conversation_state,
+        "conversation_state": path_state,
     }
 
 
 if __name__ == "__main__":
     tree = _load_scored_tree()
     index = build_node_index(tree)
-    keyword_freq = _compute_keyword_freq(index)
     print(f"Index: {len(index)} keys, {sum(len(v) for v in index.values())} nodes")
     result = recommend(
-        inherited_facts=["financial_hardship"],
-        branch_key_values=["empathy"],
         query_bitmask=0,
         conversation_context="客户说没有钱",
         query_bg={},
-        tree=tree, index=index, keyword_freq=keyword_freq,
+        tree=tree, index=index,
     )
     if result:
         print(f"Recommend: {result['script_id']} (confidence={result['confidence']}, final_score={result['final_score']:.4f})")

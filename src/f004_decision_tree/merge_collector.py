@@ -1,10 +1,12 @@
 import re
 
+from f007_infrastructure.config import get as _cfg
+
 
 CLOSING_ACTIONS = {"closure", "goodbye"}
 
 
-MAX_MERGED_WORDS = 150
+MAX_MERGED_WORDS = _cfg("decision_tree.max_merged_words", 150)
 
 
 def _word_count(text):
@@ -12,7 +14,7 @@ def _word_count(text):
     return len(cleaned)
 
 
-ACK_MAX_WORDS = 15
+ACK_MAX_WORDS = _cfg("decision_tree.ack_max_words", 15)
 
 
 def _is_ack_interruption(turn):
@@ -137,8 +139,8 @@ def _ensure_same_action_merged(turns, indices, partition):
 
 
 def _llm_should_merge(turns, group):
-    from infra.llm_client import call_deepseek_json
-    from infra.retry import retry_call
+    from f007_infrastructure.llm_client import call_deepseek_json
+    from f007_infrastructure.retry import retry_call
     indices = group["collector_indices"]
     if len(indices) <= 1:
         return [[0]]

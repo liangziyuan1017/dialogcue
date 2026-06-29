@@ -3,9 +3,11 @@ import os
 
 import pytest
 
-from f005_context_scoring.score_tree import (
+from f005_context_scoring.scoring_metrics import (
     BITMASK_FIELDS,
     BG_BACKGROUND_FIELDS,
+)
+from f005_context_scoring.score_tree import (
     build_conversation_context_lookup,
     build_context_lookup,
     build_customer_info_lookup,
@@ -101,7 +103,7 @@ class TestScoreSentencePool:
 
 class TestScoreTree:
     def test_preserves_structure(self, context_lookup, reward_lookup, customer_info_lookup):
-        with open(os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "decision_tree.json"), encoding="utf-8") as f:
+        with open(os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "data", "decision_tree.json"), encoding="utf-8") as f:
             tree = json.load(f)
         import copy
         original = copy.deepcopy(tree)
@@ -110,7 +112,7 @@ class TestScoreTree:
         assert len(scored.get("children", [])) == len(original.get("children", []))
 
     def test_all_sentences_scored(self, context_lookup, reward_lookup, customer_info_lookup):
-        with open(os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "decision_tree.json"), encoding="utf-8") as f:
+        with open(os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "data", "decision_tree.json"), encoding="utf-8") as f:
             tree = json.load(f)
         scored = score_tree(tree, context_lookup, reward_lookup, customer_info_lookup)
         missing = []
@@ -125,7 +127,7 @@ class TestScoreTree:
         assert missing == []
 
     def test_all_sentences_have_conversation_context(self, context_lookup, reward_lookup, customer_info_lookup):
-        with open(os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "decision_tree.json"), encoding="utf-8") as f:
+        with open(os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "data", "decision_tree.json"), encoding="utf-8") as f:
             tree = json.load(f)
         turns_lookup = build_turns_lookup()
         conv_ctx_lookup = build_conversation_context_lookup(tree, turns_lookup)
@@ -165,7 +167,7 @@ class TestConversationContext:
         assert "第二句" in ctx
 
     def test_build_conversation_context_lookup(self):
-        with open(os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "decision_tree.json"), encoding="utf-8") as f:
+        with open(os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "data", "decision_tree.json"), encoding="utf-8") as f:
             tree = json.load(f)
         turns_lookup = build_turns_lookup()
         ctx_lookup = build_conversation_context_lookup(tree, turns_lookup)

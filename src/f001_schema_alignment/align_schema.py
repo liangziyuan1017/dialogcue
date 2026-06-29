@@ -5,17 +5,15 @@ import re
 
 
 def _load_output_manual():
-    data_path = os.path.join(os.path.dirname(__file__), "..", "..", "data", "output_manual.py")
-    spec = importlib.util.spec_from_file_location("output_manual", data_path)
+    data_path = os.path.join(os.path.dirname(__file__), "..", "f000_keyword_discovery", "data", "output_labeled.py")
+    spec = importlib.util.spec_from_file_location("output_labeled", data_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod.results
 
 
 def _load_output_labeled():
-    data_path = os.path.join(os.path.dirname(__file__), "output_labeled.py")
-    if not os.path.exists(data_path):
-        data_path = os.path.join(os.path.dirname(__file__), "..", "..", "data", "output_labeled.py")
+    data_path = os.path.join(os.path.dirname(__file__), "..", "f000_keyword_discovery", "data", "output_labeled.py")
     if not os.path.exists(data_path):
         return None
     spec = importlib.util.spec_from_file_location("output_labeled", data_path)
@@ -160,7 +158,7 @@ def _python_dumps(obj, indent=2):
 
 def write_output_aligned(output_path=None):
     if output_path is None:
-        output_path = os.path.join(os.path.dirname(__file__), "output_aligned.py")
+        output_path = os.path.join(os.path.dirname(__file__), "data", "output_aligned.py")
     aligned = align_all()
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("results = ")

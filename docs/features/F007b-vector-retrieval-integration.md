@@ -1,23 +1,24 @@
 ---
-name: F011
-title: Vector Retrieval Integration — F005 Embedding Load + F006 Vector Ranking
+id: F007b
+name: Vector Retrieval Integration
 status: review
-depends_on: [F010]
+depends_on: [F007]
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
+review_submitted: 2026-06-25
 worktree: /Users/jiani/Desktop/icbc-f010-infra-layer
 branch: feat/f010-infra-layer
 ---
 
-# F011: Vector Retrieval Integration — F005 Embedding Load + F006 Vector Ranking
+# F007b: Vector Retrieval Integration — F005 Embedding Load + F006 Vector Ranking
 
 ## Goal
 
-Wire the F010 infrastructure into the existing F005 and F006 modules:
+Wire the F007 infrastructure into the existing F005 and F006 modules:
 1. **F005**: After scoring, embed all sentences and load into PostgreSQL
 2. **F006**: Replace char-ngram TF-IDF with vector similarity, unify ranking into single weighted fusion
 
-Covers **Steps 4-6** of `stepwise_modification.md`.
+Covers **Steps 4-6** of [F007-F009-implementation-steps.md](F007-F009-implementation-steps.md).
 
 ## Passing Criteria
 
@@ -45,4 +46,4 @@ Modifies existing F005 and F006 modules. Does NOT create new modules (state extr
 
 ## Implementation Plan
 
-See [F011-implementation-plan.md](F011-implementation-plan.md)
+See [F007b-implementation-plan.md](F007b-implementation-plan.md)

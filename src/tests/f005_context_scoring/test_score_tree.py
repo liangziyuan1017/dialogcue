@@ -1,12 +1,10 @@
 import numpy as np
 import pytest
 
-from f005_context_scoring.score_tree import (
+from f007_infrastructure.embeddings import EMBEDDING_DIM
+from f005_context_scoring.scoring_metrics import (
     BITMASK_FIELDS,
     BG_BACKGROUND_FIELDS,
-    build_context_lookup,
-    build_customer_info_lookup,
-    build_reward_lookup,
     compute_bg_background,
     compute_bg_constraints,
     compute_hwr,
@@ -16,6 +14,11 @@ from f005_context_scoring.score_tree import (
     encode_bitmask_int,
     _extract_bg_constraints,
     _extract_bg_background,
+)
+from f005_context_scoring.score_tree import (
+    build_context_lookup,
+    build_customer_info_lookup,
+    build_reward_lookup,
     _score_sentence_pool,
 )
 
@@ -286,7 +289,7 @@ class TestEmbeddingInScorePool:
             {"script_text": "你好", "script_id": "s1", "source_call_ids": []},
             {"script_text": "再见", "script_id": "s2", "source_call_ids": []},
         ]
-        fake_vecs = [[0.1] * 768, [0.2] * 768]
+        fake_vecs = [[0.1] * EMBEDDING_DIM, [0.2] * EMBEDDING_DIM]
         _score_sentence_pool(
             pool, {}, {}, {},
             conv_ctx_lookup={},
@@ -294,8 +297,8 @@ class TestEmbeddingInScorePool:
         )
         assert "_context_vec" in pool[0]
         assert "_context_vec" in pool[1]
-        assert len(pool[0]["_context_vec"]) == 768
-        assert len(pool[1]["_context_vec"]) == 768
+        assert len(pool[0]["_context_vec"]) == EMBEDDING_DIM
+        assert len(pool[1]["_context_vec"]) == EMBEDDING_DIM
 
     def test_no_context_vec_when_no_embed_fn(self):
         pool = [
@@ -343,7 +346,7 @@ class TestWriteScoredTreeWithDB:
              patch("f005_context_scoring.score_tree.build_customer_info_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.build_turns_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.build_conversation_context_lookup", return_value={}), \
-             patch("f005_context_scoring.score_tree.embed_texts", return_value=[[0.1]*768]), \
+             patch("f005_context_scoring.score_tree.embed_texts", return_value=[[0.1]*EMBEDDING_DIM]), \
              patch("f005_context_scoring.score_tree._load_state_keywords", return_value={}):
             mock_tree.return_value = {
                 "state_id": "root", "branch_key": {}, "inherited_facts": [],

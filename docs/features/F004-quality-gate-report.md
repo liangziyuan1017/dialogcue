@@ -1,6 +1,6 @@
 ## Quality Gate Report — F004
 
-Spec: plan_feature_base.md F004
+Spec: F004-decision-tree-construction.md
 检查时间: 2026-06-17
 
 ### 愿景覆盖（Step 0）

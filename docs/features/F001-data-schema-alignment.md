@@ -3,7 +3,7 @@ id: F001
 name: Data Schema Alignment
 status: complete
 owner: agent
-source: plan_feature_base.md
+source: ROADMAP.md
 created: 2026-06-10
 depends_on: F000
 merged: 2026-06-10 63e5a0c
@@ -42,7 +42,7 @@ Map all 31 raw records to SOP-aligned schema:
 
 - [x] All 31 records present in output
 - [x] Every record has `turns_annotated`, `reward`, `state_transitions`, `context`
-- [x] All 9 context fields populated (no nulls in required fields)
+- [x] All 21 context fields populated (no nulls in required fields, per ADR-006)
 - [x] Original dialog data preserved verbatim
 
 ## Dependencies
@@ -51,12 +51,12 @@ Map all 31 raw records to SOP-aligned schema:
 
 ## Links
 
-- [plan_feature_base.md](../../plan_feature_base.md) — F001 spec
-- [plan.md](../../plan.md) — Phase 0 detailed mapping
+- [ROADMAP.md](../ROADMAP.md) — dependency graph + architecture decisions
+- [ADR-006](../decisions/ADR-006-context-constraint-mapping.md) — context constraint mapping
 
 ## Implementation Plan
 
-See [implementation-plan.md](implementation-plan.md)
+See [implementation-plan.md](F001-implementation-plan.md)
 
 ## Review Notes
 

@@ -95,21 +95,18 @@ TDD:
 
 ## Step 7: Conversation Context + Fallback 4
 
-- If context missing: skip context ranking, record "context_missing"
-- `limited`: promote win_rate to primary
-- `full`: no ranking change
+- If context missing: skip vector scoring, record "context_missing"
+- Set `vec_score = 0`, redistribute weight to `win_rate`
 
 TDD:
 1. Write test: `add_conversation_context()` stores `conversation_context` on each sentence
-2. Write test: `compute_context_similarity()` returns float in [0, 1]
-3. Write test: identical context returns 1.0
-4. Write test: missing context triggers fallback (fallbacks=["context_missing"])
-5. Write test: missing context in `limited` mode promotes win_rate
-6. Implement `add_conversation_context()`, `compute_context_similarity()`
+2. Write test: missing context triggers fallback (fallbacks=["context_missing"])
+3. Write test: missing context sets vec_score = 0
+4. Implement `add_conversation_context()`
 
 ## Step 8: bg_background Soft Boost
 
-Compute light similarity score (full strategy only).
+Compute light similarity score.
 
 - Industry match: +0.05, education: +0.02, debt range ±50%: +0.03, age ±10yr: +0.02
 
@@ -119,24 +116,23 @@ TDD:
 3. Write test: all matches sum correctly
 4. Implement `compute_bg_boost(sentence_bg, query_bg)`
 
-## Step 9: Dual-Strategy Rank
+## Step 9: Unified Weighted Fusion Ranking
 
-`limited`: bitmask filter → context_similarity DESC → win_rate DESC → sas DESC
-`full`: bitmask filter → win_rate DESC → context_similarity DESC → bg_boost + sas DESC
+Single ranking formula: `final_score = 0.40*win_rate + 0.30*vec_score + 0.15*sas + 0.15*bg_boost`
 
 TDD:
-1. Write test: `limited` ranks context_similarity first
-2. Write test: `full` ranks win_rate first
-3. Write test: both apply bitmask filter first
-4. Write test: `limited` ignores bg_background boost
-5. Write test: `full` applies bg_background boost
-6. Write test: SAS is tiebreak in both
-7. Write test: empty pool returns None
-8. Implement `rank_sentences()`, `_rank_limited()`, `_rank_full()`
+1. Write test: `RANKING_WEIGHTS` dict has correct keys and sums to 1.0
+2. Write test: `rank_sentences()` computes correct `final_score`
+3. Write test: sorted by `final_score` DESC
+4. Write test: bitmask filter applied first
+5. Write test: bg_background boost applied
+6. Write test: SAS is secondary signal
+7. Write test: empty pool returns empty list
+8. Implement `rank_sentences()` with unified fusion
 
 ## Step 10: recommend() Integration
 
-Wire steps 1–9 into `recommend(facts, query_bitmask, conversation_context, query_bg, strategy)`.
+Wire steps 1–9 into `recommend(facts, query_bitmask, conversation_context, query_bg, db=None)`.
 
 TDD:
 1. Write test: exact match → top-1 with all fields (confidence=1.0, fallbacks=[])
@@ -149,7 +145,8 @@ TDD:
 8. Write test: cascading fallbacks in order
 9. Write test: confidence formula
 10. Write test: terminal case returns None (confidence=0.0)
-9. Implement `recommend()`
+11. Write test: db parameter uses PostgreSQL when provided, in-memory when None
+12. Implement `recommend()`
 
 ## Step 11: Integration Tests on Real Tree
 
@@ -157,8 +154,30 @@ TDD:
 2. Test: all 267 keys reachable
 3. Test: recommend with known key returns expected script
 4. Test: recommend with incompatible bitmask triggers relaxation
-5. Test: `limited` vs `full` produce different rankings
+5. Test: unified fusion ranking produces correct final_score
 6. Test: conversation context similarity computed correctly
 7. Test: descend fallback on empty-pool nodes with children
 8. Test: descend includes all siblings at same depth
-8. Test: retrieval latency < 50ms
+9. Test: retrieval latency < 50ms
+
+## Config Externalization (F011)
+
+All ranking weights, boost values, confidence penalties, and pool cap are now configurable via `config.md`:
+
+| Parameter | config.md key | Default |
+|-----------|--------------|---------|
+| win_rate weight | `ranking_weights.win_rate` | 0.40 |
+| vec_score weight | `ranking_weights.vec_score` | 0.30 |
+| sas weight | `ranking_weights.sas` | 0.15 |
+| bg_boost weight | `ranking_weights.bg_boost` | 0.15 |
+| industry boost | `bg_boost.industry_match` | 0.05 |
+| education boost | `bg_boost.education_match` | 0.02 |
+| debt+interest boost | `bg_boost.debt_interest_match` | 0.03 |
+| age proximity boost | `bg_boost.age_proximity_match` | 0.02 |
+| age threshold | `bg_boost.age_proximity_threshold` | 10 |
+| pool cap | `pool_cap` | 50 |
+| subset drop penalty | `confidence.subset_drop_penalty` | 0.1 |
+| root fallback | `confidence.root_fallback` | 0.2 |
+| descend penalty | `confidence.descend_penalty` | 0.05 |
+| context missing penalty | `confidence.context_missing_penalty` | 0.1 |
+| bitmask relax penalty | `confidence.bitmask_relax_penalty` | 0.05 |

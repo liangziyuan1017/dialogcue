@@ -1,6 +1,7 @@
-from infra.llm_client import call_deepseek_json
+from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.llm_client import call_deepseek_json
 
-BATCH_SIZE = 20
+BATCH_SIZE = _cfg("batch_size.analysis", 20)
 
 
 def _build_batch_classify_prompt(turns: list) -> str:
@@ -68,7 +69,7 @@ def define_willingness_levels(records: list) -> list:
         for i, turn in enumerate(dialog):
             if turn["role"] != "客户":
                 continue
-            context_start = max(0, i - 3)
+            context_start = max(0, i - _cfg("context_window.analysis_turns_before", 3))
             context_turns = dialog[context_start:i]
             all_turns.append((turn["text"], context_turns))
 

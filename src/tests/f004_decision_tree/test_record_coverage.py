@@ -7,7 +7,7 @@ import pytest
 
 
 def _load_rewarded():
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "output_rewarded.py")
+    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.py")
     spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -15,7 +15,7 @@ def _load_rewarded():
 
 
 def _load_tree():
-    tree_path = os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "decision_tree.json")
+    tree_path = os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "data", "decision_tree.json")
     with open(tree_path, "r", encoding="utf-8") as f:
         return json.load(f)
 

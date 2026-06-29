@@ -31,7 +31,7 @@ Test that `load_records()` returns 31 records from `/data/output_manual.py`, eac
 ### Task 2: LLM Client
 
 **Files:**
-- Create: `src/infra/llm_client.py`
+- Create: `src/f007_infrastructure/llm_client.py`
 - Test: `src/test_llm_client.py`
 
 **Step 1: Write the failing test**

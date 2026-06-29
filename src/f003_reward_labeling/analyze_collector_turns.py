@@ -1,6 +1,7 @@
 from collections import defaultdict
-from infra.llm_client import call_deepseek_json
-from infra.retry import retry_call
+from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.llm_client import call_deepseek_json
+from f007_infrastructure.retry import retry_call
 
 SUGGESTED_ACTIONS = [
     {"group_name": "legal_warning", "keywords": ["法务处理", "起诉", "律师函"], "example_turn": ""},
@@ -8,7 +9,7 @@ SUGGESTED_ACTIONS = [
     {"group_name": "urgency_pressure", "keywords": ["最后期限", "今天必须", "马上"], "example_turn": ""},
 ]
 
-BATCH_SIZE = 20
+BATCH_SIZE = _cfg("batch_size.analysis", 20)
 
 
 def _build_batch_prompt(turns: list) -> str:

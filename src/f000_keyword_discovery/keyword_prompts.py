@@ -1,7 +1,8 @@
 from collections import defaultdict
 
+from f007_infrastructure.config import get as _cfg
 
-BATCH_SIZE = 20
+BATCH_SIZE = _cfg("batch_size.keyword_discovery", 20)
 
 SUGGESTED_FACTS = [
     {"group_name": "legal_threat", "keywords": ["被起诉", "法院", "律师函"], "example_turn": ""},

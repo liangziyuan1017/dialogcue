@@ -3,19 +3,15 @@ import json
 import os
 
 from f005_context_scoring.scoring_metrics import (
-    BITMASK_FIELDS,
-    BG_BACKGROUND_FIELDS,
-    _extract_bg_constraints,
-    _extract_bg_background,
     compute_bg_background,
     compute_bg_constraints,
     compute_hwr,
     compute_sas_for_pool,
-    cosine_similarity,
     encode_bitmask,
     encode_bitmask_int,
 )
-from infra.embeddings import embed_texts
+from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.embeddings import embed_texts, EMBEDDING_DIM
 
 
 def _load_py(filepath):
@@ -26,23 +22,23 @@ def _load_py(filepath):
 
 
 def _load_output_aligned():
-    path = os.path.join(os.path.dirname(__file__), "..", "f001_schema_alignment", "output_aligned.py")
+    path = os.path.join(os.path.dirname(__file__), "..", "f001_schema_alignment", "data", "output_aligned.py")
     return _load_py(path).results
 
 
 def _load_output_rewarded():
-    path = os.path.join(os.path.dirname(__file__), "..", "f003_reward_labeling", "output_rewarded.py")
+    path = os.path.join(os.path.dirname(__file__), "..", "f003_reward_labeling", "data", "output_rewarded.py")
     return _load_py(path).results
 
 
 def _load_decision_tree():
-    path = os.path.join(os.path.dirname(__file__), "..", "f004_decision_tree", "decision_tree.json")
+    path = os.path.join(os.path.dirname(__file__), "..", "f004_decision_tree", "data", "decision_tree.json")
     with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 
 def _load_state_keywords():
-    path = os.path.join(os.path.dirname(__file__), "..", "f000_keyword_discovery", "state_keywords.json")
+    path = os.path.join(os.path.dirname(__file__), "..", "f000_keyword_discovery", "data", "state_keywords.json")
     if not os.path.exists(path):
         return {}
     with open(path, encoding="utf-8") as f:
@@ -73,16 +69,19 @@ def build_turns_lookup(records=None):
     return {r["call_id"]: r.get("turns_annotated", []) for r in records}
 
 
-def _extract_conversation_context(script_text, turns, window=20):
+def _extract_conversation_context(script_text, turns, window=None):
+    if window is None:
+        window = _cfg("context_window.conversation_turns", 20)
     if not turns:
         return ""
-    script_prefix = script_text[:30] if script_text else ""
+    script_prefix = script_text[:_cfg("context_window.script_prefix_length", 50)] if script_text else ""
     match_idx = -1
-    for i, t in enumerate(turns):
-        text = t.get("text", "")
-        if script_prefix and text.startswith(script_prefix):
-            match_idx = i
-            break
+    if script_prefix:
+        for i, t in enumerate(turns):
+            text = t.get("text", "")
+            if text.startswith(script_prefix) or script_prefix.startswith(text):
+                match_idx = i
+                break
     if match_idx == -1:
         match_idx = len(turns)
     start = max(0, match_idx - window)
@@ -129,7 +128,7 @@ def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_
     for s, sas in zip(sentence_pool, sas_scores):
         s["sas"] = sas
     if embed_fn is not None:
-        texts = [s.get("script_text", "") for s in sentence_pool]
+        texts = [s.get("conversation_context", "") or s.get("script_text", "") for s in sentence_pool]
         vecs = embed_fn(texts)
         for s, vec in zip(sentence_pool, vecs):
             s["_context_vec"] = vec
@@ -137,7 +136,10 @@ def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_
 
 
 def score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup=None, embed_fn=None):
-    def _walk(node):
+    def _walk(node, parent_path=""):
+        state_id = node.get("state_id", "")
+        path_sig = f"{parent_path}/{state_id}" if parent_path else state_id
+        node["path_signature"] = path_sig
         _score_sentence_pool(
             node.get("sentence_pool", []),
             context_lookup,
@@ -147,7 +149,7 @@ def score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_c
             embed_fn=embed_fn,
         )
         for child in node.get("children", []):
-            _walk(child)
+            _walk(child, parent_path=path_sig)
 
     _walk(tree)
     return tree
@@ -175,20 +177,21 @@ def _collect_tree_nodes(tree, parent_id_map=None):
 
 def _collect_tree_sentences(tree):
     sentences = []
-    def walk(node):
+    def walk(node, parent_path=""):
         state_id = node.get("state_id", "")
+        path_sig = f"{parent_path}/{state_id}" if parent_path else state_id
         for s in node.get("sentence_pool", []):
-            s["_node_state_id"] = state_id
+            s["_node_path_sig"] = path_sig
             sentences.append(s)
         for child in node.get("children", []):
-            walk(child)
+            walk(child, parent_path=path_sig)
     walk(tree)
     return sentences
 
 
 def write_scored_tree(output_path=None, db=None):
     if output_path is None:
-        output_path = os.path.join(os.path.dirname(__file__), "decision_tree_scored.json")
+        output_path = os.path.join(os.path.dirname(__file__), "data", "decision_tree_scored.json")
     tree = _load_decision_tree()
     context_lookup = build_context_lookup()
     reward_lookup = build_reward_lookup()
@@ -211,7 +214,7 @@ def write_scored_tree(output_path=None, db=None):
                 node_sig_to_id[n["path_signature"]] = row["id"]
         db_sentences = []
         for s in all_sentences:
-            node_sig = s.get("_node_state_id", "")
+            node_sig = s.get("_node_path_sig", "")
             node_id = node_sig_to_id.get(node_sig, 1)
             db_sentences.append({
                 "script_id": s.get("script_id", ""),
@@ -222,7 +225,7 @@ def write_scored_tree(output_path=None, db=None):
                 "sas": s.get("sas", 0),
                 "bg_background": s.get("bg_background"),
                 "conversation_context": s.get("conversation_context", ""),
-                "embedding": s.get("_context_vec") or [0.0] * 768,
+                "embedding": s.get("_context_vec") or [0.0] * EMBEDDING_DIM,
             })
         db.upsert_sentences(db_sentences)
 
@@ -233,7 +236,7 @@ def write_scored_tree(output_path=None, db=None):
                 for group in keywords.get(category, []):
                     for kw in group.get("keywords", []):
                         kw_rows.append({
-                            "group_name": group.get("group_name", ""),
+                            "group_name": group.get("group_name") or "",
                             "category": category,
                             "keyword": kw,
                             "frequency": group.get("frequency", 0),
@@ -249,7 +252,7 @@ def write_scored_tree(output_path=None, db=None):
 
     for s in all_sentences:
         s.pop("_context_vec", None)
-        s.pop("_node_state_id", None)
+        s.pop("_node_path_sig", None)
 
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(scored, f, indent=2, ensure_ascii=False)

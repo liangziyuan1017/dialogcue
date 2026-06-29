@@ -3,7 +3,7 @@ id: F003
 name: Reward Labeling
 status: complete
 owner: agent
-source: plan_feature_base.md
+source: ROADMAP.md
 created: 2026-06-11
 depends_on: F001
 merged: 2026-06-11 76b7c5c
@@ -44,11 +44,11 @@ Determine R ∈ {0, 1} per conversation:
 
 ## Links
 
-- [plan_feature_base.md](../../plan_feature_base.md) — F003 spec
+- [ROADMAP.md](../ROADMAP.md) — dependency graph + architecture decisions
 
 ## Implementation Plan
 
-See [implementation-plan.md](implementation-plan.md)
+See [implementation-plan.md](F003-implementation-plan.md)
 
 ## Review Notes
 

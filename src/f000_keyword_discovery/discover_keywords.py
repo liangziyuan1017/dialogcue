@@ -1,6 +1,7 @@
 import copy
 import json
 import os
+from f007_infrastructure.config import get as _cfg
 from f000_keyword_discovery.keyword_prompts import (
     BATCH_SIZE,
     SUGGESTED_FACTS,
@@ -13,7 +14,7 @@ from f000_keyword_discovery.keyword_prompts import (
     _group_actions,
     _add_suggested,
 )
-from infra.llm_client import call_deepseek_json
+from f007_infrastructure.llm_client import call_deepseek_json
 
 
 def discover_keywords(records, output_path: str = None, labeled_output_path: str = None) -> dict:
@@ -25,7 +26,7 @@ def discover_keywords(records, output_path: str = None, labeled_output_path: str
         dialog = record["response"]["dialog"]
         for i, turn in enumerate(dialog):
             if turn["role"] == "客户":
-                context_start = max(0, i - 3)
+                context_start = max(0, i - _cfg("context_window.analysis_turns_before", 3))
                 context_turns = dialog[context_start:i]
                 customer_turns.append((turn, context_turns))
             elif turn["role"] == "催收员":
@@ -114,12 +115,12 @@ def discover_keywords(records, output_path: str = None, labeled_output_path: str
     }
 
     if output_path is None:
-        output_path = os.path.join(os.path.dirname(__file__), "state_keywords.json")
+        output_path = os.path.join(os.path.dirname(__file__), "data", "state_keywords.json")
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(taxonomy, f, ensure_ascii=False, indent=2)
 
     if labeled_output_path is None:
-        labeled_output_path = os.path.join(os.path.dirname(__file__), "..", "f001_schema_alignment", "output_labeled.py")
+        labeled_output_path = os.path.join(os.path.dirname(__file__), "data", "output_labeled.py")
     with open(labeled_output_path, "w", encoding="utf-8") as f:
         f.write("results = ")
         f.write(json.dumps(labeled_records, ensure_ascii=False, indent=2))

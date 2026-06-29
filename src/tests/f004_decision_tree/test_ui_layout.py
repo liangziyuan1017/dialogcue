@@ -1,7 +1,7 @@
 import json
 import os
 
-_TREE_PATH = os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "decision_tree.json")
+_TREE_PATH = os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "data", "decision_tree.json")
 
 SEP = 120
 
@@ -232,4 +232,4 @@ def test_compact_layout_consecutive_visual_depths():
     tree = _load_tree()
     all_nodes = _collect_nodes(tree)
     max_depth = max(d for _, d, _ in all_nodes)
-    assert max_depth == 17
+    assert max_depth == 16

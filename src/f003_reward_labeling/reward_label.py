@@ -3,12 +3,13 @@ import json
 import os
 import re
 
-from infra.llm_client import call_deepseek_json
-from infra.retry import retry_call
+from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.llm_client import call_deepseek_json
+from f007_infrastructure.retry import retry_call
 
 
 def _load_aligned():
-    data_path = os.path.join(os.path.dirname(__file__), "..", "f001_schema_alignment", "output_aligned.py")
+    data_path = os.path.join(os.path.dirname(__file__), "..", "f001_schema_alignment", "data", "output_aligned.py")
     spec = importlib.util.spec_from_file_location("output_aligned", data_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -36,7 +37,7 @@ def _build_explanation_prompt(record, acceptance_type):
 
 Focus on: what facts/emotions/willingness the customer showed, and what collector actions led to the successful outcome (customer {acceptance_type}).
 
-Keep the explanation under 100 words. Be specific about the causal chain.
+Keep the explanation under {_cfg("reward.explanation_max_words", 100)} words. Be specific about the causal chain.
 
 Annotated dialog:
 {dialog_text}
@@ -50,7 +51,7 @@ Respond in JSON:
 
 def _build_prompt(record):
     turns = record.get("turns_annotated", [])
-    last_n = turns[-6:] if len(turns) >= 6 else turns
+    last_n = turns[-_cfg("context_window.reward_last_n_turns", 6):] if len(turns) >= _cfg("context_window.reward_last_n_turns", 6) else turns
     dialog_lines = []
     for t in last_n:
         role = "Collector" if t["role"] == "催收员" else "Customer"
@@ -136,8 +137,8 @@ def label_reward(record):
             expl_prompt = _build_explanation_prompt(record, acceptance_type or "agree_to_pay")
             expl_result = call_deepseek_json(expl_prompt)
             explanation = expl_result.get("explanation", "")
-            if len(explanation.split()) > 100:
-                explanation = " ".join(explanation.split()[:100])
+            if len(explanation.split()) > _cfg("reward.explanation_max_words", 100):
+                explanation = " ".join(explanation.split()[:_cfg("reward.explanation_max_words", 100)])
         except Exception:
             explanation = ""
 
@@ -187,7 +188,7 @@ def _python_dumps(obj, indent=2):
 
 def write_output_rewarded(output_path=None):
     if output_path is None:
-        output_path = os.path.join(os.path.dirname(__file__), "output_rewarded.py")
+        output_path = os.path.join(os.path.dirname(__file__), "data", "output_rewarded.py")
     rewarded = label_all()
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("results = ")

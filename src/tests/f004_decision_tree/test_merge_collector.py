@@ -7,7 +7,7 @@ from f004_decision_tree.build_decision_tree import _find_merge_candidates, _word
 
 
 def _load_record(index):
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "output_rewarded.py")
+    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.py")
     spec = importlib.util.spec_from_file_location("mod", data_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -89,7 +89,7 @@ class TestFindMergeCandidates:
         assert 1 in g.get("skipped_label1_indices", [])
 
     def test_label1_turn_removed_on_merge(self, monkeypatch):
-        import infra.llm_client as llm_client
+        import f007_infrastructure.llm_client as llm_client
         monkeypatch.setattr(llm_client, "call_deepseek_json", lambda p: {"groups": [[0, 1]], "reason": "same"})
         turns = [
             {"turn_index": 0, "role": "催收员", "text": "方案A", "state": {"action": "plan_proposal"}},
