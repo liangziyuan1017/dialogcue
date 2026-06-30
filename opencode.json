@@ -21,8 +21,8 @@
         "baseURL": "https://api.modelarts-maas.com/v2"
       },
       "models": {
-        "glm-5.1": {
-          "name": "glm-5.1 (key 3)"
+        "glm-5.2": {
+          "name": "glm-5.2"
         }
       }
     }

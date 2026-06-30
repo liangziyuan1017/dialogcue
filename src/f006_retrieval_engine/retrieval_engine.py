@@ -155,12 +155,6 @@ def descend_for_sentences(nodes):
         current = next_level
 
 
-def filter_by_bitmask(pool, query_bitmask):
-    if query_bitmask == 0:
-        return pool
-    return [s for s in pool if (s.get("bg_bitmask_int", 0) & query_bitmask) == s.get("bg_bitmask_int", 0)]
-
-
 def _bit_count(n):
     c = 0
     while n:
@@ -169,34 +163,15 @@ def _bit_count(n):
     return c
 
 
-def relax_bitmask(pool, query_bitmask):
+def compute_bitmask_score(sentence_bitmask, query_bitmask):
+    if sentence_bitmask == 0:
+        return 1.0
     if query_bitmask == 0:
-        result = filter_by_bitmask(pool, 0)
-        return (result, 0, []) if result else ([], 0, [])
-
-    n_bits = _bit_count(query_bitmask)
-    candidates = []
-    for drop_count in range(1, n_bits + 1):
-        keep_count = n_bits - drop_count
-        sub = query_bitmask
-        for _ in range(drop_count):
-            lowest = sub & (-sub)
-            sub &= ~lowest
-        if sub in [c[0] for c in candidates]:
-            continue
-        matched = filter_by_bitmask(pool, sub)
-        if matched:
-            candidates.append((sub, drop_count, matched))
-
-    if not candidates:
-        result = filter_by_bitmask(pool, 0)
-        if result:
-            return result, n_bits, ["bitmask_relax"] * n_bits
-        return [], n_bits, ["bitmask_relax"] * n_bits
-
-    candidates.sort(key=lambda c: c[1])
-    best_sub, best_drop, best_matched = candidates[0]
-    return best_matched, best_drop, ["bitmask_relax"] * best_drop
+        return 0.5
+    matched = sentence_bitmask & query_bitmask
+    required_bits = _bit_count(sentence_bitmask)
+    matched_bits = _bit_count(matched)
+    return matched_bits / required_bits
 
 
 def recommend(query_bitmask, conversation_context, query_bg,
@@ -260,14 +235,10 @@ def recommend(query_bitmask, conversation_context, query_bg,
             return None
         pool = d_pool
 
-    filtered = filter_by_bitmask(pool, query_bitmask)
-    if not filtered:
-        filtered, relaxations, r_fb = relax_bitmask(pool, query_bitmask)
-        fallbacks.extend(r_fb)
-        if not filtered:
-            return None
+    for s in pool:
+        s["_bitmask_score"] = compute_bitmask_score(s.get("bg_bitmask_int", 0), query_bitmask)
 
-    ranked = rank_sentences(filtered, query_vec=query_vec, db=db,
+    ranked = rank_sentences(pool, query_vec=query_vec, db=db,
                             query_bg=query_bg,
                             conversation_context=conversation_context,
                             context_missing=context_missing)
@@ -277,7 +248,9 @@ def recommend(query_bitmask, conversation_context, query_bg,
 
     top = ranked[0]
     confidence -= fallbacks.count("descend") * _cfg("confidence.descend_penalty", 0.05)
-    confidence -= fallbacks.count("bitmask_relax") * _cfg("confidence.bitmask_relax_penalty", 0.05)
+    top_bitmask_score = top.get("bitmask_score", 1.0)
+    if top_bitmask_score < 1.0:
+        confidence -= (1.0 - top_bitmask_score) * _cfg("confidence.bitmask_mismatch_penalty", 0.1)
     confidence = max(confidence, 0.0)
 
     return {

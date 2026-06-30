@@ -21,7 +21,7 @@ _VALIDATION_RULES = [
     ("confidence.root_fallback", (0.0, 1.0)),
     ("confidence.descend_penalty", (0.0, 1.0)),
     ("confidence.context_missing_penalty", (0.0, 1.0)),
-    ("confidence.bitmask_relax_penalty", (0.0, 1.0)),
+    ("confidence.bitmask_mismatch_penalty", (0.0, 1.0)),
     ("confidence.embed_fallback_penalty", (0.0, 1.0)),
     ("keyword_confidence.base", (0.0, 1.0)),
     ("keyword_confidence.per_match", (0.0, 1.0)),
@@ -59,7 +59,7 @@ _VALIDATION_RULES = [
 
 def _validate(cfg):
     errors = []
-    ranking_keys = ["win_rate", "vec_score", "sas", "bg_boost"]
+    ranking_keys = ["win_rate", "vec_score", "sas", "bg_boost", "bitmask_score"]
     rw = cfg.get("ranking_weights", {})
     if isinstance(rw, dict) and all(k in rw for k in ranking_keys):
         total = sum(float(rw.get(k, 0)) for k in ranking_keys)

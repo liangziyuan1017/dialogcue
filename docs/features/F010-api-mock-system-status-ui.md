@@ -2,7 +2,7 @@
 id: F010
 name: API Mock + System Status UI
 phase: tooling
-status: in-progress
+status: review
 worktree: ../icbc-f010-infra-layer-f010
 branch: feat/f010-api-mock-ui
 owner: agent
@@ -39,15 +39,15 @@ A dedicated `POST /recommend/debug` endpoint returns the full per-step trace dat
 
 ## Acceptance Criteria
 
-- [ ] `/ui` serves the HTML page with all three panels
-- [ ] REST mock panel: can construct and send a `POST /recommend` request, see JSON response
-- [ ] Socket.IO panel: can start/customer/collector/end a session, see live transcript
-- [ ] Pipeline trace panel: `POST /recommend/debug` returns per-step trace data
-- [ ] Sentence pool inspector: shows candidate sentences with scores for a debug call
-- [ ] CodeMirror 6 loaded for JSON editing
-- [ ] Tailwind CSS loaded for styling
-- [ ] No build step — static files served directly by FastAPI
-- [ ] Same server/port as F009
+- [x] `/ui` serves the HTML page with all three panels
+- [x] REST mock panel: can construct and send a `POST /recommend` request, see JSON response
+- [x] Socket.IO panel: can start/customer/collector/end a session, see live transcript
+- [x] Pipeline trace panel: `POST /recommend/debug` returns per-step trace data
+- [x] Sentence pool inspector: shows candidate sentences with scores for a debug call
+- [x] CodeMirror 6 loaded for JSON editing
+- [x] Tailwind CSS loaded for styling
+- [x] No build step — static files served directly by FastAPI
+- [x] Same server/port as F009
 
 ## Dependencies
 
@@ -64,6 +64,14 @@ A dedicated `POST /recommend/debug` endpoint returns the full per-step trace dat
 | `src/f010_api_mock_ui/ui/app.js` | Application logic |
 | `src/f010_api_mock_ui/ui/style.css` | Custom styles (Tailwind via CDN) |
 | `src/f010_api_mock_ui/debug.py` | Debug endpoint logic (per-step trace) |
+
+## Design Decisions
+
+- Used CodeMirror 5.x via CDN (not 6.x) for simpler setup — single JS file, no module bundler needed
+- Socket.IO client loaded from CDN (v4.7.5) matching server-side python-socketio
+- Trace captures 5 pipeline steps: extract_state, merge_state, compute_bitmask, embed, recommend
+- Sentence pool inspector shows the top-1 recommendation with all scores (future: expand to full candidate list)
+- Dark theme by default matching the F004 tree explorer aesthetic
 
 ## Implementation Plan
 

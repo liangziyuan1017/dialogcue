@@ -38,6 +38,17 @@ def run(args) -> None:
         return
 
     records = _load_py_results(merged)
+    seen_call_ids = set()
+    deduped = []
+    for r in records:
+        cid = r.get("call_id")
+        if cid in seen_call_ids:
+            continue
+        seen_call_ids.add(cid)
+        deduped.append(r)
+    if len(deduped) < len(records):
+        print(f"{ts()} Deduped {len(records)} -> {len(deduped)} records by call_id")
+    records = deduped
     print(f"{ts()} Loaded {len(records)} records from {merged.name}")
 
     # ── F000: analyze_collector_turns ──────────────────────────────────────
@@ -65,6 +76,12 @@ def run(args) -> None:
     aligned_out = BASE_DIR / "f001_schema_alignment" / "data" / "output_aligned.py"
     _write_py_results(aligned, aligned_out)
     print(f"  → {aligned_out.name}  ({len(aligned)} records)")
+
+    # ── F004: write_dialog_records ─────────────────────────────────────────
+    import f004_decision_tree.build_decision_tree as bdt
+    dialog_path = BASE_DIR / "f004_decision_tree" / "data" / "dialog_records.json"
+    dialog_count = bdt.write_dialog_records(aligned, output_path=str(dialog_path))
+    print(f"  → {dialog_path.name}  ({dialog_count} records)")
 
     # ── F003: reward_label ─────────────────────────────────────────────────
     print(f"\n{ts()} F003: reward_label")

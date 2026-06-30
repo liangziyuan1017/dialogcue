@@ -7,8 +7,9 @@ from f007_infrastructure.config import get, load_config, reload_config
 
 
 def test_get_returns_config_value():
-    assert get("ranking_weights.win_rate") == 0.40
-    assert get("ranking_weights.vec_score") == 0.30
+    assert get("ranking_weights.win_rate") == 0.35
+    assert get("ranking_weights.vec_score") == 0.25
+    assert get("ranking_weights.bitmask_score") == 0.20
     assert get("pool_cap") == 50
 
 
@@ -66,7 +67,7 @@ def test_frontmatter_without_delimiters(monkeypatch):
 
 def test_validation_rejects_weights_not_summing_to_one(monkeypatch):
     with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False, encoding="utf-8") as f:
-        f.write("---\nranking_weights:\n  win_rate: 0.5\n  vec_score: 0.5\n  sas: 0.5\n  bg_boost: 0.5\n---\n")
+        f.write("---\nranking_weights:\n  win_rate: 0.5\n  vec_score: 0.5\n  sas: 0.5\n  bg_boost: 0.5\n  bitmask_score: 0.5\n---\n")
         tmp = f.name
     try:
         monkeypatch.setenv("CONFIG_PATH", tmp)

@@ -18,11 +18,11 @@ Build a two-phase system:
 
 1. **Offline (Phase 1 — Ingest):** Mine 31 historical call recordings to discover a state taxonomy (facts, emotions, willingness, collector actions), label every turn, score each conversation for repayment reward, construct a collector decision tree keyed by customer state, tag each tree sentence with a customer-profile bitmask + quality scores + semantic embedding, and load everything into PostgreSQL + pgvector.
 
-2. **Online (Phase 2 — Retrieve):** For each `POST /recommend` call, extract the customer's state from their utterance (LLM-first, keyword fallback), accumulate it into the conversation state, compute a permutation-insensitive node key, look up matching tree nodes O(1), aggregate their sentence pools, hard-filter by bitmask, and rank the survivors by unified weighted fusion (`0.40·win_rate + 0.30·vec_score + 0.15·sas + 0.15·bg_boost`). Return the top-1 collector script.
+2. **Online (Phase 2 — Retrieve):** For each `POST /recommend` call, extract the customer's state from their utterance (LLM-first, keyword fallback), accumulate it into the conversation state, compute a permutation-insensitive node key, look up matching tree nodes O(1), aggregate their sentence pools, and rank the survivors by unified weighted fusion (`0.40·win_rate + 0.30·vec_score + 0.15·sas + 0.15·bg_boost * soft_bit_mask`) -- configurable via configs. Return the top-1 collector script.
 
 ### Architecture
 
-- **Database**: PostgreSQL + pgvector + pg_trgm — single database for metadata, 1024-dim vectors, 10-bit bitmask filtering, and full-text search.
+- **Database**: PostgreSQL + pgvector + pg_trgm — single database for metadata, 1024-dim vectors, 10-bit bitmask soft scoring, and full-text search.
 - **Embeddings**: bge-m3 (1024-dim) served locally via Ollama, OpenAI-compatible API. No external per-call cost; offline-capable (ADR-024).
 - **LLM**: DeepSeek for offline taxonomy discovery / reward labeling / turn labelling, and for the single online state-extraction call in the hot path.
 - **API**: FastAPI, `POST /recommend` (REST, caller manages conversation state) + Socket.IO session interface (server manages state accumulation automatically). See F009.
@@ -41,7 +41,7 @@ Build a two-phase system:
 | F006 | Retrieval & Ranking Engine | 2 (2.2–2.7) | complete | [F006](docs/features/F006-retrieval-ranking-engine.md) |
 | F007 | Infrastructure Layer | 2 | review | [F007](docs/features/F007-infra-layer.md) |
 | F007b | Vector Retrieval Integration | 2 | review | [F007b](docs/features/F007b-vector-retrieval-integration.md) |
-| F008 | State Extraction Module | 2 (2.1) | review | [F008](docs/features/F008-state-extraction.md) |
+| F008 | Online State Extraction Module | 2 (2.1) | review | [F008](docs/features/F008-state-extraction.md) |
 | F009 | REST API + Socket.IO Server | 2 | review | [F009](docs/features/F009-api-server.md) |
 | F010 | API Mock + System Status UI | tooling | design-approved | [F010](docs/features/F010-api-mock-system-status-ui.md) |
 
@@ -87,7 +87,7 @@ decision_tree_scored.json  (backward-compat JSON)                               
 PostgreSQL: nodes │ sentences (embedding vector(1024), tsvector) │ taxonomy_keywords  │
         │                                                                            │
         ▼  F008 + F006 + F009  (online retrieval)                                    │
-POST /recommend  →  state extraction  →  relabel  →  node lookup  →  bitmask filter  →  vector rank  →  top-1 script
+POST /recommend  →  state extraction  →  relabel  →  node lookup  →  bitmask score  →  vector rank  →  top-1 script
                                           ↑__________________|
                                             *_relabeled grows (ADR-026)
 ```
@@ -250,7 +250,7 @@ labelled; filler turns ("嗯", "对", "好") are left unlabeled.
     {"level": 0, "definition": "拒绝还款", "boundary": "...", "example_turns": [...]},
     {"level": 1, "definition": "否认欠款", "boundary": "...", "example_turns": [...]},
     ...
-    {"level": 5, "definition": "同意还款", "boundary": "...", "example_turns": [...]}
+    {"level": 4, "definition": "同意还款", "boundary": "...", "example_turns": [...]}
   ]
 }
 ```
@@ -534,11 +534,11 @@ Tree structure (309 nodes, 782 sentences):
 
 #### What this does
 
-Tags each tree sentence with a 10-bit `bg_bitmask` (customer profile constraints) for O(1) filtering, computes two quality scores (HWR = Laplace-smoothed blended win rate; SAS = char-bigram TF-IDF cosine within pool), extracts the ~100-word conversation context preceding each script, embeds it via bge-m3 (1024-dim), and loads nodes + sentences + taxonomy into PostgreSQL.
+Tags each tree sentence with a 10-bit `bg_bitmask` (customer profile constraints) for soft-label, computes two quality scores (HWR = Laplace-smoothed blended win rate; SAS = char-bigram TF-IDF cosine within pool), extracts the ~100-word conversation context preceding each script, embeds it via bge-m3 (1024-dim), and loads nodes + sentences + taxonomy into PostgreSQL.
 
 #### Design considerations & decisions
 
-- **ADR-020**: 10-bit bitmask for O(1) AND filtering; intersection merge for multi-source sentences (conservative — only constraints in ALL source conversations are set); Laplace-smoothed HWR; char-bigram TF-IDF SAS (numpy only, no external API). Expanded 5→10 bits on 2026-06-22.
+- **ADR-020**: 10-bit bitmask for soft scoring; intersection merge for multi-source sentences (conservative — only constraints in ALL source conversations are set); Laplace-smoothed HWR; char-bigram TF-IDF SAS (numpy only, no external API). Expanded 5→10 bits on 2026-06-22. Soft scoring replaced hard filter on 2026-06-29.
 - **ADR-024**: bge-m3 via Ollama replaces char-ngram TF-IDF for semantic similarity — captures meaning ("没钱" ≈ "经济困难"); local/no-cost/offline; pgvector hybrid; unified ranking replaces dual-strategy.
 - **HWR with node-level aggregation**: sentence-level HWR unreliable for sentences in only 1-2 calls; blend `weight * sentence_hwr + (1-weight) * node_hwr` where `weight = n/(n+2)`.
 - **UC and CSI deferred**: `uplift_score = 0`, `csi = 0` with `deferred: true` — require causal analysis unavailable at 31-record scale.
@@ -683,7 +683,7 @@ Exposes the recommendation pipeline over two interfaces: `POST /recommend` (REST
 
 - **F009**: FastAPI chosen (already in `pyproject.toml`). Socket.IO added for stateful session management so the call platform doesn't have to track conversation state client-side.
 - **No LLM in ranking hot path** beyond the single F008 state-extraction call (ADR-009 eliminated the second LLM pass).
-- **Fallback hierarchy**: 6 levels — path signature miss → root; bitmask empty → relax; LLM fail → keyword; embed fail → win_rate+sas only; all exhausted → 404. See [Fallback Hierarchy](#fallback-hierarchy).
+- **Fallback hierarchy**: 5 levels — path signature miss → root; LLM fail → keyword; embed fail → win_rate+sas only; all exhausted → 404. Bitmask is now a soft ranking signal, not a filter. See [Fallback Hierarchy](#fallback-hierarchy).
 
 ```
 POST /recommend
@@ -915,20 +915,10 @@ the largest matching subset size. Keeps **descend** for the empty-pool case.
 
 #### Design considerations & decisions
 
-- **Best subset match** (replaces key-drop): if 5 labels and no perfect match,
-  find 4-label matches (position-independent), then 3, 2, 1. Pool all nodes
-  matching at the largest subset size, capped at N=50 candidates.
-- **Drop emotions first, then facts**: emotional context is relaxed before fact
-  specificity — facts define *what situation*, emotions define *how they feel*;
-  in fallback, preserve the situation longer. This is the inverse of ADR-022's
-  build-time concern (which kept emotions in the key to avoid aggregating
-  different emotional contexts). At retrieval fallback, we accept that
-  relaxation deliberately.
-- **Descend (kept for empty-pool)**: if matched nodes have empty pools but have
-  children, BFS down tree to nearest non-empty pools, −0.05 per level. This
-  handles a different case than subset match (empty pool, not key miss).
-- **F006**: Aggregate all sibling pools — avoids premature filtering by tree
-  position.
+- **Best subset match** (replaces key-drop): if 5 labels and no perfect match, find 4-label matches (position-independent), then 3, 2, 1. Pool all nodes matching at the largest subset size, capped at N=50 candidates.
+- **Drop emotions first, then facts**: emotional context is relaxed before fact specificity — facts define *what situation*, emotions define *how they feel*; in fallback, preserve the situation longer. This is the inverse of ADR-022's build-time concern (which kept emotions in the key to avoid aggregating different emotional contexts). At retrieval fallback, we accept that relaxation deliberately.
+- **Descend (kept for empty-pool)**: if matched nodes have empty pools but have children, BFS down tree to nearest non-empty pools, −0.05 per level. This handles a different case than subset match (empty pool, not key miss).
+- **F006**: Aggregate all sibling pools — avoids premature filtering by tree position.
 
 ```python
 # Exact match: label set {financial_hardship, request_installment, pleading}
@@ -938,15 +928,9 @@ nodes = label_set_index[frozenset({"financial_hardship", "request_installment", 
 
 **Fallback cascade** (if exact label-set miss):
 
-1. **Best subset match — drop emotions first**: try all (n-1)-emotion subsets,
-   then (n-2), ... then all emotions dropped, then drop 1 fact, 2 facts, ...
-   Pool all nodes matching at the first successful subset size (cap N=50).
-   Confidence: `1.0 − 0.1 × n_dropped`.
-2. **Descend fallback**: If matched nodes have empty pools but have children,
-   walk DOWN the tree (BFS) to nearest descendants with non-empty pools. All
-   siblings at the same depth are included. Each level: −0.05 confidence.
-3. **Root fallback**: If all subsets exhausted, use root node
-   (`initial_contact`). 0.2 confidence.
+1. **Best subset match — drop emotions first**: try all (n-1)-emotion subsets, then (n-2), ... then all emotions dropped, then drop 1 fact, 2 facts, ... Pool all nodes matching at the first successful subset size (cap N=50). Confidence: `1.0 − 0.1 × n_dropped`.
+2. **Descend fallback**: If matched nodes have empty pools but have children, walk DOWN the tree (BFS) to nearest descendants with non-empty pools. All siblings at the same depth are included. Each level: −0.05 confidence.
+3. **Root fallback**: If all subsets exhausted, use root node (`initial_contact`). 0.2 confidence.
 
 **Latency**: <1ms (label-set lookup) | O(C(n,k) × keys) with subset fallback
 
@@ -956,12 +940,11 @@ nodes = label_set_index[frozenset({"financial_hardship", "request_installment", 
 
 #### What this does
 
-Fetches candidate sentences from PostgreSQL by `node_id`, then hard-filters by bitmask: a sentence is compatible iff all its required constraints are satisfied by the query (`sentence.bg_bitmask_int & query_bitmask == sentence.bg_bitmask_int`). Relaxes the bitmask one bit at a time if all candidates are eliminated.
+Fetches candidate sentences from PostgreSQL by `node_id`, then scores each by bitmask overlap: `bitmask_score = matched_bits / required_bits`. No sentences are filtered out — partial matches rank lower via the `bitmask_score` ranking weight (0.20). Confidence is penalized proportionally for mismatches.
 
 #### Design considerations & decisions
 
-- **ADR-020**: Bitmask AND as hard filter — eliminates objectively wrong recommendations regardless of ranking. A sentence with bitmask 0 is universally compatible.
-- **F006**: Bitmask relaxation (not removal) — clear lowest set bit one at a time, −0.05 per relaxation, when filter eliminates all sentences.
+- **ADR-020 (updated)**: Bitmask as soft ranking signal — partial matches are demoted, not eliminated. A sentence with bitmask 0 scores 1.0 (no constraints). A sentence with 4/5 required bits matching scores 0.80.
 
 **Bitmask encoding** from `context` dict:
 
@@ -984,27 +967,33 @@ For our sample customer:
   query_bitmask = 0b0000000010 = 2
 ```
 
-**Bitmask filter logic**: A sentence is compatible if all its required constraints are satisfied by the query.
+**Bitmask scoring logic**: `compute_bitmask_score(sentence_bitmask, query_bitmask)`
 
 ```
-sentence.bg_bitmask_int & query_bitmask == sentence.bg_bitmask_int
+if sentence_bitmask == 0:  return 1.0   # no requirements → perfect match
+if query_bitmask == 0:     return 0.5   # no query context → neutral
+matched_bits = popcount(sentence_bitmask & query_bitmask)
+required_bits = popcount(sentence_bitmask)
+return matched_bits / required_bits
 ```
 
-- Sentence with `bg_bitmask_int=0` (no constraints) → always passes
-- Sentence with `bg_bitmask_int=2` (requires `has_mortgage`) → passes because query has bit 1 set
-- Sentence with `bg_bitmask_int=16` (requires `credit_rating_good`) → filtered OUT because query doesn't have bit 4 set
+Examples:
+- Sentence `bg_bitmask_int=0` (no constraints) → score 1.0
+- Sentence `bg_bitmask_int=2` (requires `has_mortgage`), query has bit 1 → 1/1 = 1.0
+- Sentence `bg_bitmask_int=18` (requires `has_mortgage` + `credit_rating_good`), query has bit 1 only → 1/2 = 0.50
+- Sentence `bg_bitmask_int=31` (requires 5 bits), query has 3 of them → 3/5 = 0.60
 
-**SQL query:**
+**Confidence penalty**: If top result has `bitmask_score < 1.0`, confidence is reduced by `(1.0 - bitmask_score) × bitmask_mismatch_penalty` (default 0.1).
 
-```sql
-SELECT script_id, script_text, bg_bitmask_int, win_rate, sas,
-       bg_background, conversation_context, embedding
-FROM sentences
-WHERE node_id = ANY(ARRAY[42, 58])
-  AND (bg_bitmask_int & 2) = bg_bitmask_int;
+**Ranking**: `bitmask_score` is the 5th ranking weight alongside `win_rate`, `vec_score`, `sas`, and `bg_boost`:
+
 ```
-
-**Bitmask relaxation** (if no candidates pass filter): Strip lowest bit from `query_bitmask` and retry. Each relaxation costs -0.05 confidence.
+final_score = 0.35 × win_rate
+            + 0.25 × vec_score
+            + 0.10 × sas
+            + 0.10 × bg_boost
+            + 0.20 × bitmask_score
+```
 
 **Latency**: ~2-5ms
 
@@ -1033,12 +1022,15 @@ query_vec = embed_single("招商银行信用卡中心来电 请问是张女士�
 **Option A — Single SQL query** (combines Steps 2.5 + 2.6 + 2.7):
 
 ```sql
-SELECT script_id, script_text, win_rate, sas, bg_background,
-       1 - (embedding <=> $query_vec) AS vec_score
+SELECT script_id, script_text, win_rate, sas, bg_bitmask_int, bg_background,
+       1 - (embedding <=> $query_vec) AS vec_score,
+       CASE WHEN bg_bitmask_int = 0 THEN 1.0
+            WHEN $query_bitmask = 0 THEN 0.5
+            ELSE popcount(bg_bitmask_int & $query_bitmask)::real / popcount(bg_bitmask_int)::real
+       END AS bitmask_score
 FROM sentences
 WHERE node_id = ANY($node_ids)
-  AND (bg_bitmask_int & $query_bitmask) = bg_bitmask_int
-ORDER BY (0.40 * win_rate + 0.30 * (1 - (embedding <=> $query_vec)) + 0.15 * sas) DESC
+ORDER BY (0.35 * win_rate + 0.25 * (1 - (embedding <=> $query_vec)) + 0.10 * sas + 0.20 * bitmask_score) DESC
 LIMIT 1;
 ```
 
@@ -1111,21 +1103,23 @@ final_score = 0.40 × win_rate + 0.30 × vec_score + 0.15 × sas + 0.15 × bg_bo
 
 ```python
 RANKING_WEIGHTS = {
-    "win_rate": 0.40,
-    "vec_score": 0.30,
-    "sas": 0.15,
-    "bg_boost": 0.15,
+    "win_rate": 0.35,
+    "vec_score": 0.25,
+    "sas": 0.10,
+    "bg_boost": 0.10,
+    "bitmask_score": 0.20,
 }
 
 def recommend(inherited_facts, branch_key_values, inherited_emotions, query_bitmask, conversation_context, query_bg):
     key = (tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)), tuple(sorted(inherited_emotions)))
     nodes = lookup_by_key(key, node_index)
     pool = aggregate_pools(nodes)
-    filtered = filter_by_bitmask(pool, query_bitmask)
+    for s in pool:
+        s["bitmask_score"] = compute_bitmask_score(s.bg_bitmask_int, query_bitmask)
     # vec_score computed via pgvector or bge-m3 embed + cosine
     bg_boost = compute_bg_boost(sentence_bg, query_bg)
-    final_score = 0.40 * win_rate + 0.30 * vec_score + 0.15 * sas + 0.15 * bg_boost
-    return top_by_final_score(filtered)
+    final_score = 0.35 * win_rate + 0.25 * vec_score + 0.10 * sas + 0.10 * bg_boost + 0.20 * bitmask_score
+    return top_by_final_score(pool)
 ```
 
 **Latency**: <1ms
@@ -1478,7 +1472,7 @@ and ADR-025.
 | State accumulation | <1ms | In-memory set operations |
 | Node key computation | <1ms | Sort + tuple |
 | Node lookup + aggregation | <1ms | Hash map O(1) + pool merge |
-| Candidate retrieval + bitmask | 2-5ms | Indexed PG query |
+| Candidate retrieval + bitmask scoring | 2-5ms | Indexed PG query + soft bitmask scoring |
 | Vector embedding (query) | 50-100ms | bge-m3 embed via Ollama |
 | Vector similarity | 1-2ms | pgvector HNSW or brute-force cosine |
 | Rerank | <1ms | Arithmetic on <20 candidates |
@@ -1492,10 +1486,11 @@ and ADR-025.
 |---|---|---|---|
 | 1 | Exact label-set miss | Best subset match: drop emotions first (all k-1 emotion subsets), then facts. Pool all matches at largest subset size (cap N=50) | −0.1 per dropped label |
 | 2 | Empty pool — descend | Walk DOWN tree (BFS): collect sentences from nearest descendants with non-empty pools | −0.05 per level |
-| 3 | LLM embedding fails | Rank by `win_rate` + `sas` only (no `vec_score`) | −0.1 |
-| 4 | All fallbacks exhausted | Return null (no recommendation) | 0.0 |
+| 3 | Bitmask partial match | Soft scoring: `bitmask_score = matched_bits / required_bits`; partial matches rank lower but are not excluded | −(1.0 − bitmask_score) × 0.1 |
+| 4 | LLM embedding fails | Rank by `win_rate` + `sas` only (no `vec_score`) | −0.1 |
+| 5 | All fallbacks exhausted | Return null (no recommendation) | 0.0 |
 
-**Confidence formula**: `1.0 − (dropped_labels × 0.1) − (descend_levels × 0.05) − (embed_fail × 0.1)`, minimum 0.0
+**Confidence formula**: `1.0 − (dropped_labels × 0.1) − (descend_levels × 0.05) − ((1.0 − bitmask_score) × 0.1) − (embed_fail × 0.1)`, minimum 0.0
 
 ---
 
@@ -1586,7 +1581,7 @@ maintenance — not retrieval latency.
 | Full-text search | None | PG tsvector + GIN index | BM25-ish keyword search |
 | Build time | ~30s (with LLM merge) | Batch LLM + incremental rebuild | Only rebuild affected subtrees on new data |
 | Child lookup | Linear scan of `children[]` | Hash map `branch_key → child` per node | O(1) child resolution |
-| Context filter | Python loop | PG bitwise op: `bg_bitmask_int & ? = bg_bitmask_int` | Index + SQL filter |
+| Context filter | Python loop | PG bitwise scoring: `popcount(bg_bitmask_int & ?) / popcount(bg_bitmask_int)` | Index + SQL scoring |
 | Retrieval | JSON load + tree walk | Hash lookup + PG SELECT + pgvector | O(1) + O(pool_size) |
 
 **Migration steps**: (1) JSON → PostgreSQL with `path_signature` column;
@@ -1626,7 +1621,7 @@ Authoritative decision records. Each is one line here; see
 | [ADR-017](docs/decisions/ADR-017-action-node-splitting.md) | Action node splitting | Force-split pools into `a:xxx` children for fact/emotion parents; uniform `fact→emotion→action→sentences`. |
 | [ADR-018](docs/decisions/ADR-018-redundant-fact-collapse.md) | Redundant fact collapse | **Superseded by ADR-022.** Remove `f:X → f:X` redundant nodes; propagate `inherited_facts`. |
 | [ADR-019](docs/decisions/ADR-019-state-none-handling.md) | state=None handling | Capture 58 no-action collector turns in parent pool without synthetic `other` label. |
-| [ADR-020](docs/decisions/ADR-020-f005-bitmask-scoring-design.md) | F005 bitmask + scoring | 10-bit bitmask for O(1) AND filtering; intersection merge; Laplace-smoothed HWR; char-bigram TF-IDF SAS (numpy only). Expanded 5→10 bits on 2026-06-22. |
+| [ADR-020](docs/decisions/ADR-020-f005-bitmask-scoring-design.md) | F005 bitmask + scoring | 10-bit bitmask for soft scoring (matched_bits/required_bits); intersection merge; Laplace-smoothed HWR; char-bigram TF-IDF SAS (numpy only). Expanded 5→10 bits on 2026-06-22. Soft scoring replaced hard filter on 2026-06-29. |
 | [ADR-021](docs/decisions/ADR-021-node-identity-dedup.md) | Node identity dedup | Identity = `(inherited_facts, inherited_emotions, branch_key)`; DAG with cycle protection. |
 | [ADR-022](docs/decisions/ADR-022-redundant-emotion-collapse.md) | Redundant emotion collapse | Extend ADR-018 to collapse `anger → anger` nested emotion paths; symmetric with fact collapse. |
 | [ADR-023](docs/decisions/ADR-023-sentence-pool-dedup.md) | Sentence pool dedup | `_dedup_pool` by `script_text` after every `.extend()` in 3 transforms; fixes data for all consumers. |

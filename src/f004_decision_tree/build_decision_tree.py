@@ -347,6 +347,30 @@ def write_decision_tree(records=None, output_path=None):
 
     return _count_nodes(tree)
 
+def write_dialog_records(records, output_path=None):
+    if output_path is None:
+        output_path = os.path.join(os.path.dirname(__file__), "data", "dialog_records.json")
+    dialog_records = []
+    for record in records:
+        turns = []
+        for turn in record.get("turns_annotated", []):
+            state = turn.get("state") or {}
+            entry = {
+                "turn_index": turn.get("turn_index"),
+                "role": turn.get("role"),
+                "text": turn.get("text", ""),
+            }
+            if state:
+                entry["action"] = state.get("action")
+                entry["facts"] = state.get("facts", [])
+                entry["emotions"] = state.get("emotions", [])
+                entry["willingness"] = state.get("willingness")
+            turns.append(entry)
+        dialog_records.append({"call_id": record.get("call_id"), "turns": turns})
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(dialog_records, f, indent=2, ensure_ascii=False)
+    return len(dialog_records)
+
 def _count_nodes(node, visited=None):
     if visited is None:
         visited = set()

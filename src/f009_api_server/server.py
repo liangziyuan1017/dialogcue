@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
-load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env")
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -133,6 +133,7 @@ async def recommend_endpoint(req: RecommendRequest):
         "win_rate": result.get("win_rate", 0),
         "vec_score": result.get("vec_score", 0),
         "sas": result.get("sas", 0),
+        "bitmask_score": result.get("bitmask_score", 1.0),
         "final_score": result.get("final_score", 0),
         "confidence": result.get("confidence", 1.0),
         "extraction_method": extraction.get("method", "unknown"),
@@ -222,6 +223,7 @@ async def customer_turn(sid, data):
         "win_rate": top.get("win_rate", 0),
         "vec_score": top.get("vec_score", 0),
         "sas": top.get("sas", 0),
+        "bitmask_score": top.get("bitmask_score", 1.0),
         "final_score": top.get("final_score", 0),
         "confidence": top.get("confidence", 1.0),
         "extraction_method": extraction.get("method", "unknown"),
@@ -274,5 +276,30 @@ async def end_session(sid, data):
         "transcript": session["transcript"],
     }
 
+
+from f010_api_mock_ui.debug import debug_recommend
+
+
+@app.post("/recommend/debug")
+async def debug_endpoint(req: RecommendRequest):
+    req_dict = {
+        "customer_utterance": req.customer_utterance,
+        "conversation_context": req.conversation_context,
+        "conversation_state": {
+            "branch_key": req.conversation_state.branch_key,
+            "inherited_facts": req.conversation_state.inherited_facts,
+            "inherited_emotions": req.conversation_state.inherited_emotions,
+            "willingness": req.conversation_state.willingness,
+        },
+        "context": req.context,
+    }
+    return debug_recommend(req_dict, app.state)
+
+
+from fastapi.staticfiles import StaticFiles
+
+
+_ui_dir = os.path.join(os.path.dirname(__file__), "..", "f010_api_mock_ui", "ui")
+app.mount("/ui", StaticFiles(directory=_ui_dir, html=True), name="ui")
 
 app.mount("/socket.io", socketio.ASGIApp(sio))

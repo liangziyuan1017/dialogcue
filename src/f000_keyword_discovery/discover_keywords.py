@@ -121,8 +121,16 @@ def discover_keywords(records, output_path: str = None, labeled_output_path: str
 
     if labeled_output_path is None:
         labeled_output_path = os.path.join(os.path.dirname(__file__), "data", "output_labeled.py")
+    seen_call_ids = set()
+    deduped_records = []
+    for record in labeled_records:
+        call_id = record.get("call_id")
+        if call_id in seen_call_ids:
+            continue
+        seen_call_ids.add(call_id)
+        deduped_records.append(record)
     with open(labeled_output_path, "w", encoding="utf-8") as f:
         f.write("results = ")
-        f.write(json.dumps(labeled_records, ensure_ascii=False, indent=2))
+        f.write(json.dumps(deduped_records, ensure_ascii=False, indent=2))
 
     return taxonomy

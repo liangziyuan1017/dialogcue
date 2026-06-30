@@ -3,10 +3,11 @@
 
 # ── Retrieval & Ranking ──
 ranking_weights:
-  win_rate: 0.40
-  vec_score: 0.30
-  sas: 0.15
-  bg_boost: 0.15
+  win_rate: 0.35
+  vec_score: 0.25
+  sas: 0.10
+  bg_boost: 0.10
+  bitmask_score: 0.20
 
 bg_boost:
   industry_match: 0.05
@@ -25,7 +26,7 @@ confidence:
   root_fallback: 0.2
   descend_penalty: 0.05
   context_missing_penalty: 0.1
-  bitmask_relax_penalty: 0.05
+  bitmask_mismatch_penalty: 0.1
   embed_fallback_penalty: 0.1
 
 keyword_confidence:

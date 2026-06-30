@@ -6,10 +6,11 @@ from f007_infrastructure.config import get as _cfg
 
 def _load_ranking_weights():
     return {
-        "win_rate": _cfg("ranking_weights.win_rate", 0.40),
-        "vec_score": _cfg("ranking_weights.vec_score", 0.30),
-        "sas": _cfg("ranking_weights.sas", 0.15),
-        "bg_boost": _cfg("ranking_weights.bg_boost", 0.15),
+        "win_rate": _cfg("ranking_weights.win_rate", 0.35),
+        "vec_score": _cfg("ranking_weights.vec_score", 0.25),
+        "sas": _cfg("ranking_weights.sas", 0.10),
+        "bg_boost": _cfg("ranking_weights.bg_boost", 0.10),
+        "bitmask_score": _cfg("ranking_weights.bitmask_score", 0.20),
     }
 
 
@@ -96,11 +97,14 @@ def rank_sentences(pool, query_vec=None, db=None, query_bg=None, conversation_co
         s_bg = s.get("bg_background", {}) or {}
         bg_boost = compute_bg_boost(s_bg, query_bg)
         s["_bg_boost_val"] = bg_boost
+        bitmask_score = s.pop("_bitmask_score", 1.0)
+        s["bitmask_score"] = bitmask_score
         s["final_score"] = float(
             RANKING_WEIGHTS["win_rate"] * s.get("win_rate", 0)
             + RANKING_WEIGHTS["vec_score"] * s["vec_score"]
             + RANKING_WEIGHTS["sas"] * s.get("sas", 0)
             + RANKING_WEIGHTS["bg_boost"] * bg_boost
+            + RANKING_WEIGHTS["bitmask_score"] * bitmask_score
         )
 
     pool.sort(key=lambda s: -s.get("final_score", 0))

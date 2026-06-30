@@ -217,8 +217,8 @@ function enforceParentAboveChild(sep){
 function countNodes(n,visited=new Set()){if(visited.has(n._id))return 0;visited.add(n._id);return 1+(n.children||[]).reduce((s,c)=>s+countNodes(c,visited),0);}
 
 Promise.all([
-  fetch('../f005_context_scoring/data/decision_tree_scored.json?_='+Date.now()).then(r=>r.json()),
-  fetch('../f004_decision_tree/data/dialog_records.json?_='+Date.now()).then(r=>r.json()),
+  fetch('../../f005_context_scoring/data/decision_tree_scored.json?_='+Date.now()).then(r=>r.json()),
+  fetch('../../f004_decision_tree/data/dialog_records.json?_='+Date.now()).then(r=>r.json()),
 ]).then(([tree,dialogs])=>{
   treeData=tree;
   dialogData=dialogs;

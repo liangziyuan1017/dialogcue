@@ -30,16 +30,17 @@ def index(tree):
 
 class TestRankingWeights:
     def test_has_correct_keys(self):
-        assert set(RANKING_WEIGHTS.keys()) == {"win_rate", "vec_score", "sas", "bg_boost"}
+        assert set(RANKING_WEIGHTS.keys()) == {"win_rate", "vec_score", "sas", "bg_boost", "bitmask_score"}
 
     def test_sums_to_one(self):
         assert sum(RANKING_WEIGHTS.values()) == pytest.approx(1.0, abs=1e-9)
 
     def test_values(self):
-        assert RANKING_WEIGHTS["win_rate"] == 0.40
-        assert RANKING_WEIGHTS["vec_score"] == 0.30
-        assert RANKING_WEIGHTS["sas"] == 0.15
-        assert RANKING_WEIGHTS["bg_boost"] == 0.15
+        assert RANKING_WEIGHTS["win_rate"] == 0.35
+        assert RANKING_WEIGHTS["vec_score"] == 0.25
+        assert RANKING_WEIGHTS["sas"] == 0.10
+        assert RANKING_WEIGHTS["bg_boost"] == 0.10
+        assert RANKING_WEIGHTS["bitmask_score"] == 0.20
 
 
 class TestVecSimilarity:
@@ -118,12 +119,12 @@ class TestRankSentences:
         mock_db = MagicMock()
         mock_db.get_vectors.return_value = {"s1": [1.0] + [0.0] * (EMBEDDING_DIM - 1)}
         pool = [
-            {"script_id": "s1", "win_rate": 0.8, "sas": 0.6, "bg_background": {"industry": "A"}, "bg_bitmask_int": 0},
+            {"script_id": "s1", "win_rate": 0.8, "sas": 0.6, "bg_background": {"industry": "A"}, "bg_bitmask_int": 0, "_bitmask_score": 1.0},
         ]
         ranked = rank_sentences(pool, query_vec=[1.0] + [0.0] * (EMBEDDING_DIM - 1), db=mock_db, query_bg={"industry": "A"})
         s = ranked[0]
         bg_boost = compute_bg_boost({"industry": "A"}, {"industry": "A"})
-        expected = 0.40 * 0.8 + 0.30 * s["vec_score"] + 0.15 * 0.6 + 0.15 * bg_boost
+        expected = 0.35 * 0.8 + 0.25 * s["vec_score"] + 0.10 * 0.6 + 0.10 * bg_boost + 0.20 * 1.0
         assert s["final_score"] == pytest.approx(expected, abs=1e-6)
 
 
