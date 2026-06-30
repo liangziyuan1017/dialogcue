@@ -129,7 +129,7 @@ def _run_with_scheduler(input_file: Path, forbid_start: int, forbid_end: int, in
         if _is_within_allowed_hours(forbid_start, forbid_end):
             if not ran_today:
                 print(f"\n[{now:%Y-%m-%d %H:%M:%S}] Outside forbidden hours. Running pipeline...")
-                from run_pipeline import run_pipeline
+                from old_files.run_pipeline import run_pipeline
                 run_pipeline(input_file)
                 ran_today = True
                 print(f"[{now:%Y-%m-%d %H:%M:%S}] Pipeline finished for today. Sleeping until tomorrow...\n")
