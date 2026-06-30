@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F010 — API Mock &amp; System Status UI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+<div id="app" class="max-w-7xl mx-auto p-4">
+  <header class="mb-6">
+    <h1 class="text-2xl font-bold text-blue-400">ICBC Recommend — Debug UI</h1>
+    <p class="text-sm text-gray-500">F010: API Mock + Pipeline Trace + Sentence Pool Inspector</p>
+  </header>
+  <main class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+    <section id="rest-mock-panel" class="bg-gray-900 rounded-lg p-4 border border-gray-800">
+      <h2 class="text-lg font-semibold text-blue-300 mb-3">REST Mock</h2>
+      <div id="rest-mock-content">
+        <div class="mb-2 flex items-center gap-2">
+          <span class="px-2 py-1 bg-green-700 text-green-100 text-xs font-mono rounded">POST</span>
+          <span class="text-sm text-gray-400 font-mono">/recommend</span>
+        </div>
+        <div class="mb-2">
+          <label class="text-xs text-gray-500 block mb-1">Request Body (JSON)</label>
+          <details class="mb-1">
+            <summary class="text-xs text-gray-600 cursor-pointer hover:text-gray-400">context bitmask fields</summary>
+            <p class="text-xs text-gray-600 mt-1 font-mono">has_auto_loan, has_mortgage, has_negotiation_history, social_insurance_stable, credit_rating_good, card_restricted, is_cash_out_customer, has_complaint_history, has_legal_tools, is_negotiation_brain_customer</p>
+          </details>
+          <textarea id="rest-request-body"></textarea>
+        </div>
+        <div class="mb-2 flex gap-2">
+          <button id="rest-send-btn" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-sm rounded font-medium">Send</button>
+          <button id="rest-debug-btn" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-sm rounded font-medium">Debug</button>
+        </div>
+        <div>
+          <label class="text-xs text-gray-500 block mb-1">Response</label>
+          <textarea id="rest-response-body"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section id="socket-session-panel" class="bg-gray-900 rounded-lg p-4 border border-gray-800">
+      <h2 class="text-lg font-semibold text-blue-300 mb-3">Socket.IO Session</h2>
+      <div id="socket-session-content">
+        <div class="mb-2 flex gap-2 flex-wrap">
+          <button id="sio-start-btn" class="px-3 py-1.5 bg-green-600 hover:bg-green-500 text-sm rounded font-medium">Start Session</button>
+          <button id="sio-customer-btn" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-sm rounded font-medium" disabled>Customer Turn</button>
+          <button id="sio-collector-btn" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-sm rounded font-medium" disabled>Collector Turn</button>
+          <button id="sio-end-btn" class="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-sm rounded font-medium" disabled>End Session</button>
+        </div>
+        <div class="mb-2">
+          <label class="text-xs text-gray-500 block mb-1">Utterance</label>
+          <input id="sio-utterance" type="text" class="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-sm" placeholder="Type utterance...">
+        </div>
+        <div class="mb-2">
+          <label class="text-xs text-gray-500 block mb-1">Session ID</label>
+          <span id="sio-session-id" class="text-xs font-mono text-gray-400">—</span>
+        </div>
+        <div>
+          <label class="text-xs text-gray-500 block mb-1">Conversation State</label>
+          <pre id="sio-state" class="text-xs bg-gray-800 p-2 rounded overflow-auto max-h-40 font-mono">—</pre>
+        </div>
+        <div class="mt-2">
+          <label class="text-xs text-gray-500 block mb-1">Transcript</label>
+          <div id="sio-transcript" class="text-xs bg-gray-800 p-2 rounded overflow-auto max-h-60 font-mono space-y-1">—</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pipeline-trace-panel" class="lg:col-span-2 bg-gray-900 rounded-lg p-4 border border-gray-800">
+      <h2 class="text-lg font-semibold text-blue-300 mb-3">Pipeline Trace</h2>
+      <div id="pipeline-trace-content">
+        <div id="trace-steps" class="space-y-2 mb-4"></div>
+        <div>
+          <h3 class="text-sm font-semibold text-amber-300 mb-2">Sentence Pool Inspector</h3>
+          <table id="sentence-pool-table" class="w-full text-xs">
+            <thead>
+              <tr class="text-gray-500 border-b border-gray-700">
+                <th class="text-left py-1 px-2">Script ID</th>
+                <th class="text-left py-1 px-2">Script Text</th>
+                <th class="text-right py-1 px-2">Final Score</th>
+                <th class="text-right py-1 px-2">Bitmask</th>
+                <th class="text-right py-1 px-2">Win Rate</th>
+                <th class="text-right py-1 px-2">SAS</th>
+                <th class="text-right py-1 px-2">Vec Score</th>
+              </tr>
+            </thead>
+            <tbody id="sentence-pool-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

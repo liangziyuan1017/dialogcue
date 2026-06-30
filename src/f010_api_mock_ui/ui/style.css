@@ -1,0 +1,22 @@
+.CodeMirror {
+  height: 200px;
+  background: #1a1a2e;
+  color: #e0e0e0;
+  border: 1px solid #374151;
+  border-radius: 0.375rem;
+  font-size: 13px;
+}
+
+.CodeMirror-gutters {
+  background: #111827;
+  border-right: 1px solid #374151;
+}
+
+.CodeMirror-linenumber {
+  color: #6b7280;
+}
+
+#sentence-pool-table th,
+#sentence-pool-table td {
+  white-space: nowrap;
+}
