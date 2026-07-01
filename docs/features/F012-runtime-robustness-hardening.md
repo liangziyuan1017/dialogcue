@@ -204,3 +204,17 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 | **ADR** | `docs/decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md` | Accepted: Phase B threadpool now, asyncpg → F013 (KD-6) |
 | **Lesson** | `docs/lessons/LL-002-over-engineered-llm-extraction.md` | Accepted: governs Phase E cache simplicity (KD-5) |
 | **Lesson** | `docs/lessons/LL-003-propagate-then-extend-duplicates.md` | Accepted: governs Phase D merge_state dedup (KD-4) |
+
+## Review Notes (Phase A)
+
+**Reviewer:** Human · **Date:** 2026-07-01 · **Verdict:** all 5 items fixed
+
+| # | Feedback | Resolution | Commit |
+|---|----------|------------|--------|
+| 1 | Fix the ruff violations (no baseline) | Fixed all 186 violations (I001/F401/F541/UP015/E401/B007/B023/F841/B905/B006/UP031/E731/E701/B904/E402); removed baseline ignore; re-exports protected with `# noqa: F401` | `d49a481` |
+| 2 | All should be checked by mypy | Full-repo mypy clean (75 files); fixed implicit Optional, None-globals, dict annotations, and a Token-reset bug in the request-id middleware | `bee3852` |
+| 3 | Live read | Switched response-dict `RANKING_WEIGHTS` refs to `get_ranking_weights()` in server.py, retrieval_engine.py; removed unused import in debug.py | `1d1f193` |
+| 4 | Do the follow-up | `git rm --cached` 33 tracked `.pyc` files (`.gitignore` already had `__pycache__/`+`*.pyc`) | `1d1f193` |
+| 5 | Should use existing .env | Dropped `APP_ENV`; guard now fires on placeholder `DEEPSEEK_API_KEY` unconditionally (uses only existing `.env` key) | `1d1f193` |
+
+**Post-fix verification:** 365 passed / 8 skipped · ruff clean (no baseline) · mypy clean (75 files) · 0 regressions.
