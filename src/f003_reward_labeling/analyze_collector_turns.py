@@ -2,6 +2,8 @@ from collections import defaultdict
 from f007_infrastructure.config import get as _cfg
 from f007_infrastructure.llm_client import call_deepseek_json
 from f007_infrastructure.retry import retry_call
+from f007_infrastructure.logging import get_logger as _get_logger
+_log = _get_logger(__name__)
 
 SUGGESTED_ACTIONS = [
     {"group_name": "legal_warning", "keywords": ["法务处理", "起诉", "律师函"], "example_turn": ""},
@@ -94,7 +96,7 @@ def analyze_collector_turns(records: list) -> dict:
             return call_deepseek_json(prompt)
 
         def _on_fail(exc):
-            print(f"  SKIPPED batch starting at turn {batch_start} after 3 retries: {exc}")
+            _log.info(f"  SKIPPED batch starting at turn {batch_start} after 3 retries: {exc}")
             return None
 
         batch_result = retry_call(_process, on_fail=_on_fail)

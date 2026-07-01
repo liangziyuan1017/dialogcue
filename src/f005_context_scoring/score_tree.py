@@ -12,6 +12,8 @@ from f005_context_scoring.scoring_metrics import (
 )
 from f007_infrastructure.config import get as _cfg
 from f007_infrastructure.embeddings import embed_texts, EMBEDDING_DIM
+from f007_infrastructure.logging import get_logger as _get_logger
+_log = _get_logger(__name__)
 
 
 def _load_py(filepath):
@@ -261,4 +263,4 @@ def write_scored_tree(output_path=None, db=None):
 
 if __name__ == "__main__":
     scored = write_scored_tree()
-    print(f"Wrote scored tree to decision_tree_scored.json")
+    _log.info(f"Wrote scored tree to decision_tree_scored.json")

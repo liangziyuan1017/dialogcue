@@ -8,6 +8,8 @@ from .retrieval_ranking import (
     rank_sentences,
 )
 from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.logging import get_logger as _get_logger
+_log = _get_logger(__name__)
 
 POOL_CAP = _cfg("pool_cap", 50)
 
@@ -271,7 +273,7 @@ def recommend(query_bitmask, conversation_context, query_bg,
 if __name__ == "__main__":
     tree = _load_scored_tree()
     index = build_node_index(tree)
-    print(f"Index: {len(index)} keys, {sum(len(v) for v in index.values())} nodes")
+    _log.info(f"Index: {len(index)} keys, {sum(len(v) for v in index.values())} nodes")
     result = recommend(
         query_bitmask=0,
         conversation_context="客户说没有钱",
@@ -279,6 +281,6 @@ if __name__ == "__main__":
         tree=tree, index=index,
     )
     if result:
-        print(f"Recommend: {result['script_id']} (confidence={result['confidence']}, final_score={result['final_score']:.4f})")
+        _log.info(f"Recommend: {result['script_id']} (confidence={result['confidence']}, final_score={result['final_score']:.4f})")
     else:
-        print("No recommendation")
+        _log.info("No recommendation")

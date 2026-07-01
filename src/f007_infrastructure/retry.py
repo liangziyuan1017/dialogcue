@@ -2,6 +2,8 @@ import random
 import time
 
 from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.logging import get_logger as _get_logger
+_log = _get_logger(__name__)
 
 
 def retry_call(fn, *args, max_retries=None, min_sleep=None, max_sleep=None, on_fail=None, **kwargs):
@@ -19,7 +21,7 @@ def retry_call(fn, *args, max_retries=None, min_sleep=None, max_sleep=None, on_f
             last_exc = e
             if attempt < max_retries:
                 sleep_time = random.uniform(min_sleep, max_sleep)
-                print(f"  Retry {attempt + 1}/{max_retries} after {sleep_time:.1f}s (error: {e})")
+                _log.warning(f"Retry {attempt + 1}/{max_retries} after {sleep_time:.1f}s (error: {e})")
                 time.sleep(sleep_time)
             else:
                 if on_fail is not None:

@@ -6,6 +6,8 @@ import re
 from f007_infrastructure.config import get as _cfg
 from f007_infrastructure.llm_client import call_deepseek_json
 from f007_infrastructure.retry import retry_call
+from f007_infrastructure.logging import get_logger as _get_logger
+_log = _get_logger(__name__)
 
 
 def _load_aligned():
@@ -158,7 +160,7 @@ def label_all(records=None):
             return label_reward(r)
 
         def _on_fail(exc):
-            print(f"  SKIPPED record {i+1}/{len(records)} (call_id={r.get('call_id', '?')}) after 3 retries: {exc}")
+            _log.info(f"  SKIPPED record {i+1}/{len(records)} (call_id={r.get('call_id', '?')}) after 3 retries: {exc}")
             return {**r, "reward": 0, "_retry_failed": True}
 
         results.append(retry_call(_process, on_fail=_on_fail))
@@ -198,4 +200,4 @@ def write_output_rewarded(output_path=None):
 
 if __name__ == "__main__":
     count = write_output_rewarded()
-    print(f"Wrote {count} rewarded records to output_rewarded.py")
+    _log.info(f"Wrote {count} rewarded records to output_rewarded.py")

@@ -2,6 +2,8 @@ import importlib.util
 import json
 import os
 import re
+from f007_infrastructure.logging import get_logger as _get_logger
+_log = _get_logger(__name__)
 
 
 def _load_output_manual():
@@ -168,4 +170,4 @@ def write_output_aligned(output_path=None):
 
 if __name__ == "__main__":
     count = write_output_aligned()
-    print(f"Wrote {count} aligned records to output_aligned.py")
+    _log.info(f"Wrote {count} aligned records to output_aligned.py")

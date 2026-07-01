@@ -19,6 +19,8 @@ from f004_decision_tree.tree_transforms import (
     _strip_key, _subset_match, _search_node, _deduplicate_nodes,
     _make_identity, _compute_node_id,
 )
+from f007_infrastructure.logging import get_logger as _get_logger
+_log = _get_logger(__name__)
 
 def _load_rewarded():
     data_path = os.path.join(os.path.dirname(__file__), "..", "f003_reward_labeling", "data", "output_rewarded.py")
@@ -385,4 +387,4 @@ def _count_nodes(node, visited=None):
 
 if __name__ == "__main__":
     count = write_decision_tree()
-    print(f"Wrote decision tree with {count} nodes to decision_tree.json")
+    _log.info(f"Wrote decision tree with {count} nodes to decision_tree.json")

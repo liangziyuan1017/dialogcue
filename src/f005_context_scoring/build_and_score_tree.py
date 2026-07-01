@@ -4,6 +4,8 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
+from f007_infrastructure.logging import get_logger as _get_logger
+_log = _get_logger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR.parent / "data"
@@ -34,7 +36,7 @@ def run(args) -> None:
     else:
         merged = OUTPUT_DIR / "output_merged.py"
     if not merged.exists():
-        print(f"Merged file not found: {merged}")
+        _log.info(f"Merged file not found: {merged}")
         return
 
     records = _load_py_results(merged)
@@ -47,60 +49,60 @@ def run(args) -> None:
         seen_call_ids.add(cid)
         deduped.append(r)
     if len(deduped) < len(records):
-        print(f"{ts()} Deduped {len(records)} -> {len(deduped)} records by call_id")
+        _log.info(f"{ts()} Deduped {len(records)} -> {len(deduped)} records by call_id")
     records = deduped
-    print(f"{ts()} Loaded {len(records)} records from {merged.name}")
+    _log.info(f"{ts()} Loaded {len(records)} records from {merged.name}")
 
     # ── F000: analyze_collector_turns ──────────────────────────────────────
-    print(f"\n{ts()} F000: analyze_collector_turns")
+    _log.info(f"\n{ts()} F000: analyze_collector_turns")
     import f003_reward_labeling.analyze_collector_turns as act
     collector_result = act.analyze_collector_turns(records)
     collector_out = BASE_DIR / "f003_reward_labeling" / "data" / "collector_analysis.json"
     with open(collector_out, "w", encoding="utf-8") as f:
         json.dump(collector_result, f, ensure_ascii=False, indent=2)
-    print(f"  → {collector_out.name}  ({len(collector_result.get('collector_actions', []))} action groups)")
+    _log.info(f"  → {collector_out.name}  ({len(collector_result.get('collector_actions', []))} action groups)")
 
     # ── F000: analyze_customer_turns ───────────────────────────────────────
-    print(f"\n{ts()} F000: analyze_customer_turns")
+    _log.info(f"\n{ts()} F000: analyze_customer_turns")
     import f003_reward_labeling.analyze_customer_turns as acust
     customer_result = acust.analyze_customer_turns(records)
     customer_out = BASE_DIR / "f003_reward_labeling" / "data" / "customer_analysis.json"
     with open(customer_out, "w", encoding="utf-8") as f:
         json.dump(customer_result, f, ensure_ascii=False, indent=2)
-    print(f"  → {customer_out.name}  (facts: {len(customer_result.get('facts', []))}, emotions: {len(customer_result.get('emotions', []))})")
+    _log.info(f"  → {customer_out.name}  (facts: {len(customer_result.get('facts', []))}, emotions: {len(customer_result.get('emotions', []))})")
 
     # ── F001: align_schema ─────────────────────────────────────────────────
-    print(f"\n{ts()} F001: align_schema")
+    _log.info(f"\n{ts()} F001: align_schema")
     import f001_schema_alignment.align_schema as als
     aligned = als.align_all(records)
     aligned_out = BASE_DIR / "f001_schema_alignment" / "data" / "output_aligned.py"
     _write_py_results(aligned, aligned_out)
-    print(f"  → {aligned_out.name}  ({len(aligned)} records)")
+    _log.info(f"  → {aligned_out.name}  ({len(aligned)} records)")
 
     # ── F004: write_dialog_records ─────────────────────────────────────────
     import f004_decision_tree.build_decision_tree as bdt
     dialog_path = BASE_DIR / "f004_decision_tree" / "data" / "dialog_records.json"
     dialog_count = bdt.write_dialog_records(aligned, output_path=str(dialog_path))
-    print(f"  → {dialog_path.name}  ({dialog_count} records)")
+    _log.info(f"  → {dialog_path.name}  ({dialog_count} records)")
 
     # ── F003: reward_label ─────────────────────────────────────────────────
-    print(f"\n{ts()} F003: reward_label")
+    _log.info(f"\n{ts()} F003: reward_label")
     import f003_reward_labeling.reward_label as rl
     rewarded = rl.label_all(aligned)
     reward_out = BASE_DIR / "f003_reward_labeling" / "data" / "output_rewarded.py"
     _write_py_results(rewarded, reward_out)
     reward_count = sum(1 for r in rewarded if r.get("reward") == 1)
-    print(f"  → {reward_out.name}  (R=1: {reward_count}/{len(rewarded)})")
+    _log.info(f"  → {reward_out.name}  (R=1: {reward_count}/{len(rewarded)})")
 
     # ── F004: build_decision_tree ──────────────────────────────────────────
-    print(f"\n{ts()} F004: build_decision_tree")
+    _log.info(f"\n{ts()} F004: build_decision_tree")
     import f004_decision_tree.build_decision_tree as bdt
     tree_path = BASE_DIR / "f004_decision_tree" / "data" / "decision_tree.json"
     node_count = bdt.write_decision_tree(rewarded, output_path=str(tree_path))
-    print(f"  → {tree_path.name}  ({node_count} nodes)")
+    _log.info(f"  → {tree_path.name}  ({node_count} nodes)")
 
     # ── F005: score_tree ───────────────────────────────────────────────────
-    print(f"\n{ts()} F005: score_tree")
+    _log.info(f"\n{ts()} F005: score_tree")
     import f005_context_scoring.score_tree as st
     with open(tree_path, encoding="utf-8") as f:
         tree = json.load(f)
@@ -120,9 +122,9 @@ def run(args) -> None:
         for c in node.get("children", []):
             _count(c)
     _count(scored)
-    print(f"  → {scored_path.name}  ({sentence_count} scored sentences)")
+    _log.info(f"  → {scored_path.name}  ({sentence_count} scored sentences)")
 
-    print(f"\n{ts()} Done.")
+    _log.info(f"\n{ts()} Done.")
 
 
 def main() -> None:
