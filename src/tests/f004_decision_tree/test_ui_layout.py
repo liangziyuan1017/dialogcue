@@ -187,7 +187,7 @@ def test_all_ancestors_above_descendants():
     def walk(node, depth, ancestor_chain):
         y = depth * SEP
         ancestor_y[id(node)] = y
-        for anc_id, anc_y, anc_sid in ancestor_chain:
+        for _anc_id, anc_y, anc_sid in ancestor_chain:
             if y <= anc_y:
                 violations.append(
                     (anc_sid, node["state_id"], anc_y, y)

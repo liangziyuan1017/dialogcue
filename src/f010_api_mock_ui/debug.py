@@ -1,17 +1,15 @@
 import time
 
-from f008_state_extraction.state_extraction import extract_state, merge_state
-from f007_infrastructure.embeddings import embed_single, EMBEDDING_DIM
 from f006_retrieval_engine.retrieval_engine import (
-    recommend,
-    compute_bitmask_score,
     _find_matching_nodes_subset,
     aggregate_pools,
+    compute_bitmask_score,
     descend_for_sentences,
-    _build_label_set_index,
+    recommend,
 )
 from f006_retrieval_engine.retrieval_ranking import BITMASK_FIELDS, rank_sentences
-from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.embeddings import EMBEDDING_DIM, embed_single
+from f008_state_extraction.state_extraction import extract_state, merge_state
 
 
 def _compute_bitmask(context: dict) -> int:
@@ -25,7 +23,7 @@ def _compute_bitmask(context: dict) -> int:
 def _get_all_candidates(query_bitmask, conversation_context, query_bg,
                         tree, index, label_set_index, db, query_vec,
                         conversation_state):
-    from f008_state_extraction.state_extraction import path_state_to_flat, flat_to_path_state
+    from f008_state_extraction.state_extraction import path_state_to_flat
 
     if conversation_state is None:
         conversation_state = {"branch_key": {}, "inherited_facts": [], "inherited_emotions": [], "willingness": None}

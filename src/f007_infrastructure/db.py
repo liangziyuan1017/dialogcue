@@ -5,8 +5,8 @@ import psycopg2
 import psycopg2.extras
 from pgvector.psycopg2 import register_vector
 
-from f007_infrastructure.embeddings import EMBEDDING_DIM
 from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.embeddings import EMBEDDING_DIM
 
 
 class SentenceDB:
@@ -43,7 +43,7 @@ class SentenceDB:
         cur.execute("CREATE INDEX IF NOT EXISTS idx_nodes_path_sig ON nodes(path_signature)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_nodes_parent ON nodes(parent_id)")
 
-        cur.execute("""
+        cur.execute(f"""
             CREATE TABLE IF NOT EXISTS sentences (
                 id                  SERIAL PRIMARY KEY,
                 script_id           TEXT NOT NULL UNIQUE,
@@ -54,16 +54,16 @@ class SentenceDB:
                 sas                 REAL NOT NULL DEFAULT 0,
                 bg_background       JSONB,
                 conversation_context TEXT,
-                embedding           vector(%d),
+                embedding           vector({EMBEDDING_DIM}),
                 script_tsv          tsvector GENERATED ALWAYS AS (to_tsvector('simple', script_text)) STORED
             )
-        """ % EMBEDDING_DIM)
+        """)
         cur.execute("CREATE INDEX IF NOT EXISTS idx_sentences_node_id ON sentences(node_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_sentences_bg_bitmask ON sentences(bg_bitmask_int)")
-        cur.execute("""
+        cur.execute(f"""
             CREATE INDEX IF NOT EXISTS idx_sentences_embedding ON sentences USING hnsw (embedding vector_cosine_ops)
-            WITH (m = %d, ef_construction = %d)
-        """ % (_cfg("hnsw.m", 16), _cfg("hnsw.ef_construction", 64)))
+            WITH (m = {_cfg("hnsw.m", 16)}, ef_construction = {_cfg("hnsw.ef_construction", 64)})
+        """)
         cur.execute("CREATE INDEX IF NOT EXISTS idx_sentences_tsv ON sentences USING gin (script_tsv)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_sentences_script_text_trgm ON sentences USING gin (script_text gin_trgm_ops)")
 

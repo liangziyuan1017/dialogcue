@@ -1,9 +1,14 @@
 import importlib.util
 import os
 
-import pytest
-
-from f004_decision_tree.build_decision_tree import _find_merge_candidates, _word_count, _build_merge_prompt, _apply_merges, MAX_MERGED_WORDS, _is_ack_interruption
+from f004_decision_tree.build_decision_tree import (
+    MAX_MERGED_WORDS,
+    _apply_merges,
+    _build_merge_prompt,
+    _find_merge_candidates,
+    _is_ack_interruption,
+    _word_count,
+)
 
 
 def _load_record(index):

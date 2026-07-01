@@ -251,7 +251,7 @@ def _split_by_action(node, _visited=None):
     node["children"] = action_children + node.get("children", [])
 
 
-import hashlib
+import hashlib  # noqa: E402
 
 
 def _make_identity(inherited_facts, inherited_emotions, branch_key):

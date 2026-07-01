@@ -11,8 +11,9 @@ from f005_context_scoring.scoring_metrics import (
     encode_bitmask_int,
 )
 from f007_infrastructure.config import get as _cfg
-from f007_infrastructure.embeddings import embed_texts, EMBEDDING_DIM
+from f007_infrastructure.embeddings import EMBEDDING_DIM, embed_texts
 from f007_infrastructure.logging import get_logger as _get_logger
+
 _log = _get_logger(__name__)
 
 
@@ -127,12 +128,12 @@ def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_
         if conv_ctx_lookup is not None:
             s["conversation_context"] = conv_ctx_lookup.get(s.get("script_id", ""), "")
     sas_scores = compute_sas_for_pool(sentence_pool)
-    for s, sas in zip(sentence_pool, sas_scores):
+    for s, sas in zip(sentence_pool, sas_scores, strict=False):
         s["sas"] = sas
     if embed_fn is not None:
         texts = [s.get("conversation_context", "") or s.get("script_text", "") for s in sentence_pool]
         vecs = embed_fn(texts)
-        for s, vec in zip(sentence_pool, vecs):
+        for s, vec in zip(sentence_pool, vecs, strict=False):
             s["_context_vec"] = vec
     return sentence_pool
 
@@ -263,4 +264,4 @@ def write_scored_tree(output_path=None, db=None):
 
 if __name__ == "__main__":
     scored = write_scored_tree()
-    _log.info(f"Wrote scored tree to decision_tree_scored.json")
+    _log.info("Wrote scored tree to decision_tree_scored.json")

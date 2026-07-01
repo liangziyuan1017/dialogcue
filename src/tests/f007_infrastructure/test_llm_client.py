@@ -1,4 +1,5 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from f007_infrastructure.llm_client import call_deepseek, call_deepseek_json
 
 

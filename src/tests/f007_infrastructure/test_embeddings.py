@@ -1,6 +1,8 @@
+from unittest.mock import MagicMock, patch
+
 import numpy as np
-from unittest.mock import patch, MagicMock
-from f007_infrastructure.embeddings import embed_single, embed_texts, EMBEDDING_MODEL, EMBEDDING_DIM
+
+from f007_infrastructure.embeddings import EMBEDDING_DIM, EMBEDDING_MODEL, embed_single, embed_texts
 
 
 def _mock_embedding_response(vectors):

@@ -5,8 +5,9 @@ import re
 
 from f007_infrastructure.config import get as _cfg
 from f007_infrastructure.llm_client import call_deepseek_json
-from f007_infrastructure.retry import retry_call
 from f007_infrastructure.logging import get_logger as _get_logger
+from f007_infrastructure.retry import retry_call
+
 _log = _get_logger(__name__)
 
 
@@ -156,10 +157,10 @@ def label_all(records=None):
         records = _load_aligned()
     results = []
     for i, r in enumerate(records):
-        def _process():
+        def _process(r=r):
             return label_reward(r)
 
-        def _on_fail(exc):
+        def _on_fail(exc, i=i, r=r):
             _log.info(f"  SKIPPED record {i+1}/{len(records)} (call_id={r.get('call_id', '?')}) after 3 retries: {exc}")
             return {**r, "reward": 0, "_retry_failed": True}
 

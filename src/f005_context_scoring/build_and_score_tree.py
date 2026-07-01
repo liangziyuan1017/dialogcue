@@ -1,10 +1,11 @@
 import argparse
 import importlib.util
 import json
-import os
 from datetime import datetime
 from pathlib import Path
+
 from f007_infrastructure.logging import get_logger as _get_logger
+
 _log = _get_logger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,7 +30,8 @@ def _write_py_results(results: list[dict], path: Path) -> None:
 
 
 def run(args) -> None:
-    ts = lambda: f"[{datetime.now():%Y-%m-%d %H:%M:%S}]"
+    def ts():
+        return f"[{datetime.now():%Y-%m-%d %H:%M:%S}]"
 
     if args.merged_file:
         merged = args.merged_file.resolve()

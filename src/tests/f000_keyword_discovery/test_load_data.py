@@ -1,4 +1,4 @@
-from f000_keyword_discovery.load_data import load_records, get_turns_by_role
+from f000_keyword_discovery.load_data import get_turns_by_role, load_records
 
 
 def test_load_records_count():
@@ -33,6 +33,6 @@ def test_get_turns_by_role_collector():
 def test_turns_preserve_call_id():
     records = load_records()
     customer_turns = get_turns_by_role(records, "客户")
-    for turn, meta in customer_turns:
+    for _turn, meta in customer_turns:
         assert "call_id" in meta
         assert "turn_index" in meta

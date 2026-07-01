@@ -1,8 +1,9 @@
 import json
 import os
+
 import pytest
+
 from f000_keyword_discovery.discover_keywords import discover_keywords
-from f000_keyword_discovery.load_data import load_records
 
 E2E = os.environ.get("RUN_E2E") == "1"
 
@@ -44,4 +45,4 @@ def test_e2e_discover_keywords_produces_valid_taxonomy():
         assert data == result
 
 
-import tempfile
+import tempfile  # noqa: E402

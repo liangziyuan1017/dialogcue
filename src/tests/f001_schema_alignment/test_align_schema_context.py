@@ -1,5 +1,5 @@
-from f001_schema_alignment.align_schema import align_all, build_context
 from f000_keyword_discovery.load_data import load_records
+from f001_schema_alignment.align_schema import align_all, build_context
 
 
 def _ctx_pairs():
@@ -84,17 +84,17 @@ def test_context_negotiation_history():
 
 
 def test_context_total_debt_parsed():
-    for raw, ctx in _ctx_pairs():
+    for _raw, ctx in _ctx_pairs():
         assert ctx["total_debt"] > 0
 
 
 def test_context_external_debt_parsed():
-    for raw, ctx in _ctx_pairs():
+    for _raw, ctx in _ctx_pairs():
         assert ctx["external_debt"] >= 0
 
 
 def test_context_available_plans():
-    for raw, ctx in _ctx_pairs():
+    for _raw, ctx in _ctx_pairs():
         for plan in ctx["available_plans"]:
             assert plan in ("reduction", "mina", "installment")
 
@@ -112,29 +112,29 @@ def test_context_is_cash_out_customer():
 
 
 def test_context_external_debt_institutions():
-    for raw, ctx in _ctx_pairs():
+    for _raw, ctx in _ctx_pairs():
         assert isinstance(ctx["external_debt_institutions"], int)
         assert ctx["external_debt_institutions"] >= 0
 
 
 def test_context_interest_ratio():
-    for raw, ctx in _ctx_pairs():
+    for _raw, ctx in _ctx_pairs():
         assert 0.0 <= ctx["interest_ratio"] <= 1.0
 
 
 def test_context_installment_ratio():
-    for raw, ctx in _ctx_pairs():
+    for _raw, ctx in _ctx_pairs():
         assert 0.0 <= ctx["installment_ratio"] <= 1.0
 
 
 def test_context_age():
-    for raw, ctx in _ctx_pairs():
+    for _raw, ctx in _ctx_pairs():
         assert isinstance(ctx["age"], int)
         assert ctx["age"] >= 0
 
 
 def test_context_education():
-    for raw, ctx in _ctx_pairs():
+    for _raw, ctx in _ctx_pairs():
         assert ctx["education"] in ("unknown", "high_school", "college", "bachelor", "master", "phd", "other")
 
 

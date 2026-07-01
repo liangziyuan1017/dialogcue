@@ -1,7 +1,7 @@
 import http.server
+import os
 import socketserver
 import webbrowser
-import os
 
 from f007_infrastructure.config import get as _cfg
 

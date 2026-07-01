@@ -1,6 +1,6 @@
 import asyncio
-import pytest
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import MagicMock, patch
+
 from f009_api_server.server import sessions
 
 
@@ -15,7 +15,7 @@ class TestSocketHandlers:
 
     def test_end_session_returns_transcript(self):
         sessions.clear()
-        from f009_api_server.server import start_session, end_session
+        from f009_api_server.server import end_session, start_session
         start_result = asyncio.run(start_session("sid1", {"cust_no": "0100252354", "context": {}}))
         session_id = start_result["session_id"]
         end_result = asyncio.run(end_session("sid1", {"session_id": session_id}))
@@ -32,7 +32,7 @@ class TestSocketHandlers:
 
     def test_collector_turn_extracts_actions(self):
         sessions.clear()
-        from f009_api_server.server import start_session, collector_turn, app
+        from f009_api_server.server import app, collector_turn, start_session
         app.state.db = MagicMock()
         app.state.taxonomy = {"facts": [], "emotions": [], "collector_actions": []}
         start_result = asyncio.run(start_session("sid1", {"cust_no": "0100252354", "context": {}}))

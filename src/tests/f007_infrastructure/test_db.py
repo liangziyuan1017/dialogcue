@@ -1,5 +1,7 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import MagicMock, call, patch
+
 from f007_infrastructure.db import SentenceDB
 from f007_infrastructure.embeddings import EMBEDDING_DIM
 

@@ -36,7 +36,7 @@ def check_record(idx, record):
     elif RAW_REQUIRED.issubset(keys):
         fmt = "raw"
     else:
-        missing = (CANONICAL_REQUIRED | RAW_REQUIRED) - keys
+        (CANONICAL_REQUIRED | RAW_REQUIRED) - keys
         if "call_id" not in keys:
             errors.append(f"record {idx}: missing required key 'call_id'")
         if "dialog" not in keys:

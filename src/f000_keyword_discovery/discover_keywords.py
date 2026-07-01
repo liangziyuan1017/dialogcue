@@ -1,19 +1,20 @@
 import copy
 import json
 import os
-from f007_infrastructure.config import get as _cfg
+
 from f000_keyword_discovery.keyword_prompts import (
     BATCH_SIZE,
-    SUGGESTED_FACTS,
-    SUGGESTED_EMOTIONS,
     SUGGESTED_ACTIONS,
-    _build_customer_batch_prompt,
-    _build_collector_batch_prompt,
-    _build_cluster_prompt,
-    _group_items,
-    _group_actions,
+    SUGGESTED_EMOTIONS,
+    SUGGESTED_FACTS,
     _add_suggested,
+    _build_cluster_prompt,
+    _build_collector_batch_prompt,
+    _build_customer_batch_prompt,
+    _group_actions,
+    _group_items,
 )
+from f007_infrastructure.config import get as _cfg
 from f007_infrastructure.llm_client import call_deepseek_json
 
 

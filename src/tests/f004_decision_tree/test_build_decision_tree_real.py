@@ -1,13 +1,13 @@
 import os
 
 from f004_decision_tree.build_decision_tree import (
-    build_tree,
-    _load_rewarded,
-    _split_composite_nodes,
-    _merge_sibling_facts,
-    _split_by_action,
-    _propagate_facts,
     _collapse_redundant_facts,
+    _load_rewarded,
+    _merge_sibling_facts,
+    _propagate_facts,
+    _split_by_action,
+    _split_composite_nodes,
+    build_tree,
 )
 
 
@@ -82,7 +82,8 @@ def _branching_histogram(node):
     def walk(n):
         kids = n.get("children", [])
         c[len(kids)] += 1
-        for k in kids: walk(k)
+        for k in kids:
+            walk(k)
     walk(node)
     return c
 

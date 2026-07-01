@@ -1,6 +1,7 @@
 import os
-import yaml
 from pathlib import Path
+
+import yaml
 
 _CONFIG_PATH = Path(__file__).resolve().parent.parent.parent / "config.md"
 _cache = None
@@ -98,7 +99,7 @@ def _parse_frontmatter(path):
     try:
         end = text.index("---", 3)
     except ValueError:
-        raise ConfigError(f"config file {path} has opening '---' but no closing '---' fence")
+        raise ConfigError(f"config file {path} has opening '---' but no closing '---' fence") from None
     return yaml.safe_load(text[3:end]) or {}
 
 

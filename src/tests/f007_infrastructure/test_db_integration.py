@@ -1,6 +1,7 @@
 import os
+
 import pytest
-import numpy as np
+
 from f007_infrastructure.db import SentenceDB
 from f007_infrastructure.embeddings import EMBEDDING_DIM
 

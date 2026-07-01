@@ -1,7 +1,7 @@
 from f004_decision_tree.tree_transforms import (
     _collapse_redundant_facts,
-    _deduplicate_nodes,
     _consolidate_endpoints,
+    _deduplicate_nodes,
     _propagate_sentences,
 )
 

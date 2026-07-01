@@ -2,7 +2,6 @@ import re
 
 from f007_infrastructure.config import get as _cfg
 
-
 CLOSING_ACTIONS = {"closure", "goodbye"}
 
 
@@ -230,7 +229,7 @@ def _apply_merges(turns, call_id, merge_decisions=None):
             merge_entries[first_idx] = _merge_turns(turns, abs_indices, call_id)
             for idx in abs_indices[1:]:
                 remove_indices.add(idx)
-            for a, b in zip(abs_indices, abs_indices[1:]):
+            for a, b in zip(abs_indices, abs_indices[1:], strict=False):
                 for int_idx in interruption_indices:
                     if a < int_idx < b:
                         state = turns[int_idx].get("state") or {}

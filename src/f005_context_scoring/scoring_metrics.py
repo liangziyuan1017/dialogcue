@@ -2,7 +2,6 @@ import numpy as np
 
 from f007_infrastructure.config import get as _cfg
 
-
 BITMASK_FIELDS = [
     "has_auto_loan",
     "has_mortgage",

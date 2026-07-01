@@ -1,7 +1,6 @@
+import importlib.util
 import json
 import os
-
-import importlib.util
 
 import pytest
 
@@ -16,7 +15,7 @@ def _load_rewarded():
 
 def _load_tree():
     tree_path = os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "data", "decision_tree.json")
-    with open(tree_path, "r", encoding="utf-8") as f:
+    with open(tree_path, encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -92,7 +91,7 @@ def _find_action_sentence(current, action, sid, call_id, text, root):
 
 def _extract_expected_sequence(record):
     turns = record.get("turns_annotated", [])
-    call_id = record.get("call_id", "")
+    record.get("call_id", "")
     sequence = []
     accumulated_facts = []
 
@@ -317,7 +316,7 @@ def test_every_record_all_collector_actions_in_tree(tree_and_records):
     tree, records = tree_and_records
     failures = []
     for rec in records:
-        call_id = rec["call_id"]
+        rec["call_id"]
         errors = _verify_record_in_tree(rec, tree)
         action_errors = [e for e in errors if "collector action" in e and "merged" not in e.lower()]
         if action_errors:
@@ -332,7 +331,7 @@ def test_every_record_all_collector_actions_in_tree(tree_and_records):
 
 def test_every_record_sequence_is_correct(tree_and_records):
     tree, records = tree_and_records
-    all_sents = _all_tree_sentences(tree)
+    _all_tree_sentences(tree)
     failures = []
     for rec in records:
         call_id = rec["call_id"]
@@ -341,6 +340,6 @@ def test_every_record_sequence_is_correct(tree_and_records):
         if nav_errors:
             failures.append(f"{call_id}: {len(nav_errors)} navigation issues")
     if failures:
-        print(f"\nNavigation warnings (nodes exist but walker can't reach them from current path):")
+        print("\nNavigation warnings (nodes exist but walker can't reach them from current path):")
         for f in failures:
             print(f"  {f}")

@@ -1,5 +1,6 @@
-from unittest.mock import patch, MagicMock
-from f003_reward_labeling.analyze_customer_turns import analyze_customer_turns, _build_customer_prompt, _group_results
+from unittest.mock import patch
+
+from f003_reward_labeling.analyze_customer_turns import _group_results, analyze_customer_turns
 
 
 def test_analyze_customer_turns_returns_facts_and_emotions():

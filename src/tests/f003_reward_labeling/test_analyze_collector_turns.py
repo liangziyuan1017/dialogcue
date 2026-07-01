@@ -1,6 +1,7 @@
-from unittest.mock import patch
 import json
-from f003_reward_labeling.analyze_collector_turns import analyze_collector_turns, _group_collector_results
+from unittest.mock import patch
+
+from f003_reward_labeling.analyze_collector_turns import _group_collector_results, analyze_collector_turns
 
 
 def test_analyze_collector_turns_returns_actions():

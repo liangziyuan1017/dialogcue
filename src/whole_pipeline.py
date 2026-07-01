@@ -190,8 +190,8 @@ def run_pipeline(input_file: Path) -> None:
 
     print("\n" + "=" * 60)
     print(f"[{datetime.now():%Y-%m-%d %H:%M:%S}] Pipeline complete.")
-    print(f"Outputs:")
-    for name, out in ANALYSIS_OUTPUTS.items():
+    print("Outputs:")
+    for _name, out in ANALYSIS_OUTPUTS.items():
         print(f"  {out}")
     for step in LLM_STEPS:
         print(f"  {step['default_output']}")

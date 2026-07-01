@@ -1,14 +1,13 @@
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from f008_state_extraction.state_extraction import (
-    extract_state_llm,
-    extract_state_keyword,
     extract_state,
+    extract_state_keyword,
+    extract_state_llm,
+    flat_to_path_state,
     merge_state,
     path_state_to_flat,
-    flat_to_path_state,
 )
-
 
 TAXONOMY = {
     "facts": [{"group_name": "financial_hardship", "keywords": ["没钱", "没有钱", "经济困难"]}],

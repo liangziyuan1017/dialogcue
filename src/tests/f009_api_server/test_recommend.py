@@ -1,6 +1,8 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 from fastapi.testclient import TestClient
+
 from f007_infrastructure.embeddings import EMBEDDING_DIM
 
 

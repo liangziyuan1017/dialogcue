@@ -1,5 +1,4 @@
 import subprocess
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -33,4 +32,4 @@ def _library_prints():
 
 def test_no_print_in_library_modules():
     offending = _library_prints()
-    assert not offending, f"print() found in library modules:\n" + "\n".join(offending)
+    assert not offending, "print() found in library modules:\n" + "\n".join(offending)

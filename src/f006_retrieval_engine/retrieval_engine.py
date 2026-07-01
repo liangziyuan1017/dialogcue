@@ -3,12 +3,14 @@ import os
 from collections import defaultdict
 from itertools import combinations
 
+from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.logging import get_logger as _get_logger
+
 from .retrieval_ranking import (
     get_ranking_weights,
     rank_sentences,
 )
-from f007_infrastructure.config import get as _cfg
-from f007_infrastructure.logging import get_logger as _get_logger
+
 _log = _get_logger(__name__)
 
 def _pool_cap():
@@ -32,7 +34,7 @@ def _compute_key(inherited_facts, branch_key_values, inherited_emotions=None):
 
 def _flatten_branch_key(branch_key):
     vals = []
-    for k, v in branch_key.items():
+    for _k, v in branch_key.items():
         if isinstance(v, list):
             vals.extend(v)
         else:
@@ -192,7 +194,7 @@ def recommend(query_bitmask, conversation_context, query_bg,
     if label_set_index is None:
         label_set_index = _build_label_set_index(index)
 
-    from f008_state_extraction.state_extraction import path_state_to_flat, flat_to_path_state
+    from f008_state_extraction.state_extraction import flat_to_path_state, path_state_to_flat
 
     if conversation_state is None:
         conversation_state = {"branch_key": {}, "inherited_facts": [], "inherited_emotions": [], "willingness": None}

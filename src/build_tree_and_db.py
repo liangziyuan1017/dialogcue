@@ -6,8 +6,6 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from f007_infrastructure.config import get as _cfg
-
 BASE_DIR = Path(__file__).resolve().parent
 
 REWARDED_PATH = BASE_DIR / "f003_reward_labeling" / "data" / "output_rewarded.py"
@@ -89,11 +87,11 @@ def run_build_db(scored: dict, aligned: list[dict], rewarded: list[dict], dsn: s
     print(f"{'=' * 60}")
 
     from f007_infrastructure.db import SentenceDB
-    from f007_infrastructure.embeddings import embed_texts, EMBEDDING_DIM
+    from f007_infrastructure.embeddings import EMBEDDING_DIM, embed_texts
 
     db = SentenceDB(dsn)
     db.create_tables()
-    print(f"  Tables created/verified.")
+    print("  Tables created/verified.")
 
     import f005_context_scoring.score_tree as st
 
@@ -114,7 +112,7 @@ def run_build_db(scored: dict, aligned: list[dict], rewarded: list[dict], dsn: s
     vecs = embed_texts(texts)
 
     db_sentences = []
-    for s, vec in zip(all_sentences, vecs):
+    for s, vec in zip(all_sentences, vecs, strict=False):
         node_sig = s.get("_node_path_sig", "")
         node_id = node_sig_to_id.get(node_sig, 1)
         db_sentences.append({
@@ -156,7 +154,7 @@ def run_build_db(scored: dict, aligned: list[dict], rewarded: list[dict], dsn: s
             print(f"  Upserted {len(kw_rows)} taxonomy keywords.")
 
     db.close()
-    print(f"  Database build complete.")
+    print("  Database build complete.")
 
 
 def run(args) -> None:
@@ -198,7 +196,7 @@ def run(args) -> None:
     print(f"  Decision tree:  {TREE_PATH}")
     print(f"  Scored tree:    {SCORED_PATH}")
     if not args.skip_db:
-        print(f"  Database:       populated")
+        print("  Database:       populated")
     print(f"{'=' * 60}")
 
 

@@ -1,8 +1,5 @@
-import io
 import json
 import logging
-
-import pytest
 
 from f007_infrastructure import logging as applog
 

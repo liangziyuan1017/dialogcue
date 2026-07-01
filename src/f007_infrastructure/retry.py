@@ -3,6 +3,7 @@ import time
 
 from f007_infrastructure.config import get as _cfg
 from f007_infrastructure.logging import get_logger as _get_logger
+
 _log = _get_logger(__name__)
 
 

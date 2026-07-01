@@ -4,14 +4,13 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from f007_infrastructure.embeddings import EMBEDDING_DIM
 from f006_retrieval_engine.retrieval_ranking import (
     RANKING_WEIGHTS,
     compute_bg_boost,
     compute_vec_similarity,
     rank_sentences,
 )
-
+from f007_infrastructure.embeddings import EMBEDDING_DIM
 
 SCORED_TREE_PATH = os.path.join(os.path.dirname(__file__), "../..", "f005_context_scoring", "data", "decision_tree_scored.json")
 

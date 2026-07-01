@@ -1,7 +1,7 @@
 import os
 
-from f007_infrastructure.llm_client import _get_client
 from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.llm_client import _get_client
 
 EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", _cfg("embedding.model", "bge-m3"))
 EMBEDDING_BASE_URL = os.environ.get("EMBEDDING_BASE_URL", _cfg("embedding.api_base", "http://localhost:11434/v1"))

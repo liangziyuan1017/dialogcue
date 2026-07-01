@@ -1,7 +1,6 @@
 import csv
-import os
-from pathlib import Path
 from collections import Counter
+from pathlib import Path
 
 _DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "data_labels"
 

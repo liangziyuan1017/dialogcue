@@ -3,30 +3,32 @@ import os
 import time
 import uuid
 from contextlib import asynccontextmanager
-
-from f007_infrastructure.config import get as _cfg
-from f007_infrastructure.logging import bind_request_id, get_request_id, get_logger as _get_logger
 from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
+
+from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.logging import bind_request_id
+from f007_infrastructure.logging import get_logger as _get_logger
+
 load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env")
 
+import socketio
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
-import socketio
 
 _log = _get_logger(__name__)
 
 from f006_retrieval_engine.retrieval_engine import (
+    _build_label_set_index,
     build_node_index,
     recommend,
-    _build_label_set_index,
 )
 from f006_retrieval_engine.retrieval_ranking import BITMASK_FIELDS, get_ranking_weights
-from f008_state_extraction.state_extraction import extract_state, merge_state
-from f007_infrastructure.embeddings import embed_single, EMBEDDING_DIM
 from f007_infrastructure.db import SentenceDB
+from f007_infrastructure.embeddings import EMBEDDING_DIM, embed_single
+from f008_state_extraction.state_extraction import extract_state, merge_state
 
 
 class ConversationState(BaseModel):
@@ -327,7 +329,6 @@ async def debug_endpoint(req: RecommendRequest):
 
 
 from fastapi.staticfiles import StaticFiles
-
 
 _ui_dir = os.path.join(os.path.dirname(__file__), "..", "f010_api_mock_ui", "ui")
 app.mount("/ui", StaticFiles(directory=_ui_dir, html=True), name="ui")

@@ -1,4 +1,4 @@
-from f003_reward_labeling.reward_label import label_reward, label_all, cross_validate
+from f003_reward_labeling.reward_label import cross_validate, label_all, label_reward
 
 
 def _sample_record(reward_trigger=True, plan_eval_provides=True):

@@ -1,6 +1,10 @@
-import pytest
 
-from f004_decision_tree.build_decision_tree import _llm_should_merge, _merge_turns, _apply_merges, _ensure_same_action_merged
+from f004_decision_tree.build_decision_tree import (
+    _apply_merges,
+    _ensure_same_action_merged,
+    _llm_should_merge,
+    _merge_turns,
+)
 
 
 class TestLLMShouldMerge:

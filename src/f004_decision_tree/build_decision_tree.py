@@ -3,23 +3,46 @@ import json
 import os
 from collections import defaultdict
 
+from f004_decision_tree.merge_collector import (  # noqa: F401  (re-exported for tests)
+    ACK_MAX_WORDS,
+    CLOSING_ACTIONS,
+    MAX_MERGED_WORDS,
+    _apply_merges,
+    _build_merge_prompt,
+    _enforce_word_limit,
+    _ensure_same_action_merged,
+    _find_merge_candidates,
+    _is_ack_interruption,
+    _llm_should_merge,
+    _merge_turns,
+    _word_count,
+)
+from f004_decision_tree.tree_transforms import (  # noqa: F401  (re-exported for tests)
+    _branch_key_to_str,
+    _collapse_redundant_facts,
+    _collect_ending_sentences,
+    _compute_node_id,
+    _consolidate_endpoints,
+    _deduplicate_nodes,
+    _ensure_abrupt_end,
+    _ensure_leaf_termination,
+    _find_node_by_branch_key,
+    _make_abrupt_end_node,
+    _make_identity,
+    _merge_sibling_facts,
+    _propagate_facts,
+    _propagate_sentences,
+    _search_node,
+    _sort_keywords,
+    _split_by_action,
+    _split_composite_nodes,
+    _strip_key,
+    _strip_terminal_nodes,
+    _subset_match,
+)
 from f007_infrastructure.config import get as _cfg
-from f004_decision_tree.merge_collector import (
-    CLOSING_ACTIONS, MAX_MERGED_WORDS, ACK_MAX_WORDS,
-    _word_count, _is_ack_interruption, _find_merge_candidates,
-    _build_merge_prompt, _enforce_word_limit, _ensure_same_action_merged,
-    _llm_should_merge, _merge_turns, _apply_merges,
-)
-from f004_decision_tree.tree_transforms import (
-    _make_abrupt_end_node, _ensure_leaf_termination, _consolidate_endpoints,
-    _collect_ending_sentences, _strip_terminal_nodes, _ensure_abrupt_end,
-    _split_composite_nodes, _merge_sibling_facts, _split_by_action,
-    _propagate_facts, _collapse_redundant_facts, _propagate_sentences,
-    _sort_keywords, _find_node_by_branch_key, _branch_key_to_str,
-    _strip_key, _subset_match, _search_node, _deduplicate_nodes,
-    _make_identity, _compute_node_id,
-)
 from f007_infrastructure.logging import get_logger as _get_logger
+
 _log = _get_logger(__name__)
 
 def _load_rewarded():

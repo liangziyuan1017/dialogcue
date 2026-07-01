@@ -3,19 +3,19 @@ import os
 
 import pytest
 
-from f005_context_scoring.scoring_metrics import (
-    BITMASK_FIELDS,
-    BG_BACKGROUND_FIELDS,
-)
 from f005_context_scoring.score_tree import (
-    build_conversation_context_lookup,
+    _extract_conversation_context,
+    _score_sentence_pool,
     build_context_lookup,
+    build_conversation_context_lookup,
     build_customer_info_lookup,
     build_reward_lookup,
     build_turns_lookup,
     score_tree,
-    _extract_conversation_context,
-    _score_sentence_pool,
+)
+from f005_context_scoring.scoring_metrics import (
+    BG_BACKGROUND_FIELDS,
+    BITMASK_FIELDS,
 )
 
 

@@ -48,7 +48,7 @@ def _load_tree():
 def test_every_action_node_is_type_action():
     tree = _load_tree()
     violations = []
-    for node, depth, ntype in _collect_nodes(tree):
+    for node, _depth, ntype in _collect_nodes(tree):
         bk = node.get("branch_key", {})
         if bk.get("action") and ntype != "action":
             violations.append((node["state_id"], bk["action"], ntype))
@@ -61,7 +61,7 @@ def test_every_action_node_is_type_action():
 def test_action_nodes_have_diamond_shape():
     tree = _load_tree()
     violations = []
-    for node, depth, ntype in _collect_nodes(tree):
+    for node, _depth, ntype in _collect_nodes(tree):
         if ntype == "action":
             style = STYLE_MAP["action"]
             if style["shape"] != "diamond":
@@ -72,7 +72,7 @@ def test_action_nodes_have_diamond_shape():
 def test_action_nodes_have_amber_color():
     tree = _load_tree()
     violations = []
-    for node, depth, ntype in _collect_nodes(tree):
+    for node, _depth, ntype in _collect_nodes(tree):
         if ntype == "action":
             style = STYLE_MAP["action"]
             if style["border"] != "#f59e0b" or style["bg"] != "#422006":
@@ -83,7 +83,7 @@ def test_action_nodes_have_amber_color():
 def test_empathy_action_nodes_are_type_action():
     tree = _load_tree()
     violations = []
-    for node, depth, ntype in _collect_nodes(tree):
+    for node, _depth, ntype in _collect_nodes(tree):
         bk = node.get("branch_key", {})
         if bk.get("action") == "empathy" and ntype != "action":
             violations.append(node["state_id"])
@@ -96,7 +96,7 @@ def test_empathy_action_nodes_are_type_action():
 def test_pressure_action_nodes_are_type_action():
     tree = _load_tree()
     violations = []
-    for node, depth, ntype in _collect_nodes(tree):
+    for node, _depth, ntype in _collect_nodes(tree):
         bk = node.get("branch_key", {})
         if bk.get("action") == "pressure" and ntype != "action":
             violations.append(node["state_id"])
@@ -109,7 +109,7 @@ def test_pressure_action_nodes_are_type_action():
 def test_emotion_nodes_never_have_action_key():
     tree = _load_tree()
     violations = []
-    for node, depth, ntype in _collect_nodes(tree):
+    for node, _depth, ntype in _collect_nodes(tree):
         bk = node.get("branch_key", {})
         if ntype == "emotion" and bk.get("action"):
             violations.append((node["state_id"], bk["action"]))
@@ -122,7 +122,7 @@ def test_emotion_nodes_never_have_action_key():
 def test_emotion_nodes_have_ellipse_shape():
     tree = _load_tree()
     violations = []
-    for node, depth, ntype in _collect_nodes(tree):
+    for node, _depth, ntype in _collect_nodes(tree):
         if ntype == "emotion":
             style = STYLE_MAP["emotion"]
             if style["shape"] != "ellipse":
@@ -133,7 +133,7 @@ def test_emotion_nodes_have_ellipse_shape():
 def test_emotion_nodes_have_purple_color():
     tree = _load_tree()
     violations = []
-    for node, depth, ntype in _collect_nodes(tree):
+    for node, _depth, ntype in _collect_nodes(tree):
         if ntype == "emotion":
             style = STYLE_MAP["emotion"]
             if style["border"] != "#a78bfa" or style["bg"] != "#2e1065":
@@ -145,7 +145,7 @@ def test_type_shape_color_consistency():
     tree = _load_tree()
     all_nodes = _collect_nodes(tree)
     type_counts = {}
-    for node, depth, ntype in all_nodes:
+    for node, _depth, ntype in all_nodes:
         type_counts[ntype] = type_counts.get(ntype, 0) + 1
         style = STYLE_MAP.get(ntype)
         assert style is not None, f"Node {node['state_id']} has unknown type '{ntype}'"
@@ -159,7 +159,7 @@ def test_type_shape_color_consistency():
 def test_no_node_has_conflicting_type_signals():
     tree = _load_tree()
     violations = []
-    for node, depth, ntype in _collect_nodes(tree):
+    for node, _depth, ntype in _collect_nodes(tree):
         bk = node.get("branch_key", {})
         signals = []
         if bk.get("facts"):
@@ -181,7 +181,7 @@ def test_no_node_has_conflicting_type_signals():
 def test_all_7_action_categories_render_as_action_type():
     tree = _load_tree()
     seen_actions = set()
-    for node, depth, ntype in _collect_nodes(tree):
+    for node, _depth, ntype in _collect_nodes(tree):
         bk = node.get("branch_key", {})
         act = bk.get("action")
         if act:

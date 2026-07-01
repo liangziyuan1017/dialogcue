@@ -1,7 +1,6 @@
+import importlib.util
 import json
 import os
-
-import importlib.util
 
 import pytest
 
@@ -16,7 +15,7 @@ def _load_rewarded():
 
 def _load_tree():
     tree_path = os.path.join(os.path.dirname(__file__), "../..", "f004_decision_tree", "data", "decision_tree.json")
-    with open(tree_path, "r", encoding="utf-8") as f:
+    with open(tree_path, encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -39,7 +38,9 @@ def tree_and_records():
 
 def test_no_composite_branch_keys(tree_and_records):
     tree, _ = tree_and_records
-    def find_composite(n, results=[]):
+    def find_composite(n, results=None):
+        if results is None:
+            results = []
         bk = n.get("branch_key", {})
         facts = bk.get("facts", [])
         emotions = bk.get("emotions", [])
@@ -54,7 +55,9 @@ def test_no_composite_branch_keys(tree_and_records):
 
 def test_no_redundant_fact_nodes(tree_and_records):
     tree, _ = tree_and_records
-    def find_redundant(n, results=[]):
+    def find_redundant(n, results=None):
+        if results is None:
+            results = []
         bk = n.get("branch_key", {})
         inf = n.get("inherited_facts", [])
         for f in bk.get("facts", []):
@@ -64,12 +67,14 @@ def test_no_redundant_fact_nodes(tree_and_records):
             find_redundant(c, results)
         return results
     redundant = find_redundant(tree)
-    assert not redundant, f"Redundant fact nodes:\n" + "\n".join(redundant)
+    assert not redundant, "Redundant fact nodes:\n" + "\n".join(redundant)
 
 
 def test_sentences_under_action_nodes(tree_and_records):
     tree, _ = tree_and_records
-    def find_misplaced(n, results=[]):
+    def find_misplaced(n, results=None):
+        if results is None:
+            results = []
         bk = n.get("branch_key", {})
         if bk.get("facts") or bk.get("emotions"):
             for s in n.get("sentence_pool", []):
@@ -79,7 +84,7 @@ def test_sentences_under_action_nodes(tree_and_records):
             find_misplaced(c, results)
         return results
     misplaced = find_misplaced(tree)
-    assert not misplaced, f"Misplaced sentences:\n" + "\n".join(misplaced)
+    assert not misplaced, "Misplaced sentences:\n" + "\n".join(misplaced)
 
 
 def test_all_31_call_ids_represented(tree_and_records):

@@ -1,6 +1,6 @@
 import numpy as np
 
-from f005_context_scoring.scoring_metrics import BITMASK_FIELDS
+from f005_context_scoring.scoring_metrics import BITMASK_FIELDS  # noqa: F401  (re-exported)
 from f007_infrastructure.config import get as _cfg
 
 

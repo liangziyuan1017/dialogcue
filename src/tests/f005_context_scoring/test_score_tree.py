@@ -1,10 +1,16 @@
-import numpy as np
 import pytest
 
-from f007_infrastructure.embeddings import EMBEDDING_DIM
+from f005_context_scoring.score_tree import (
+    _score_sentence_pool,
+    build_context_lookup,
+    build_customer_info_lookup,
+    build_reward_lookup,
+)
 from f005_context_scoring.scoring_metrics import (
-    BITMASK_FIELDS,
     BG_BACKGROUND_FIELDS,
+    BITMASK_FIELDS,
+    _extract_bg_background,
+    _extract_bg_constraints,
     compute_bg_background,
     compute_bg_constraints,
     compute_hwr,
@@ -12,15 +18,8 @@ from f005_context_scoring.scoring_metrics import (
     cosine_similarity,
     encode_bitmask,
     encode_bitmask_int,
-    _extract_bg_constraints,
-    _extract_bg_background,
 )
-from f005_context_scoring.score_tree import (
-    build_context_lookup,
-    build_customer_info_lookup,
-    build_reward_lookup,
-    _score_sentence_pool,
-)
+from f007_infrastructure.embeddings import EMBEDDING_DIM
 
 
 @pytest.fixture
@@ -43,7 +42,7 @@ class TestContextLookup:
         assert len(context_lookup) == 31
 
     def test_all_have_context_fields(self, context_lookup):
-        for cid, ctx in context_lookup.items():
+        for _cid, ctx in context_lookup.items():
             assert "has_auto_loan" in ctx
             assert "has_mortgage" in ctx
             assert "credit_rating" in ctx
@@ -86,7 +85,7 @@ class TestRewardLookup:
         assert len(reward_lookup) == 31
 
     def test_all_rewards_are_0_or_1(self, reward_lookup):
-        for cid, r in reward_lookup.items():
+        for _cid, r in reward_lookup.items():
             assert r in (0, 1)
 
     def test_6_rewards_are_1(self, reward_lookup):
@@ -177,7 +176,7 @@ class TestBitmaskEncoding:
 
     def test_bitmask_int_range(self, context_lookup):
         max_mask = (1 << len(BITMASK_FIELDS)) - 1
-        for cid, ctx in context_lookup.items():
+        for _cid, ctx in context_lookup.items():
             bg = _extract_bg_constraints(ctx)
             mask = encode_bitmask(bg)
             assert 0 <= encode_bitmask_int(mask) <= max_mask
@@ -327,8 +326,10 @@ class TestWriteScoredTreeWithDB:
                 "sentence_pool": [{"script_text": "hi", "script_id": "s1", "source_call_ids": []}],
                 "children": [],
             }
+            import os
+            import tempfile
+
             from f005_context_scoring.score_tree import write_scored_tree
-            import tempfile, os
             with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
                 tmp = f.name
             try:
@@ -339,7 +340,7 @@ class TestWriteScoredTreeWithDB:
                 os.unlink(tmp)
 
     def test_json_has_context_vec_id_not_context_vec(self):
-        from unittest.mock import MagicMock, patch
+        from unittest.mock import patch
         with patch("f005_context_scoring.score_tree._load_decision_tree") as mock_tree, \
              patch("f005_context_scoring.score_tree.build_context_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.build_reward_lookup", return_value={}), \
@@ -353,8 +354,11 @@ class TestWriteScoredTreeWithDB:
                 "sentence_pool": [{"script_text": "hi", "script_id": "s1", "source_call_ids": []}],
                 "children": [],
             }
+            import json
+            import os
+            import tempfile
+
             from f005_context_scoring.score_tree import write_scored_tree
-            import tempfile, os, json
             with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
                 tmp = f.name
             try:

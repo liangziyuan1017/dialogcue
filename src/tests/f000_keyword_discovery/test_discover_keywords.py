@@ -1,7 +1,8 @@
-from unittest.mock import patch
 import json
 import os
 import tempfile
+from unittest.mock import patch
+
 from f000_keyword_discovery.discover_keywords import discover_keywords
 
 
@@ -33,7 +34,7 @@ def test_discover_keywords_writes_json():
         out_path = os.path.join(tmpdir, "state_keywords.json")
         labeled_path = os.path.join(tmpdir, "output_labeled.py")
         with patch("f000_keyword_discovery.discover_keywords.call_deepseek_json", side_effect=[_mock_customer_response(), _mock_collector_response(), _mock_cluster_response()]):
-            result = discover_keywords(_mock_records(), output_path=out_path, labeled_output_path=labeled_path)
+            discover_keywords(_mock_records(), output_path=out_path, labeled_output_path=labeled_path)
             assert os.path.exists(out_path)
             with open(out_path) as f:
                 data = json.load(f)

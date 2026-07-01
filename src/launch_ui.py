@@ -115,7 +115,7 @@ def run(args) -> None:
     if args.open and launch_api:
         webbrowser.open(f"http://localhost:{API_PORT}/ui")
 
-    print(f"\nServers running. Press Ctrl+C to stop.")
+    print("\nServers running. Press Ctrl+C to stop.")
     print("=" * 60)
 
     while True:

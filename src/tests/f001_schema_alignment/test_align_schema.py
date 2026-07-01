@@ -1,5 +1,5 @@
-from f001_schema_alignment.align_schema import align_all, align_record, build_context, build_turns_annotated
 from f000_keyword_discovery.load_data import load_records
+from f001_schema_alignment.align_schema import align_all
 
 
 def _load_labeled():
@@ -41,7 +41,7 @@ def test_state_transitions_empty():
 def test_original_dialog_preserved_verbatim():
     records = load_records()
     aligned = align_all()
-    for raw, aln in zip(records, aligned):
+    for raw, aln in zip(records, aligned, strict=False):
         raw_texts = [t["text"] for t in raw["response"]["dialog"]]
         aln_texts = [t["text"] for t in aln["turns_annotated"]]
         assert raw_texts == aln_texts, f"Mismatch in call_id {raw['call_id']}"

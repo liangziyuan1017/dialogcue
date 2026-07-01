@@ -1,8 +1,10 @@
 from collections import defaultdict
+
 from f007_infrastructure.config import get as _cfg
 from f007_infrastructure.llm_client import call_deepseek_json
-from f007_infrastructure.retry import retry_call
 from f007_infrastructure.logging import get_logger as _get_logger
+from f007_infrastructure.retry import retry_call
+
 _log = _get_logger(__name__)
 
 SUGGESTED_ACTIONS = [
@@ -92,10 +94,10 @@ def analyze_collector_turns(records: list) -> dict:
     for batch_start in range(0, len(all_turns), BATCH_SIZE):
         batch = all_turns[batch_start:batch_start + BATCH_SIZE]
         prompt = _build_batch_prompt(batch)
-        def _process():
+        def _process(prompt=prompt):
             return call_deepseek_json(prompt)
 
-        def _on_fail(exc):
+        def _on_fail(exc, batch_start=batch_start):
             _log.info(f"  SKIPPED batch starting at turn {batch_start} after 3 retries: {exc}")
             return None
 
