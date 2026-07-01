@@ -29,7 +29,7 @@ def test_json_formatter_emits_request_id():
         assert parsed["message"] == "hello"
         assert parsed["level"] == "INFO"
     finally:
-        applog.bind_request_id(rid)
+        applog.reset_request_id(rid)
 
 
 def test_get_logger_respects_explicit_level():

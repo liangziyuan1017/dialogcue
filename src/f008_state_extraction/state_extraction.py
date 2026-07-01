@@ -141,10 +141,10 @@ def _apply_relabel(result: dict) -> None:
     _load_csv_relabel_maps()
     _load_descriptions()
 
-    fact_map = _FACT_CSV_MAP or {}
-    emotion_map = _EMOTION_CSV_MAP or {}
-    fact_desc = _FACT_DESCRIPTIONS or {}
-    emotion_desc = _EMOTION_DESCRIPTIONS or {}
+    fact_map = _FACT_CSV_MAP if _FACT_CSV_MAP is not None else {}
+    emotion_map = _EMOTION_CSV_MAP if _EMOTION_CSV_MAP is not None else {}
+    fact_desc = _FACT_DESCRIPTIONS if _FACT_DESCRIPTIONS is not None else {}
+    emotion_desc = _EMOTION_DESCRIPTIONS if _EMOTION_DESCRIPTIONS is not None else {}
 
     for key, csv_map, descriptions in [
         ("facts", fact_map, fact_desc),
