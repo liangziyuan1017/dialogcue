@@ -5,7 +5,7 @@ import uuid
 from contextlib import asynccontextmanager
 
 from f007_infrastructure.config import get as _cfg
-from f007_infrastructure.logging import bind_request_id, get_request_id
+from f007_infrastructure.logging import bind_request_id, get_request_id, get_logger as _get_logger
 from datetime import datetime
 from pathlib import Path
 
@@ -15,6 +15,8 @@ load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env")
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
 import socketio
+
+_log = _get_logger(__name__)
 
 from f006_retrieval_engine.retrieval_engine import (
     build_node_index,
@@ -56,8 +58,23 @@ def _init_taxonomy():
         return json.load(f)
 
 
+def _check_api_key_guard():
+    key = os.environ.get("DEEPSEEK_API_KEY", "")
+    env = os.environ.get("APP_ENV", "dev")
+    if key.startswith("sk-placeholder") and env != "dev":
+        return False, "DEEPSEEK_API_KEY is placeholder; set APP_ENV=dev or provide a real key"
+    return True, None
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    ready, reason = _check_api_key_guard()
+    app.state.ready = ready
+    app.state.ready_reason = reason
+    if not ready:
+        _log.warning("startup guard: %s", reason)
+        yield
+        return
     app.state.db = _init_db()
     app.state.taxonomy = _init_taxonomy()
     tree = _load_scored_tree()
