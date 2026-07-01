@@ -4,7 +4,7 @@ from collections import defaultdict
 from itertools import combinations
 
 from .retrieval_ranking import (
-    RANKING_WEIGHTS,
+    get_ranking_weights,
     rank_sentences,
 )
 from f007_infrastructure.config import get as _cfg
@@ -270,7 +270,7 @@ def recommend(query_bitmask, conversation_context, query_bg,
         "vec_score": top.get("vec_score", 0),
         "final_score": top.get("final_score", 0),
         "confidence": round(confidence, 2),
-        "ranking_weights": RANKING_WEIGHTS,
+        "ranking_weights": get_ranking_weights(),
         "fallbacks": fallbacks,
         "conversation_state": path_state,
     }

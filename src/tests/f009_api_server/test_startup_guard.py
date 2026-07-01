@@ -4,8 +4,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 
-def _boot_with(env_key, app_env):
-    with patch.dict("os.environ", {"DEEPSEEK_API_KEY": env_key, "APP_ENV": app_env}, clear=False):
+def _boot_with(env_key):
+    with patch.dict("os.environ", {"DEEPSEEK_API_KEY": env_key}, clear=False):
         with patch("f009_api_server.server._init_db") as m_db, \
              patch("f009_api_server.server._init_taxonomy") as m_tax, \
              patch("f009_api_server.server._load_scored_tree") as m_tree:
@@ -17,17 +17,12 @@ def _boot_with(env_key, app_env):
                 return getattr(app.state, "ready", None), getattr(app.state, "ready_reason", None)
 
 
-def test_placeholder_key_in_prod_marks_not_ready():
-    ready, reason = _boot_with("sk-placeholder", "prod")
+def test_placeholder_key_marks_not_ready():
+    ready, reason = _boot_with("sk-placeholder")
     assert ready is False
     assert reason and "placeholder" in reason.lower()
 
 
-def test_placeholder_key_in_dev_boots_ready():
-    ready, _ = _boot_with("sk-placeholder", "dev")
-    assert ready is True
-
-
-def test_real_key_in_prod_boots_ready():
-    ready, _ = _boot_with("sk-real-abc123notplaceholder", "prod")
+def test_real_key_boots_ready():
+    ready, _ = _boot_with("sk-real-abc123notplaceholder")
     assert ready is True

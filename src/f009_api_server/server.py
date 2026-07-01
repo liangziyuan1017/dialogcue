@@ -23,7 +23,7 @@ from f006_retrieval_engine.retrieval_engine import (
     recommend,
     _build_label_set_index,
 )
-from f006_retrieval_engine.retrieval_ranking import RANKING_WEIGHTS, BITMASK_FIELDS
+from f006_retrieval_engine.retrieval_ranking import BITMASK_FIELDS, get_ranking_weights
 from f008_state_extraction.state_extraction import extract_state, merge_state
 from f007_infrastructure.embeddings import embed_single, EMBEDDING_DIM
 from f007_infrastructure.db import SentenceDB
@@ -60,9 +60,8 @@ def _init_taxonomy():
 
 def _check_api_key_guard():
     key = os.environ.get("DEEPSEEK_API_KEY", "")
-    env = os.environ.get("APP_ENV", "dev")
-    if key.startswith("sk-placeholder") and env != "dev":
-        return False, "DEEPSEEK_API_KEY is placeholder; set APP_ENV=dev or provide a real key"
+    if key.startswith("sk-placeholder"):
+        return False, "DEEPSEEK_API_KEY is placeholder; provide a real key in .env"
     return True, None
 
 
@@ -169,7 +168,7 @@ async def recommend_endpoint(req: RecommendRequest):
         "confidence": result.get("confidence", 1.0),
         "extraction_method": extraction.get("method", "unknown"),
         "conversation_state": merged,
-        "ranking_weights": RANKING_WEIGHTS,
+        "ranking_weights": get_ranking_weights(),
         "fallbacks": result.get("fallbacks", []),
         "latency_ms": latency_ms,
     }
@@ -259,7 +258,7 @@ async def customer_turn(sid, data):
         "confidence": top.get("confidence", 1.0),
         "extraction_method": extraction.get("method", "unknown"),
         "conversation_state": merged,
-        "ranking_weights": RANKING_WEIGHTS,
+        "ranking_weights": get_ranking_weights(),
         "fallbacks": top.get("fallbacks", []),
         "latency_ms": latency_ms,
     }

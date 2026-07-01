@@ -10,7 +10,7 @@ from f006_retrieval_engine.retrieval_engine import (
     descend_for_sentences,
     _build_label_set_index,
 )
-from f006_retrieval_engine.retrieval_ranking import BITMASK_FIELDS, rank_sentences, RANKING_WEIGHTS
+from f006_retrieval_engine.retrieval_ranking import BITMASK_FIELDS, rank_sentences
 from f007_infrastructure.config import get as _cfg
 
 
