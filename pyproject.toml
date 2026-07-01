@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "agent_tool"
 version = "0.1.0"
 description = "Project configuration for agent_tool"
-requires-python = ">=3.14,<3.15"
+requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.110",
     "uvicorn[standard]>=0.30",
@@ -28,6 +28,8 @@ dev = [
     "aiofiles>=24.0",
     "cryptography>=43.0",
     "pyyaml>=6.0",
+    "ruff>=0.6",
+    "mypy>=1.11",
 ]
 system = [
     "postgresql@16",

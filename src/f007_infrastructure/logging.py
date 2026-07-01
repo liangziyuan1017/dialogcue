@@ -1,7 +1,7 @@
 import json
 import logging
 import sys
-from contextvars import ContextVar
+from contextvars import ContextVar, Token
 
 from f007_infrastructure.config import get as _cfg
 
@@ -10,7 +10,7 @@ _request_id: ContextVar[str | None] = ContextVar("request_id", default=None)
 _loggers: dict[str, logging.Logger] = {}
 
 
-def bind_request_id(rid: str | None) -> str | None:
+def bind_request_id(rid: str | None) -> Token[str | None]:
     return _request_id.set(rid)
 
 

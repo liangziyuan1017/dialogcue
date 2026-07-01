@@ -1,0 +1,19 @@
+line-length = 120
+target-version = "py311"
+
+[lint]
+select = ["E", "F", "I", "UP", "B"]
+# Baseline: pre-existing violations deferred to future tightening PRs.
+# Remove these ignores incrementally as files are cleaned up.
+ignore = [
+    "E501", "B008",
+    "I001",   # import sorting — 57 existing
+    "F401",   # unused import (re-exports) — 52 existing
+    "F541",   # f-string without placeholders — 10 existing
+    "UP015",  # redundant open mode — 2 existing
+    "E401",   # multiple imports on one line — 2 existing
+    "B007", "E402", "B023", "F841", "B905", "B006", "UP031", "E731", "E701", "B904",
+]
+
+[lint.per-file-ignores]
+"src/tests/*" = ["B008", "B018"]
