@@ -36,6 +36,7 @@ _VALIDATION_RULES = [
     ("search.trigram_threshold", (0.0, 1.0)),
     ("search.taxonomy_trigram_threshold", (0.0, 1.0)),
     ("pool_cap", (1, 1000)),
+    ("db.pool_max", (1, 100)),
     ("retry.max_retries", (0, 100)),
     ("retry.min_sleep", (0, 3600)),
     ("retry.max_sleep", (0, 3600)),

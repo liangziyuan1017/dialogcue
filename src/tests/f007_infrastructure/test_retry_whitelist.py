@@ -58,7 +58,8 @@ def test_on_fail_callback_not_invoked_on_success():
     def ok():
         return "ok"
 
-    on_fail = lambda e: "fallback"
+    def on_fail(e):
+        return "fallback"
     with patch("f007_infrastructure.retry.time.sleep"):
         result = retry_call(ok, retryable=(TransientError,), max_retries=3, min_sleep=0.01, max_sleep=0.01, on_fail=on_fail)
     assert result == "ok"
@@ -68,7 +69,8 @@ def test_on_fail_callback_invoked_after_exhausting_retries():
     def always_fails():
         raise TransientError("always")
 
-    on_fail = lambda e: f"fallback:{e}"
+    def on_fail(e):
+        return f"fallback:{e}"
     with patch("f007_infrastructure.retry.time.sleep"):
         result = retry_call(always_fails, retryable=(TransientError,), max_retries=2, min_sleep=0.01, max_sleep=0.01, on_fail=on_fail)
     assert result == "fallback:always"

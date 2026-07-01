@@ -2,14 +2,14 @@ import importlib.util
 import tempfile
 from pathlib import Path
 
-from whole_pipeline import _write_py_results as _write_wp
 from f005_context_scoring.build_and_score_tree import _write_py_results as _write_bst
+from whole_pipeline import _write_py_results as _write_wp
 
 
 def _load_py_results(path: Path) -> list[dict]:
     spec = importlib.util.spec_from_file_location("results_mod", path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
+    mod = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
+    spec.loader.exec_module(mod)  # type: ignore[union-attr]
     return mod.results
 
 

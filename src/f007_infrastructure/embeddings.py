@@ -1,7 +1,5 @@
 import os
 
-import openai
-
 from f007_infrastructure.config import get as _cfg
 from f007_infrastructure.llm_client import RETRYABLE_LLM_ERRORS, _get_client
 from f007_infrastructure.logging import get_logger as _get_logger

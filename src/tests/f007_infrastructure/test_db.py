@@ -26,10 +26,11 @@ def mock_conn(mock_cursor):
 
 @pytest.fixture
 def db(mock_conn):
-    with patch("f007_infrastructure.db.psycopg2.connect", return_value=mock_conn), \
+    mock_pool = MagicMock()
+    mock_pool.getconn.return_value = mock_conn
+    with patch("f007_infrastructure.db.psycopg2.pool.ThreadedConnectionPool", return_value=mock_pool), \
          patch("f007_infrastructure.db.register_vector"):
         db = SentenceDB("dbname=test")
-        db._conn = mock_conn
         yield db
 
 

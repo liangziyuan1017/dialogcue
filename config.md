@@ -20,6 +20,9 @@ bg_boost:
 
 pool_cap: 50
 
+db:
+  pool_max: 10
+
 # ── Confidence Decay ──
 confidence:
   subset_drop_penalty: 0.1

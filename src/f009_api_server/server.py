@@ -17,6 +17,7 @@ load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env")
 import socketio
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
+from starlette.concurrency import run_in_threadpool
 
 _log = _get_logger(__name__)
 
@@ -83,6 +84,8 @@ async def lifespan(app: FastAPI):
     app.state.index = build_node_index(tree)
     app.state.label_set_index = _build_label_set_index(app.state.index)
     yield
+    if hasattr(app.state, "db") and app.state.db is not None:
+        app.state.db.close()
 
 
 def _load_scored_tree():
@@ -113,7 +116,7 @@ async def request_id_middleware(request: Request, call_next):
 async def recommend_endpoint(req: RecommendRequest):
     start = time.time()
 
-    extraction = extract_state(req.customer_utterance, app.state.taxonomy, db=app.state.db)
+    extraction = await run_in_threadpool(extract_state, req.customer_utterance, app.state.taxonomy, db=app.state.db)
     merged = merge_state(
         {
             "branch_key": req.conversation_state.branch_key,

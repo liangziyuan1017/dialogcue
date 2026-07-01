@@ -153,14 +153,15 @@ def run_build_db(scored: dict, aligned: list[dict], rewarded: list[dict], dsn: s
                         "frequency": group.get("frequency", 0),
                     })
         if kw_rows:
-            cur = db._conn.cursor()
-            for kr in kw_rows:
-                cur.execute(
-                    "INSERT INTO taxonomy_keywords (group_name, category, keyword, frequency) "
-                    "VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING",
-                    (kr["group_name"], kr["category"], kr["keyword"], kr["frequency"]),
-                )
-            cur.close()
+            with db.connection() as conn:
+                cur = conn.cursor()
+                for kr in kw_rows:
+                    cur.execute(
+                        "INSERT INTO taxonomy_keywords (group_name, category, keyword, frequency) "
+                        "VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING",
+                        (kr["group_name"], kr["category"], kr["keyword"], kr["frequency"]),
+                    )
+                cur.close()
             print(f"  Upserted {len(kw_rows)} taxonomy keywords.")
 
     db.close()
