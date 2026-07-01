@@ -29,12 +29,8 @@ feature** (F013 candidate) with its own doc + ADR, because it requires rewriting
 
 ## Why
 
-The single synchronous `psycopg2` connection in `SentenceDB` is shared across
-async FastAPI/SocketIO handlers — the top production outage risk in the F012
-review. The threadpool fix closes the concurrency hole with minimal scope and no
-driver rewrite. `asyncpg` would be faster (no thread overhead) but is a
-substantially larger change that deserves its own design scrutiny, migration
-plan, and review gate — bundling it into F012 would balloon scope and risk.
+The single synchronous `psycopg2` connection in `SentenceDB` is shared across async FastAPI/SocketIO handlers — the top production outage risk in the F012
+review. The threadpool fix closes the concurrency hole with minimal scope and no driver rewrite. `asyncpg` would be faster (no thread overhead) but is a substantially larger change that deserves its own design scrutiny, migration plan, and review gate — bundling it into F012 would balloon scope and risk.
 
 ## Tradeoff
 
@@ -50,7 +46,7 @@ plan, and review gate — bundling it into F012 would balloon scope and risk.
 
 ## Next Action
 
-- [ ] F012 Phase B: implement ThreadedConnectionPool + threadpool offload
+- [x] F012 Phase B: implement ThreadedConnectionPool + threadpool offload — **done, merged to main**
 - [ ] After Phase B merges and runs in prod, open F013 for asyncpg migration
 
 ---
@@ -60,3 +56,4 @@ plan, and review gate — bundling it into F012 would balloon scope and risk.
 | Date | Change | Author |
 |---|---|---|
 | 2026-07-01 | Initial draft (Design Gate, F012) | agent |
+| 2026-07-01 | Phase B merged to main; Next Action #1 complete | agent |

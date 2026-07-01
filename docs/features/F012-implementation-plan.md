@@ -6,7 +6,9 @@
 **Architecture:** Six phases, foundations first. Phase A (this plan) = structured logging + config hardening + Python tooling. Each phase is a separate PR (KD-2). Phase B uses threadpool on psycopg2 now; asyncpg is deferred to F013 (ADR-027). Serialization stays `.py` via `pprint.pformat` (ADR-008, KD-3).
 **Tech Stack:** Python ≥3.11, stdlib `logging`, pydantic v2, ruff, mypy, pytest.
 
-> **Scope of this document:** Phase A in TDD step granularity. Phases B–F are outlined; each gets its own plan doc when its PR begins (KD-2).
+> **Scope of this document:** Phase A in TDD step granularity. Phase B complete with review fixes. Phases C–F outlined; each gets its own plan doc when its PR begins (KD-2).
+>
+> **Merged:** Phase A + Phase B merged to `main` (2026-07-01). 392 passed / 8 skipped · ruff clean · mypy clean (81 files).
 
 ---
 

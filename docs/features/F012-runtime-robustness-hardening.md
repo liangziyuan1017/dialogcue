@@ -1,7 +1,7 @@
 ---
 id: F012
 name: Runtime Robustness Hardening
-status: review
+status: in-progress
 owner: agent
 related_features: [F007, F007b, F008, F009, F011]
 topics: [robustness, db, logging, retry, concurrency, validation, ops]
@@ -12,9 +12,9 @@ updated: 2026-07-01
 
 # F012: Runtime Robustness Hardening
 
-> **Status**: review | **Owner**: agent | **Priority**: P0
+> **Status**: in-progress (Phase A+B merged to main; C–F pending) | **Owner**: agent | **Priority**: P0
 >
-> **Worktree:** `../ICBC-f012-phase-b` · **Branch:** `feat/f012-phase-b` · **Phase A:** 366 passed, 8 skipped · **Phase B:** 390 passed, 8 skipped · **Quality gate:** PASS
+> **Merged to:** `main` · **Phase A:** 366 passed, 8 skipped · **Phase B:** 392 passed, 8 skipped · **Quality gate:** PASS
 
 ## Why
 
@@ -156,6 +156,8 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 | 2026-07-01 | Phase A complete (A1–A8); AC-A1..A5 ✅ |
 | 2026-07-01 | Phase B complete (B1–B6); AC-B1..B6 ✅ |
 | 2026-07-01 | Phase B review: 4 issues found & fixed; LL-006 recorded |
+| 2026-07-01 | Phase A merged to main (fast-forward) |
+| 2026-07-01 | Phase B merged to main (fast-forward, rebased onto post-A main) |
 
 ## Review Gate
 
