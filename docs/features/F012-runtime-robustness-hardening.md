@@ -12,7 +12,7 @@ updated: 2026-07-01
 
 # F012: Runtime Robustness Hardening
 
-> **Status**: spec | **Owner**: agent | **Priority**: P0
+> **Status**: design-approved | **Owner**: agent | **Priority**: P0
 
 ## Why
 
@@ -127,12 +127,12 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 
 | # | 问题 | 状态 |
 |---|------|------|
-| OQ-1 | Async DB: threadpool on psycopg2 vs migrate hot path to asyncpg? | ⬜ 未定 (Design Gate) |
-| OQ-2 | Relabel map: interim file-lock vs go straight to DB-backed in Phase D? | ⬜ 未定 |
-| OQ-3 | Sessions persistence: DB now or defer to Phase F? | ⬜ 未定 |
-| OQ-4 | Phase ordering: land F (migrations) before B (pool) to de-risk schema changes? | ⬜ 未定 |
-| OQ-5 | Phase B serialization: ADR-008 accepts `.py` format. Fix safely within `.py` (pprint) — or does Human override ADR-008 to switch to `.json`? | ⬜ 未定 (memory-first: respect ADR-008 unless overridden) |
-| OQ-6 | ADR-009 eliminated F002 LLM state extraction, but `f008/state_extraction.py` still calls `extract_state_llm` first. Is the LLM path live or legacy? Affects Phase B retry wiring + Phase E cache. | ⬜ 未定 |
+| OQ-1 | Async DB: threadpool on psycopg2 vs migrate hot path to asyncpg? | ✅ 已定 — threadpool now; asyncpg split into separate feature (see KD-6) |
+| OQ-2 | Relabel map: interim file-lock vs go straight to DB-backed in Phase D? | ⬜ 未定 (defer to Phase D planning) |
+| OQ-3 | Sessions persistence: DB now or defer to Phase F? | ⬜ 未定 (defer to Phase F planning) |
+| OQ-4 | Phase ordering: land F (migrations) before B (pool)? | ✅ 已定 — keep A→B→…→F (foundations first) |
+| OQ-5 | Phase B serialization vs ADR-008? | ✅ 已定 — keep `.py`, fix via `pprint.pformat` (KD-3) |
+| OQ-6 | f008 LLM path live or legacy (ADR-009)? | ✅ 已定 — live; wire retry + LRU cache |
 
 ## Key Decisions
 
@@ -140,15 +140,17 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 |---|------|------|------|
 | KD-1 | Six-phase plan, foundations first | Logging/config/tooling unblock all later phases | 2026-07-01 |
 | KD-2 | Each phase = separate PR | Bounded review; rollback granularity | 2026-07-01 |
-| KD-3 | Respect ADR-008: keep `.py` intermediate format, fix serialization via `pprint.pformat` (not JSON) unless Human overrides | Memory-first rule; ADR-008 is `accepted` | 2026-07-01 |
-| KD-4 | Phase D `merge_state` dedup is governed by LL-003 (propagate-then-extend duplicates) — known pitfall, apply ordered-set semantics | LL-003 `accepted` | 2026-07-01 |
-| KD-5 | Phase E extraction cache = simple LRU only, no over-engineering | LL-002 `accepted` (over-engineered per-turn LLM extraction) | 2026-07-01 |
+| KD-3 | Respect ADR-008: keep `.py` intermediate format, fix serialization via `pprint.pformat` (not JSON) | Memory-first rule; ADR-008 `accepted`; Human confirmed | 2026-07-01 |
+| KD-4 | Phase D `merge_state` dedup via ordered-set semantics | LL-003 `accepted` (propagate-then-extend duplicates) | 2026-07-01 |
+| KD-5 | Phase E extraction cache = simple LRU only | LL-002 `accepted` (over-engineered per-turn LLM extraction) | 2026-07-01 |
+| KD-6 | Phase B uses threadpool on psycopg2 + ThreadedConnectionPool now; native asyncpg migration split into a separate feature (F013 candidate) | Human decision: asyncpg is larger scope, deserves its own feature doc + ADR | 2026-07-01 |
 
 ## Timeline
 
 | 日期 | 事件 |
 |------|------|
 | 2026-07-01 | 立项 (kickoff) |
+| 2026-07-01 | Design Gate approved (Human); KD-3..KD-6 recorded |
 
 ## Review Gate
 
@@ -168,5 +170,6 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 | **Feature** | `docs/features/F011-config-externalization.md` | Config enabler (complete) |
 | **ADR** | `docs/decisions/ADR-008-output-format-py-file.md` | Accepted: `.py` output format — governs Phase B serialization (KD-3) |
 | **ADR** | `docs/decisions/ADR-009-eliminate-f002-llm-state-extraction.md` | Accepted: LLM state extraction eliminated — conflicts with current f008 code (OQ-6) |
+| **ADR** | `docs/decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md` | Accepted: Phase B threadpool now, asyncpg → F013 (KD-6) |
 | **Lesson** | `docs/lessons/LL-002-over-engineered-llm-extraction.md` | Accepted: governs Phase E cache simplicity (KD-5) |
 | **Lesson** | `docs/lessons/LL-003-propagate-then-extend-duplicates.md` | Accepted: governs Phase D merge_state dedup (KD-4) |
