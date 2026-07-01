@@ -92,14 +92,17 @@ def rank_sentences(pool, query_vec=None, db=None, query_bg=None, conversation_co
 
     weights = get_ranking_weights()
 
-    script_ids = [s.get("script_id", "") for s in pool]
-    vec_scores = {}
-    if query_vec is not None and db is not None and script_ids:
+    all_precomputed = all(s.get("vec_score") is not None for s in pool)
+    if not all_precomputed and query_vec is not None and db is not None:
+        script_ids = [s.get("script_id", "") for s in pool if s.get("vec_score") is None]
         vec_scores = compute_vec_similarity(query_vec, script_ids, db)
+        for s in pool:
+            if s.get("vec_score") is None:
+                s["vec_score"] = float(vec_scores.get(s.get("script_id", ""), 0.0))
 
     for s in pool:
-        sid = s.get("script_id", "")
-        s["vec_score"] = float(vec_scores.get(sid, 0.0))
+        if "vec_score" not in s:
+            s["vec_score"] = 0.0
         s_bg = s.get("bg_background", {}) or {}
         bg_boost = compute_bg_boost(s_bg, query_bg)
         s["_bg_boost_val"] = bg_boost

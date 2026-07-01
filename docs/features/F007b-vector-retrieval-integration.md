@@ -26,7 +26,9 @@ Covers **Steps 4-6** of [F007-F009-implementation-steps.md](F007-F009-implementa
 - PostgreSQL `nodes` table populated after scoring
 - PostgreSQL `sentences` table populated with embeddings after scoring
 - `compute_vec_similarity()` returns cosine similarity scores from PostgreSQL vectors
+- `search_by_nodes()` returns sentences with `vec_score` pre-computed in SQL (ADR-028)
 - `rank_sentences()` uses unified fusion: `0.40*win_rate + 0.30*vec_score + 0.15*sas + 0.15*bg_boost`
+- `rank_sentences()` uses pre-computed `vec_score` from `search_by_nodes()` when available, falls back to Python cosine via `compute_vec_similarity()`
 - No reference to `compute_context_similarity` or `_rank_limited` remains in `retrieval_ranking.py`
 - `recommend()` returns `vec_score`, `final_score`, `conversation_state` keys
 - No in-memory pool access in `recommend()` — candidates from PostgreSQL

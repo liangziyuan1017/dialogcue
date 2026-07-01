@@ -108,12 +108,14 @@ RANKING_WEIGHTS = {
 
 ### Conversation Context Similarity (pgvector)
 
-Each sentence has `source_call_ids` → look up original conversations, extract ~100 words before the sentence was used. Store as `conversation_context` field per sentence in the scored tree. At F005 build time, compute `embed(conversation_context)` via DeepSeek embedding API → 768-dim vector stored in PostgreSQL `embedding` column with pgvector HNSW index.
+Each sentence has `source_call_ids` → look up original conversations, extract ~100 words before the sentence was used. Store as `conversation_context` field per sentence in the scored tree. At F005 build time, compute `embed(conversation_context)` via bge-m3 embedding API → 1024-dim vector stored in PostgreSQL `embedding` column with pgvector HNSW index.
 
 At retrieval time:
-1. Compute `embed(query_context)` via DeepSeek embedding API for the current conversation's last ~100 words
-2. Compute `vec_score = 1 - (embedding <=> query_vec)` via pgvector cosine similarity
-3. Use as ranking signal in weighted fusion
+1. Compute `embed(query_context)` via bge-m3 embedding API for the current conversation's last ~100 words
+2. **SQL-side scoring**: `db.search_by_nodes(query_vec, node_ids)` computes `vec_score = 1 - (embedding <=> query_vec)` in PostgreSQL using pgvector's cosine distance operator, filtered by `node_id = ANY(...)`, ordered by `vec_score DESC`
+3. Use pre-computed `vec_score` as ranking signal in weighted fusion (no vector transfer to Python)
+
+See ADR-028 for rationale.
 
 ### bg_background Soft Boost (full strategy only)
 

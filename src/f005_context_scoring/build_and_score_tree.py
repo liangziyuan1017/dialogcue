@@ -54,19 +54,20 @@ def run(args) -> None:
     records = deduped
     _log.info(f"{ts()} Loaded {len(records)} records from {merged.name}")
 
-    # ── F000: analyze_collector_turns ──────────────────────────────────────
-    _log.info(f"\n{ts()} F000: analyze_collector_turns")
-    import f003_reward_labeling.analyze_collector_turns as act
-    collector_result = act.analyze_collector_turns(records)
+    # ── F000: discover_keywords (single LLM pass) ─────────────────────────
+    _log.info(f"\n{ts()} F000: discover_keywords")
+    import f000_keyword_discovery.discover_keywords as dk
+    taxonomy = dk.discover_keywords(records)
+    _log.info(f"  → facts: {len(taxonomy.get('facts', []))}, emotions: {len(taxonomy.get('emotions', []))}, actions: {len(taxonomy.get('collector_actions', []))}")
+
+    # ── F000: aggregation from taxonomy ────────────────────────────────────
+    collector_result = {"collector_actions": taxonomy.get("collector_actions", [])}
     collector_out = BASE_DIR / "f003_reward_labeling" / "data" / "collector_analysis.json"
     with open(collector_out, "w", encoding="utf-8") as f:
         json.dump(collector_result, f, ensure_ascii=False, indent=2)
     _log.info(f"  → {collector_out.name}  ({len(collector_result.get('collector_actions', []))} action groups)")
 
-    # ── F000: analyze_customer_turns ───────────────────────────────────────
-    _log.info(f"\n{ts()} F000: analyze_customer_turns")
-    import f003_reward_labeling.analyze_customer_turns as acust
-    customer_result = acust.analyze_customer_turns(records)
+    customer_result = {"facts": taxonomy.get("facts", []), "emotions": taxonomy.get("emotions", [])}
     customer_out = BASE_DIR / "f003_reward_labeling" / "data" / "customer_analysis.json"
     with open(customer_out, "w", encoding="utf-8") as f:
         json.dump(customer_result, f, ensure_ascii=False, indent=2)

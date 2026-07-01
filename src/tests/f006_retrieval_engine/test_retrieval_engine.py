@@ -54,10 +54,9 @@ class TestRecommendOutputSchema:
 class TestRecommendWithDB:
     def test_uses_db_for_candidates(self, tree, index, label_set_index):
         mock_db = MagicMock()
-        mock_db.get_sentences_by_node.return_value = [
-            {"script_id": "s1", "script_text": "hello", "win_rate": 0.8, "sas": 0.5, "bg_bitmask_int": 0, "bg_background": {}},
+        mock_db.search_by_nodes.return_value = [
+            {"script_id": "s1", "script_text": "hello", "win_rate": 0.8, "sas": 0.5, "bg_bitmask_int": 0, "bg_background": {}, "vec_score": 0.9},
         ]
-        mock_db.get_vectors.return_value = {"s1": [0.1] * EMBEDDING_DIM}
         result = recommend(
             query_bitmask=1023, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,

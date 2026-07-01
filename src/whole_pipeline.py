@@ -132,21 +132,17 @@ def run_pipeline(input_file: Path) -> None:
           f"Willingness levels: {len(taxonomy.get('willingness_levels', []))}")
 
     print("\n" + "=" * 60)
-    print("PHASE 2: Collector & Customer Turn Analysis")
+    print("PHASE 2: Aggregation (from Phase 1.5 taxonomy)")
     print("=" * 60)
 
-    print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Running analyze_collector_turns...")
-    import f003_reward_labeling.analyze_collector_turns as act
-    collector_result = act.analyze_collector_turns(records)
+    collector_result = {"collector_actions": taxonomy.get("collector_actions", [])}
     collector_out = ANALYSIS_OUTPUTS["analyze_collector_turns"]
     with open(collector_out, "w", encoding="utf-8") as f:
         json.dump(collector_result, f, ensure_ascii=False, indent=2)
     print(f"  Collector analysis written to {collector_out.name}")
     print(f"  Found {len(collector_result.get('collector_actions', []))} action groups")
 
-    print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Running analyze_customer_turns...")
-    import f003_reward_labeling.analyze_customer_turns as acust
-    customer_result = acust.analyze_customer_turns(records)
+    customer_result = {"facts": taxonomy.get("facts", []), "emotions": taxonomy.get("emotions", [])}
     customer_out = ANALYSIS_OUTPUTS["analyze_customer_turns"]
     with open(customer_out, "w", encoding="utf-8") as f:
         json.dump(customer_result, f, ensure_ascii=False, indent=2)
@@ -217,13 +213,11 @@ def _run_skip_llm(args) -> None:
           f"Actions: {len(taxonomy.get('collector_actions', []))}, "
           f"Willingness levels: {len(taxonomy.get('willingness_levels', []))}")
 
-    import f003_reward_labeling.analyze_collector_turns as act
-    collector_result = act.analyze_collector_turns(records)
+    collector_result = {"collector_actions": taxonomy.get("collector_actions", [])}
     with open(ANALYSIS_OUTPUTS["analyze_collector_turns"], "w", encoding="utf-8") as f:
         json.dump(collector_result, f, ensure_ascii=False, indent=2)
 
-    import f003_reward_labeling.analyze_customer_turns as acust
-    customer_result = acust.analyze_customer_turns(records)
+    customer_result = {"facts": taxonomy.get("facts", []), "emotions": taxonomy.get("emotions", [])}
     with open(ANALYSIS_OUTPUTS["analyze_customer_turns"], "w", encoding="utf-8") as f:
         json.dump(customer_result, f, ensure_ascii=False, indent=2)
 

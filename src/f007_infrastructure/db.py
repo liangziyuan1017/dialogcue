@@ -139,6 +139,19 @@ class SentenceDB:
             cur.close()
             return dict(row) if row else None
 
+    def get_node_ids_by_signatures(self, path_signatures: list[str]) -> dict[str, int]:
+        if not path_signatures:
+            return {}
+        with self.connection() as conn:
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT path_signature, id FROM nodes WHERE path_signature = ANY(%s)",
+                (list(path_signatures),),
+            )
+            rows = cur.fetchall()
+            cur.close()
+            return {r[0]: r[1] for r in rows}
+
     def upsert_sentences(self, sentences: list[dict]):
         if not sentences:
             return
@@ -212,6 +225,52 @@ class SentenceDB:
                 """,
                 (qvec, node_id, query_bitmask, limit),
             )
+            rows = cur.fetchall()
+            cur.close()
+            results = []
+            for r in rows:
+                d = {}
+                for k, v in dict(r).items():
+                    if isinstance(v, (np.floating, np.integer)):
+                        v = float(v)
+                    if k == "vec_score" and v != v:
+                        v = 0.0
+                    d[k] = v
+                results.append(d)
+            return results
+
+    def search_by_nodes(self, query_vec: list[float], node_ids: list[int], limit: int | None = None) -> list[dict]:
+        if not node_ids:
+            return []
+        with self.connection() as conn:
+            self._ensure_vector_registered(conn)
+            cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            qvec = np.array(query_vec, dtype=np.float32)
+            if limit is not None:
+                cur.execute(
+                    """
+                    SELECT script_id, script_text, bg_bitmask_int, win_rate, sas,
+                           bg_background, conversation_context,
+                           1 - (embedding <=> %s::vector) AS vec_score
+                    FROM sentences
+                    WHERE node_id = ANY(%s)
+                    ORDER BY vec_score DESC
+                    LIMIT %s
+                    """,
+                    (qvec, list(node_ids), limit),
+                )
+            else:
+                cur.execute(
+                    """
+                    SELECT script_id, script_text, bg_bitmask_int, win_rate, sas,
+                           bg_background, conversation_context,
+                           1 - (embedding <=> %s::vector) AS vec_score
+                    FROM sentences
+                    WHERE node_id = ANY(%s)
+                    ORDER BY vec_score DESC
+                    """,
+                    (qvec, list(node_ids)),
+                )
             rows = cur.fetchall()
             cur.close()
             results = []
