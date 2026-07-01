@@ -112,9 +112,13 @@ def run_build_db(scored: dict, aligned: list[dict], rewarded: list[dict], dsn: s
     vecs = embed_texts(texts)
 
     db_sentences = []
+    orphan_sigs: set[str] = set()
     for s, vec in zip(all_sentences, vecs, strict=False):
         node_sig = s.get("_node_path_sig", "")
-        node_id = node_sig_to_id.get(node_sig, 1)
+        node_id = node_sig_to_id.get(node_sig)
+        if node_id is None:
+            orphan_sigs.add(node_sig)
+            continue
         db_sentences.append({
             "script_id": s.get("script_id", ""),
             "node_id": node_id,
@@ -126,6 +130,12 @@ def run_build_db(scored: dict, aligned: list[dict], rewarded: list[dict], dsn: s
             "conversation_context": s.get("conversation_context", ""),
             "embedding": vec or [0.0] * EMBEDDING_DIM,
         })
+
+    if orphan_sigs:
+        raise ValueError(
+            f"build failed: {len(orphan_sigs)} orphan node signature(s) not found in nodes table: "
+            f"{sorted(orphan_sigs)[:10]}"
+        )
 
     db.upsert_sentences(db_sentences)
     print(f"  Upserted {len(db_sentences)} sentences with embeddings.")
