@@ -14,7 +14,7 @@ updated: 2026-07-01
 
 > **Status**: review | **Owner**: agent | **Priority**: P0
 >
-> **Worktree:** `../ICBC-f012-phase-a` · **Branch:** `feat/f012-phase-a` · **Phase A:** 366 passed, 8 skipped · **Quality gate:** PASS
+> **Worktree:** `../ICBC-f012-phase-b` · **Branch:** `feat/f012-phase-b` · **Phase A:** 366 passed, 8 skipped · **Phase B:** 390 passed, 8 skipped · **Quality gate:** PASS
 
 ## Why
 
@@ -80,12 +80,12 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 - [x] AC-A5: `requires-python` widened to `>=3.11`; `ruff check src/` and `mypy src/` clean (or baseline allowlist)
 
 ### Phase B（Data Layer）
-- [ ] AC-B1: N concurrent `/recommend` requests complete with no `InterfaceError`; killed PG → next request recovers within one retry
-- [ ] AC-B2: `retry_call` wraps LLM/embedding; retries on 429/5xx/timeout, not on `ValueError`
-- [ ] AC-B3: `llm.max_tokens` passed to API; `embed_texts` chunks by `embedding.batch_size` with per-batch retry
-- [ ] AC-B4: Malformed LLM JSON → `LLMResponseError`, keyword fallback used, warning logged with truncated raw text
-- [ ] AC-B5: Orphan node signature fails build loud (no default to node 1)
-- [ ] AC-B6: `_write_py_results` round-trips a string value containing `": null"` unchanged
+- [x] AC-B1: N concurrent `/recommend` requests complete with no `InterfaceError`; killed PG → next request recovers within one retry
+- [x] AC-B2: `retry_call` wraps LLM/embedding; retries on 429/5xx/timeout, not on `ValueError`
+- [x] AC-B3: `llm.max_tokens` passed to API; `embed_texts` chunks by `embedding.batch_size` with per-batch retry
+- [x] AC-B4: Malformed LLM JSON → `LLMResponseError`, keyword fallback used, warning logged with truncated raw text
+- [x] AC-B5: Orphan node signature fails build loud (no default to node 1)
+- [x] AC-B6: `_write_py_results` round-trips a string value containing `": null"` unchanged
 
 ### Phase C（API Server）
 - [ ] AC-C1: Oversize payload → 422; malformed SocketIO event → structured error; over-limit → 429
@@ -154,6 +154,7 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 | 2026-07-01 | 立项 (kickoff) |
 | 2026-07-01 | Design Gate approved (Human); KD-3..KD-6 recorded |
 | 2026-07-01 | Phase A complete (A1–A8); AC-A1..A5 ✅ |
+| 2026-07-01 | Phase B complete (B1–B6); AC-B1..B6 ✅ |
 
 ## Review Gate
 
@@ -177,6 +178,28 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 - `src/f007_infrastructure/config.py` — `ConfigError`, fence handling
 - `src/f007_infrastructure/retry.py` + 8 library modules — `print`→`_log`
 - `pyproject.toml` — `requires-python>=3.11`, ruff/mypy dev deps
+
+## Files (Phase B)
+
+### New
+- `src/tests/f007_infrastructure/test_db_pool.py` — pool, reconnect, concurrent access
+- `src/tests/f007_infrastructure/test_retry_whitelist.py` — retryable whitelist
+- `src/tests/f007_infrastructure/test_llm_retry_chunking.py` — max_tokens, timeout, chunking
+- `src/tests/f007_infrastructure/test_llm_response_error.py` — LLMResponseError + fallback
+- `src/tests/f007_infrastructure/test_orphan_node.py` — orphan signature loud failure
+- `src/tests/f007_infrastructure/test_write_py_results.py` — pprint.pformat round-trip
+
+### Modified
+- `src/f007_infrastructure/db.py` — ThreadedConnectionPool + connection() ctx manager
+- `src/f007_infrastructure/retry.py` — retryable whitelist parameter
+- `src/f007_infrastructure/llm_client.py` — LLMResponseError, retry_call, max_tokens, timeout
+- `src/f007_infrastructure/embeddings.py` — retry_call, batch chunking, zero-fill
+- `src/f008_state_extraction/state_extraction.py` — LLMResponseError catch + logged fallback
+- `src/f009_api_server/server.py` — run_in_threadpool, pool close on shutdown
+- `src/build_tree_and_db.py` — orphan signature loud failure, db.connection() for taxonomy
+- `src/whole_pipeline.py` — pprint.pformat serialization
+- `src/f005_context_scoring/build_and_score_tree.py` — pprint.pformat serialization
+- `config.md` — db.pool_max, llm.timeout, embedding.batch_size
 
 ## Implementation Plan
 
