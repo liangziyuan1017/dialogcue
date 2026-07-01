@@ -14,6 +14,10 @@ def _load_ranking_weights():
     }
 
 
+def get_ranking_weights():
+    return _load_ranking_weights()
+
+
 RANKING_WEIGHTS = _load_ranking_weights()
 
 
@@ -86,6 +90,8 @@ def rank_sentences(pool, query_vec=None, db=None, query_bg=None, conversation_co
     if query_bg is None:
         query_bg = {}
 
+    weights = get_ranking_weights()
+
     script_ids = [s.get("script_id", "") for s in pool]
     vec_scores = {}
     if query_vec is not None and db is not None and script_ids:
@@ -100,11 +106,11 @@ def rank_sentences(pool, query_vec=None, db=None, query_bg=None, conversation_co
         bitmask_score = s.pop("_bitmask_score", 1.0)
         s["bitmask_score"] = bitmask_score
         s["final_score"] = float(
-            RANKING_WEIGHTS["win_rate"] * s.get("win_rate", 0)
-            + RANKING_WEIGHTS["vec_score"] * s["vec_score"]
-            + RANKING_WEIGHTS["sas"] * s.get("sas", 0)
-            + RANKING_WEIGHTS["bg_boost"] * bg_boost
-            + RANKING_WEIGHTS["bitmask_score"] * bitmask_score
+            weights["win_rate"] * s.get("win_rate", 0)
+            + weights["vec_score"] * s["vec_score"]
+            + weights["sas"] * s.get("sas", 0)
+            + weights["bg_boost"] * bg_boost
+            + weights["bitmask_score"] * bitmask_score
         )
 
     pool.sort(key=lambda s: -s.get("final_score", 0))

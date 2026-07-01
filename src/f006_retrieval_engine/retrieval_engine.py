@@ -11,7 +11,11 @@ from f007_infrastructure.config import get as _cfg
 from f007_infrastructure.logging import get_logger as _get_logger
 _log = _get_logger(__name__)
 
-POOL_CAP = _cfg("pool_cap", 50)
+def _pool_cap():
+    return _cfg("pool_cap", 50)
+
+
+POOL_CAP = _pool_cap()
 
 
 def _load_scored_tree():
@@ -73,7 +77,9 @@ def aggregate_pools(nodes):
     return pool
 
 
-def _find_matching_nodes_subset(all_facts, all_emotions, all_actions, index, label_set_index, pool_cap=POOL_CAP):
+def _find_matching_nodes_subset(all_facts, all_emotions, all_actions, index, label_set_index, pool_cap=None):
+    if pool_cap is None:
+        pool_cap = _pool_cap()
     all_facts = list(all_facts)
     all_emotions = list(all_emotions)
     all_actions = list(all_actions)
