@@ -5,13 +5,14 @@ import uuid
 from contextlib import asynccontextmanager
 
 from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.logging import bind_request_id, get_request_id
 from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
 load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env")
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from pydantic import BaseModel
 import socketio
 
@@ -75,6 +76,19 @@ def _load_scored_tree():
 app = FastAPI(lifespan=lifespan)
 sio = socketio.AsyncServer(async_mode="asgi")
 sessions = {}
+
+
+@app.middleware("http")
+async def request_id_middleware(request: Request, call_next):
+    inbound = request.headers.get("X-Request-ID")
+    rid = inbound or f"req_{uuid.uuid4().hex[:12]}"
+    reset = bind_request_id(rid)
+    try:
+        response = await call_next(request)
+    finally:
+        bind_request_id(reset)
+    response.headers["X-Request-ID"] = rid
+    return response
 
 
 @app.post("/recommend")
