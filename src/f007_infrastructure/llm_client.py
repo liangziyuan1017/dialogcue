@@ -6,8 +6,17 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.logging import get_logger as _get_logger
+
+_log = _get_logger(__name__)
 
 load_dotenv(Path(__file__).resolve().parent / ".env")
+
+
+class LLMResponseError(ValueError):
+    def __init__(self, message: str, raw_text: str = ""):
+        super().__init__(message)
+        self.raw_text = raw_text
 
 
 def _get_client():
@@ -38,4 +47,8 @@ def call_deepseek_json(prompt: str, temperature: float | None = None) -> dict:
     if temperature is None:
         temperature = _cfg("llm.temperature", 0.1)
     text = call_deepseek(prompt, temperature)
-    return json.loads(_strip_json(text))
+    stripped = _strip_json(text)
+    try:
+        return json.loads(stripped)
+    except json.JSONDecodeError as e:
+        raise LLMResponseError(f"malformed LLM JSON: {e}", raw_text=text) from e

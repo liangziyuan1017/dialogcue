@@ -2,7 +2,10 @@ import csv
 from pathlib import Path
 
 from f007_infrastructure.config import get as _cfg
-from f007_infrastructure.llm_client import call_deepseek_json
+from f007_infrastructure.llm_client import LLMResponseError, call_deepseek_json
+from f007_infrastructure.logging import get_logger as _get_logger
+
+_log = _get_logger(__name__)
 
 _DATA_LABELS_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "data_labels"
 
@@ -240,6 +243,9 @@ def extract_state_keyword(utterance: str, taxonomy: dict, db=None) -> dict:
 def extract_state(utterance: str, taxonomy: dict, db=None) -> dict:
     try:
         llm_result = extract_state_llm(utterance, taxonomy)
+    except LLMResponseError as e:
+        llm_result = None
+        _log.warning("LLM JSON parse failed, falling back to keyword; raw=%s", e.raw_text[:200])
     except Exception:
         llm_result = None
 
