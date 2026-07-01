@@ -1,7 +1,7 @@
 ---
 id: F012
 name: Runtime Robustness Hardening
-status: spec
+status: planned
 owner: agent
 related_features: [F007, F007b, F008, F009, F011]
 topics: [robustness, db, logging, retry, concurrency, validation, ops]
@@ -12,7 +12,7 @@ updated: 2026-07-01
 
 # F012: Runtime Robustness Hardening
 
-> **Status**: design-approved | **Owner**: agent | **Priority**: P0
+> **Status**: planned | **Owner**: agent | **Priority**: P0
 
 ## Why
 
@@ -154,6 +154,12 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 
 ## Review Gate
 
+## Implementation Plan
+
+→ `docs/features/F012-implementation-plan.md` — Phase A in TDD step granularity (tasks A1–A8); Phases B–F outlined, each gets its own plan when its PR begins (KD-2).
+
+## Review Gate
+
 - Phase A: agent self-check (no behavior change expected)
 - Phase B: Human review (DB concurrency is production-critical)
 - Phase C: Human review (API contract changes)
@@ -165,6 +171,7 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 | 类型 | 路径 | 说明 |
 |------|------|------|
 | **Plan** | `ROBUSTNESS_FIX_PLAN.md` | Full task/verify detail per issue (issues #1–#27) |
+| **Plan** | `docs/features/F012-implementation-plan.md` | TDD step-level plan (Phase A full, B–F outlined) |
 | **Feature** | `docs/features/F007-infra-layer.md` | Infra layer being hardened |
 | **Feature** | `docs/features/F009-api-server.md` | API server being hardened |
 | **Feature** | `docs/features/F011-config-externalization.md` | Config enabler (complete) |
