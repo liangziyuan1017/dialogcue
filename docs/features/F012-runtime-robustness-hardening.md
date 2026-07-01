@@ -131,6 +131,8 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 | OQ-2 | Relabel map: interim file-lock vs go straight to DB-backed in Phase D? | ⬜ 未定 |
 | OQ-3 | Sessions persistence: DB now or defer to Phase F? | ⬜ 未定 |
 | OQ-4 | Phase ordering: land F (migrations) before B (pool) to de-risk schema changes? | ⬜ 未定 |
+| OQ-5 | Phase B serialization: ADR-008 accepts `.py` format. Fix safely within `.py` (pprint) — or does Human override ADR-008 to switch to `.json`? | ⬜ 未定 (memory-first: respect ADR-008 unless overridden) |
+| OQ-6 | ADR-009 eliminated F002 LLM state extraction, but `f008/state_extraction.py` still calls `extract_state_llm` first. Is the LLM path live or legacy? Affects Phase B retry wiring + Phase E cache. | ⬜ 未定 |
 
 ## Key Decisions
 
@@ -138,6 +140,9 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 |---|------|------|------|
 | KD-1 | Six-phase plan, foundations first | Logging/config/tooling unblock all later phases | 2026-07-01 |
 | KD-2 | Each phase = separate PR | Bounded review; rollback granularity | 2026-07-01 |
+| KD-3 | Respect ADR-008: keep `.py` intermediate format, fix serialization via `pprint.pformat` (not JSON) unless Human overrides | Memory-first rule; ADR-008 is `accepted` | 2026-07-01 |
+| KD-4 | Phase D `merge_state` dedup is governed by LL-003 (propagate-then-extend duplicates) — known pitfall, apply ordered-set semantics | LL-003 `accepted` | 2026-07-01 |
+| KD-5 | Phase E extraction cache = simple LRU only, no over-engineering | LL-002 `accepted` (over-engineered per-turn LLM extraction) | 2026-07-01 |
 
 ## Timeline
 
@@ -161,3 +166,7 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 | **Feature** | `docs/features/F007-infra-layer.md` | Infra layer being hardened |
 | **Feature** | `docs/features/F009-api-server.md` | API server being hardened |
 | **Feature** | `docs/features/F011-config-externalization.md` | Config enabler (complete) |
+| **ADR** | `docs/decisions/ADR-008-output-format-py-file.md` | Accepted: `.py` output format — governs Phase B serialization (KD-3) |
+| **ADR** | `docs/decisions/ADR-009-eliminate-f002-llm-state-extraction.md` | Accepted: LLM state extraction eliminated — conflicts with current f008 code (OQ-6) |
+| **Lesson** | `docs/lessons/LL-002-over-engineered-llm-extraction.md` | Accepted: governs Phase E cache simplicity (KD-5) |
+| **Lesson** | `docs/lessons/LL-003-propagate-then-extend-duplicates.md` | Accepted: governs Phase D merge_state dedup (KD-4) |
