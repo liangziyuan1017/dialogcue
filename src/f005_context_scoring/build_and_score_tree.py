@@ -1,6 +1,7 @@
 import argparse
 import importlib.util
 import json
+import pprint
 from datetime import datetime
 from pathlib import Path
 
@@ -23,9 +24,7 @@ def _load_py_results(path: Path) -> list[dict]:
 def _write_py_results(results: list[dict], path: Path) -> None:
     with open(path, "w", encoding="utf-8") as f:
         f.write("results = ")
-        text = json.dumps(results, ensure_ascii=False, indent=2)
-        text = text.replace(": null", ": None").replace(": true", ": True").replace(": false", ": False")
-        f.write(text)
+        f.write(pprint.pformat(results, width=120))
         f.write("\n")
 
 
