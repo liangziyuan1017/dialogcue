@@ -73,11 +73,11 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 ## Acceptance Criteria
 
 ### Phase A（Foundations）
-- [ ] AC-A1: `grep print(` in `src/` returns 0 outside CLI entrypoints; logs emit JSON with request_id
-- [ ] AC-A2: `RANKING_WEIGHTS`/`POOL_CAP` reflect `reload_config()` without process restart
-- [ ] AC-A3: Missing `---` fence raises typed `ConfigError` with path
-- [ ] AC-A4: Boot refuses `sk-placeholder` DEEPSEEK_API_KEY in non-dev env
-- [ ] AC-A5: `requires-python` widened to `>=3.11`; `ruff check src/` and `mypy src/` clean (or baseline allowlist)
+- [x] AC-A1: `grep print(` in `src/` returns 0 outside CLI entrypoints; logs emit JSON with request_id
+- [x] AC-A2: `RANKING_WEIGHTS`/`POOL_CAP` reflect `reload_config()` without process restart
+- [x] AC-A3: Missing `---` fence raises typed `ConfigError` with path
+- [x] AC-A4: Boot refuses `sk-placeholder` DEEPSEEK_API_KEY in non-dev env
+- [x] AC-A5: `requires-python` widened to `>=3.11`; `ruff check src/` and `mypy src/` clean (or baseline allowlist)
 
 ### Phase B（Data Layer）
 - [ ] AC-B1: N concurrent `/recommend` requests complete with no `InterfaceError`; killed PG → next request recovers within one retry
@@ -153,8 +153,30 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 |------|------|
 | 2026-07-01 | 立项 (kickoff) |
 | 2026-07-01 | Design Gate approved (Human); KD-3..KD-6 recorded |
+| 2026-07-01 | Phase A complete (A1–A8); AC-A1..A5 ✅ |
 
 ## Review Gate
+
+## Files (Phase A)
+
+### New
+- `src/f007_infrastructure/logging.py` — structured logging (JsonFormatter, request_id contextvar)
+- `src/tests/f007_infrastructure/test_logging.py`
+- `src/tests/f007_infrastructure/test_no_print.py`
+- `src/tests/f007_infrastructure/test_config_error.py`
+- `src/tests/f007_infrastructure/test_pyproject.py`
+- `src/tests/f009_api_server/test_request_id.py`
+- `src/tests/f009_api_server/test_startup_guard.py`
+- `src/tests/f006_retrieval_engine/test_live_config.py`
+- `ruff.toml`, `mypy.ini`
+
+### Modified
+- `src/f009_api_server/server.py` — request-id middleware, placeholder guard, logger
+- `src/f006_retrieval_engine/retrieval_ranking.py` — `get_ranking_weights()` live-read
+- `src/f006_retrieval_engine/retrieval_engine.py` — `_pool_cap()` live-read
+- `src/f007_infrastructure/config.py` — `ConfigError`, fence handling
+- `src/f007_infrastructure/retry.py` + 8 library modules — `print`→`_log`
+- `pyproject.toml` — `requires-python>=3.11`, ruff/mypy dev deps
 
 ## Implementation Plan
 
