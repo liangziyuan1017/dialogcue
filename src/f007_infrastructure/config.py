@@ -6,6 +6,10 @@ _CONFIG_PATH = Path(__file__).resolve().parent.parent.parent / "config.md"
 _cache = None
 _validated = False
 
+
+class ConfigError(ValueError):
+    pass
+
 _VALIDATION_RULES = [
     ("ranking_weights.win_rate", (0.0, 1.0)),
     ("ranking_weights.vec_score", (0.0, 1.0)),
@@ -91,7 +95,10 @@ def _parse_frontmatter(path):
         text = f.read()
     if not text.startswith("---"):
         return {}
-    end = text.index("---", 3)
+    try:
+        end = text.index("---", 3)
+    except ValueError:
+        raise ConfigError(f"config file {path} has opening '---' but no closing '---' fence")
     return yaml.safe_load(text[3:end]) or {}
 
 
