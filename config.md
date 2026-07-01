@@ -42,12 +42,14 @@ llm:
   temperature: 0.1
   temperature_relabel: 0.0
   max_tokens: 16384
+  timeout: 60
 
 embedding:
   model: "bge-m3"
   api_base: "http://localhost:11434/v1"
   api_key: "ollama"
   dimension: 1024
+  batch_size: 64
 
 # ── Retry ──
 retry:

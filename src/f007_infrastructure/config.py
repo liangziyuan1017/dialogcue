@@ -59,6 +59,9 @@ _VALIDATION_RULES = [
     ("server.tree_explorer_port", (1, 65535)),
     ("pipeline.scheduler_interval", (0, 86400)),
     ("embedding.dimension", (1, 8192)),
+    ("embedding.batch_size", (1, 10000)),
+    ("llm.timeout", (1, 3600)),
+    ("llm.max_tokens", (1, 1000000)),
 ]
 
 

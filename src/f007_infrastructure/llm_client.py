@@ -2,15 +2,25 @@ import json
 import os
 from pathlib import Path
 
+import openai
 from dotenv import load_dotenv
 from openai import OpenAI
 
 from f007_infrastructure.config import get as _cfg
 from f007_infrastructure.logging import get_logger as _get_logger
+from f007_infrastructure.retry import retry_call
 
 _log = _get_logger(__name__)
 
 load_dotenv(Path(__file__).resolve().parent / ".env")
+
+
+RETRYABLE_LLM_ERRORS: tuple[type[Exception], ...] = (
+    openai.APITimeoutError,
+    openai.APIConnectionError,
+    openai.RateLimitError,
+    openai.InternalServerError,
+)
 
 
 class LLMResponseError(ValueError):
@@ -27,10 +37,14 @@ def call_deepseek(prompt: str, temperature: float | None = None) -> str:
     if temperature is None:
         temperature = _cfg("llm.temperature", 0.1)
     client = _get_client()
-    resp = client.chat.completions.create(
+    resp = retry_call(
+        client.chat.completions.create,
         model=_cfg("llm.model", "deepseek-chat"),
         messages=[{"role": "user", "content": prompt}],
         temperature=temperature,
+        max_tokens=_cfg("llm.max_tokens", 16384),
+        timeout=_cfg("llm.timeout", 60),
+        retryable=RETRYABLE_LLM_ERRORS,
     )
     return resp.choices[0].message.content
 
