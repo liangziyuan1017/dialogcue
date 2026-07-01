@@ -155,6 +155,7 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 | 2026-07-01 | Design Gate approved (Human); KD-3..KD-6 recorded |
 | 2026-07-01 | Phase A complete (A1–A8); AC-A1..A5 ✅ |
 | 2026-07-01 | Phase B complete (B1–B6); AC-B1..B6 ✅ |
+| 2026-07-01 | Phase B review: 4 issues found & fixed; LL-006 recorded |
 
 ## Review Gate
 
@@ -196,10 +197,11 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 - `src/f007_infrastructure/embeddings.py` — retry_call, batch chunking, zero-fill
 - `src/f008_state_extraction/state_extraction.py` — LLMResponseError catch + logged fallback
 - `src/f009_api_server/server.py` — run_in_threadpool, pool close on shutdown
-- `src/build_tree_and_db.py` — orphan signature loud failure, db.connection() for taxonomy
+- `src/build_tree_and_db.py` — orphan signature loud failure, db.connection() for taxonomy, zip(strict=True)
 - `src/whole_pipeline.py` — pprint.pformat serialization
 - `src/f005_context_scoring/build_and_score_tree.py` — pprint.pformat serialization
 - `config.md` — db.pool_max, llm.timeout, embedding.batch_size
+- `mypy.ini` — per-module ignore_errors for whole_pipeline, build_tree_and_db
 
 ## Implementation Plan
 
@@ -227,6 +229,7 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 | **ADR** | `docs/decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md` | Accepted: Phase B threadpool now, asyncpg → F013 (KD-6) |
 | **Lesson** | `docs/lessons/LL-002-over-engineered-llm-extraction.md` | Accepted: governs Phase E cache simplicity (KD-5) |
 | **Lesson** | `docs/lessons/LL-003-propagate-then-extend-duplicates.md` | Accepted: governs Phase D merge_state dedup (KD-4) |
+| **Lesson** | `docs/lessons/LL-006-ctx-manager-resource-pool-double-return.md` | Accepted: connection() double-putconn fix pattern |
 
 ## Review Notes (Phase A)
 
@@ -241,3 +244,16 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 | 5 | Should use existing .env | Dropped `APP_ENV`; guard now fires on placeholder `DEEPSEEK_API_KEY` unconditionally (uses only existing `.env` key) | `1d1f193` |
 
 **Post-fix verification:** 365 passed / 8 skipped · ruff clean (no baseline) · mypy clean (75 files) · 0 regressions.
+
+## Review Notes (Phase B)
+
+**Reviewer:** agent self-review · **Date:** 2026-07-01 · **Verdict:** 4 issues found & fixed
+
+| # | Issue | Severity | Resolution | Commit |
+|---|-------|----------|------------|--------|
+| 1 | `connection()` ctx manager double `putconn` if `putconn(close=True)` raises in OperationalError handler | Bug (edge case) | Set `returned=True` before `putconn`; wrapped `putconn` in try/except to prevent double-return | `90ee50d` |
+| 2 | No test for `OperationalError` reconnect path in `connection()` | Test gap | Added `test_operational_error_closes_connection_and_reraises` + `test_operational_error_putconn_failure_does_not_double_return` | `90ee50d` |
+| 3 | `_ensure_vector_registered` called on every operation — redundant `register_vector` on pooled connections | Minor perf | Per-connection cache via `id(conn)` set | `90ee50d` |
+| 4 | `zip(all_sentences, vecs, strict=False)` silently drops on count mismatch | Pre-existing | Changed to `strict=True` | `90ee50d` |
+
+**Post-fix verification:** 392 passed / 8 skipped · ruff clean · mypy clean (81 files) · 0 regressions.

@@ -111,14 +111,16 @@
 
 ---
 
-## Phase B — Data Layer (outlined; full plan when PR begins)
+## Phase B — Data Layer (complete; AC-B1..B6 ✅)
 
-- B1: `ThreadedConnectionPool` + `run_in_threadpool` offload + reconnect (AC-B1)
-- B2: Wire `retry_call` into LLM/embedding/DB with retryable whitelist (AC-B2)
-- B3: Pass `max_tokens`; chunk `embed_texts` by `embedding.batch_size` (AC-B3)
-- B4: `LLMResponseError` + logged keyword fallback (AC-B4)
-- B5: Orphan node signature loud failure (AC-B5)
-- B6: `_write_py_results` via `pprint.pformat` (ADR-008, KD-3) (AC-B6)
+- B1: `ThreadedConnectionPool` + `run_in_threadpool` offload + reconnect (AC-B1) ✅
+- B2: Wire `retry_call` into LLM/embedding/DB with retryable whitelist (AC-B2) ✅
+- B3: Pass `max_tokens`; chunk `embed_texts` by `embedding.batch_size` (AC-B3) ✅
+- B4: `LLMResponseError` + logged keyword fallback (AC-B4) ✅
+- B5: Orphan node signature loud failure (AC-B5) ✅
+- B6: `_write_py_results` via `pprint.pformat` (ADR-008, KD-3) (AC-B6) ✅
+
+**Review fixes:** double-putconn guard (LL-006), vector registration cache, zip strict=True, OperationalError test coverage. Post-fix: 392 passed / 8 skipped.
 
 ## Phase C — API Server (outlined)
 - C1: Input limits + SocketIO pydantic events + rate limit (AC-C1)
