@@ -14,6 +14,10 @@ def bind_request_id(rid: str | None) -> Token[str | None]:
     return _request_id.set(rid)
 
 
+def reset_request_id(token: Token[str | None]) -> None:
+    _request_id.reset(token)
+
+
 def get_request_id() -> str | None:
     return _request_id.get()
 

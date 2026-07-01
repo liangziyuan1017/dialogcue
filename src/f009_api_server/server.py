@@ -9,7 +9,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from f007_infrastructure.config import get as _cfg
-from f007_infrastructure.logging import bind_request_id
+from f007_infrastructure.logging import bind_request_id, reset_request_id
 from f007_infrastructure.logging import get_logger as _get_logger
 
 load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env")
@@ -93,7 +93,7 @@ def _load_scored_tree():
 
 app = FastAPI(lifespan=lifespan)
 sio = socketio.AsyncServer(async_mode="asgi")
-sessions = {}
+sessions: dict = {}
 
 
 @app.middleware("http")
@@ -104,7 +104,7 @@ async def request_id_middleware(request: Request, call_next):
     try:
         response = await call_next(request)
     finally:
-        bind_request_id(reset)
+        reset_request_id(reset)
     response.headers["X-Request-ID"] = rid
     return response
 

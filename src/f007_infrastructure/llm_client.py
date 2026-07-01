@@ -14,7 +14,7 @@ def _get_client():
     return OpenAI(api_key=os.environ.get("DEEPSEEK_API_KEY"), base_url=_cfg("llm.api_base", "https://api.deepseek.com"))
 
 
-def call_deepseek(prompt: str, temperature: float = None) -> str:
+def call_deepseek(prompt: str, temperature: float | None = None) -> str:
     if temperature is None:
         temperature = _cfg("llm.temperature", 0.1)
     client = _get_client()
@@ -34,7 +34,7 @@ def _strip_json(text: str) -> str:
     return text.strip()
 
 
-def call_deepseek_json(prompt: str, temperature: float = None) -> dict:
+def call_deepseek_json(prompt: str, temperature: float | None = None) -> dict:
     if temperature is None:
         temperature = _cfg("llm.temperature", 0.1)
     text = call_deepseek(prompt, temperature)

@@ -160,7 +160,7 @@ class SentenceDB:
             results.append(d)
         return results
 
-    def search_similar(self, query_vec: list[float], node_id: int, query_bitmask: int, limit: int = None) -> list[dict]:
+    def search_similar(self, query_vec: list[float], node_id: int, query_bitmask: int, limit: int | None = None) -> list[dict]:
         if limit is None:
             limit = _cfg("search.vector_limit", 50)
         self._ensure_vector_registered()
@@ -205,7 +205,7 @@ class SentenceDB:
         cur.close()
         return {r[0]: list(r[1]) if r[1] is not None else [0.0] * EMBEDDING_DIM for r in rows}
 
-    def keyword_search(self, query_text: str, limit: int = None) -> list[dict]:
+    def keyword_search(self, query_text: str, limit: int | None = None) -> list[dict]:
         if limit is None:
             limit = _cfg("search.keyword_limit", 20)
         if not query_text.strip():
@@ -246,7 +246,7 @@ class SentenceDB:
             results.append(d)
         return results
 
-    def taxonomy_keyword_search(self, query_text: str, limit: int = None) -> list[dict]:
+    def taxonomy_keyword_search(self, query_text: str, limit: int | None = None) -> list[dict]:
         if limit is None:
             limit = _cfg("search.taxonomy_limit", 20)
         if not query_text.strip():

@@ -67,7 +67,7 @@ def _load_descriptions():
 def _relabel_via_csv(items: list[str], csv_map: dict[str, str]) -> tuple[list[str], list[str], dict[str, str]]:
     relabeled = []
     unknown = []
-    new_mappings = {}
+    new_mappings: dict[str, str] = {}
     seen = set()
     for item in items:
         new = csv_map.get(item)
@@ -141,9 +141,14 @@ def _apply_relabel(result: dict) -> None:
     _load_csv_relabel_maps()
     _load_descriptions()
 
+    fact_map = _FACT_CSV_MAP or {}
+    emotion_map = _EMOTION_CSV_MAP or {}
+    fact_desc = _FACT_DESCRIPTIONS or {}
+    emotion_desc = _EMOTION_DESCRIPTIONS or {}
+
     for key, csv_map, descriptions in [
-        ("facts", _FACT_CSV_MAP, _FACT_DESCRIPTIONS),
-        ("emotions", _EMOTION_CSV_MAP, _EMOTION_DESCRIPTIONS),
+        ("facts", fact_map, fact_desc),
+        ("emotions", emotion_map, emotion_desc),
     ]:
         items = result.get(key, [])
         if not items:
@@ -161,9 +166,9 @@ def _apply_relabel(result: dict) -> None:
             if new_mappings:
                 _append_relabel_to_csv(key, new_mappings)
                 if key == "facts":
-                    _FACT_CSV_MAP.update(new_mappings)
+                    fact_map.update(new_mappings)
                 else:
-                    _EMOTION_CSV_MAP.update(new_mappings)
+                    emotion_map.update(new_mappings)
 
         result[key] = relabeled
 
@@ -326,7 +331,7 @@ def flat_to_path_state(facts: list[str], emotions: list[str], actions: list[str]
     facts = list(facts)
     emotions = list(emotions)
     actions = list(actions)
-    bk = {}
+    bk: dict = {}
     inh_facts = []
     inh_emotions = []
     if actions:
