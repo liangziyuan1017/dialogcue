@@ -212,17 +212,21 @@ async def customer_turn(sid, data):
     conv_ctx = data.get("conversation_context", "")
 
     start = time.time()
-    extraction = extract_state(utterance, app.state.taxonomy, db=app.state.db)
+    extraction = await run_in_threadpool(extract_state, utterance, app.state.taxonomy, db=app.state.db)
     merged = merge_state(session["conversation_state"], extraction)
     session["conversation_state"] = merged
 
     query_bitmask = _compute_bitmask(session["context"])
-    try:
-        query_vec = embed_single(conv_ctx) if conv_ctx else [0.0] * EMBEDDING_DIM
-    except Exception:
+    if conv_ctx:
+        try:
+            query_vec = await run_in_threadpool(embed_single, conv_ctx)
+        except Exception:
+            query_vec = [0.0] * EMBEDDING_DIM
+    else:
         query_vec = [0.0] * EMBEDDING_DIM
 
-    rec_result = recommend(
+    rec_result = await run_in_threadpool(
+        recommend,
         query_bitmask=query_bitmask,
         conversation_context=conv_ctx,
         query_bg=session["context"],
@@ -280,7 +284,7 @@ async def collector_turn(sid, data):
         return {"error": "session not found"}
 
     utterance = data.get("utterance", "")
-    extraction = extract_state(utterance, app.state.taxonomy, db=app.state.db)
+    extraction = await run_in_threadpool(extract_state, utterance, app.state.taxonomy, db=app.state.db)
     new_actions = extraction.get("actions", [])
     merged = merge_state(session["conversation_state"], {"facts": [], "emotions": [], "actions": new_actions})
     session["conversation_state"] = merged

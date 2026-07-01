@@ -13,13 +13,15 @@ _FACT_CSV_MAP = None
 _EMOTION_CSV_MAP = None
 _FACT_DESCRIPTIONS = None
 _EMOTION_DESCRIPTIONS = None
+_FACT_RELABEL_MODULE = None
+_EMOTION_RELABEL_MODULE = None
 
-_WILLINGNESS_LEVELS = ["resistant", "weak", "conditional", "negotiating", "cooperative", "strong"]
+_WILLINGNESS_LEVELS = ["resistant", "weak", "conditional", "negotiating", "strong"]
 
 
 def _load_csv_relabel_maps():
     global _FACT_CSV_MAP, _EMOTION_CSV_MAP
-    if _FACT_CSV_MAP is not None:
+    if _FACT_CSV_MAP is not None and _EMOTION_CSV_MAP is not None:
         return
     _FACT_CSV_MAP = {}
     _EMOTION_CSV_MAP = {}
@@ -45,81 +47,85 @@ def _load_csv_relabel_maps():
 
 def _load_descriptions():
     global _FACT_DESCRIPTIONS, _EMOTION_DESCRIPTIONS
-    if _FACT_DESCRIPTIONS is not None:
-        return
+    if _FACT_DESCRIPTIONS is None:
+        _FACT_DESCRIPTIONS = {}
+        facts_desc_path = _DATA_LABELS_DIR / "facts_descriptions.py"
+        if facts_desc_path.exists():
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("facts_desc", facts_desc_path)
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            _FACT_DESCRIPTIONS = getattr(mod, "TAG_LABELS", {})
 
-    _FACT_DESCRIPTIONS = {}
-    facts_desc_path = _DATA_LABELS_DIR / "facts_descriptions.py"
-    if facts_desc_path.exists():
-        import importlib.util
-        spec = importlib.util.spec_from_file_location("facts_desc", facts_desc_path)
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-        _FACT_DESCRIPTIONS = getattr(mod, "TAG_LABELS", {})
-
-    _EMOTION_DESCRIPTIONS = {}
-    emotions_desc_path = _DATA_LABELS_DIR / "emotions_descriptions.py"
-    if emotions_desc_path.exists():
-        import importlib.util
-        spec = importlib.util.spec_from_file_location("emotions_desc", emotions_desc_path)
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-        _EMOTION_DESCRIPTIONS = getattr(mod, "TAG_LABELS", {})
-
-
-def _relabel_via_csv(items: list[str], csv_map: dict[str, str]) -> tuple[list[str], list[str], dict[str, str]]:
-    relabeled = []
-    unknown = []
-    new_mappings: dict[str, str] = {}
-    seen = set()
-    for item in items:
-        new = csv_map.get(item)
-        if new:
-            if new not in seen:
-                relabeled.append(new)
-                seen.add(new)
-        else:
-            if item not in seen:
-                unknown.append(item)
-                seen.add(item)
-    return relabeled, unknown, new_mappings
+    if _EMOTION_DESCRIPTIONS is None:
+        _EMOTION_DESCRIPTIONS = {}
+        emotions_desc_path = _DATA_LABELS_DIR / "emotions_descriptions.py"
+        if emotions_desc_path.exists():
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("emotions_desc", emotions_desc_path)
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            _EMOTION_DESCRIPTIONS = getattr(mod, "TAG_LABELS", {})
 
 
-def _relabel_via_llm(items: list[str], category: str, descriptions: dict) -> tuple[list[str], dict[str, str]]:
-    if not items or not descriptions:
+def _load_relabel_module(name: str):
+    path = _DATA_LABELS_DIR / f"llm_relabel_{name}.py"
+    if not path.exists():
+        return None
+    import importlib.util
+    import sys
+    if str(_DATA_LABELS_DIR) not in sys.path:
+        sys.path.insert(0, str(_DATA_LABELS_DIR))
+    spec = importlib.util.spec_from_file_location(f"llm_relabel_{name}", path)
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _get_fact_relabel_module():
+    global _FACT_RELABEL_MODULE
+    if _FACT_RELABEL_MODULE is None:
+        _FACT_RELABEL_MODULE = _load_relabel_module("facts")
+    return _FACT_RELABEL_MODULE
+
+
+def _get_emotion_relabel_module():
+    global _EMOTION_RELABEL_MODULE
+    if _EMOTION_RELABEL_MODULE is None:
+        _EMOTION_RELABEL_MODULE = _load_relabel_module("emotions")
+    return _EMOTION_RELABEL_MODULE
+
+
+def _relabel_via_llm(items: list[str], category: str) -> tuple[list[str], dict[str, str]]:
+    if not items:
+        return [], {}
+    mod = _get_fact_relabel_module() if category == "facts" else _get_emotion_relabel_module()
+    if mod is None:
+        return items, {}
+    try:
+        categories_block = mod.build_categories_block()
+    except Exception:
         return items, {}
 
-    categories_block = "\n".join(
-        f"- **{k}**: {v['description']}" for k, v in descriptions.items()
-    )
-    tags_block = "\n".join(f"- `{t}`" for t in items)
-
-    prompt = f"""Classify the following {category} tags into the categories below.
-
-## Categories
-
-{categories_block}
-
-## Rules
-
-1. Every tag MUST be assigned to exactly one category key.
-2. Choose the category that best captures the semantic meaning.
-3. Return a JSON object mapping each tag string to its category key.
-4. Do NOT invent new categories.
-
-Tags:
-{tags_block}"""
+    tags_block = "\n".join(f"{i + 1}. `{t}`" for i, t in enumerate(items))
+    system = mod.SYSTEM_PROMPT.format(categories=categories_block)
+    user = mod.USER_PROMPT_TEMPLATE.format(count=len(items), tags=tags_block)
+    prompt = f"{system}\n\n{user}"
 
     try:
         mapping = call_deepseek_json(prompt, temperature=0.0)
     except Exception:
         return items, {}
 
+    valid_keys = set(mod.TAG_LABELS.keys())
     result = []
     seen = set()
-    new_mappings = {}
+    new_mappings: dict[str, str] = {}
     for item in items:
         new = mapping.get(item, item)
+        if new not in valid_keys:
+            new = item
         new_mappings[item] = new
         if new not in seen:
             result.append(new)
@@ -144,67 +150,117 @@ def _apply_relabel(result: dict) -> None:
     _load_csv_relabel_maps()
     _load_descriptions()
 
+    fact_canonical = set((_FACT_DESCRIPTIONS or {}).keys())
+    emotion_canonical = set((_EMOTION_DESCRIPTIONS or {}).keys())
     fact_map = _FACT_CSV_MAP if _FACT_CSV_MAP is not None else {}
     emotion_map = _EMOTION_CSV_MAP if _EMOTION_CSV_MAP is not None else {}
-    fact_desc = _FACT_DESCRIPTIONS if _FACT_DESCRIPTIONS is not None else {}
-    emotion_desc = _EMOTION_DESCRIPTIONS if _EMOTION_DESCRIPTIONS is not None else {}
 
-    for key, csv_map, descriptions in [
-        ("facts", fact_map, fact_desc),
-        ("emotions", emotion_map, emotion_desc),
+    for key, canonical, csv_map in [
+        ("facts", fact_canonical, fact_map),
+        ("emotions", emotion_canonical, emotion_map),
     ]:
         items = result.get(key, [])
         if not items:
             continue
 
-        relabeled, unknown, _ = _relabel_via_csv(items, csv_map)
+        kept: list[str] = []
+        unknown: list[str] = []
+        seen = set()
+        for item in items:
+            canonical_hit = _hard_match(item, canonical)
+            csv_hit: str | None = None
+            if canonical_hit is not None:
+                resolved: str | None = canonical_hit
+            else:
+                csv_hit = _hard_match(item, csv_map.keys())
+                resolved = csv_map[csv_hit] if csv_hit is not None else None
+            if resolved is not None:
+                if resolved not in seen:
+                    kept.append(resolved)
+                    seen.add(resolved)
+            elif item not in unknown:
+                unknown.append(item)
 
         if unknown:
-            llm_relabeled, new_mappings = _relabel_via_llm(unknown, key, descriptions)
-            seen = set(relabeled)
+            llm_relabeled, new_mappings = _relabel_via_llm(unknown, key)
             for item in llm_relabeled:
                 if item not in seen:
-                    relabeled.append(item)
+                    kept.append(item)
                     seen.add(item)
             if new_mappings:
                 _append_relabel_to_csv(key, new_mappings)
-                if key == "facts":
-                    fact_map.update(new_mappings)
-                else:
-                    emotion_map.update(new_mappings)
+                csv_map.update(new_mappings)
 
-        result[key] = relabeled
+        result[key] = kept
 
 
-def _format_willingness_for_prompt(taxonomy: dict) -> str:
-    willingness = taxonomy.get("willingness_levels", [])
-    if willingness:
-        levels = [f"  - {w.get('level', '')}: {w.get('definition', '')}" for w in willingness]
-        return "WILLINGNESS LEVELS (pick exactly one or null):\n" + "\n".join(levels)
-    return "WILLINGNESS (pick one: resistant, weak, conditional, negotiating, cooperative, strong, or null)"
+_STEM_SUFFIXES = ("ing", "ed", "es", "s", "d")
+
+
+def _stem(token: str) -> str:
+    for suf in _STEM_SUFFIXES:
+        if token.endswith(suf) and len(token) - len(suf) >= 3:
+            return token[: -len(suf)]
+    return token
+
+
+def _tokens(tag: str) -> frozenset[str]:
+    parts = tag.lower().replace("-", "_").split("_")
+    return frozenset(_stem(p) for p in parts if len(p) >= 2)
+
+
+def _hard_match(tag: str, candidates) -> str | None:
+    cand_list = list(candidates)
+    if not cand_list:
+        return None
+    t = tag.lower().strip()
+    for c in cand_list:
+        if c.lower() == t:
+            return c
+    for c in cand_list:
+        cl = c.lower()
+        if len(cl) >= 4 and (cl in t or t in cl):
+            return c
+    tt = _tokens(t)
+    if not tt:
+        return None
+    best = None
+    best_score = 0
+    for c in cand_list:
+        ct = _tokens(c)
+        if not ct:
+            continue
+        overlap = len(tt & ct)
+        threshold = max(1, (len(ct) + 1) // 2)
+        if overlap >= threshold and overlap > best_score:
+            best = c
+            best_score = overlap
+    return best
 
 
 def extract_state_llm(utterance: str, taxonomy: dict) -> dict:
-    willingness_text = _format_willingness_for_prompt(taxonomy)
-    prompt = f"""Extract the customer's state from the following utterance.
+    from f000_keyword_discovery.keyword_prompts import _build_customer_batch_prompt
 
-Extract facts and emotions FREELY — use whatever labels best describe the customer's situation and emotional state. Do NOT limit yourself to a predefined list. Use snake_case English labels (e.g. "financial_hardship", "request_installment", "income_delay").
+    prompt = _build_customer_batch_prompt([(utterance, [])])
+    raw = call_deepseek_json(prompt, temperature=0.1)
+    result = raw[0] if isinstance(raw, list) and raw else (raw if isinstance(raw, dict) else {})
 
-{willingness_text}
+    def _extract_groups(items):
+        if not items:
+            return []
+        groups = []
+        for item in items:
+            if isinstance(item, dict):
+                g = item.get("group", item.get("keyword", ""))
+            else:
+                g = item
+            if g and g not in groups:
+                groups.append(g)
+        return groups
 
-Utterance: {utterance}
-
-Return JSON:
-- facts: list of fact labels (free-form snake_case English)
-- emotions: list of emotion labels (free-form snake_case English)
-- actions: list of collector action labels (usually empty for customer turns)
-- willingness: one of "resistant", "weak", "conditional", "negotiating", "cooperative", "strong", or null
-- confidence: 0-1"""
-
-    result = call_deepseek_json(prompt, temperature=0.1)
     return {
-        "facts": result.get("facts", []),
-        "emotions": result.get("emotions", []),
+        "facts": _extract_groups(result.get("facts")),
+        "emotions": _extract_groups(result.get("emotions")),
         "actions": result.get("actions", []),
         "willingness": result.get("willingness", None),
         "confidence": result.get("confidence", 0.5),

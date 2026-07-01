@@ -22,7 +22,12 @@ TAXONOMY = {
 
 class TestExtractStateLLM:
     def test_returns_correct_structure(self):
-        mock_response = {"facts": ["financial_hardship"], "emotions": [], "actions": [], "confidence": 0.9}
+        mock_response = {
+            "facts": [{"keyword": "没钱", "group": "financial_hardship"}],
+            "emotions": [],
+            "actions": [],
+            "confidence": 0.9,
+        }
         with patch("f008_state_extraction.state_extraction.call_deepseek_json", return_value=mock_response):
             result = extract_state_llm("我现在没钱还", TAXONOMY)
         assert "facts" in result
@@ -32,7 +37,11 @@ class TestExtractStateLLM:
         assert result["method"] == "llm"
 
     def test_returns_lists(self):
-        mock_response = {"facts": ["financial_hardship"], "emotions": ["pleading"], "actions": []}
+        mock_response = {
+            "facts": [{"keyword": "没钱", "group": "financial_hardship"}],
+            "emotions": [{"keyword": "求求你", "group": "pleading"}],
+            "actions": [],
+        }
         with patch("f008_state_extraction.state_extraction.call_deepseek_json", return_value=mock_response):
             result = extract_state_llm("我现在没钱还", TAXONOMY)
         assert isinstance(result["facts"], list)
@@ -40,11 +49,23 @@ class TestExtractStateLLM:
         assert isinstance(result["actions"], list)
 
     def test_open_set_extraction(self):
-        mock_response = {"facts": ["novel_fact_xyz"], "emotions": ["novel_emo_abc"], "actions": [], "confidence": 0.8}
+        mock_response = {
+            "facts": [{"keyword": "x", "group": "novel_fact_xyz"}],
+            "emotions": [{"keyword": "y", "group": "novel_emo_abc"}],
+            "actions": [],
+            "confidence": 0.8,
+        }
         with patch("f008_state_extraction.state_extraction.call_deepseek_json", return_value=mock_response):
             result = extract_state_llm("some novel utterance", TAXONOMY)
         assert "novel_fact_xyz" in result["facts"]
         assert "novel_emo_abc" in result["emotions"]
+
+    def test_willingness_five_levels(self):
+        for level in ["resistant", "weak", "conditional", "negotiating", "strong"]:
+            mock_response = {"facts": [], "emotions": [], "actions": [], "willingness": level}
+            with patch("f008_state_extraction.state_extraction.call_deepseek_json", return_value=mock_response):
+                result = extract_state_llm("utterance", TAXONOMY)
+            assert result["willingness"] == level
 
 
 class TestExtractStateKeyword:
@@ -84,6 +105,54 @@ class TestExtractState:
              patch("f008_state_extraction.state_extraction._apply_relabel"):
             result = extract_state("我现在没钱还", TAXONOMY, db=mock_db)
         assert result["method"] == "keyword"
+
+
+class TestRelabelCascade:
+    def test_canonical_skip_keeps_tag(self):
+        import f008_state_extraction.state_extraction as se
+        with patch.object(se, "_FACT_DESCRIPTIONS", {"financial_hardship": {}}), \
+             patch.object(se, "_EMOTION_DESCRIPTIONS", {}), \
+             patch.object(se, "_FACT_CSV_MAP", {}), \
+             patch.object(se, "_EMOTION_CSV_MAP", {}), \
+             patch.object(se, "_load_csv_relabel_maps"), \
+             patch.object(se, "_load_descriptions"):
+            result = {"facts": ["financial_hardship"], "emotions": []}
+            se._apply_relabel(result)
+        assert result["facts"] == ["financial_hardship"]
+
+    def test_csv_map_replaces_tag(self):
+        import f008_state_extraction.state_extraction as se
+        with patch.object(se, "_FACT_DESCRIPTIONS", {}), \
+             patch.object(se, "_EMOTION_DESCRIPTIONS", {}), \
+             patch.object(se, "_FACT_CSV_MAP", {"unknown_tag": "financial_hardship"}), \
+             patch.object(se, "_EMOTION_CSV_MAP", {}), \
+             patch.object(se, "_load_csv_relabel_maps"), \
+             patch.object(se, "_load_descriptions"):
+            result = {"facts": ["unknown_tag"], "emotions": []}
+            se._apply_relabel(result)
+        assert result["facts"] == ["financial_hardship"]
+
+    def test_llm_fallback_only_when_both_miss(self):
+        import f008_state_extraction.state_extraction as se
+        mock_mod = MagicMock()
+        mock_mod.TAG_LABELS = {"financial_hardship": {}}
+        mock_mod.build_categories_block.return_value = "cats"
+        mock_mod.SYSTEM_PROMPT = "sys {categories}"
+        mock_mod.USER_PROMPT_TEMPLATE = "user {count} {tags}"
+        with patch.object(se, "_FACT_DESCRIPTIONS", {}), \
+             patch.object(se, "_EMOTION_DESCRIPTIONS", {}), \
+             patch.object(se, "_FACT_CSV_MAP", {}), \
+             patch.object(se, "_EMOTION_CSV_MAP", {}), \
+             patch.object(se, "_load_csv_relabel_maps"), \
+             patch.object(se, "_load_descriptions"), \
+             patch.object(se, "_get_fact_relabel_module", return_value=mock_mod), \
+             patch.object(se, "_get_emotion_relabel_module", return_value=mock_mod), \
+             patch.object(se, "_append_relabel_to_csv"), \
+             patch("f008_state_extraction.state_extraction.call_deepseek_json",
+                   return_value={"novel_tag": "financial_hardship"}):
+            result = {"facts": ["novel_tag"], "emotions": []}
+            se._apply_relabel(result)
+        assert result["facts"] == ["financial_hardship"]
 
 
 class TestMergeStatePath:
