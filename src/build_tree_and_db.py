@@ -113,7 +113,7 @@ def run_build_db(scored: dict, aligned: list[dict], rewarded: list[dict], dsn: s
 
     db_sentences = []
     orphan_sigs: set[str] = set()
-    for s, vec in zip(all_sentences, vecs, strict=False):
+    for s, vec in zip(all_sentences, vecs, strict=True):
         node_sig = s.get("_node_path_sig", "")
         node_id = node_sig_to_id.get(node_sig)
         if node_id is None:

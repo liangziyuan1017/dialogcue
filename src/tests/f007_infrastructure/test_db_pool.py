@@ -1,5 +1,7 @@
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from f007_infrastructure.db import SentenceDB
 
 
@@ -101,3 +103,42 @@ def test_concurrent_access_uses_pool():
     assert not errors
     assert mock_pool.getconn.call_count == 10
     assert mock_pool.putconn.call_count == 10
+
+
+def test_operational_error_closes_connection_and_reraises():
+    import psycopg2
+
+    mock_conn = MagicMock()
+    mock_conn.closed = False
+
+    mock_pool = MagicMock()
+    mock_pool.getconn.return_value = mock_conn
+
+    with patch("f007_infrastructure.db.psycopg2.pool.ThreadedConnectionPool", return_value=mock_pool), \
+         patch("f007_infrastructure.db.register_vector"):
+        db = SentenceDB("dsn")
+        with pytest.raises(psycopg2.OperationalError):
+            with db.connection():
+                raise psycopg2.OperationalError("connection dropped")
+
+    mock_pool.putconn.assert_any_call(mock_conn, close=True)
+
+
+def test_operational_error_putconn_failure_does_not_double_return():
+    import psycopg2
+
+    mock_conn = MagicMock()
+    mock_conn.closed = False
+
+    mock_pool = MagicMock()
+    mock_pool.getconn.return_value = mock_conn
+    mock_pool.putconn.side_effect = [RuntimeError("pool closed"), None]
+
+    with patch("f007_infrastructure.db.psycopg2.pool.ThreadedConnectionPool", return_value=mock_pool), \
+         patch("f007_infrastructure.db.register_vector"):
+        db = SentenceDB("dsn")
+        with pytest.raises(psycopg2.OperationalError):
+            with db.connection():
+                raise psycopg2.OperationalError("connection dropped")
+
+    assert mock_pool.putconn.call_count == 1

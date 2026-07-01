@@ -20,6 +20,7 @@ class SentenceDB:
         if pool_max is None:
             pool_max = _cfg("db.pool_max", 10)
         self._pool = psycopg2.pool.ThreadedConnectionPool(1, pool_max, dsn=dsn)
+        self._vector_registered_conns: set[int] = set()
 
     @contextmanager
     def connection(self):
@@ -33,15 +34,21 @@ class SentenceDB:
             yield conn
         except psycopg2.OperationalError as e:
             _log.warning("DB operational error, closing connection: %s", e)
-            self._pool.putconn(conn, close=True)
             returned = True
+            try:
+                self._pool.putconn(conn, close=True)
+            except Exception:
+                pass
             raise
         finally:
             if not returned:
                 self._pool.putconn(conn)
 
     def _ensure_vector_registered(self, conn):
-        register_vector(conn)
+        conn_id = id(conn)
+        if conn_id not in self._vector_registered_conns:
+            register_vector(conn)
+            self._vector_registered_conns.add(conn_id)
 
     def close(self):
         self._pool.closeall()
