@@ -1,7 +1,7 @@
 ---
 id: F012
 name: Runtime Robustness Hardening
-status: in-progress
+status: review
 owner: agent
 related_features: [F007, F007b, F008, F009, F011]
 topics: [robustness, db, logging, retry, concurrency, validation, ops]
@@ -12,9 +12,9 @@ updated: 2026-07-01
 
 # F012: Runtime Robustness Hardening
 
-> **Status**: in-progress | **Owner**: agent | **Priority**: P0
+> **Status**: review | **Owner**: agent | **Priority**: P0
 >
-> **Worktree:** `../ICBC-f012-phase-a` · **Branch:** `feat/f012-phase-a` · **Baseline:** 345 passed, 8 skipped
+> **Worktree:** `../ICBC-f012-phase-a` · **Branch:** `feat/f012-phase-a` · **Phase A:** 366 passed, 8 skipped · **Quality gate:** PASS
 
 ## Why
 
