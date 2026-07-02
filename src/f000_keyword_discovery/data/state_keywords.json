@@ -823,52 +823,43 @@
   ],
   "willingness_levels": [
     {
-      "level": "Resistant",
+      "level": 0,
+      "name": "resistant",
       "definition": "债务人明确拒绝还款、否认债务、表现出强烈对抗或拖延意图，没有任何配合意愿。",
-      "boundary": "与下一级（Ambivalent）的区别在于：Resistant 不包含任何还款可能性或条件性表述，只有拒绝、否认或攻击性语言；而 Ambivalent 至少包含一个条件、协商或弱化承诺的表述。",
       "example_turns": [
-        {
-          "text": "我没借过你们钱，别再打来了，再打我就报警。",
-          "reason": "直接否认债务并威胁报警，属于最强烈的抗拒信号。"
-        },
-        {
-          "text": "我没钱，你们爱怎么样怎么样，反正我不还。",
-          "reason": "明确拒绝还款，无任何协商或条件，属于典型的 resistant 信号。"
-        }
+        "我知道，以前的工作人员已经给我介绍过这个方案了，我真的不需要，好吗？"
       ]
     },
     {
-      "level": "Ambivalent",
-      "definition": "债务人表现出犹豫、有条件承诺、弱化承诺或开始协商，但尚未给出明确还款行动或时间。",
-      "boundary": "与上一级（Resistant）的区别：Ambivalent 包含条件（conditional）、弱化承诺（weak）或协商（negotiating）等信号，表明存在还款可能性；与下一级（Cooperative）的区别：Ambivalent 的承诺是模糊的、有条件的或未兑现的，而 Cooperative 有明确、无条件的还款行动或时间。",
+      "level": 1,
+      "name": "weak",
+      "definition": "承认欠款但抗拒、弱化承诺、口头应付但无实际行动。",
       "example_turns": [
-        {
-          "text": "我下个月发工资了再还，现在真没有。",
-          "reason": "属于 weak 信号：承诺未来还款但无具体日期或金额，且当前无行动，属于弱化承诺。"
-        },
-        {
-          "text": "如果你能减免一部分利息，我就还本金。",
-          "reason": "属于 conditional 信号：还款以减免利息为前提，表明有还款意愿但附加条件。"
-        },
-        {
-          "text": "我最多只能还一半，剩下的分期行不行？",
-          "reason": "属于 negotiating 信号：主动提出还款方案但要求调整，属于协商行为，仍处于摇摆状态。"
-        }
+        "嗯，好的，好的行。那那我这边我给你想想办法啊，然后到时候我解决不了我再打电话上来啊，谢谢啊。"
       ]
     },
     {
-      "level": "Cooperative",
-      "definition": "债务人明确承诺还款、给出具体还款时间或金额、或立即采取还款行动，无附加条件。",
-      "boundary": "与上一级（Ambivalent）的区别：Cooperative 的承诺是明确、无条件的，且通常包含具体时间或金额（strong 信号），而 Ambivalent 的承诺是模糊、有条件或弱化的。",
+      "level": 2,
+      "name": "conditional",
+      "definition": "有条件还款——还款以某些前提（减免、分期等）为条件。",
       "example_turns": [
-        {
-          "text": "我今天下午三点前一定还清，你发个账号给我。",
-          "reason": "属于 strong 信号：给出具体时间并主动要求提供账号，还款意愿明确且无附加条件。"
-        },
-        {
-          "text": "我已经在转账了，五分钟后你查一下。",
-          "reason": "属于 strong 信号：正在执行还款行动，配合度最高。"
-        }
+        "我想问一下，唉，譬如说，呃，不是说我是想整个账单分期，然后呃，分期完之后，这个信用卡就没有了，就要取消了，是这个意思吗？"
+      ]
+    },
+    {
+      "level": 3,
+      "name": "negotiating",
+      "definition": "积极协商还款方案——主动提出方案、询问选项、讨论细节。",
+      "example_turns": [
+        "这样子……那那你还有其他的办法吗？"
+      ]
+    },
+    {
+      "level": 4,
+      "name": "strong",
+      "definition": "同意还款——明确承诺、给出具体时间或金额、或立即采取还款行动。",
+      "example_turns": [
+        "啊，可以不用逾期呀，我就直接付就可以了呀。"
       ]
     }
   ],

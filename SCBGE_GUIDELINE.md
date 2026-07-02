@@ -763,7 +763,6 @@ WILLINGNESS (pick exactly one or null):
 - weak: acknowledges but resists
 - conditional: will pay if conditions met
 - negotiating: actively discussing payment
-- cooperative: willing to cooperate
 - strong: agrees to pay
 
 Customer utterance: "我现在真的没钱还，能不能分期"

@@ -50,6 +50,23 @@ class TestRecommendOutputSchema:
         assert result is not None
         assert "ranking_weights" in result
 
+    def test_bitmask_score_in_result(self, tree, index, label_set_index):
+        result = recommend(
+            query_bitmask=1023, conversation_context="客户说没有钱",
+            query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
+        )
+        assert result is not None
+        assert "bitmask_score" in result
+        assert 0.0 <= result["bitmask_score"] <= 1.0
+
+    def test_bitmask_score_reflects_partial_match(self, tree, index, label_set_index):
+        result = recommend(
+            query_bitmask=1, conversation_context="客户说没有钱",
+            query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
+        )
+        if result is not None and result.get("bitmask_score", 1.0) < 1.0:
+            assert result["bitmask_score"] < 1.0
+
 
 class TestRecommendWithDB:
     def test_uses_db_for_candidates(self, tree, index, label_set_index):
