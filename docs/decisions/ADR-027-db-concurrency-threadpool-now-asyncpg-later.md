@@ -42,12 +42,13 @@ review. The threadpool fix closes the concurrency hole with minimal scope and no
 
 ## Open Questions
 
-- [ ] F013 (asyncpg) kickoff — who owns, when? (defer until F012 Phase B merged + observed in prod)
+- [x] F013 (asyncpg) kickoff — async driver module (`async_db.py`) + unit tests written; **not yet wired into runtime** (server.py/debug.py still use sync psycopg2 + threadpool)
 
 ## Next Action
 
 - [x] F012 Phase B: implement ThreadedConnectionPool + threadpool offload — **done, merged to main**
-- [ ] After Phase B merges and runs in prod, open F013 for asyncpg migration
+- [x] F013 async driver: `AsyncSentenceDB` (asyncpg) + tests written — **done (shadow module, not yet production)**
+- [ ] F013 cutover: wire `AsyncSentenceDB` into `server.py`/`debug.py`, declare `asyncpg` in `pyproject.toml`, decide feature-flag vs hard cutover
 
 ---
 
@@ -57,3 +58,4 @@ review. The threadpool fix closes the concurrency hole with minimal scope and no
 |---|---|---|
 | 2026-07-01 | Initial draft (Design Gate, F012) | agent |
 | 2026-07-01 | Phase B merged to main; Next Action #1 complete | agent |
+| 2026-07-02 | F013 async driver module + tests written; not yet wired into runtime | agent |

@@ -12,7 +12,7 @@ updated: 2026-07-01
 
 # F013: asyncpg Migration
 
-> **Status**: draft | **Owner**: agent | **Priority**: P1
+> **Status**: developing | **Owner**: agent | **Priority**: P1
 >
 > **Origin**: ADR-027 KD-6 — split from F012 Phase B to keep scope bounded.
 
@@ -24,15 +24,30 @@ F012 Phase B replaced the single shared `psycopg2` connection with a `ThreadedCo
 
 ## What
 
-Rewrite `f007_infrastructure/db.py` to use `asyncpg` instead of `psycopg2` + `ThreadedConnectionPool`. All public methods become `async`. Call sites in `server.py` and `debug.py` switch from `run_in_threadpool(sync_call)` to `await async_call()`.
+Rewrite the runtime DB layer to use `asyncpg` instead of `psycopg2` + `ThreadedConnectionPool`. All public methods become `async`. Call sites in `server.py` and `debug.py` switch from `run_in_threadpool(sync_call)` to `await async_call()`.
 
-### Scope
+### Current state (partial — async driver written, not wired into runtime)
 
-- `db.py` — full rewrite: `asyncpg` connection pool, async methods, pgvector async support
-- `server.py` — remove `run_in_threadpool` wrappers for DB calls, `await` directly
-- `debug.py` — same (debug is sync, so wrap async calls with `asyncio.run` or keep sync fallback)
-- `build_tree_and_db.py` — build-time path stays sync (uses `psycopg2` for batch inserts; asyncpg not needed at build time)
-- Tests — update all DB tests to use `asyncpg` + `pytest-asyncio`
+**Done:**
+- `src/f007_infrastructure/async_db.py` — `AsyncSentenceDB` class with asyncpg connection pool; all 13 public methods async (`create_tables`, `upsert_nodes`, `get_node_ids_by_signatures`, `search_by_nodes`, `get_sentences_by_node`, `search_similar`, `upsert_sentences`, `get_vectors`, `keyword_search`, `taxonomy_keyword_search`, etc.)
+- `pgvector.asyncpg` adapter wired (`async_db.py:3`)
+- Unit tests: `src/tests/f007_infrastructure/test_async_db.py` (mock-based, all passing)
+
+**Not done (runtime still psycopg2):**
+- `db.py` unchanged — still `psycopg2` + `ThreadedConnectionPool` (`db.py:5-7,22`)
+- `server.py` still uses `run_in_threadpool` + sync `SentenceDB` (`server.py:119,212,225,284`)
+- `debug.py` calls sync `db.*` directly (`debug.py:56,59,64,69,81,84`)
+- `asyncpg` is **not declared** in `pyproject.toml` (installed in env but undeclared)
+- No feature flag / dual-driver switch exists
+- `AsyncSentenceDB` is dead code — no production caller imports it
+
+### Scope (remaining)
+
+- `server.py` — remove `run_in_threadpool` wrappers for DB calls, `await` directly via `AsyncSentenceDB`
+- `debug.py` — switch to async or keep sync fallback
+- `pyproject.toml` — add `asyncpg` dependency
+- Feature flag or hard cutover decision
+- Tests — update runtime tests to use asyncpg + pytest-asyncio
 
 ### Out of Scope
 
@@ -42,16 +57,18 @@ Rewrite `f007_infrastructure/db.py` to use `asyncpg` instead of `psycopg2` + `Th
 
 ## Acceptance Criteria
 
-- [ ] AC-1: `db.py` uses `asyncpg` connection pool; no `psycopg2` imports in runtime path
-- [ ] AC-2: All `db.py` public methods are `async`; return types unchanged
-- [ ] AC-3: `server.py` DB calls use `await` directly (no `run_in_threadpool`)
-- [ ] AC-4: N concurrent `/recommend` requests complete with no `InterfaceError` or thread exhaustion
-- [ ] AC-5: Latency under load: p99 ≤ 80% of psycopg2+threadpool baseline (measured with `wrk` or `locust`)
-- [ ] AC-6: `search_by_nodes`, `get_node_ids_by_signatures`, `keyword_search`, `taxonomy_keyword_search` all return identical results to current implementation
-- [ ] AC-7: Build-time path (`build_tree_and_db.py`) still works with `psycopg2` (no regression)
-- [ ] AC-8: `pgvector` operations work with `asyncpg` (cosine similarity, embedding insert/select)
-- [ ] AC-9: Connection pool reconnects after PG restart (same as F012 AC-B1)
-- [ ] AC-10: All existing tests pass (updated for async where needed)
+- [x] AC-1a: `async_db.py` exists with `AsyncSentenceDB` (asyncpg pool, all methods async) — **done**
+- [x] AC-6: `search_by_nodes`, `get_node_ids_by_signatures`, `keyword_search`, `taxonomy_keyword_search` return identical results to sync impl (verified in unit tests) — **done**
+- [x] AC-8: `pgvector` operations work with `asyncpg` (cosine, insert/select) — **done in tests**
+- [ ] AC-1b: `db.py` runtime path uses asyncpg; no `psycopg2` in runtime path — **pending**
+- [ ] AC-2: All runtime `db.py` public methods are `async`; return types unchanged — **pending**
+- [ ] AC-3: `server.py` DB calls use `await` directly (no `run_in_threadpool`) — **pending**
+- [ ] AC-4: N concurrent `/recommend` requests complete with no `InterfaceError` or thread exhaustion — **pending**
+- [ ] AC-5: Latency under load: p99 ≤ 80% of psycopg2+threadpool baseline — **pending**
+- [ ] AC-7: Build-time path (`build_tree_and_db.py`) still works with `psycopg2` (no regression) — **n/a until cutover**
+- [ ] AC-9: Connection pool reconnects after PG restart — **pending**
+- [ ] AC-10: All existing tests pass (updated for async where needed) — **pending**
+- [ ] AC-11: `asyncpg` declared in `pyproject.toml` — **pending**
 
 ## Dependencies
 
@@ -73,7 +90,7 @@ Rewrite `f007_infrastructure/db.py` to use `asyncpg` instead of `psycopg2` + `Th
 |---|----------|--------|
 | OQ-1 | Feature flag: run both drivers in parallel during rollout, or hard cutover? | TBD (design gate) |
 | OQ-2 | Keep `psycopg2` as sync fallback for non-async callers (debug.py)? | TBD (design gate) |
-| OQ-3 | `pgvector` async: use `pgvector-async` package or manual SQL casting? | TBD (implementation) |
+| OQ-3 | `pgvector` async: use `pgvector.asyncpg` (already wired in async_db.py) or manual SQL casting? | Resolved — `pgvector.asyncpg` used |
 
 ## Key Decisions
 

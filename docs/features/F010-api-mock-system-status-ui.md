@@ -2,7 +2,7 @@
 id: F010
 name: API Mock + System Status UI
 phase: tooling
-status: review
+status: complete
 worktree: ../icbc-f010-infra-layer-f010
 branch: feat/f010-api-mock-ui
 owner: agent
@@ -22,19 +22,21 @@ The `interactive.py` CLI is the only way to test the `/recommend` endpoint manua
 
 A web UI served at `/ui` on the same FastAPI server/port (no CORS, no separate build). Three panels:
 
-1. **REST mock panel** — Postman-style manual request builder for `POST /recommend`. Editable JSON body with CodeMirror 6, send button, response viewer with syntax highlighting.
+1. **REST mock panel** — Postman-style manual request builder for `POST /recommend`. Editable JSON body with CodeMirror 5.65.18, send button, response viewer with syntax highlighting.
 2. **Socket.IO session panel** — stateful session interface. Start session → customer turn → collector turn → end session, with live transcript and state accumulation display.
-3. **Pipeline trace panel** — shows all 7 pipeline steps (input → output) for a single debug call, plus a sentence pool inspector showing candidate sentences with scores.
+3. **Pipeline trace panel** — shows 6 pipeline steps (input → output) for a single debug call, plus a sentence pool inspector showing the top-20 candidate sentences with scores.
 
 A dedicated `POST /recommend/debug` endpoint returns the full per-step trace data.
+
+> **Note:** The feature name retains "System Status" from the original design, but the system-status/health panel was descoped — the shipped UI is API Mock + Pipeline Trace + Sentence Pool Inspector.
 
 ## Architecture (ADR-025)
 
 - Vanilla JS + CSS (no build step, no npm)
-- FastAPI `StaticFiles` mount at `/ui`
-- CodeMirror 6 via CDN for JSON editing
-- Tailwind CSS via CDN for styling
-- Bundled Socket.IO client (same library as server)
+- FastAPI `StaticFiles` mount at `/ui` (registered in `f009/server.py:338`)
+- CodeMirror 5.65.18 via CDN for JSON editing
+- Tailwind CSS via CDN (Play) for styling
+- Socket.IO client via CDN (v4.7.5) matching server-side python-socketio
 - Same server/port as F009 — zero CORS issues
 
 ## Acceptance Criteria
@@ -42,9 +44,9 @@ A dedicated `POST /recommend/debug` endpoint returns the full per-step trace dat
 - [x] `/ui` serves the HTML page with all three panels
 - [x] REST mock panel: can construct and send a `POST /recommend` request, see JSON response
 - [x] Socket.IO panel: can start/customer/collector/end a session, see live transcript
-- [x] Pipeline trace panel: `POST /recommend/debug` returns per-step trace data
-- [x] Sentence pool inspector: shows candidate sentences with scores for a debug call
-- [x] CodeMirror 6 loaded for JSON editing
+- [x] Pipeline trace panel: `POST /recommend/debug` returns per-step trace data (6 steps)
+- [x] Sentence pool inspector: shows top-20 candidate sentences with scores for a debug call
+- [x] CodeMirror 5.65.18 loaded for JSON editing
 - [x] Tailwind CSS loaded for styling
 - [x] No build step — static files served directly by FastAPI
 - [x] Same server/port as F009
@@ -67,11 +69,12 @@ A dedicated `POST /recommend/debug` endpoint returns the full per-step trace dat
 
 ## Design Decisions
 
-- Used CodeMirror 5.x via CDN (not 6.x) for simpler setup — single JS file, no module bundler needed
+- Used CodeMirror 5.65.18 via CDN (not 6.x) for simpler setup — single JS file, no module bundler needed
 - Socket.IO client loaded from CDN (v4.7.5) matching server-side python-socketio
-- Trace captures 5 pipeline steps: extract_state, merge_state, compute_bitmask, embed, recommend
-- Sentence pool inspector shows the top-1 recommendation with all scores (future: expand to full candidate list)
+- Trace captures 6 pipeline steps: `extract_state`, `merge_state`, `compute_bitmask`, `embed`, `recommend`, `rank_all_candidates`
+- Sentence pool inspector renders the full top-20 candidate list with scores (row 0 highlighted as the recommendation)
 - Dark theme by default matching the F004 tree explorer aesthetic
+- System-status/health panel was descoped — not implemented in the shipped UI
 
 ## Implementation Plan
 

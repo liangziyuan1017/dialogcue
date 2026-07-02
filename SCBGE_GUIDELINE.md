@@ -43,7 +43,7 @@ Build a two-phase system:
 | F007b | Vector Retrieval Integration | 2 | review | [F007b](docs/features/F007b-vector-retrieval-integration.md) |
 | F008 | Online State Extraction Module | 2 (2.1) | review | [F008](docs/features/F008-state-extraction.md) |
 | F009 | REST API + Socket.IO Server | 2 | review | [F009](docs/features/F009-api-server.md) |
-| F010 | API Mock + System Status UI | tooling | design-approved | [F010](docs/features/F010-api-mock-system-status-ui.md) |
+| F010 | API Mock + System Status UI | tooling | complete | [F010](docs/features/F010-api-mock-system-status-ui.md) |
 
 ### Dependency Graph
 
