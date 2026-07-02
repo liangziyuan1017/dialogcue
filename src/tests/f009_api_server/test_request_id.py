@@ -38,9 +38,9 @@ def test_response_has_request_id_header(client):
          patch("f009_api_server.server.embed_single", return_value=[0.1] * EMBEDDING_DIM), \
          patch("f009_api_server.server.recommend", return_value={
              "script_text": "s", "script_id": "s1", "state_id": "", "win_rate": 0, "vec_score": 0,
-             "sas": 0, "final_score": 0, "confidence": 0.5, "ranking_weights": {}, "fallbacks": [],
-             "conversation_state": {"branch_key": {}, "inherited_facts": [], "inherited_emotions": [], "willingness": None},
-         }):
+              "sas": 0, "final_score": 0, "confidence": 0.5, "ranking_weights": {}, "node_retrieved": [],
+              "conversation_state": {"branch_key": {}, "inherited_facts": [], "inherited_emotions": [], "willingness": None},
+          }):
         resp = client.post("/recommend", json=_valid_payload())
     assert resp.status_code == 200
     assert "x-request-id" in {k.lower() for k in resp.headers.keys()}
@@ -52,8 +52,8 @@ def test_inbound_request_id_is_echoed(client):
     with patch("f009_api_server.server.extract_state", return_value={"facts": [], "emotions": [], "actions": [], "confidence": 0.5, "method": "llm"}), \
          patch("f009_api_server.server.embed_single", return_value=[0.1] * EMBEDDING_DIM), \
          patch("f009_api_server.server.recommend", return_value={
-             "script_text": "s", "script_id": "s1", "state_id": "", "win_rate": 0, "vec_score": 0,
-             "sas": 0, "final_score": 0, "confidence": 0.5, "ranking_weights": {}, "fallbacks": [],
+              "script_text": "s", "script_id": "s1", "state_id": "", "win_rate": 0, "vec_score": 0,
+              "sas": 0, "final_score": 0, "confidence": 0.5, "ranking_weights": {}, "node_retrieved": [],
              "conversation_state": {"branch_key": {}, "inherited_facts": [], "inherited_emotions": [], "willingness": None},
          }):
         resp = client.post("/recommend", json=_valid_payload(), headers={"X-Request-ID": inbound})
@@ -73,7 +73,7 @@ def test_request_id_bound_in_log_context(client):
          patch("f009_api_server.server.embed_single", return_value=[0.1] * EMBEDDING_DIM), \
          patch("f009_api_server.server.recommend", side_effect=lambda **kw: (spy(), {
              "script_text": "s", "script_id": "s1", "state_id": "", "win_rate": 0, "vec_score": 0,
-             "sas": 0, "final_score": 0, "confidence": 0.5, "ranking_weights": {}, "fallbacks": [],
+              "sas": 0, "final_score": 0, "confidence": 0.5, "ranking_weights": {}, "node_retrieved": [],
              "conversation_state": {"branch_key": {}, "inherited_facts": [], "inherited_emotions": [], "willingness": None},
          })[1]):
         resp = client.post("/recommend", json=_valid_payload(), headers={"X-Request-ID": "req-ctx-1"})

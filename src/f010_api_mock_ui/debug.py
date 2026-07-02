@@ -193,7 +193,7 @@ def debug_recommend(req: dict, app_state) -> dict:
             "bitmask_score": rec_result.get("bitmask_score", 1.0),
             "final_score": rec_result.get("final_score", 0),
             "confidence": rec_result.get("confidence", 1.0),
-            "fallbacks": rec_result.get("fallbacks", []),
+            "node_retrieved": rec_result.get("node_retrieved", []),
         }
 
     candidates = []

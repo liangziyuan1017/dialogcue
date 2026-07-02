@@ -250,7 +250,7 @@ class SentenceDB:
                 cur.execute(
                     """
                     SELECT script_id, script_text, bg_bitmask_int, win_rate, sas,
-                           bg_background, conversation_context,
+                           bg_background, conversation_context, node_id,
                            1 - (embedding <=> %s::vector) AS vec_score
                     FROM sentences
                     WHERE node_id = ANY(%s)
@@ -263,7 +263,7 @@ class SentenceDB:
                 cur.execute(
                     """
                     SELECT script_id, script_text, bg_bitmask_int, win_rate, sas,
-                           bg_background, conversation_context,
+                           bg_background, conversation_context, node_id,
                            1 - (embedding <=> %s::vector) AS vec_score
                     FROM sentences
                     WHERE node_id = ANY(%s)

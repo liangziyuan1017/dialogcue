@@ -79,6 +79,21 @@ def aggregate_pools(nodes):
     return pool
 
 
+def _pool_with_sources(nodes):
+    pool = []
+    source_sigs: dict[str, list[str]] = {}
+    for node in nodes:
+        sig = node.get("path_signature", "") or node.get("state_id", "")
+        for s in node.get("sentence_pool", []):
+            pool.append(s)
+            sid = s.get("script_id", "")
+            if sid:
+                bucket = source_sigs.setdefault(sid, [])
+                if sig and sig not in bucket:
+                    bucket.append(sig)
+    return pool, source_sigs
+
+
 def _find_matching_nodes_subset(all_facts, all_emotions, all_actions, index, label_set_index, pool_cap=None):
     if pool_cap is None:
         pool_cap = _pool_cap()
@@ -242,39 +257,61 @@ def recommend(query_bitmask, conversation_context, query_bg,
         _query_vec_norm = sum(v * v for v in query_vec) ** 0.5
     _use_sql_scoring = db is not None and query_vec is not None and _query_vec_norm > 0 and nodes
 
+    source_sigs: dict[str, list[str]] = {}
+
+    def _record(sig, sentence):
+        sid = sentence.get("script_id", "")
+        if not sid:
+            return
+        bucket = source_sigs.setdefault(sid, [])
+        if sig and sig not in bucket:
+            bucket.append(sig)
+
     if _use_sql_scoring:
         sigs = [node.get("path_signature", "") or node.get("state_id", "") for node in nodes]
         sig_to_id = db.get_node_ids_by_signatures(sigs)
+        id_to_sig = {v: k for k, v in sig_to_id.items()}
         node_ids = [sig_to_id[s] for s in sigs if s in sig_to_id]
         if node_ids:
             pool = db.search_by_nodes(query_vec, node_ids)
+            for s in pool:
+                _record(id_to_sig.get(s.get("node_id")), s)
         else:
-            pool = aggregate_pools(nodes)
+            pool, source_sigs = _pool_with_sources(nodes)
     elif db is not None and nodes:
         sigs = [node.get("path_signature", "") or node.get("state_id", "") for node in nodes]
         sig_to_id = db.get_node_ids_by_signatures(sigs)
+        id_to_sig = {v: k for k, v in sig_to_id.items()}
         pool = []
         for sig in sigs:
             node_id = sig_to_id.get(sig)
             if node_id:
-                pool.extend(db.get_sentences_by_node(node_id))
+                for s in db.get_sentences_by_node(node_id):
+                    pool.append(s)
+                    _record(id_to_sig.get(node_id), s)
     else:
-        pool = aggregate_pools(nodes)
+        pool, source_sigs = _pool_with_sources(nodes)
 
     if not pool:
-        d_pool, d_conf, d_fb, d_nodes = descend_for_sentences(nodes, return_nodes=_use_sql_scoring)
+        d_pool, d_conf, d_fb, d_nodes = descend_for_sentences(nodes, return_nodes=True)
         fallbacks.extend(d_fb)
         if not d_pool:
             return None
         pool = d_pool
+        source_sigs = {}
         if _use_sql_scoring and d_nodes:
             d_sigs = [n.get("path_signature", "") or n.get("state_id", "") for n in d_nodes]
             d_sig_to_id = db.get_node_ids_by_signatures(d_sigs) if d_sigs else {}
+            d_id_to_sig = {v: k for k, v in d_sig_to_id.items()}
             d_node_ids = [d_sig_to_id[s] for s in d_sigs if s in d_sig_to_id]
             if d_node_ids:
                 d_scored = db.search_by_nodes(query_vec, d_node_ids)
                 if d_scored:
                     pool = d_scored
+                    for s in pool:
+                        _record(d_id_to_sig.get(s.get("node_id")), s)
+        if not source_sigs and d_nodes:
+            _, source_sigs = _pool_with_sources(d_nodes)
 
     for s in pool:
         s["_bitmask_score"] = compute_bitmask_score(s.get("bg_bitmask_int", 0), query_bitmask)
@@ -294,6 +331,8 @@ def recommend(query_bitmask, conversation_context, query_bg,
         confidence -= (1.0 - top_bitmask_score) * _cfg("confidence.bitmask_mismatch_penalty", 0.1)
     confidence = max(confidence, 0.0)
 
+    node_retrieved = source_sigs.get(top.get("script_id", ""), [])
+
     return {
         "script_text": top.get("script_text", ""),
         "script_id": top.get("script_id", ""),
@@ -304,7 +343,7 @@ def recommend(query_bitmask, conversation_context, query_bg,
         "final_score": top.get("final_score", 0),
         "confidence": round(confidence, 2),
         "ranking_weights": get_ranking_weights(),
-        "fallbacks": fallbacks,
+        "node_retrieved": node_retrieved,
         "conversation_state": path_state,
     }
 

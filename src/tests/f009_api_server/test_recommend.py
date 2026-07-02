@@ -36,7 +36,7 @@ class TestRecommendEndpoint:
              patch("f009_api_server.server.recommend", return_value={
                  "script_text": "建议还款", "script_id": "s1", "state_id": "financial_hardship",
                  "win_rate": 0.8, "vec_score": 0.9, "sas": 0.7, "final_score": 0.82,
-                 "confidence": 0.9, "ranking_weights": {}, "fallbacks": [],
+                 "confidence": 0.9, "ranking_weights": {}, "node_retrieved": [],
                  "conversation_state": {"branch_key": {"facts": ["financial_hardship"]}, "inherited_facts": [], "inherited_emotions": [], "willingness": None},
              }):
             resp = client.post("/recommend", json={
@@ -64,7 +64,7 @@ class TestRecommendEndpoint:
              patch("f009_api_server.server.recommend", return_value={
                  "script_text": "建议还款", "script_id": "s1", "state_id": "financial_hardship",
                  "win_rate": 0.8, "vec_score": 0.9, "sas": 0.7, "final_score": 0.82,
-                 "confidence": 0.9, "ranking_weights": {}, "fallbacks": [],
+                 "confidence": 0.9, "ranking_weights": {}, "node_retrieved": [],
                  "conversation_state": {"branch_key": {"emotions": ["pleading"]}, "inherited_facts": ["request_installment", "financial_hardship"], "inherited_emotions": [], "willingness": "conditional"},
              }):
             resp = client.post("/recommend", json={

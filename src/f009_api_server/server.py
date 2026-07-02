@@ -157,9 +157,6 @@ async def recommend_endpoint(req: RecommendRequest):
 
     if embed_fallback:
         result["confidence"] = max(result.get("confidence", 1.0) - _cfg("confidence.embed_fallback_penalty", 0.1), 0.0)
-        result.setdefault("fallbacks", [])
-        if "embed_fail" not in result["fallbacks"]:
-            result["fallbacks"].append("embed_fail")
 
     return {
         "script_text": result.get("script_text", ""),
@@ -174,7 +171,7 @@ async def recommend_endpoint(req: RecommendRequest):
         "extraction_method": extraction.get("method", "unknown"),
         "conversation_state": merged,
         "ranking_weights": get_ranking_weights(),
-        "fallbacks": result.get("fallbacks", []),
+        "node_retrieved": result.get("node_retrieved", []),
         "latency_ms": latency_ms,
     }
 
@@ -268,7 +265,7 @@ async def customer_turn(sid, data):
         "extraction_method": extraction.get("method", "unknown"),
         "conversation_state": merged,
         "ranking_weights": get_ranking_weights(),
-        "fallbacks": top.get("fallbacks", []),
+        "node_retrieved": top.get("node_retrieved", []),
         "latency_ms": latency_ms,
     }
 

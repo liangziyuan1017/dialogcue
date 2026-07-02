@@ -143,7 +143,7 @@ class AsyncSentenceDB:
                 rows = await conn.fetch(
                     """
                     SELECT script_id, script_text, bg_bitmask_int, win_rate, sas,
-                           bg_background, conversation_context,
+                           bg_background, conversation_context, node_id,
                            1 - (embedding <=> $1::vector) AS vec_score
                     FROM sentences
                     WHERE node_id = ANY($2)
@@ -156,7 +156,7 @@ class AsyncSentenceDB:
                 rows = await conn.fetch(
                     """
                     SELECT script_id, script_text, bg_bitmask_int, win_rate, sas,
-                           bg_background, conversation_context,
+                           bg_background, conversation_context, node_id,
                            1 - (embedding <=> $1::vector) AS vec_score
                     FROM sentences
                     WHERE node_id = ANY($2)
