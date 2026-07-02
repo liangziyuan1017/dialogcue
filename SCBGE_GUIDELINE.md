@@ -16,9 +16,9 @@ Debt-collection call centers need to recommend, in real time, the single best co
 
 Build a two-phase system:
 
-1. **Offline (Phase 1 — Ingest):** Mine 31 historical call recordings to discover a state taxonomy (facts, emotions, willingness, collector actions), label every turn, score each conversation for repayment reward, construct a collector decision tree keyed by customer state, tag each tree sentence with a customer-profile bitmask + quality scores + semantic embedding, and load everything into PostgreSQL + pgvector.
+1. **Offline (Phase 1 — Ingest):** Mine historical call recordings to discover a state taxonomy (facts, emotions, willingness, collector actions), label every turn, score each conversation for repayment reward, construct a collector decision tree keyed by customer state, tag each tree sentence with a customer-profile bitmask + quality scores + semantic embedding, and load everything into PostgreSQL + pgvector.
 
-2. **Online (Phase 2 — Retrieve):** For each `POST /recommend` call, extract the customer's state from their utterance (LLM-first, keyword fallback), accumulate it into the conversation state, compute a permutation-insensitive node key, look up matching tree nodes O(1), aggregate their sentence pools, and rank the survivors by unified weighted fusion (`0.40·win_rate + 0.30·vec_score + 0.15·sas + 0.15·bg_boost * soft_bit_mask`) -- configurable via configs. Return the top-1 collector script.
+2. **Online (Phase 2 — Retrieve):** For each `POST /recommend` call, extract the customer's state from their utterance (LLM-first, keyword fallback), accumulate it into the conversation state, compute a permutation-insensitive node key, look up matching tree nodes O(1), aggregate their sentence pools, and rank the survivors by unified weighted fusion (`0.35·win_rate + 0.25·vec_score + 0.10·sas + 0.10·bg_boost + 0.20·bitmask_score`) -- configurable via configs. Return the top-1 collector script.
 
 ### Architecture
 
@@ -65,7 +65,7 @@ F000 ──► F001 ──► F003 ──► F004 ──► F005 ──► F006
 ### Data Flow
 
 ```
-data/matched_data.jsonl  (31 call records, raw)
+data/data_input/matched_data.jsonl  (raw call records)
         │
         ▼  F000  (LLM taxonomy discovery + turn labelling)
 state_keywords.json          output_labeled.py   (per-turn state labels)
@@ -118,20 +118,20 @@ with the decision tree, scored sentences, and pre-computed embeddings.
 
 #### What this does
 
-Ingests the raw source corpus: 31 debt-collection call records in JSONL, each
+Ingests the raw source corpus: debt-collection call records in JSONL, each
 containing the raw dialog string, call metadata, and a `customer_info` block of
 ~27 Chinese-string profile fields. No transformation happens here — this is the
 input contract for the entire pipeline.
 
 #### Design considerations & decisions
 
-- The corpus is small (31 records, 805 turns) — prototype scope. Taxonomy
+- The corpus is small (prototype scale) — taxonomy
   discovery and frequency stats are accepted as unstable at this scale; the
   system is designed to broaden with data (ADR-003 suggests domain keywords).
 - Raw `customer_info` fields are Chinese strings, unusable for O(1) filtering.
   F001 (ADR-006) maps them to 21 typed English fields later.
 
-**Source**: `/data/matched_data.jsonl` — 31 call records in JSONL format.
+**Source**: `/data/data_input/matched_data.jsonl` — raw call records in JSONL format.
 
 Each record has these exact fields:
 
@@ -195,7 +195,7 @@ labelled; filler turns ("嗯", "对", "好") are left unlabeled.
 - **KD-2 / ADR-002**: Group same-meaning keyword variants under canonical names
   (e.g. "没钱" ≈ "经济困难") to prevent sentence-pool fragmentation.
 - **KD-3 / ADR-003**: Include suggested domain keywords (`source: "suggested"`,
-  freq 0) for rare-but-critical states not in 31 records. (since the suggested ones are not rare cases, there are similar ones in the observed data, these are removed)
+  freq 0) for rare-but-critical states not in the observed records. (since the suggested ones are not rare cases, there are similar ones in the observed data, these are removed)
 - **KD-4 / ADR-004**: Discover collector action types from data too — fixed
   7-type enum didn't match observed Chinese collector behavior.
 - **KD-5 / ADR-005**: Willingness level count is data-driven (natural
@@ -204,13 +204,13 @@ labelled; filler turns ("嗯", "对", "好") are left unlabeled.
   `example_turn` for every observed keyword; suggested keywords explicitly
   flagged.
 
-**Input**: All turns across 31 records from `/data/matched_data.jsonl`
+**Input**: All turns across all records from `/data/data_input/matched_data.jsonl`
 
 **Process**:
 1. **Keyword discovery**: LLM groups same-meaning keywords into canonical groups (ADR-001: data-driven, not prescribed; ADR-002: group variants under canonical names)
 2. **Turn labelling**: LLM labels each turn with state keywords from the discovered taxonomy — facts, emotions, willingness (customer) or action (collector). Turns with no meaningful state are left unlabeled.
 
-**Output 1**: `/src/f000_keyword_discovery/state_keywords.json` (taxonomy)
+**Output 1**: `/src/f000_keyword_discovery/data/state_keywords.json` (taxonomy)
 
 ```json
 {
@@ -255,9 +255,9 @@ labelled; filler turns ("嗯", "对", "好") are left unlabeled.
 }
 ```
 
-**Output 2**: `/src/f001_schema_alignment/output_labeled.py` (per-turn state labels)
+**Output 2**: `/src/f000_keyword_discovery/data/output_labeled.py` (per-turn state labels)
 
-> **Note**: This is an F000-produced artifact. It is written under the `f001_schema_alignment/` directory because F001 consumes it immediately, but it is generated by F000's labelling pass, not by F001.
+> **Note**: This is an F000-produced artifact. It is written under the `f000_keyword_discovery/data/` directory and consumed by F001.
 
 493 of 805 turns are labeled with `state` dicts. Customer turns get `state: {facts: [...], emotions: [...], willingness: "..."}`. Collector turns get `state: {action: "..."}`. Unlabeled turns (filler like "嗯", "对", "好") omit `state`.
 
@@ -283,7 +283,7 @@ results = [
 
 #### What this does
 
-Maps the 31 raw records from the collection-system schema to a SOP-aligned schema with `turns_annotated`, `reward`, `state_transitions`, and a derived `context` constraint dict. Carries F000's state labels into each turn (493/805 labeled) so the aligned schema is a superset of prior outputs, not a lossy transformation.
+Maps the raw records from the collection-system schema to a SOP-aligned schema with `turns_annotated`, `reward`, `state_transitions`, and a derived `context` constraint dict. Carries F000's state labels into each turn so the aligned schema is a superset of prior outputs, not a lossy transformation.
 
 #### Design considerations & decisions
 
@@ -296,7 +296,7 @@ Maps the 31 raw records from the collection-system schema to a SOP-aligned schem
 
 **Process**: Parse raw `dialog` string into structured turns. **Carry F000 state labels from `output_labeled.py` into `turns_annotated`** (ADR-007: aligned schema is a superset of prior outputs, not a lossy transformation). Derive `context` constraint dict from `customer_info` Chinese fields (ADR-006: 21 fields mapped).
 
-**Output**: `/src/f001_schema_alignment/output_aligned.py`
+**Output**: `/src/f001_schema_alignment/data/output_aligned.py`
 
 ```python
 results = [
@@ -370,7 +370,7 @@ results = [
       "industry": "专业性事务所"
     }
   },
-  ...  # 31 records total
+  ...  # all labeled records
 ]
 ```
 
@@ -380,7 +380,7 @@ results = [
 
 #### What this does
 
-Assigns a binary reward R ∈ {0,1} per conversation via LLM detection of repayment-commitment triggers in the final turns, with counterfactual verification crediting the preceding collector action. Output: 6 R=1, 25 R=0 of 31 records. 
+Assigns a binary reward R ∈ {0,1} per conversation via LLM detection of repayment-commitment triggers in the final turns, with counterfactual verification crediting the preceding collector action.
 
 
 #### Design considerations & decisions
@@ -392,7 +392,7 @@ Assigns a binary reward R ∈ {0,1} per conversation via LLM detection of repaym
 
 **Process**: LLM determines R ∈ {0, 1} per conversation. Detects repayment commitment triggers in final turns, performs counterfactual verification.
 
-**Output**: `/src/f003_reward_labeling/output_rewarded.py`
+**Output**: `/src/f003_reward_labeling/data/output_rewarded.py`
 
 Same structure as `output_aligned.py`, but:
 - `reward` is now ∈ {0, 1} (was `null`)
@@ -427,7 +427,7 @@ Same structure as `output_aligned.py`, but:
 }
 ```
 
-**Stats**: 31 records total, 6 with R=1, 25 with R=0.
+**Stats**: Run reward labeling for the current R=1/R=0 split.
 
 ### Step 1.5: F004 — Decision Tree Construction
 
@@ -456,7 +456,7 @@ Builds a collector decision tree (309 nodes, 782 sentences, max depth 17) where 
 
 **Process**: Extract state-transition paths from annotated conversations, merge identical/near-identical state sequences, accumulate historical collector sentences at each node.
 
-**Output**: `/src/f004_decision_tree/decision_tree.json`
+**Output**: `/src/f004_decision_tree/data/decision_tree.json`
 
 Tree structure (309 nodes, 782 sentences):
 
@@ -541,7 +541,7 @@ Tags each tree sentence with a 10-bit `bg_bitmask` (customer profile constraints
 - **ADR-020**: 10-bit bitmask for soft scoring; intersection merge for multi-source sentences (conservative — only constraints in ALL source conversations are set); Laplace-smoothed HWR; char-bigram TF-IDF SAS (numpy only, no external API). Expanded 5→10 bits on 2026-06-22. Soft scoring replaced hard filter on 2026-06-29.
 - **ADR-024**: bge-m3 via Ollama replaces char-ngram TF-IDF for semantic similarity — captures meaning ("没钱" ≈ "经济困难"); local/no-cost/offline; pgvector hybrid; unified ranking replaces dual-strategy.
 - **HWR with node-level aggregation**: sentence-level HWR unreliable for sentences in only 1-2 calls; blend `weight * sentence_hwr + (1-weight) * node_hwr` where `weight = n/(n+2)`.
-- **UC and CSI deferred**: `uplift_score = 0`, `csi = 0` with `deferred: true` — require causal analysis unavailable at 31-record scale.
+- **UC and CSI deferred**: `uplift_score = 0`, `csi = 0` with `deferred: true` — require causal analysis unavailable at prototype scale.
 - **F007 design**: Ollama for local embeddings (no per-call cost); OpenAI-compatible API (reuse `openai` client); Python-side ranking (`bg_boost` needs JSONB dict comparison); pgvector for hybrid vector+bitmask+FTS in one query; optional embedding in `score_tree.py` (backward compat when `db=None`).
 
 **Input**: `decision_tree.json` + `output_aligned.py` + `output_rewarded.py`
@@ -555,7 +555,7 @@ Tags each tree sentence with a 10-bit `bg_bitmask` (customer profile constraints
 5. **Embedding**: `embed(conversation_context)` via bge-m3 embedding model served by Ollama → 1024-dim float32 vector → `embedding` column (ADR-024)
 6. **Full-text vector**: `to_tsvector('simple', script_text)` → `script_tsv` column
 
-**Output**: `/src/f005_context_scoring/decision_tree_scored.json` (backward compat) + PostgreSQL
+**Output**: `/src/f005_context_scoring/data/decision_tree_scored.json` (backward compat) + PostgreSQL
 
 Each sentence in the scored tree has these exact fields:
 
@@ -611,9 +611,10 @@ Each sentence in the scored tree has these exact fields:
   "csi": 0,
   "deferred": true,
   "conversation_context": "唉，喂，您好。招商银行信用卡中心，请问是<PERSON>女士吗？ 您好，对。...",
-  "embedding": [0.012, -0.034, 0.078, ...]  // 1024-dim bge-m3 via Ollama
 }
 ```
+
+> **Note**: Embeddings (1024-dim bge-m3 vectors) are persisted to PostgreSQL only. `decision_tree_scored.json` strips vectors before dump to keep the file small; the `embedding` field is absent from the JSON.
 
 **PostgreSQL load** (nodes + sentences + taxonomy_keywords):
 
@@ -1045,12 +1046,12 @@ Fetch candidates with embeddings from PG, compute `vec_score` + `bg_boost` + `fi
 
 #### What this does
 
-Ranks the filtered candidates by unified weighted fusion: `0.40·win_rate + 0.30·vec_score + 0.15·sas + 0.15·bg_boost`. Returns the top-1 script. `bg_boost` is a soft profile-match bonus computed in Python (industry, education, debt range, age).
+Ranks the filtered candidates by unified weighted fusion: `0.35·win_rate + 0.25·vec_score + 0.10·sas + 0.10·bg_boost + 0.20·bitmask_score`. Returns the top-1 script. `bg_boost` is a soft profile-match bonus computed in Python (industry, education, debt range, age).
 
 #### Design considerations & decisions
 
 - **ADR-024 / F006**: Unified weighted fusion replaces the previous dual-strategy (`limited`/`full`) switch — vector similarity provides a meaningful semantic signal at any data scale, making the strategy switch unnecessary.
-- **F006**: `win_rate` (0.40) is the strongest signal — proven effectiveness; `vec_score` (0.30) — semantic relevance; `sas` (0.15) — intra-pool redundancy avoidance (tiebreak); `bg_boost` (0.15) — profile personalization (soft, not a hard filter).
+- **F006**: `win_rate` (0.35) is the strongest signal — proven effectiveness; `vec_score` (0.25) — semantic relevance; `sas` (0.10) — intra-pool redundancy avoidance (tiebreak); `bg_boost` (0.10) — profile personalization (soft, not a hard filter); `bitmask_score` (0.20) — profile-constraint match quality.
 - **F007**: Python-side ranking because `bg_boost` requires JSONB dict comparison not expressible in SQL (~1ms tradeoff for flexibility).
 - **Embedding fallback**: if embedding unavailable, set `vec_score = 0`, redistribute weight to `win_rate`.
 
@@ -1062,15 +1063,17 @@ Ranks the filtered candidates by unified weighted fusion: `0.40·win_rate + 0.30
 | `vec_score` | pgvector cosine similarity | [0, 1] | Semantic relevance to current conversation |
 | `sas` | Char bigram TF-IDF cosine within pool | [0, 1] | Script diversity |
 | `bg_boost` | Profile match heuristic | [0, 0.12] | Customer profile similarity bonus |
+| `bitmask_score` | Soft bitmask overlap (matched_bits/required_bits) | [0, 1] | Profile-constraint match quality |
 
 **Weights:**
 
 ```python
 RANKING_WEIGHTS = {
-    "win_rate": 0.40,
-    "vec_score": 0.30,
-    "sas": 0.15,
-    "bg_boost": 0.15,
+    "win_rate": 0.35,
+    "vec_score": 0.25,
+    "sas": 0.10,
+    "bg_boost": 0.10,
+    "bitmask_score": 0.20,
 }
 ```
 
@@ -1095,7 +1098,7 @@ def compute_bg_boost(sentence_bg, query_bg):
 **Final score:**
 
 ```
-final_score = 0.40 × win_rate + 0.30 × vec_score + 0.15 × sas + 0.15 × bg_boost
+final_score = 0.35 × win_rate + 0.25 × vec_score + 0.10 × sas + 0.10 × bg_boost + 0.20 × bitmask_score
 ```
 
 **Unified weighted fusion** (ADR-024: dual strategy deleted, single unified path):
@@ -1145,12 +1148,13 @@ def recommend(inherited_facts, branch_key_values, inherited_emotions, query_bitm
     "willingness": "conditional"
   },
   "ranking_weights": {
-    "win_rate": 0.40,
-    "vec_score": 0.30,
-    "sas": 0.15,
-    "bg_boost": 0.15
+    "win_rate": 0.35,
+    "vec_score": 0.25,
+    "sas": 0.10,
+    "bg_boost": 0.10,
+    "bitmask_score": 0.20
   },
-  "fallbacks": [],
+  "node_retrieved": ["request_installment|disappointment"],
   "latency_ms": 1050
 }
 ```
@@ -1158,6 +1162,8 @@ def recommend(inherited_facts, branch_key_values, inherited_emotions, query_bitm
 ---
 
 ## Phase 3: Full Conversation Walkthrough
+
+> **Note on `conversation_state` shape**: The examples below show the flat form `{facts, emotions, actions, willingness}` for readability. The actual API contract (`ConversationState` model in `server.py`) is **path-structured**: `{branch_key, inherited_facts, inherited_emotions, willingness}`. `recommend()` accepts both forms (backward-compat), but `POST /recommend` requires the path-structured form.
 
 A 5-turn call using real data from call `2317941550352385028` (customer 0100252354, 专业性事务所, age 49).
 
@@ -1224,8 +1230,8 @@ POST /recommend
     "actions": [],
     "willingness": null
   },
-  "ranking_weights": {"win_rate": 0.40, "vec_score": 0.30, "sas": 0.15, "bg_boost": 0.15},
-  "fallbacks": [],
+  "ranking_weights": {"win_rate": 0.35, "vec_score": 0.25, "sas": 0.10, "bg_boost": 0.10, "bitmask_score": 0.20},
+  "node_retrieved": [],
   "latency_ms": 900
 }
 ```
@@ -1275,8 +1281,8 @@ POST /recommend
     "actions": [],
     "willingness": null
   },
-  "ranking_weights": {"win_rate": 0.40, "vec_score": 0.30, "sas": 0.15, "bg_boost": 0.15},
-  "fallbacks": [],
+  "ranking_weights": {"win_rate": 0.35, "vec_score": 0.25, "sas": 0.10, "bg_boost": 0.10, "bitmask_score": 0.20},
+  "node_retrieved": [],
   "latency_ms": 1050
 }
 ```
@@ -1329,8 +1335,8 @@ POST /recommend
     "actions": [],
     "willingness": "conditional"
   },
-  "ranking_weights": {"win_rate": 0.40, "vec_score": 0.30, "sas": 0.15, "bg_boost": 0.15},
-  "fallbacks": [],
+  "ranking_weights": {"win_rate": 0.35, "vec_score": 0.25, "sas": 0.10, "bg_boost": 0.10, "bitmask_score": 0.20},
+  "node_retrieved": [],
   "latency_ms": 1080
 }
 ```
@@ -1381,8 +1387,8 @@ POST /recommend
     "actions": ["plan_proposal"],
     "willingness": "negotiating"
   },
-  "ranking_weights": {"win_rate": 0.40, "vec_score": 0.30, "sas": 0.15, "bg_boost": 0.15},
-  "fallbacks": [],
+  "ranking_weights": {"win_rate": 0.35, "vec_score": 0.25, "sas": 0.10, "bg_boost": 0.10, "bitmask_score": 0.20},
+  "node_retrieved": [],
   "latency_ms": 950
 }
 ```
@@ -1436,8 +1442,8 @@ POST /recommend
     "actions": ["plan_proposal", "closure"],
     "willingness": "strong"
   },
-  "ranking_weights": {"win_rate": 0.40, "vec_score": 0.30, "sas": 0.15, "bg_boost": 0.15},
-  "fallbacks": [],
+  "ranking_weights": {"win_rate": 0.35, "vec_score": 0.25, "sas": 0.10, "bg_boost": 0.10, "bitmask_score": 0.20},
+  "node_retrieved": [],
   "latency_ms": 920
 }
 ```
@@ -1490,6 +1496,8 @@ and ADR-025.
 | 5 | All fallbacks exhausted | Return null (no recommendation) | 0.0 |
 
 **Confidence formula**: `1.0 − (dropped_labels × 0.1) − (descend_levels × 0.05) − ((1.0 − bitmask_score) × 0.1) − (embed_fail × 0.1)`, minimum 0.0
+
+> **Note**: The internal `fallbacks` list drives confidence penalties but is not exposed in the API response. The response field is `node_retrieved` — a list of `path_signature` strings for the tree nodes the top sentence was retrieved from.
 
 ---
 
@@ -1552,26 +1560,25 @@ WITH candidates AS (
          1 - (embedding <=> $query_vec) AS vec_score
   FROM sentences
   WHERE node_id = ANY($node_ids)
-    AND (bg_bitmask_int & $query_bitmask) = bg_bitmask_int
 )
 SELECT script_id, script_text, win_rate, sas, vec_score, bg_background,
-       (0.40 * win_rate + 0.30 * vec_score + 0.15 * sas) AS final_score
+       (0.35 * win_rate + 0.25 * vec_score + 0.10 * sas + 0.20 * bitmask_score) AS final_score
 FROM candidates
 ORDER BY final_score DESC
 LIMIT 1;
 ```
 
-Note: `bg_boost` is computed in Python after fetching, since it requires comparing the query's `context` dict against each candidate's `bg_background` JSONB. If `bg_boost` is negligible, the pure-SQL query above is sufficient.
+Note: `bg_boost` is computed in Python after fetching, since it requires comparing the query's `context` dict against each candidate's `bg_background` JSONB. If `bg_boost` is negligible, the pure-SQL query above is sufficient. Bitmask is a **soft ranking signal** per ADR-020 (scored as `matched_bits/required_bits`, not a hard WHERE filter); production ranking is Python-side for `bg_boost`.
 
 ---
 
 ## Scaling Path
 
-Migration path from 31 → 100,000+ records. Retrieval is O(1) hash lookup
+Migration path from prototype → 100,000+ records. Retrieval is O(1) hash lookup
 regardless of tree size; scaling challenges are storage, build-time, and index
 maintenance — not retrieval latency.
 
-| Dimension | Current (31 records) | Target (50K+ records) | Solution |
+| Dimension | Current (prototype scale) | Target (50K+ records) | Solution |
 |-----------|---------------------|----------------------|----------|
 | Nodes | 315 | 100,000+ | Tree grows with record diversity, not linearly with records |
 | Node storage | JSON file | PG `nodes` table with `path_signature` B-tree index | O(log N) lookup |
@@ -1603,7 +1610,7 @@ Authoritative decision records. Each is one line here; see
 |-----|-------|----------|
 | [ADR-001](docs/decisions/ADR-001-data-driven-keyword-discovery.md) | Data-driven keyword discovery | Discover state keywords from data, not prescribe — Chinese debt-collection patterns differ from English assumptions. |
 | [ADR-002](docs/decisions/ADR-002-keyword-grouping.md) | Keyword grouping | Group same-meaning keyword variants under canonical names to prevent pool fragmentation. |
-| [ADR-003](docs/decisions/ADR-003-suggested-domain-keywords.md) | Suggested domain keywords | Include domain-common keywords not in 31 records (`source: "suggested"`, freq 0) for forward-compatibility. |
+| [ADR-003](docs/decisions/ADR-003-suggested-domain-keywords.md) | Suggested domain keywords | Include domain-common keywords not in the observed records (`source: "suggested"`, freq 0) for forward-compatibility. |
 | [ADR-004](docs/decisions/ADR-004-collector-action-discovery.md) | Collector action discovery | Discover collector action types from data too — fixed 7-type enum didn't match observed behavior. |
 | [ADR-005](docs/decisions/ADR-005-data-driven-willingness-levels.md) | Data-driven willingness levels | Willingness level count determined by natural clustering (yielded 5 levels), not preset. |
 | [ADR-006](docs/decisions/ADR-006-context-constraint-mapping.md) | Context constraint mapping | Map 27 raw Chinese `customer_info` fields → 21 typed English `context` fields. Expanded 9→21 on 2026-06-22. |

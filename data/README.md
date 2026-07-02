@@ -16,7 +16,7 @@ data/
 
 | File | Description |
 |------|-------------|
-| `matched_data.jsonl` | Source — 35 ASR-transcribed Mandarin debt-collection call records (one JSON object per line). Fields: `call_id`, `dialog`, `call_date`, `cust_no`, `coll_user_id`, `mob_typ`, `talk_time`, `plan_evaluation`, `customer_info`. |
+| `matched_data.jsonl` | Source — raw ASR-transcribed Mandarin debt-collection call records (one JSON object per line). The raw count grows as new data is added; run `wc -l data/data_input/matched_data.jsonl` for the current count. Fields: `call_id`, `dialog`, `call_date`, `cust_no`, `coll_user_id`, `mob_typ`, `talk_time`, `plan_evaluation`, `customer_info`. |
 
 ## data_output/
 
