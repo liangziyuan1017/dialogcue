@@ -53,7 +53,7 @@ A dedicated `POST /recommend/debug` endpoint returns the full per-step trace dat
 
 ## Dependencies
 
-- F009 (API server) — F010 extends the same FastAPI app
+- F009 (API server) — F010 extends the same FastAPI app; `/ui` mount and `/recommend/debug` route are registered in `f009/server.py` (lines 319, 338) for ASGI app ownership, with F010 supplying `debug.py` + static `ui/` assets
 - F004 (Decision Tree) — F010's trace panel reuses tree data structures
 
 ## Files

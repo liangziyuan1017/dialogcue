@@ -13,7 +13,7 @@ merged: 2026-06-10 63e5a0c
 
 ## Why
 
-Raw records in `/data/output_manual.py` use the original collection system schema. Downstream features (F002–F006) require a SOP-aligned schema with `turns_annotated`, `reward`, `state_transitions`, and `context` fields derived from `customer_info`.
+Raw records in `/data/output_manual.py` use the original collection system schema. Downstream features (F003–F006) require a SOP-aligned schema with `turns_annotated`, `reward`, `state_transitions`, and `context` fields derived from `customer_info`.
 
 ## What
 
