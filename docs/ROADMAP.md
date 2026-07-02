@@ -16,7 +16,7 @@
 | F010 | API Mock + System Status UI | complete | agent | feat-lifecycle | [F010](features/F010-api-mock-system-status-ui.md) |
 | F011 | Config Externalization | complete | agent | feature doc | [F011](features/F011-config-externalization.md) |
 | F012 | Runtime Robustness Hardening | in-progress | agent | feature doc | [F012](features/F012-runtime-robustness-hardening.md) |
-| F013 | asyncpg Migration | developing | agent | [ADR-027](decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md) | [F013](features/F013-asyncpg-migration.md) |
+| F013 | asyncpg Migration | merged | agent | [ADR-027](decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md) | [F013](features/F013-asyncpg-migration.md) |
 
 > **F002 removed** (ADR-009): LLM State Extraction eliminated. F001's manual annotations (493/805 turns) provide sufficient state coverage. Downstream features handle unlabeled turns gracefully.
 
@@ -57,5 +57,5 @@ Consolidated index of the system's architecture choices. Each row links to the a
 | Conversation state | **Accumulated across turns** | Caller passes in previously extracted states; system appends new extractions; used for path matching | [ADR-006](decisions/ADR-006-context-constraint-mapping.md) |
 | Candidate retrieval | **PostgreSQL** | Sentences stored in PG, retrieved by `node_id` with bitmask filter + vector rank in single query | — |
 | Vector scoring | **SQL-side pgvector `<=>`** | `vec_score` computed in PostgreSQL, eliminating raw embedding transfer to Python | [ADR-028](decisions/ADR-028-sql-side-cosine-scoring.md) |
-| DB concurrency | **ThreadedConnectionPool + threadpool** | `psycopg2` pool + `run_in_threadpool` offload (F012 Phase B); `asyncpg` migration deferred to F013 | [ADR-027](decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md) |
+| DB concurrency | **asyncpg (runtime) + psycopg2 (build-time)** | Runtime uses `AsyncSentenceDB` with asyncpg (F013); build-time keeps `psycopg2` for batch ops | [ADR-027](decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md) |
 | API | **FastAPI** | Already in `pyproject.toml` dependencies | — |

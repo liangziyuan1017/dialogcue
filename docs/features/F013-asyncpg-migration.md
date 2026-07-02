@@ -1,18 +1,19 @@
 ---
 id: F013
 name: asyncpg Migration
-status: developing
+status: merged
 owner: agent
 related_features: [F007, F012]
 topics: [db, concurrency, async, asyncpg, performance]
 doc_kind: spec
 created: 2026-07-01
 updated: 2026-07-02
+merged: 2026-07-02 (64c6f48)
 ---
 
 # F013: asyncpg Migration
 
-> **Status**: developing | **Owner**: agent | **Priority**: P1
+> **Status**: merged | **Owner**: agent | **Priority**: P1
 >
 > **Origin**: ADR-027 KD-6 — split from F012 Phase B to keep scope bounded.
 
