@@ -44,6 +44,11 @@ Build a two-phase system:
 | F008 | Online State Extraction Module | 2 (2.1) | review | [F008](docs/features/F008-state-extraction.md) |
 | F009 | REST API + Socket.IO Server | 2 | review | [F009](docs/features/F009-api-server.md) |
 | F010 | API Mock + System Status UI | tooling | complete | [F010](docs/features/F010-api-mock-system-status-ui.md) |
+| F011 | Config Externalization | cross-cutting | complete | [F011](docs/features/F011-config-externalization.md) |
+| F012 | Runtime Robustness Hardening | cross-cutting | in-progress | [F012](docs/features/F012-runtime-robustness-hardening.md) |
+| F013 | asyncpg Migration | cross-cutting | merged | [F013](docs/features/F013-asyncpg-migration.md) |
+
+> F011/F012/F013 are cross-cutting infrastructure hardening: F011 externalizes all tunable params to `config.md`; F012 adds structured logging, retry, and config hardening; F013 replaces the psycopg2 threadpool with native asyncpg on the runtime DB path. They thread through F007–F009 rather than sitting on the F000→F009 build chain.
 
 ### Dependency Graph
 
@@ -106,6 +111,8 @@ POST /recommend  →  state extraction  →  relabel  →  node lookup  →  bit
 | Taxonomy | Data-discovered, not prescribed | ADR-001..005 |
 | Context constraints | 21-field mapping → 10-bit bitmask | ADR-006, ADR-020 |
 | API | FastAPI + Socket.IO | — |
+| DB concurrency | asyncpg (runtime) + psycopg2 (build-time) | ADR-027 |
+| Vector scoring | SQL-side pgvector `<=>` (no raw embedding transfer to Python) | ADR-028 |
 
 ---
 
@@ -672,7 +679,7 @@ node_index = {
 
 ## Phase 2: Retrieve (online, per API call)
 
-> **Feature mapping**: Infrastructure (PostgreSQL + pgvector, bge-m3 embeddings, DeepSeek LLM) → **F007**. Vector retrieval integration (F005 embed load + F006 vector ranking) → **F007b**. State extraction (Step 2.1) → **F008**. REST + Socket.IO API (endpoint below) → **F009**. Steps 2.2–2.7 retrieval/ranking logic lives in **F006** (modified by F007b).
+> **Feature mapping**: Infrastructure (PostgreSQL + pgvector, bge-m3 embeddings, DeepSeek LLM) → **F007**. Vector retrieval integration (F005 embed load + F006 vector ranking) → **F007b**. State extraction (Step 2.1) → **F008**. REST + Socket.IO API (endpoint below) → **F009**. Steps 2.2–2.7 retrieval/ranking logic lives in **F006** (modified by F007b). **Runtime hardening**: F011 externalizes all tunable params to `config.md`; F012 adds structured logging (`f007_infrastructure/logging.py` + request-ID middleware) and config validation; F013 makes the runtime DB path fully async via `asyncpg` (`AsyncSentenceDB`) — all hot-path DB methods (`search_by_nodes`, `get_node_ids_by_signatures`, `keyword_search`, `taxonomy_keyword_search`) are `async` and called with `await` from `server.py`; build-time batch loads still use `psycopg2`. Per ADR-028, `vec_score` is computed SQL-side via pgvector `<=>` so no raw embedding is transferred to Python.
 
 ### API Endpoint (F009)
 
@@ -1009,6 +1016,7 @@ Embeds the query conversation context with bge-m3 (1024-dim), then computes cosi
 
 - **ADR-024**: bge-m3 via Ollama replaces char-ngram TF-IDF for semantic similarity — captures meaning, local/no-cost/offline, 1024-dim.
 - **F007**: pgvector HNSW index for O(log N) approximate KNN; hybrid vector+bitmask+FTS in one PostgreSQL query.
+- **ADR-028 / F013**: `vec_score = 1 - (embedding <=> query_vec)` is computed in PostgreSQL via pgvector's cosine-distance operator inside `search_by_nodes()`; results stream back over asyncpg's binary protocol (no raw 1024-dim vector transferred to Python, no thread overhead).
 
 **Step 2.6.1**: Embed the query conversation context
 
@@ -1580,7 +1588,7 @@ maintenance — not retrieval latency.
 
 | Dimension | Current (prototype scale) | Target (50K+ records) | Solution |
 |-----------|---------------------|----------------------|----------|
-| Nodes | 315 | 100,000+ | Tree grows with record diversity, not linearly with records |
+| Nodes | 309 | 100,000+ | Tree grows with record diversity, not linearly with records |
 | Node storage | JSON file | PG `nodes` table with `path_signature` B-tree index | O(log N) lookup |
 | Sentence storage | JSON in-memory pools | PG `sentences` table with `node_id` index | Filter + rank in SQL |
 | Vector search | char-ngram TF-IDF | pgvector HNSW index | O(log N) approximate KNN |
@@ -1616,7 +1624,7 @@ Authoritative decision records. Each is one line here; see
 | [ADR-006](docs/decisions/ADR-006-context-constraint-mapping.md) | Context constraint mapping | Map 27 raw Chinese `customer_info` fields → 21 typed English `context` fields. Expanded 9→21 on 2026-06-22. |
 | [ADR-007](docs/decisions/ADR-007-carry-state-labels.md) | Carry state labels | F001 carries F000 state labels into `turns_annotated` — aligned schema is a superset, not lossy. |
 | [ADR-008](docs/decisions/ADR-008-output-format-py-file.md) | Output format .py file | Output `.py` with `results = [...]` for `importlib` loading consistency; JSON would break downstream. |
-| [ADR-009](docs/decisions/ADR-009-eliminate-f002-llm-state-extraction.md) | Eliminate F002 | Remove offline LLM state extraction — F000's 493/805 manual annotations suffice; online extraction is the only hot-path LLM call. |
+| [ADR-009](docs/decisions/ADR-009-eliminate-f002-llm-state-extraction.md) | Eliminate F002 | Remove offline LLM state extraction — F001's 493/805 annotations (LLM-labelled by F000, carried into F001 per ADR-007) suffice; online extraction is the only hot-path LLM call. |
 | [ADR-010](docs/decisions/ADR-010-reward-labeling-approach.md) | Reward labeling approach | LLM + counterfactual verification + cross-validation against `plan_evaluation` for scalable, auditable R labels. |
 | [ADR-011](docs/decisions/ADR-011-decision-tree-approach.md) | Decision tree approach | Nodes = collector action points, branches = customer (facts, emotions), willingness = sentence label. Consolidated start/end nodes. |
 | [ADR-012](docs/decisions/ADR-012-collector-action-field.md) | collector_action field | `collector_action` on sentence entries for UI display + O(1) action filtering without parent traversal. |
@@ -1634,5 +1642,5 @@ Authoritative decision records. Each is one line here; see
 | [ADR-024](docs/decisions/ADR-024-embedding-architecture.md) | Embedding architecture | bge-m3 via Ollama (1024-dim, OpenAI-compatible) replaces char-ngram TF-IDF; local/no-cost/offline; unified ranking replaces dual-strategy. |
 | [ADR-025](docs/decisions/ADR-025-f010-ui-architecture.md) | F010 UI architecture | Vanilla JS + FastAPI StaticFiles; no build step; CodeMirror 6 + Tailwind via CDN; same server/port; `/recommend/debug` endpoint. |
 | [ADR-026](docs/decisions/ADR-026-open-set-extraction-relabel.md) | Open-set extraction + sync relabel | Open-set extraction for facts/emotions (free-form labels), closed-set for willingness; synchronous relabel pipeline normalizes through `*_descriptions` → `*_relabeled` → `llm_relabel`; self-extending taxonomy. |
-| [ADR-027](docs/decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md) | DB concurrency: threadpool now, asyncpg later | `psycopg2.pool.ThreadedConnectionPool` + `run_in_threadpool` now (F012 Phase B); native `asyncpg` deferred to F013 (shadow module written, not yet wired into runtime). |
+| [ADR-027](docs/decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md) | DB concurrency: asyncpg runtime | `psycopg2.pool.ThreadedConnectionPool` + `run_in_threadpool` was an interim fix (F012 Phase B); F013 replaced the runtime DB driver with native `asyncpg` — all hot-path DB methods are `async`, no thread overhead. Build-time batch loads keep `psycopg2`. |
 | [ADR-028](docs/decisions/ADR-028-sql-side-cosine-scoring.md) | SQL-side cosine scoring | Move `vec_score` computation from Python/numpy to PostgreSQL via pgvector `<=>` operator; eliminates raw embedding transfer to Python. |

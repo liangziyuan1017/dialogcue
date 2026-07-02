@@ -52,7 +52,7 @@ Consolidated index of the system's architecture choices. Each row links to the a
 | SAS (Script Analogy Score) | **TF-IDF cosine** | Char bigram TF-IDF within sentence pool — unchanged | [ADR-020](decisions/ADR-020-f005-bitmask-scoring-design.md) |
 | Conversation context similarity | **Vector cosine via pgvector** | Replaces char-ngram TF-IDF; captures semantic meaning ("没钱" ≈ "经济困难") | [ADR-024](decisions/ADR-024-embedding-architecture.md) |
 | Full-text search | **PostgreSQL tsvector + GIN** | Keyword-based state extraction fallback; fuzzy matching on `script_text` | — |
-| Ranking | **Weighted fusion (configurable)** | `0.40×win_rate + 0.30×vec_score + 0.15×sas + 0.15×bg_boost` — weights in `config.md` | — |
+| Ranking | **Weighted fusion (configurable)** | `0.35×win_rate + 0.25×vec_score + 0.10×sas + 0.10×bg_boost + 0.20×bitmask_score` — weights in `config.md` | — |
 | State extraction | **LLM-first (DeepSeek)** | LLM is primary extraction; keyword scan via tsvector as fallback | [ADR-009](decisions/ADR-009-eliminate-f002-llm-state-extraction.md) |
 | Conversation state | **Accumulated across turns** | Caller passes in previously extracted states; system appends new extractions; used for path matching | [ADR-006](decisions/ADR-006-context-constraint-mapping.md) |
 | Candidate retrieval | **PostgreSQL** | Sentences stored in PG, retrieved by `node_id` with bitmask filter + vector rank in single query | — |

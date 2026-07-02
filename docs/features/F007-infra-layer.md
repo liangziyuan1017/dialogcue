@@ -96,7 +96,7 @@ Migration path from 31 → 100,000+ nodes. Retrieval is O(1) hash lookup regardl
 
 | Dimension | Current (31 records) | Target (50K+ records) | Solution |
 |-----------|---------------------|----------------------|----------|
-| Nodes | 315 | 100,000+ | Tree grows with record diversity, not linearly with records |
+| Nodes | 309 | 100,000+ | Tree grows with record diversity, not linearly with records |
 | Node storage | JSON file | PG `nodes` table with `path_signature` B-tree index | O(log N) lookup |
 | Sentence storage | JSON in-memory pools | PG `sentences` table with `node_id` index | Filter + rank in SQL |
 | Vector search | char-ngram TF-IDF | pgvector HNSW index | O(log N) approximate KNN |
