@@ -20,7 +20,7 @@ def _compute_bitmask(context: dict) -> int:
     return mask
 
 
-def _get_all_candidates(query_bitmask, conversation_context, query_bg,
+async def _get_all_candidates(query_bitmask, conversation_context, query_bg,
                         tree, index, label_set_index, db, query_vec,
                         conversation_state):
     from f008_state_extraction.state_extraction import path_state_to_flat
@@ -46,56 +46,34 @@ def _get_all_candidates(query_bitmask, conversation_context, query_bg,
     if not nodes:
         return []
 
-    _query_vec_norm = 0.0
-    if query_vec is not None:
-        _query_vec_norm = sum(v * v for v in query_vec) ** 0.5
-    _use_sql_scoring = db is not None and query_vec is not None and _query_vec_norm > 0 and nodes
-
-    if _use_sql_scoring:
-        sigs = [node.get("path_signature", "") or node.get("state_id", "") for node in nodes]
-        sig_to_id = db.get_node_ids_by_signatures(sigs)
-        node_ids = [sig_to_id[s] for s in sigs if s in sig_to_id]
-        if node_ids:
-            pool = db.search_by_nodes(query_vec, node_ids)
-        else:
-            pool = aggregate_pools(nodes)
-    elif db is not None and nodes:
-        sigs = [node.get("path_signature", "") or node.get("state_id", "") for node in nodes]
-        sig_to_id = db.get_node_ids_by_signatures(sigs)
+    if db is not None and nodes:
         pool = []
-        for sig in sigs:
-            node_id = sig_to_id.get(sig)
+        for node in nodes:
+            path_sig = node.get("path_signature", "") or node.get("state_id", "")
+            node_row = await db.get_node_by_signature(path_sig)
+            node_id = node_row["id"] if node_row else None
             if node_id:
-                pool.extend(db.get_sentences_by_node(node_id))
+                pool.extend(await db.get_sentences_by_node(node_id))
     else:
         pool = aggregate_pools(nodes)
 
     if not pool:
-        d_pool, d_conf, d_fb, d_nodes = descend_for_sentences(nodes, return_nodes=_use_sql_scoring)
-        fallbacks.extend(d_fb)
+        d_pool, d_conf, d_fb = descend_for_sentences(nodes)
         if not d_pool:
             return []
         pool = d_pool
-        if _use_sql_scoring and d_nodes:
-            d_sigs = [n.get("path_signature", "") or n.get("state_id", "") for n in d_nodes]
-            d_sig_to_id = db.get_node_ids_by_signatures(d_sigs) if d_sigs else {}
-            d_node_ids = [d_sig_to_id[s] for s in d_sigs if s in d_sig_to_id]
-            if d_node_ids:
-                d_scored = db.search_by_nodes(query_vec, d_node_ids)
-                if d_scored:
-                    pool = d_scored
 
     for s in pool:
         s["_bitmask_score"] = compute_bitmask_score(s.get("bg_bitmask_int", 0), query_bitmask)
 
-    ranked = rank_sentences(pool, query_vec=query_vec, db=db,
+    ranked = await rank_sentences(pool, query_vec=query_vec, db=db,
                             query_bg=query_bg,
                             conversation_context=conversation_context,
                             context_missing=context_missing)
     return ranked or []
 
 
-def debug_recommend(req: dict, app_state) -> dict:
+async def debug_recommend(req: dict, app_state) -> dict:
     trace = []
     customer_utterance = req.get("customer_utterance", "")
     conversation_context = req.get("conversation_context", "")
@@ -103,7 +81,7 @@ def debug_recommend(req: dict, app_state) -> dict:
     context = req.get("context", {})
 
     t0 = time.time()
-    extraction = extract_state(customer_utterance, app_state.taxonomy, db=app_state.db)
+    extraction = await extract_state(customer_utterance, app_state.taxonomy, db=app_state.db)
     trace.append({
         "step": "extract_state",
         "input": {"customer_utterance": customer_utterance},
@@ -144,7 +122,7 @@ def debug_recommend(req: dict, app_state) -> dict:
     })
 
     t0 = time.time()
-    rec_result = recommend(
+    rec_result = await recommend(
         query_bitmask=query_bitmask,
         conversation_context=conversation_context,
         query_bg=context,
@@ -163,7 +141,7 @@ def debug_recommend(req: dict, app_state) -> dict:
     })
 
     t0 = time.time()
-    all_ranked = _get_all_candidates(
+    all_ranked = await _get_all_candidates(
         query_bitmask=query_bitmask,
         conversation_context=conversation_context,
         query_bg=context,
@@ -193,7 +171,7 @@ def debug_recommend(req: dict, app_state) -> dict:
             "bitmask_score": rec_result.get("bitmask_score", 1.0),
             "final_score": rec_result.get("final_score", 0),
             "confidence": rec_result.get("confidence", 1.0),
-            "node_retrieved": rec_result.get("node_retrieved", []),
+            "fallbacks": rec_result.get("fallbacks", []),
         }
 
     candidates = []

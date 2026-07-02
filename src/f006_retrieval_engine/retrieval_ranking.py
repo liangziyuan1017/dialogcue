@@ -21,10 +21,10 @@ def get_ranking_weights():
 RANKING_WEIGHTS = _load_ranking_weights()
 
 
-def compute_vec_similarity(query_vec: list[float], candidate_script_ids: list[str], db) -> dict[str, float]:
+async def compute_vec_similarity(query_vec: list[float], candidate_script_ids: list[str], db) -> dict[str, float]:
     if not candidate_script_ids:
         return {}
-    candidate_vecs = db.get_vectors(candidate_script_ids)
+    candidate_vecs = await db.get_vectors(candidate_script_ids)
     query = np.array(query_vec, dtype=np.float32)
     q_norm = float(np.linalg.norm(query))
     scores = {}
@@ -83,7 +83,7 @@ def _safe_int(val):
         return 0
 
 
-def rank_sentences(pool, query_vec=None, db=None, query_bg=None, conversation_context="", context_missing=False):
+async def rank_sentences(pool, query_vec=None, db=None, query_bg=None, conversation_context="", context_missing=False):
     if not pool:
         return []
     pool = list(pool)
@@ -92,17 +92,14 @@ def rank_sentences(pool, query_vec=None, db=None, query_bg=None, conversation_co
 
     weights = get_ranking_weights()
 
-    all_precomputed = all(s.get("vec_score") is not None for s in pool)
-    if not all_precomputed and query_vec is not None and db is not None:
-        script_ids = [s.get("script_id", "") for s in pool if s.get("vec_score") is None]
-        vec_scores = compute_vec_similarity(query_vec, script_ids, db)
-        for s in pool:
-            if s.get("vec_score") is None:
-                s["vec_score"] = float(vec_scores.get(s.get("script_id", ""), 0.0))
+    script_ids = [s.get("script_id", "") for s in pool]
+    vec_scores = {}
+    if query_vec is not None and db is not None and script_ids:
+        vec_scores = await compute_vec_similarity(query_vec, script_ids, db)
 
     for s in pool:
-        if "vec_score" not in s:
-            s["vec_score"] = 0.0
+        sid = s.get("script_id", "")
+        s["vec_score"] = float(vec_scores.get(sid, 0.0))
         s_bg = s.get("bg_background", {}) or {}
         bg_boost = compute_bg_boost(s_bg, query_bg)
         s["_bg_boost_val"] = bg_boost

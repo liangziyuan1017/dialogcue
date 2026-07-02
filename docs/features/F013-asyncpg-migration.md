@@ -7,7 +7,7 @@ related_features: [F007, F012]
 topics: [db, concurrency, async, asyncpg, performance]
 doc_kind: spec
 created: 2026-07-01
-updated: 2026-07-01
+updated: 2026-07-02
 ---
 
 # F013: asyncpg Migration
@@ -60,15 +60,15 @@ Rewrite the runtime DB layer to use `asyncpg` instead of `psycopg2` + `ThreadedC
 - [x] AC-1a: `async_db.py` exists with `AsyncSentenceDB` (asyncpg pool, all methods async) — **done**
 - [x] AC-6: `search_by_nodes`, `get_node_ids_by_signatures`, `keyword_search`, `taxonomy_keyword_search` return identical results to sync impl (verified in unit tests) — **done**
 - [x] AC-8: `pgvector` operations work with `asyncpg` (cosine, insert/select) — **done in tests**
-- [ ] AC-1b: `db.py` runtime path uses asyncpg; no `psycopg2` in runtime path — **pending**
-- [ ] AC-2: All runtime `db.py` public methods are `async`; return types unchanged — **pending**
-- [ ] AC-3: `server.py` DB calls use `await` directly (no `run_in_threadpool`) — **pending**
-- [ ] AC-4: N concurrent `/recommend` requests complete with no `InterfaceError` or thread exhaustion — **pending**
-- [ ] AC-5: Latency under load: p99 ≤ 80% of psycopg2+threadpool baseline — **pending**
+- [x] AC-1b: `db.py` runtime path uses asyncpg; no `psycopg2` in runtime path — **done (server.py uses AsyncSentenceDB)**
+- [x] AC-2: All runtime `db.py` public methods are `async`; return types unchanged — **done (recommend, extract_state, rank_sentences async)**
+- [x] AC-3: `server.py` DB calls use `await` directly (no `run_in_threadpool`) — **done**
+- [ ] AC-4: N concurrent `/recommend` requests complete with no `InterfaceError` or thread exhaustion — **pending (load test)**
+- [ ] AC-5: Latency under load: p99 ≤ 80% of psycopg2+threadpool baseline — **pending (load test)**
 - [ ] AC-7: Build-time path (`build_tree_and_db.py`) still works with `psycopg2` (no regression) — **n/a until cutover**
 - [ ] AC-9: Connection pool reconnects after PG restart — **pending**
-- [ ] AC-10: All existing tests pass (updated for async where needed) — **pending**
-- [ ] AC-11: `asyncpg` declared in `pyproject.toml` — **pending**
+- [x] AC-10: All existing tests pass (updated for async where needed) — **done (453 passed, 8 skipped)**
+- [x] AC-11: `asyncpg` declared in `pyproject.toml` — **done**
 
 ## Dependencies
 

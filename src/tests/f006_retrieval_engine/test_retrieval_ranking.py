@@ -1,6 +1,6 @@
 import json
 import os
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -43,27 +43,27 @@ class TestRankingWeights:
 
 
 class TestVecSimilarity:
-    def test_returns_dict_of_scores(self):
+    async def test_returns_dict_of_scores(self):
         mock_db = MagicMock()
-        mock_db.get_vectors.return_value = {
+        mock_db.get_vectors = AsyncMock(return_value={
             "s1": [1.0, 0.0] + [0.0] * (EMBEDDING_DIM - 2),
             "s2": [0.0, 1.0] + [0.0] * (EMBEDDING_DIM - 2),
-        }
+        })
         query_vec = [1.0, 0.0] + [0.0] * (EMBEDDING_DIM - 2)
-        scores = compute_vec_similarity(query_vec, ["s1", "s2"], mock_db)
+        scores = await compute_vec_similarity(query_vec, ["s1", "s2"], mock_db)
         assert isinstance(scores, dict)
         assert "s1" in scores
         assert "s2" in scores
         assert scores["s1"] == pytest.approx(1.0, abs=1e-6)
         assert scores["s2"] == pytest.approx(0.0, abs=1e-6)
 
-    def test_orthogonal_vectors_zero_similarity(self):
+    async def test_orthogonal_vectors_zero_similarity(self):
         mock_db = MagicMock()
-        mock_db.get_vectors.return_value = {
+        mock_db.get_vectors = AsyncMock(return_value={
             "s1": [0.0, 1.0] + [0.0] * (EMBEDDING_DIM - 2),
-        }
+        })
         query_vec = [1.0, 0.0] + [0.0] * (EMBEDDING_DIM - 2)
-        scores = compute_vec_similarity(query_vec, ["s1"], mock_db)
+        scores = await compute_vec_similarity(query_vec, ["s1"], mock_db)
         assert scores["s1"] == pytest.approx(0.0, abs=1e-6)
 
 
@@ -85,42 +85,42 @@ class TestBgBoost:
 
 
 class TestRankSentences:
-    def test_unified_fusion_ranking(self):
+    async def test_unified_fusion_ranking(self):
         mock_db = MagicMock()
-        mock_db.get_vectors.return_value = {
+        mock_db.get_vectors = AsyncMock(return_value={
             "s1": [1.0] + [0.0] * (EMBEDDING_DIM - 1),
             "s2": [0.5] + [0.0] * (EMBEDDING_DIM - 1),
-        }
+        })
         pool = [
             {"script_id": "s1", "win_rate": 0.5, "sas": 0.5, "bg_background": {}, "bg_bitmask_int": 0},
             {"script_id": "s2", "win_rate": 0.9, "sas": 0.5, "bg_background": {}, "bg_bitmask_int": 0},
         ]
-        ranked = rank_sentences(pool, query_vec=[1.0] + [0.0] * (EMBEDDING_DIM - 1), db=mock_db, query_bg={})
+        ranked = await rank_sentences(pool, query_vec=[1.0] + [0.0] * (EMBEDDING_DIM - 1), db=mock_db, query_bg={})
         assert len(ranked) == 2
         assert "final_score" in ranked[0]
         assert "vec_score" in ranked[0]
         assert ranked[0]["final_score"] >= ranked[1]["final_score"]
 
-    def test_empty_pool(self):
-        assert rank_sentences([]) == []
+    async def test_empty_pool(self):
+        assert await rank_sentences([]) == []
 
-    def test_single_sentence(self):
+    async def test_single_sentence(self):
         mock_db = MagicMock()
-        mock_db.get_vectors.return_value = {"s1": [0.1] * EMBEDDING_DIM}
+        mock_db.get_vectors = AsyncMock(return_value={"s1": [0.1] * EMBEDDING_DIM})
         pool = [
             {"script_id": "s1", "win_rate": 0.5, "sas": 0.5, "bg_background": {}, "bg_bitmask_int": 0},
         ]
-        ranked = rank_sentences(pool, query_vec=[0.1] * EMBEDDING_DIM, db=mock_db, query_bg={})
+        ranked = await rank_sentences(pool, query_vec=[0.1] * EMBEDDING_DIM, db=mock_db, query_bg={})
         assert len(ranked) == 1
         assert "final_score" in ranked[0]
 
-    def test_final_score_formula(self):
+    async def test_final_score_formula(self):
         mock_db = MagicMock()
-        mock_db.get_vectors.return_value = {"s1": [1.0] + [0.0] * (EMBEDDING_DIM - 1)}
+        mock_db.get_vectors = AsyncMock(return_value={"s1": [1.0] + [0.0] * (EMBEDDING_DIM - 1)})
         pool = [
             {"script_id": "s1", "win_rate": 0.8, "sas": 0.6, "bg_background": {"industry": "A"}, "bg_bitmask_int": 0, "_bitmask_score": 1.0},
         ]
-        ranked = rank_sentences(pool, query_vec=[1.0] + [0.0] * (EMBEDDING_DIM - 1), db=mock_db, query_bg={"industry": "A"})
+        ranked = await rank_sentences(pool, query_vec=[1.0] + [0.0] * (EMBEDDING_DIM - 1), db=mock_db, query_bg={"industry": "A"})
         s = ranked[0]
         bg_boost = compute_bg_boost({"industry": "A"}, {"industry": "A"})
         expected = 0.35 * 0.8 + 0.25 * s["vec_score"] + 0.10 * 0.6 + 0.10 * bg_boost + 0.20 * 1.0

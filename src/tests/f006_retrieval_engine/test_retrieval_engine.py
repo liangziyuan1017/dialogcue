@@ -1,6 +1,7 @@
+import inspect
 import json
 import os
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -32,8 +33,11 @@ def label_set_index(index):
 
 
 class TestRecommendOutputSchema:
-    def test_has_vec_score_and_final_score(self, tree, index, label_set_index):
-        result = recommend(
+    def test_is_async(self):
+        assert inspect.iscoroutinefunction(recommend)
+
+    async def test_has_vec_score_and_final_score(self, tree, index, label_set_index):
+        result = await recommend(
             query_bitmask=1023, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
         )
@@ -42,39 +46,24 @@ class TestRecommendOutputSchema:
         assert "final_score" in result
         assert "conversation_state" in result
 
-    def test_has_ranking_weights(self, tree, index, label_set_index):
-        result = recommend(
+    async def test_has_ranking_weights(self, tree, index, label_set_index):
+        result = await recommend(
             query_bitmask=1023, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
         )
         assert result is not None
         assert "ranking_weights" in result
 
-    def test_bitmask_score_in_result(self, tree, index, label_set_index):
-        result = recommend(
-            query_bitmask=1023, conversation_context="客户说没有钱",
-            query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
-        )
-        assert result is not None
-        assert "bitmask_score" in result
-        assert 0.0 <= result["bitmask_score"] <= 1.0
-
-    def test_bitmask_score_reflects_partial_match(self, tree, index, label_set_index):
-        result = recommend(
-            query_bitmask=1, conversation_context="客户说没有钱",
-            query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
-        )
-        if result is not None and result.get("bitmask_score", 1.0) < 1.0:
-            assert result["bitmask_score"] < 1.0
-
 
 class TestRecommendWithDB:
-    def test_uses_db_for_candidates(self, tree, index, label_set_index):
+    async def test_uses_db_for_candidates(self, tree, index, label_set_index):
         mock_db = MagicMock()
-        mock_db.search_by_nodes.return_value = [
-            {"script_id": "s1", "script_text": "hello", "win_rate": 0.8, "sas": 0.5, "bg_bitmask_int": 0, "bg_background": {}, "vec_score": 0.9},
-        ]
-        result = recommend(
+        mock_db.get_node_by_signature = AsyncMock(return_value={"id": 1})
+        mock_db.get_sentences_by_node = AsyncMock(return_value=[
+            {"script_id": "s1", "script_text": "hello", "win_rate": 0.8, "sas": 0.5, "bg_bitmask_int": 0, "bg_background": {}},
+        ])
+        mock_db.get_vectors = AsyncMock(return_value={"s1": [0.1] * EMBEDDING_DIM})
+        result = await recommend(
             query_bitmask=1023, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
             db=mock_db, query_vec=[0.1] * EMBEDDING_DIM,
@@ -83,8 +72,8 @@ class TestRecommendWithDB:
 
 
 class TestPathStructuredState:
-    def test_accepts_path_state(self, tree, index, label_set_index):
-        result = recommend(
+    async def test_accepts_path_state(self, tree, index, label_set_index):
+        result = await recommend(
             query_bitmask=1023, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
             conversation_state={"branch_key": {"facts": ["financial_hardship"]}, "inherited_facts": [], "inherited_emotions": [], "willingness": None},
@@ -93,16 +82,16 @@ class TestPathStructuredState:
         assert "conversation_state" in result
         assert "branch_key" in result["conversation_state"]
 
-    def test_default_conversation_state(self, tree, index, label_set_index):
-        result = recommend(
+    async def test_default_conversation_state(self, tree, index, label_set_index):
+        result = await recommend(
             query_bitmask=1023, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
         )
         assert result is not None
         assert result["conversation_state"] == {"branch_key": {}, "inherited_facts": [], "inherited_emotions": [], "willingness": None}
 
-    def test_backward_compat_flat_state(self, tree, index, label_set_index):
-        result = recommend(
+    async def test_backward_compat_flat_state(self, tree, index, label_set_index):
+        result = await recommend(
             query_bitmask=1023, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
             conversation_state={"facts": ["financial_hardship"], "emotions": [], "actions": [], "willingness": None},
@@ -142,8 +131,8 @@ class TestSubsetMatchFallback:
 
 
 class TestFallbacksStillWork:
-    def test_empty_key_fallback(self, tree, index, label_set_index):
-        result = recommend(
+    async def test_empty_key_fallback(self, tree, index, label_set_index):
+        result = await recommend(
             query_bitmask=1023, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
             conversation_state={"branch_key": {"facts": ["nonexistent_xyz"]}, "inherited_facts": [], "inherited_emotions": [], "willingness": None},

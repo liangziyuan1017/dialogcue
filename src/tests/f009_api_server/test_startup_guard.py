@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from fastapi.testclient import TestClient
 
@@ -8,7 +8,11 @@ def _boot_with(env_key):
         with patch("f009_api_server.server._init_db") as m_db, \
              patch("f009_api_server.server._init_taxonomy") as m_tax, \
              patch("f009_api_server.server._load_scored_tree") as m_tree:
-            m_db.return_value = MagicMock()
+            mock_db = MagicMock()
+            mock_db.connect = AsyncMock()
+            mock_db.create_tables = AsyncMock()
+            mock_db.close = AsyncMock()
+            m_db.return_value = mock_db
             m_tax.return_value = {"facts": [], "emotions": [], "collector_actions": []}
             m_tree.return_value = {"state_id": "root", "branch_key": {}, "inherited_facts": [], "sentence_pool": [], "children": []}
             from f009_api_server.server import app

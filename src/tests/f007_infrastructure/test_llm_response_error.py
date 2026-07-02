@@ -1,4 +1,5 @@
-from unittest.mock import MagicMock, patch
+import asyncio
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -37,9 +38,9 @@ def test_extract_state_falls_back_to_keyword_on_llm_error():
 
     taxonomy = {"facts": [], "emotions": [], "collector_actions": []}
     mock_db = MagicMock()
-    mock_db.taxonomy_keyword_search.return_value = []
+    mock_db.taxonomy_keyword_search = AsyncMock(return_value=[])
 
     with patch("f008_state_extraction.state_extraction.extract_state_llm", side_effect=LLMResponseError("bad", "raw")):
-        result = extract_state("test utterance", taxonomy, db=mock_db)
+        result = asyncio.run(extract_state("test utterance", taxonomy, db=mock_db))
 
     assert result["method"] == "keyword"

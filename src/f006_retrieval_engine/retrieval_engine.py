@@ -79,21 +79,6 @@ def aggregate_pools(nodes):
     return pool
 
 
-def _pool_with_sources(nodes):
-    pool = []
-    source_sigs: dict[str, list[str]] = {}
-    for node in nodes:
-        sig = node.get("path_signature", "") or node.get("state_id", "")
-        for s in node.get("sentence_pool", []):
-            pool.append(s)
-            sid = s.get("script_id", "")
-            if sid:
-                bucket = source_sigs.setdefault(sid, [])
-                if sig and sig not in bucket:
-                    bucket.append(sig)
-    return pool, source_sigs
-
-
 def _find_matching_nodes_subset(all_facts, all_emotions, all_actions, index, label_set_index, pool_cap=None):
     if pool_cap is None:
         pool_cap = _pool_cap()
@@ -152,17 +137,12 @@ def _find_matching_nodes_subset(all_facts, all_emotions, all_actions, index, lab
     return [], 0.0, ["no_match"]
 
 
-def descend_for_sentences(nodes, return_nodes=False):
+def descend_for_sentences(nodes):
     pool = []
-    matched_nodes = [] if return_nodes else None
     for node in nodes:
-        sp = node.get("sentence_pool", [])
-        if sp:
-            pool.extend(sp)
-            if return_nodes:
-                matched_nodes.append(node)
+        pool.extend(node.get("sentence_pool", []))
     if pool:
-        return pool, 1.0, [], matched_nodes
+        return pool, 1.0, []
 
     confidence = 1.0
     fallbacks = []
@@ -174,19 +154,14 @@ def descend_for_sentences(nodes, return_nodes=False):
             for child in node.get("children") or []:
                 next_level.append(child)
         if not next_level:
-            return [], confidence, fallbacks, matched_nodes
+            return [], confidence, fallbacks
         confidence -= _cfg("confidence.descend_penalty", 0.05)
         fallbacks.append("descend")
         pool = []
-        matched_nodes = [] if return_nodes else None
         for node in next_level:
-            sp = node.get("sentence_pool", [])
-            if sp:
-                pool.extend(sp)
-                if return_nodes:
-                    matched_nodes.append(node)
+            pool.extend(node.get("sentence_pool", []))
         if pool:
-            return pool, confidence, fallbacks, matched_nodes
+            return pool, confidence, fallbacks
         current = next_level
 
 
@@ -209,7 +184,7 @@ def compute_bitmask_score(sentence_bitmask, query_bitmask):
     return matched_bits / required_bits
 
 
-def recommend(query_bitmask, conversation_context, query_bg,
+async def recommend(query_bitmask, conversation_context, query_bg,
               tree=None, index=None, db=None, query_vec=None,
               conversation_state=None, label_set_index=None):
     if tree is None:
@@ -252,71 +227,28 @@ def recommend(query_bitmask, conversation_context, query_bg,
     if not nodes:
         return None
 
-    _query_vec_norm = 0.0
-    if query_vec is not None:
-        _query_vec_norm = sum(v * v for v in query_vec) ** 0.5
-    _use_sql_scoring = db is not None and query_vec is not None and _query_vec_norm > 0 and nodes
-
-    source_sigs: dict[str, list[str]] = {}
-
-    def _record(sig, sentence):
-        sid = sentence.get("script_id", "")
-        if not sid:
-            return
-        bucket = source_sigs.setdefault(sid, [])
-        if sig and sig not in bucket:
-            bucket.append(sig)
-
-    if _use_sql_scoring:
-        sigs = [node.get("path_signature", "") or node.get("state_id", "") for node in nodes]
-        sig_to_id = db.get_node_ids_by_signatures(sigs)
-        id_to_sig = {v: k for k, v in sig_to_id.items()}
-        node_ids = [sig_to_id[s] for s in sigs if s in sig_to_id]
-        if node_ids:
-            pool = db.search_by_nodes(query_vec, node_ids)
-            for s in pool:
-                _record(id_to_sig.get(s.get("node_id")), s)
-        else:
-            pool, source_sigs = _pool_with_sources(nodes)
-    elif db is not None and nodes:
-        sigs = [node.get("path_signature", "") or node.get("state_id", "") for node in nodes]
-        sig_to_id = db.get_node_ids_by_signatures(sigs)
-        id_to_sig = {v: k for k, v in sig_to_id.items()}
+    if db is not None and nodes:
         pool = []
-        for sig in sigs:
-            node_id = sig_to_id.get(sig)
+        for node in nodes:
+            path_sig = node.get("path_signature", "") or node.get("state_id", "")
+            node_row = await db.get_node_by_signature(path_sig)
+            node_id = node_row["id"] if node_row else None
             if node_id:
-                for s in db.get_sentences_by_node(node_id):
-                    pool.append(s)
-                    _record(id_to_sig.get(node_id), s)
+                pool.extend(await db.get_sentences_by_node(node_id))
     else:
-        pool, source_sigs = _pool_with_sources(nodes)
+        pool = aggregate_pools(nodes)
 
     if not pool:
-        d_pool, d_conf, d_fb, d_nodes = descend_for_sentences(nodes, return_nodes=True)
+        d_pool, d_conf, d_fb = descend_for_sentences(nodes)
         fallbacks.extend(d_fb)
         if not d_pool:
             return None
         pool = d_pool
-        source_sigs = {}
-        if _use_sql_scoring and d_nodes:
-            d_sigs = [n.get("path_signature", "") or n.get("state_id", "") for n in d_nodes]
-            d_sig_to_id = db.get_node_ids_by_signatures(d_sigs) if d_sigs else {}
-            d_id_to_sig = {v: k for k, v in d_sig_to_id.items()}
-            d_node_ids = [d_sig_to_id[s] for s in d_sigs if s in d_sig_to_id]
-            if d_node_ids:
-                d_scored = db.search_by_nodes(query_vec, d_node_ids)
-                if d_scored:
-                    pool = d_scored
-                    for s in pool:
-                        _record(d_id_to_sig.get(s.get("node_id")), s)
-        if not source_sigs and d_nodes:
-            _, source_sigs = _pool_with_sources(d_nodes)
 
     for s in pool:
         s["_bitmask_score"] = compute_bitmask_score(s.get("bg_bitmask_int", 0), query_bitmask)
 
-    ranked = rank_sentences(pool, query_vec=query_vec, db=db,
+    ranked = await rank_sentences(pool, query_vec=query_vec, db=db,
                             query_bg=query_bg,
                             conversation_context=conversation_context,
                             context_missing=context_missing)
@@ -331,8 +263,6 @@ def recommend(query_bitmask, conversation_context, query_bg,
         confidence -= (1.0 - top_bitmask_score) * _cfg("confidence.bitmask_mismatch_penalty", 0.1)
     confidence = max(confidence, 0.0)
 
-    node_retrieved = source_sigs.get(top.get("script_id", ""), [])
-
     return {
         "script_text": top.get("script_text", ""),
         "script_id": top.get("script_id", ""),
@@ -341,25 +271,29 @@ def recommend(query_bitmask, conversation_context, query_bg,
         "sas": top.get("sas", 0),
         "vec_score": top.get("vec_score", 0),
         "final_score": top.get("final_score", 0),
-        "bitmask_score": top.get("bitmask_score", 1.0),
         "confidence": round(confidence, 2),
         "ranking_weights": get_ranking_weights(),
-        "node_retrieved": node_retrieved,
+        "fallbacks": fallbacks,
         "conversation_state": path_state,
     }
 
 
 if __name__ == "__main__":
-    tree = _load_scored_tree()
-    index = build_node_index(tree)
-    _log.info(f"Index: {len(index)} keys, {sum(len(v) for v in index.values())} nodes")
-    result = recommend(
-        query_bitmask=0,
-        conversation_context="客户说没有钱",
-        query_bg={},
-        tree=tree, index=index,
-    )
-    if result:
-        _log.info(f"Recommend: {result['script_id']} (confidence={result['confidence']}, final_score={result['final_score']:.4f})")
-    else:
-        _log.info("No recommendation")
+    import asyncio
+
+    async def _main():
+        tree = _load_scored_tree()
+        index = build_node_index(tree)
+        _log.info(f"Index: {len(index)} keys, {sum(len(v) for v in index.values())} nodes")
+        result = await recommend(
+            query_bitmask=0,
+            conversation_context="客户说没有钱",
+            query_bg={},
+            tree=tree, index=index,
+        )
+        if result:
+            _log.info(f"Recommend: {result['script_id']} (confidence={result['confidence']}, final_score={result['final_score']:.4f})")
+        else:
+            _log.info("No recommendation")
+
+    asyncio.run(_main())

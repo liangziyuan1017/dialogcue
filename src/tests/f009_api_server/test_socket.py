@@ -1,5 +1,5 @@
 import asyncio
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from f009_api_server.server import sessions
 
@@ -37,7 +37,7 @@ class TestSocketHandlers:
         app.state.taxonomy = {"facts": [], "emotions": [], "collector_actions": []}
         start_result = asyncio.run(start_session("sid1", {"cust_no": "0100252354", "context": {}}))
         session_id = start_result["session_id"]
-        with patch("f009_api_server.server.extract_state", return_value={"facts": [], "emotions": [], "actions": ["empathy"], "confidence": 0.8, "method": "llm"}):
+        with patch("f009_api_server.server.extract_state", new_callable=AsyncMock, return_value={"facts": [], "emotions": [], "actions": ["empathy"], "confidence": 0.8, "method": "llm"}):
             result = asyncio.run(collector_turn("sid1", {"session_id": session_id, "utterance": "我理解您的困难"}))
         assert result["recorded"] is True
         assert "empathy" in result["extracted_actions"]

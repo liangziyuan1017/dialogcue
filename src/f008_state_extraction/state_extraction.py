@@ -1,3 +1,4 @@
+import asyncio
 import csv
 from pathlib import Path
 
@@ -268,11 +269,11 @@ def extract_state_llm(utterance: str, taxonomy: dict) -> dict:
     }
 
 
-def extract_state_keyword(utterance: str, taxonomy: dict, db=None) -> dict:
+async def extract_state_keyword(utterance: str, taxonomy: dict, db=None) -> dict:
     if db is None:
         return {"facts": [], "emotions": [], "actions": [], "willingness": None, "confidence": 0.0, "method": "keyword"}
 
-    matches = db.taxonomy_keyword_search(utterance, limit=20)
+    matches = await db.taxonomy_keyword_search(utterance, limit=20)
     facts = []
     emotions = []
     actions = []
@@ -296,16 +297,16 @@ def extract_state_keyword(utterance: str, taxonomy: dict, db=None) -> dict:
     return {"facts": facts, "emotions": emotions, "actions": actions, "willingness": None, "confidence": confidence, "method": "keyword"}
 
 
-def extract_state(utterance: str, taxonomy: dict, db=None) -> dict:
+async def extract_state(utterance: str, taxonomy: dict, db=None) -> dict:
     try:
-        llm_result = extract_state_llm(utterance, taxonomy)
+        llm_result = await asyncio.to_thread(extract_state_llm, utterance, taxonomy)
     except LLMResponseError as e:
         llm_result = None
         _log.warning("LLM JSON parse failed, falling back to keyword; raw=%s", e.raw_text[:200])
     except Exception:
         llm_result = None
 
-    kw_result = extract_state_keyword(utterance, taxonomy, db=db)
+    kw_result = await extract_state_keyword(utterance, taxonomy, db=db)
 
     if llm_result is not None:
         for key in ("facts", "emotions", "actions"):

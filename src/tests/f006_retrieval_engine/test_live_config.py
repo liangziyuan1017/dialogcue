@@ -32,20 +32,20 @@ def test_get_ranking_weights_reads_live(monkeypatch):
     assert w["win_rate"] == 1.0
 
 
-def test_rank_sentences_uses_live_weights(monkeypatch):
+async def test_rank_sentences_uses_live_weights(monkeypatch):
     _patch_cfg(monkeypatch, **{"ranking_weights.win_rate": 1.0})
     pool = _pool_with(win_rate=0.5)
-    ranked = rr.rank_sentences(pool, query_vec=None, db=None, query_bg={}, conversation_context="", context_missing=True)
+    ranked = await rr.rank_sentences(pool, query_vec=None, db=None, query_bg={}, conversation_context="", context_missing=True)
     assert ranked[0]["final_score"] == pytest.approx(0.5, abs=1e-9)
 
 
-def test_rank_sentences_reflects_changed_weights_without_restart(monkeypatch):
+async def test_rank_sentences_reflects_changed_weights_without_restart(monkeypatch):
     _patch_cfg(monkeypatch, **{"ranking_weights.win_rate": 1.0})
     pool = _pool_with(win_rate=0.5)
-    ranked = rr.rank_sentences(pool, query_vec=None, db=None, query_bg={}, conversation_context="", context_missing=True)
+    ranked = await rr.rank_sentences(pool, query_vec=None, db=None, query_bg={}, conversation_context="", context_missing=True)
     assert ranked[0]["final_score"] == pytest.approx(0.5, abs=1e-9)
 
     _patch_cfg(monkeypatch, **{"ranking_weights.sas": 1.0})
     pool2 = _pool_with(win_rate=0.5, sas=0.8)
-    ranked2 = rr.rank_sentences(pool2, query_vec=None, db=None, query_bg={}, conversation_context="", context_missing=True)
+    ranked2 = await rr.rank_sentences(pool2, query_vec=None, db=None, query_bg={}, conversation_context="", context_missing=True)
     assert ranked2[0]["final_score"] == pytest.approx(0.8, abs=1e-9)

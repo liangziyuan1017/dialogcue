@@ -17,7 +17,6 @@ load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env")
 import socketio
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
-from starlette.concurrency import run_in_threadpool
 
 _log = _get_logger(__name__)
 
@@ -27,7 +26,7 @@ from f006_retrieval_engine.retrieval_engine import (
     recommend,
 )
 from f006_retrieval_engine.retrieval_ranking import BITMASK_FIELDS, get_ranking_weights
-from f007_infrastructure.db import SentenceDB
+from f007_infrastructure.async_db import AsyncSentenceDB
 from f007_infrastructure.embeddings import EMBEDDING_DIM, embed_single
 from f008_state_extraction.state_extraction import extract_state, merge_state
 
@@ -48,9 +47,7 @@ class RecommendRequest(BaseModel):
 
 def _init_db():
     dsn = os.environ.get("PG_DSN", "dbname=icbc user=postgres")
-    db = SentenceDB(dsn)
-    db.create_tables()
-    return db
+    return AsyncSentenceDB(dsn)
 
 
 def _init_taxonomy():
@@ -78,6 +75,8 @@ async def lifespan(app: FastAPI):
         yield
         return
     app.state.db = _init_db()
+    await app.state.db.connect()
+    await app.state.db.create_tables()
     app.state.taxonomy = _init_taxonomy()
     tree = _load_scored_tree()
     app.state.tree = tree
@@ -85,7 +84,7 @@ async def lifespan(app: FastAPI):
     app.state.label_set_index = _build_label_set_index(app.state.index)
     yield
     if hasattr(app.state, "db") and app.state.db is not None:
-        app.state.db.close()
+        await app.state.db.close()
 
 
 def _load_scored_tree():
@@ -116,7 +115,7 @@ async def request_id_middleware(request: Request, call_next):
 async def recommend_endpoint(req: RecommendRequest):
     start = time.time()
 
-    extraction = await run_in_threadpool(extract_state, req.customer_utterance, app.state.taxonomy, db=app.state.db)
+    extraction = await extract_state(req.customer_utterance, app.state.taxonomy, db=app.state.db)
     merged = merge_state(
         {
             "branch_key": req.conversation_state.branch_key,
@@ -138,7 +137,7 @@ async def recommend_endpoint(req: RecommendRequest):
     else:
         query_vec = [0.0] * EMBEDDING_DIM
 
-    result = recommend(
+    result = await recommend(
         query_bitmask=query_bitmask,
         conversation_context=req.conversation_context,
         query_bg=req.context,
@@ -157,6 +156,9 @@ async def recommend_endpoint(req: RecommendRequest):
 
     if embed_fallback:
         result["confidence"] = max(result.get("confidence", 1.0) - _cfg("confidence.embed_fallback_penalty", 0.1), 0.0)
+        result.setdefault("fallbacks", [])
+        if "embed_fail" not in result["fallbacks"]:
+            result["fallbacks"].append("embed_fail")
 
     return {
         "script_text": result.get("script_text", ""),
@@ -171,7 +173,7 @@ async def recommend_endpoint(req: RecommendRequest):
         "extraction_method": extraction.get("method", "unknown"),
         "conversation_state": merged,
         "ranking_weights": get_ranking_weights(),
-        "node_retrieved": result.get("node_retrieved", []),
+        "fallbacks": result.get("fallbacks", []),
         "latency_ms": latency_ms,
     }
 
@@ -209,21 +211,17 @@ async def customer_turn(sid, data):
     conv_ctx = data.get("conversation_context", "")
 
     start = time.time()
-    extraction = await run_in_threadpool(extract_state, utterance, app.state.taxonomy, db=app.state.db)
+    extraction = await extract_state(utterance, app.state.taxonomy, db=app.state.db)
     merged = merge_state(session["conversation_state"], extraction)
     session["conversation_state"] = merged
 
     query_bitmask = _compute_bitmask(session["context"])
-    if conv_ctx:
-        try:
-            query_vec = await run_in_threadpool(embed_single, conv_ctx)
-        except Exception:
-            query_vec = [0.0] * EMBEDDING_DIM
-    else:
+    try:
+        query_vec = embed_single(conv_ctx) if conv_ctx else [0.0] * EMBEDDING_DIM
+    except Exception:
         query_vec = [0.0] * EMBEDDING_DIM
 
-    rec_result = await run_in_threadpool(
-        recommend,
+    rec_result = await recommend(
         query_bitmask=query_bitmask,
         conversation_context=conv_ctx,
         query_bg=session["context"],
@@ -265,7 +263,7 @@ async def customer_turn(sid, data):
         "extraction_method": extraction.get("method", "unknown"),
         "conversation_state": merged,
         "ranking_weights": get_ranking_weights(),
-        "node_retrieved": top.get("node_retrieved", []),
+        "fallbacks": top.get("fallbacks", []),
         "latency_ms": latency_ms,
     }
 
@@ -281,7 +279,7 @@ async def collector_turn(sid, data):
         return {"error": "session not found"}
 
     utterance = data.get("utterance", "")
-    extraction = await run_in_threadpool(extract_state, utterance, app.state.taxonomy, db=app.state.db)
+    extraction = await extract_state(utterance, app.state.taxonomy, db=app.state.db)
     new_actions = extraction.get("actions", [])
     merged = merge_state(session["conversation_state"], {"facts": [], "emotions": [], "actions": new_actions})
     session["conversation_state"] = merged
@@ -329,7 +327,7 @@ async def debug_endpoint(req: RecommendRequest):
         },
         "context": req.context,
     }
-    return debug_recommend(req_dict, app.state)
+    return await debug_recommend(req_dict, app.state)
 
 
 from fastapi.staticfiles import StaticFiles

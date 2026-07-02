@@ -1,4 +1,5 @@
-from unittest.mock import MagicMock, patch
+import inspect
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from f008_state_extraction.state_extraction import (
     extract_state,
@@ -69,19 +70,22 @@ class TestExtractStateLLM:
 
 
 class TestExtractStateKeyword:
-    def test_returns_correct_structure(self):
+    def test_is_async(self):
+        assert inspect.iscoroutinefunction(extract_state_keyword)
+
+    async def test_returns_correct_structure(self):
         mock_db = MagicMock()
-        mock_db.keyword_search.return_value = [
+        mock_db.taxonomy_keyword_search = AsyncMock(return_value=[
             {"group_name": "financial_hardship", "category": "facts"},
-        ]
-        result = extract_state_keyword("我现在没钱还", TAXONOMY, db=mock_db)
+        ])
+        result = await extract_state_keyword("我现在没钱还", TAXONOMY, db=mock_db)
         assert "facts" in result
         assert "emotions" in result
         assert "actions" in result
         assert result["method"] == "keyword"
 
-    def test_no_db_returns_empty(self):
-        result = extract_state_keyword("我现在没钱还", TAXONOMY, db=None)
+    async def test_no_db_returns_empty(self):
+        result = await extract_state_keyword("我现在没钱还", TAXONOMY, db=None)
         assert result["facts"] == []
         assert result["emotions"] == []
         assert result["actions"] == []
@@ -89,22 +93,46 @@ class TestExtractStateKeyword:
 
 
 class TestExtractState:
-    def test_llm_first(self):
+    def test_is_async(self):
+        assert inspect.iscoroutinefunction(extract_state)
+
+    async def test_llm_first(self):
         mock_response = {"facts": ["financial_hardship"], "emotions": [], "actions": []}
         with patch("f008_state_extraction.state_extraction.call_deepseek_json", return_value=mock_response), \
              patch("f008_state_extraction.state_extraction._apply_relabel"):
-            result = extract_state("我现在没钱还", TAXONOMY)
+            result = await extract_state("我现在没钱还", TAXONOMY)
         assert result["method"] == "llm"
 
-    def test_keyword_fallback_on_llm_failure(self):
+    async def test_keyword_fallback_on_llm_failure(self):
         mock_db = MagicMock()
-        mock_db.keyword_search.return_value = [
+        mock_db.taxonomy_keyword_search = AsyncMock(return_value=[
             {"group_name": "financial_hardship", "category": "facts"},
-        ]
+        ])
         with patch("f008_state_extraction.state_extraction.call_deepseek_json", side_effect=Exception("API error")), \
              patch("f008_state_extraction.state_extraction._apply_relabel"):
-            result = extract_state("我现在没钱还", TAXONOMY, db=mock_db)
+            result = await extract_state("我现在没钱还", TAXONOMY, db=mock_db)
         assert result["method"] == "keyword"
+
+    async def test_llm_call_does_not_block_event_loop(self):
+        import asyncio
+        import time
+
+        other_ran = False
+
+        async def other_task():
+            nonlocal other_ran
+            other_ran = True
+
+        def slow_llm(*args, **kwargs):
+            time.sleep(0.1)
+            return {"facts": [], "emotions": [], "actions": []}
+
+        with patch("f008_state_extraction.state_extraction.call_deepseek_json", side_effect=slow_llm), \
+             patch("f008_state_extraction.state_extraction._apply_relabel"):
+            task = asyncio.create_task(other_task())
+            await extract_state("test", TAXONOMY)
+            assert other_ran, "event loop was blocked during LLM call — other_task never ran"
+            await task
 
 
 class TestRelabelCascade:
