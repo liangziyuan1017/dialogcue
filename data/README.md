@@ -50,8 +50,8 @@ Manual and LLM-relabeled emotion/fact taxonomies used by state extraction (F008)
 
 | File | Description |
 |------|-------------|
-| `emotions.csv`, `facts.csv` | Original emotion/fact label sets. |
-| `emotions_relabeled.csv`, `facts_relabeled.csv` | LLM-relabeled variants. |
+| `emotions.csv`, `facts.csv` | Original emotion/fact label sets. `facts.csv` has a header row (`tag,example,count,old_label`). |
+| `emotions_relabeled.csv`, `facts_relabeled.csv` | LLM-relabeled variants. `emotions_relabeled.csv` expands the 25 original emotions to ~205 fine-grained labels (intentional — each coarse emotion maps to multiple specific labels for F008 extraction granularity); all original tags are preserved. `facts_relabeled.csv` is 1:1 with `facts.csv`. |
 | `emotions_descriptions.py`, `facts_descriptions.py` | Label description for prompt context. |
 | `facts_pipeline.csv` | Facts extracted via the pipeline run. |
 | `llm_relabel_emotions.py`, `llm_relabel_facts.py` | Scripts that produce the relabeled CSVs. |
