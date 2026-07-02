@@ -3,7 +3,7 @@
 **Feature:** F012 — `docs/features/F012-runtime-robustness-hardening.md`
 **Goal:** Harden the runtime path (logging, config, DB concurrency, retry, validation, ops) against the 27 defects in `ROBUSTNESS_FIX_PLAN.md`.
 **Acceptance Criteria:** See `docs/features/F012-runtime-robustness-hardening.md` (AC-A1..AC-F3).
-**Architecture:** Six phases, foundations first. Phase A (this plan) = structured logging + config hardening + Python tooling. Each phase is a separate PR (KD-2). Phase B uses threadpool on psycopg2 now; asyncpg is deferred to F013 (ADR-027). Serialization stays `.py` via `pprint.pformat` (ADR-008, KD-3).
+**Architecture:** Six phases, foundations first. Phase A (this plan) = structured logging + config hardening + Python tooling. Each phase is a separate PR (KD-2). Phase B used threadpool on psycopg2 as interim; F013 (merged) replaced runtime with asyncpg (ADR-027). Serialization stays `.py` via `pprint.pformat` (ADR-008, KD-3).
 **Tech Stack:** Python ≥3.11, stdlib `logging`, pydantic v2, ruff, mypy, pytest.
 
 > **Scope of this document:** Phase A in TDD step granularity. Phase B complete with review fixes. Phases C–F outlined; each gets its own plan doc when its PR begins (KD-2).

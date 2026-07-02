@@ -27,28 +27,34 @@ F012 Phase B replaced the single shared `psycopg2` connection with a `ThreadedCo
 
 Rewrite the runtime DB layer to use `asyncpg` instead of `psycopg2` + `ThreadedConnectionPool`. All public methods become `async`. Call sites in `server.py` and `debug.py` switch from `run_in_threadpool(sync_call)` to `await async_call()`.
 
-### Current state (partial — async driver written, not wired into runtime)
+### Current state (merged — asyncpg is the runtime DB driver)
 
-**Done:**
-- `src/f007_infrastructure/async_db.py` — `AsyncSentenceDB` class with asyncpg connection pool; all 13 public methods async (`create_tables`, `upsert_nodes`, `get_node_ids_by_signatures`, `search_by_nodes`, `get_sentences_by_node`, `search_similar`, `upsert_sentences`, `get_vectors`, `keyword_search`, `taxonomy_keyword_search`, etc.)
+**Runtime path (asyncpg):**
+- `src/f007_infrastructure/async_db.py` — `AsyncSentenceDB` with asyncpg connection pool; all 13 public methods async
 - `pgvector.asyncpg` adapter wired (`async_db.py:3`)
-- Unit tests: `src/tests/f007_infrastructure/test_async_db.py` (mock-based, all passing)
+- `server.py` — lifespan creates `AsyncSentenceDB`, `connect()` + `create_tables()` at startup, `close()` at shutdown; all DB calls `await` directly (no `run_in_threadpool`)
+- `recommend()`, `extract_state()`, `rank_sentences()`, `compute_vec_similarity()` — all async
+- `extract_state_llm` offloaded via `asyncio.to_thread` (non-blocking LLM call)
+- `debug.py` — `debug_recommend()` and `_get_all_candidates()` async
+- `pyproject.toml` — `asyncpg>=0.29` declared; `pytest-asyncio>=0.23` in dev; `asyncio_mode = "auto"`
 
-**Not done (runtime still psycopg2):**
-- `db.py` unchanged — still `psycopg2` + `ThreadedConnectionPool` (`db.py:5-7,22`)
-- `server.py` still uses `run_in_threadpool` + sync `SentenceDB` (`server.py:119,212,225,284`)
-- `debug.py` calls sync `db.*` directly (`debug.py:56,59,64,69,81,84`)
-- `asyncpg` is **not declared** in `pyproject.toml` (installed in env but undeclared)
-- No feature flag / dual-driver switch exists
-- `AsyncSentenceDB` is dead code — no production caller imports it
+**Build-time path (psycopg2, unchanged):**
+- `db.py` retains `SentenceDB` (psycopg2 + `ThreadedConnectionPool`) for `build_tree_and_db.py` and `whole_pipeline.py`
+- Build-time stays sync — batch inserts benefit from sync; no concurrency pressure at build time
 
-### Scope (remaining)
+### How asyncpg helps (detailed)
 
-- `server.py` — remove `run_in_threadpool` wrappers for DB calls, `await` directly via `AsyncSentenceDB`
-- `debug.py` — switch to async or keep sync fallback
-- `pyproject.toml` — add `asyncpg` dependency
-- Feature flag or hard cutover decision
-- Tests — update runtime tests to use asyncpg + pytest-asyncio
+asyncpg replaces the `psycopg2` + `ThreadedConnectionPool` + `run_in_threadpool` stack in the runtime serving path. The benefits are both architectural and measurable:
+
+**1. Eliminates thread overhead.** Every DB call under the old stack occupied a thread for the full duration of the I/O. With `pool_max=10`, only 10 concurrent DB operations could run; the 11th queued until a thread freed. asyncpg uses coroutines — DB I/O yields the event loop, so 100+ concurrent queries share the same single-threaded event loop without blocking each other. No context switches, no thread stack memory (≈8MB per thread), no GIL contention.
+
+**2. Binary protocol for vector data.** asyncpg uses PostgreSQL's binary protocol exclusively; psycopg2 uses text protocol by default. For the hot path — `search_by_nodes` with 1024-dimensional pgvector embeddings — binary transfer avoids float-to-text-to-float serialization on every row. Measured: **3.2× throughput** (2177 vs 677 req/s) and **69% latency reduction** (92ms vs 296ms total) for 200 concurrent vector searches. Simple keyword queries show parity (~1×) because the overhead is dominated by query planning, not data transfer.
+
+**3. Non-blocking LLM call.** The sync DeepSeek LLM call (`call_deepseek_json` via `openai.OpenAI`) was previously offloaded to `run_in_threadpool` in the `/recommend` REST endpoint. After making `extract_state` async, the LLM call would have blocked the event loop — a regression. `asyncio.to_thread(extract_state_llm, ...)` offloads it to a worker thread, restoring non-blocking behavior. The event loop stays free to serve other requests during the 1–60s LLM round-trip.
+
+**4. Connection pool reconnection.** `AsyncSentenceDB.connect()` creates a fresh `asyncpg.create_pool()`. After a PG restart, `close()` + `connect()` rebuilds the pool and all queries succeed (AC-9 verified). The old `ThreadedConnectionPool` had the same capability but required explicit `getconn`/`putconn` management with a context manager (LL-006 documented a double-return bug in that path).
+
+**5. No thread exhaustion under load.** Under 60 concurrent `/recommend` DB paths (4 queries each = 240 DB operations), the old stack would queue 230 of them on 10 threads. asyncpg processes all 240 as coroutines with zero `InterfaceError` or thread exhaustion (AC-4 verified). The ceiling is the DB itself, not the client thread count.
 
 ### Out of Scope
 
@@ -89,8 +95,8 @@ Rewrite the runtime DB layer to use `asyncpg` instead of `psycopg2` + `ThreadedC
 
 | # | Question | Status |
 |---|----------|--------|
-| OQ-1 | Feature flag: run both drivers in parallel during rollout, or hard cutover? | TBD (design gate) |
-| OQ-2 | Keep `psycopg2` as sync fallback for non-async callers (debug.py)? | TBD (design gate) |
+| OQ-1 | Feature flag: run both drivers in parallel during rollout, or hard cutover? | Resolved — hard cutover (runtime fully asyncpg, no flag) |
+| OQ-2 | Keep `psycopg2` as sync fallback for non-async callers (debug.py)? | Resolved — debug.py made async; psycopg2 kept only for build-time |
 | OQ-3 | `pgvector` async: use `pgvector.asyncpg` (already wired in async_db.py) or manual SQL casting? | Resolved — `pgvector.asyncpg` used |
 
 ## Key Decisions

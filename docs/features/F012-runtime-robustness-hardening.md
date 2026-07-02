@@ -47,6 +47,11 @@ whitelist; pass `max_tokens` + explicit timeout; chunk `embed_texts`. Typed
 loud failure on orphan node signature (no default to node 1), drop `str.replace`
 serialization in favor of JSON, step timeout.
 
+> **Note**: Phase B's `ThreadedConnectionPool` + `run_in_threadpool` was an interim fix.
+> F013 (merged) replaced the runtime DB driver with `asyncpg` — all runtime DB calls are
+> now async via `AsyncSentenceDB`. `psycopg2` + `ThreadedConnectionPool` remains only for
+> build-time (`build_tree_and_db.py`). See ADR-027.
+
 ### Phase C: API Server
 
 Input length limits + pydantic validation on SocketIO events, rate limiting. Session
@@ -129,7 +134,7 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 
 | # | 问题 | 状态 |
 |---|------|------|
-| OQ-1 | Async DB: threadpool on psycopg2 vs migrate hot path to asyncpg? | ✅ 已定 — threadpool now; asyncpg split into separate feature (see KD-6) |
+| OQ-1 | Async DB: threadpool on psycopg2 vs migrate hot path to asyncpg? | ✅ 已定 — threadpool was Phase B interim; F013 (merged) replaced runtime with asyncpg |
 | OQ-2 | Relabel map: interim file-lock vs go straight to DB-backed in Phase D? | ⬜ 未定 (defer to Phase D planning) |
 | OQ-3 | Sessions persistence: DB now or defer to Phase F? | ⬜ 未定 (defer to Phase F planning) |
 | OQ-4 | Phase ordering: land F (migrations) before B (pool)? | ✅ 已定 — keep A→B→…→F (foundations first) |
@@ -145,7 +150,7 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 | KD-3 | Respect ADR-008: keep `.py` intermediate format, fix serialization via `pprint.pformat` (not JSON) | Memory-first rule; ADR-008 `accepted`; Human confirmed | 2026-07-01 |
 | KD-4 | Phase D `merge_state` dedup via ordered-set semantics | LL-003 `accepted` (propagate-then-extend duplicates) | 2026-07-01 |
 | KD-5 | Phase E extraction cache = simple LRU only | LL-002 `accepted` (over-engineered per-turn LLM extraction) | 2026-07-01 |
-| KD-6 | Phase B uses threadpool on psycopg2 + ThreadedConnectionPool now; native asyncpg migration split into a separate feature (F013 candidate) | Human decision: asyncpg is larger scope, deserves its own feature doc + ADR | 2026-07-01 |
+| KD-6 | Phase B uses threadpool on psycopg2 + ThreadedConnectionPool as interim; asyncpg migration split into F013 (merged 2026-07-02) | Human decision: asyncpg is larger scope, deserves its own feature doc + ADR | 2026-07-01 |
 
 ## Timeline
 
@@ -193,12 +198,12 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 - `src/tests/f007_infrastructure/test_write_py_results.py` — pprint.pformat round-trip
 
 ### Modified
-- `src/f007_infrastructure/db.py` — ThreadedConnectionPool + connection() ctx manager
+- `src/f007_infrastructure/db.py` — ThreadedConnectionPool + connection() ctx manager (build-time only after F013)
 - `src/f007_infrastructure/retry.py` — retryable whitelist parameter
 - `src/f007_infrastructure/llm_client.py` — LLMResponseError, retry_call, max_tokens, timeout
 - `src/f007_infrastructure/embeddings.py` — retry_call, batch chunking, zero-fill
-- `src/f008_state_extraction/state_extraction.py` — LLMResponseError catch + logged fallback
-- `src/f009_api_server/server.py` — run_in_threadpool, pool close on shutdown
+- `src/f008_state_extraction/state_extraction.py` — LLMResponseError catch + logged fallback (made async in F013)
+- `src/f009_api_server/server.py` — run_in_threadpool (removed by F013), pool close on shutdown
 - `src/build_tree_and_db.py` — orphan signature loud failure, db.connection() for taxonomy, zip(strict=True)
 - `src/whole_pipeline.py` — pprint.pformat serialization
 - `src/f005_context_scoring/build_and_score_tree.py` — pprint.pformat serialization

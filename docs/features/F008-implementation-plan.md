@@ -4,7 +4,7 @@
 **Goal:** Create `state_extraction.py` with LLM-first state extraction, PostgreSQL keyword fallback, and state accumulation with dedup.
 **Acceptance Criteria:** See F008 feature doc
 **Architecture:** LLM (DeepSeek) extracts facts/emotions/actions from utterance given taxonomy. Keyword scan via PostgreSQL tsvector as fallback. `merge_state()` for accumulation with dedup and order preservation.
-**Tech Stack:** Python, DeepSeek API, psycopg2 (tsvector FTS)
+**Tech Stack:** Python, DeepSeek API, asyncpg (runtime tsvector FTS) + psycopg2 (build-time)
 
 ---
 

@@ -4,7 +4,7 @@
 **Goal:** Provide shared infrastructure (PostgreSQL + pgvector, embedding client, LLM client, retry utility) that F007b, F008, and F009 build on.
 **Acceptance Criteria:** See F007 feature doc
 **Architecture:** PostgreSQL with pgvector extension for hybrid vector + bitmask + FTS search. Ollama for local bge-m3 embeddings. DeepSeek API for LLM calls.
-**Tech Stack:** Python, psycopg2, pgvector, openai (Ollama-compatible), asyncio
+**Tech Stack:** Python, asyncpg (runtime) + psycopg2 (build-time), pgvector, openai (Ollama-compatible), asyncio
 
 ---
 

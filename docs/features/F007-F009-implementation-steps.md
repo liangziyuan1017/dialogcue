@@ -31,6 +31,7 @@ dependencies = [
     "websockets>=12.0",
     "psycopg2-binary>=2.9",
     "pgvector>=0.3",
+    "asyncpg>=0.29",
     "numpy>=1.26",
 ]
 ```

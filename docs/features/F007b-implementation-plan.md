@@ -11,7 +11,7 @@
 - `recommend()` returns `vec_score`, `final_score`, `conversation_state`
 - Candidates from PostgreSQL, not in-memory JSON
 **Architecture:** In score_tree.py, after scoring, call embed_texts() for all sentences, then upsert to PostgreSQL. In retrieval_ranking.py, replace TF-IDF context sim with vector cosine sim from PostgreSQL, merge dual strategy into single weighted fusion. In retrieval_engine.py, replace aggregate_pools with db.get_sentences_by_node, add conversation_state parameter.
-**Tech Stack:** Python, psycopg2, pgvector, numpy, DeepSeek API
+**Tech Stack:** Python, asyncpg (runtime) + psycopg2 (build-time), pgvector, numpy, DeepSeek API
 
 ---
 
