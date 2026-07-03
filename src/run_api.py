@@ -153,9 +153,10 @@ def interactive_loop(base_url: str, edit: bool):
                 if edit:
                     body = edit_json(body)
                 print(f"\n-> POST {base_url}/api/v1/session/start")
+                print(f"   request: {json.dumps(body, ensure_ascii=False, indent=2)}")
                 code, resp = send("POST", f"{base_url}/api/v1/session/start", body)
                 print(f"   HTTP {code}")
-                print(f"   {json.dumps(resp, ensure_ascii=False, indent=2)}" if resp else "")
+                print(f"   response: {json.dumps(resp, ensure_ascii=False, indent=2)}" if resp else "")
                 if code == 200 and resp and "call_id" in resp:
                     call_id = resp["call_id"]
                     history = []
@@ -169,9 +170,10 @@ def interactive_loop(base_url: str, edit: bool):
                 if edit:
                     body = edit_json(body)
                 print(f"\n-> POST {base_url}/api/v1/recommend")
+                print(f"   request: {json.dumps(body, ensure_ascii=False, indent=2)}")
                 code, resp = send("POST", f"{base_url}/api/v1/recommend", body)
                 print(f"   HTTP {code}")
-                print(f"   {json.dumps(resp, ensure_ascii=False, indent=2)}" if resp else "")
+                print(f"   response: {json.dumps(resp, ensure_ascii=False, indent=2)}" if resp else "")
                 if code == 200 and resp:
                     history.append(body.get("current_text", ""))
                     rec_id = resp.get("rec_id", "")
@@ -186,9 +188,10 @@ def interactive_loop(base_url: str, edit: bool):
                     body = edit_json(body)
                 cid = body.get("call_id", call_id)
                 print(f"\n-> DELETE {base_url}/api/v1/session/end?call_id={cid}")
+                print(f"   request: {json.dumps(body, ensure_ascii=False, indent=2)}")
                 code, resp = send("DELETE", f"{base_url}/api/v1/session/end?call_id={cid}")
                 print(f"   HTTP {code}")
-                print(f"   {json.dumps(resp, ensure_ascii=False, indent=2)}" if resp else "")
+                print(f"   response: {json.dumps(resp, ensure_ascii=False, indent=2)}" if resp else "")
                 if code == 200:
                     call_id = None
                     history = []
