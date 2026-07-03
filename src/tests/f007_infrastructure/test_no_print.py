@@ -9,6 +9,7 @@ CLI_ENTRYPOINTS = {
     "launch_ui.py",
     "check_data_format.py",
     "serve_tree.py",
+    "run_api.py",
 }
 
 
