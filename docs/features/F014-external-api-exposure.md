@@ -13,9 +13,11 @@ spec: external_api.md
 
 # F014: External API Exposure
 
-> **Status**: draft | **Owner**: agent | **Priority**: P0
+> **Status**: planned | **Owner**: agent | **Priority**: P0
 >
 > **Spec**: `external_api.md` — three REST endpoints for external collection systems to call the recommendation engine.
+>
+> **Architecture**: Wrap and reuse existing internal APIs. Extract shared core logic from SocketIO handlers into reusable functions (`_create_session`, `_run_turn`, `_end_session`). External REST endpoints are thin adapters that call the shared functions and format the response. SocketIO handlers refactored to use the same shared functions — no logic duplication.
 
 ## Why
 
@@ -23,7 +25,17 @@ The recommendation system currently exposes a SocketIO-based API (`start_session
 
 ## What
 
-Three REST endpoints on the existing FastAPI app, under the `/api/v1/` prefix:
+Three REST endpoints on the existing FastAPI app, under the `/api/v1/` prefix. Each is a thin wrapper around shared functions extracted from the existing SocketIO handlers:
+
+### Shared functions (extracted from SocketIO handlers)
+
+| Function | Extracted from | Used by |
+|---|---|---|
+| `_create_session(cust_no, context, session_id=None)` | `start_session` (SocketIO) | SocketIO `start_session` + `POST /api/v1/session/start` |
+| `_run_turn(session_id, utterance, conv_ctx)` | `customer_turn` (SocketIO) | SocketIO `customer_turn` + `POST /api/v1/recommend` |
+| `_end_session(session_id)` | `end_session` (SocketIO) | SocketIO `end_session` + `DELETE /api/v1/session/end` |
+
+`_run_turn` wraps the full recommendation pipeline: `extract_state` → `merge_state` → `embed_single` → `recommend` → update session → persist to DB. Both SocketIO and REST call it; SocketIO adds `sio.emit` on top, REST formats the external response.
 
 ### Endpoint 1: `POST /api/v1/session/start`
 
@@ -31,7 +43,7 @@ Creates a session and binds customer profile data (画像). Called once at the s
 
 **Request**: `call_id` (session identifier), `call_info`, `agent`, `customer`, `cust_tags[]`
 
-**Mapping**: `cust_tags` → internal `context` dict (bitmask fields). `call_id` → session identifier (used directly, not auto-generated).
+**Logic**: `map_cust_tags_to_context(cust_tags)` → `_create_session(cust_no, context, session_id=call_id)` → 200
 
 ### Endpoint 2: `POST /api/v1/recommend`
 
@@ -41,13 +53,13 @@ Real-time recommendation. Called once per customer turn.
 
 **Response**: `recommendation`, `state_tags[]`, `confidence`, `rec_id`, `info`
 
-**Mapping**: `current_text` → customer utterance → `extract_state` + `recommend`. `state_tags` ← extracted facts + emotions. `rec_id` ← `{call_id}_{turn_number}`.
+**Logic**: `_run_turn(call_id, current_text, " ".join(history_context + [current_text]))` → format external response (`state_tags` ← facts + emotions, `rec_id` ← `{call_id}_{turn:03d}`)
 
 ### Endpoint 3: `DELETE /api/v1/session/end?call_id=...`
 
 Ends the session. Optional — sessions expire via TTL if not called.
 
-**Response**: `code`, `message`, `call_id`
+**Logic**: `_end_session(call_id)` → `{code: 0, message: "session closed", call_id}`
 
 ## Acceptance Criteria
 
@@ -74,8 +86,8 @@ Ends the session. Optional — sessions expire via TTL if not called.
 - [ ] AC-16: Missing `call_id` query param → 422
 
 ### Cross-cutting
-- [ ] AC-17: All three endpoints are async, use existing `AsyncSentenceDB` + `SessionStore`
-- [ ] AC-18: Endpoints do not interfere with existing SocketIO handlers or `/recommend` endpoint
+- [ ] AC-17: All three endpoints are async, reuse existing `AsyncSentenceDB` + `SessionStore` + `extract_state` + `recommend` via shared functions
+- [ ] AC-18: SocketIO handlers refactored to use shared functions — no logic duplication, no regression
 - [ ] AC-19: Rate limiting applies to `/api/v1/recommend` (reuse existing `RateLimiter`)
 - [ ] AC-20: Service not ready (degrade mode) → 503 on all `/api/v1/` endpoints
 
@@ -102,6 +114,8 @@ The external system sends `cust_tags` as `[{tag, value}]`. These must be mapped 
 | KD-2 | New REST routes on existing FastAPI app | No separate service; shares DB pool, SessionStore, taxonomy |
 | KD-3 | Tag mapping is a pure function | Testable in isolation; easy to extend when new tags are added |
 | KD-4 | `rec_id` = `{call_id}_{turn:03d}` | Deterministic, traceable to call + turn |
+| KD-5 | Wrap internal APIs — extract shared functions from SocketIO handlers | No logic duplication; SocketIO and REST share the same core pipeline; external endpoints are thin adapters (~5–10 lines each) |
+| KD-6 | `SessionStore.create_with_id()` for caller-provided session IDs | `create()` auto-generates `sess_xxxx`; external API needs `call_id` as ID; refactor `create()` to delegate |
 
 ## Open Questions
 
@@ -131,7 +145,9 @@ The external system sends `cust_tags` as `[{tag, value}]`. These must be mapped 
 | Type | Path | Description |
 |------|------|------|
 | **Spec** | `external_api.md` | External API interface specification |
+| **Plan** | `docs/features/F014-implementation-plan.md` | Implementation plan — 9 TDD steps, wrap internal APIs |
 | **Feature** | `docs/features/F009-api-server.md` | Existing API server |
 | **Feature** | `docs/features/F012-runtime-robustness-hardening.md` | SessionStore + DB persistence |
-| **Source** | `src/f009_api_server/server.py` | Current server implementation |
+| **Source** | `src/f009_api_server/server.py` | Current server (SocketIO handlers to extract from) |
+| **Source** | `src/f009_api_server/session_store.py` | SessionStore (add `create_with_id`) |
 | **Source** | `src/f005_context_scoring/scoring_metrics.py` | BITMASK_FIELDS definition |
