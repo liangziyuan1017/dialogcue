@@ -5,6 +5,7 @@ import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
+from typing import Annotated
 
 from dotenv import load_dotenv
 
@@ -15,10 +16,10 @@ from f007_infrastructure.logging import get_logger as _get_logger
 load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env")
 
 import socketio
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, StringConstraints
 
 _log = _get_logger(__name__)
 
@@ -33,6 +34,7 @@ from f007_infrastructure.embeddings import EMBEDDING_DIM, embed_single
 from f008_state_extraction.state_extraction import extract_state, merge_state
 from f009_api_server.rate_limit import RateLimiter
 from f009_api_server.session_store import SessionStore
+from f009_api_server.tag_mapping import map_cust_tags_to_context
 
 _REQUEST_MAX_CHARS = _cfg("server.request_max_chars", 8000)
 
@@ -65,6 +67,34 @@ class CustomerTurnIn(BaseModel):
 class CollectorTurnIn(BaseModel):
     session_id: str
     utterance: str = Field(max_length=_REQUEST_MAX_CHARS)
+
+
+class CustTag(BaseModel):
+    tag: str = ""
+    value: str = ""
+
+
+class ExternalCustomer(BaseModel):
+    cust_no: str = ""
+    ac_no: str = ""
+    called_no: str = ""
+
+
+class ExternalSessionStartRequest(BaseModel):
+    call_id: str = Field(max_length=_REQUEST_MAX_CHARS)
+    call_info: dict = {}
+    agent: dict = {}
+    customer: ExternalCustomer = ExternalCustomer()
+    cust_tags: list[CustTag] = Field(default=[], max_length=500)
+
+
+_EXTERNAL_HISTORY_ITEM = Annotated[str, StringConstraints(max_length=_REQUEST_MAX_CHARS)]
+
+
+class ExternalRecommendRequest(BaseModel):
+    call_id: str = Field(max_length=_REQUEST_MAX_CHARS)
+    current_text: str = Field(max_length=_REQUEST_MAX_CHARS)
+    history_context: list[_EXTERNAL_HISTORY_ITEM] = Field(default=[], max_length=100)
 
 
 def _validate_start_session(data: dict) -> StartSessionIn:
@@ -146,13 +176,13 @@ app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cfg("server.allowed_origins", ["*"]),
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 sio = socketio.AsyncServer(async_mode="asgi")
 sessions = SessionStore(
     max_sessions=_cfg("server.session_max", 10000),
-    ttl=_cfg("server.session_ttl", 1800),
+    ttl=_cfg("server.session_ttl", 7200),
 )
 
 _rate_limiter = RateLimiter(
@@ -167,7 +197,7 @@ async def request_id_middleware(request: Request, call_next):
     rid = inbound or f"req_{uuid.uuid4().hex[:12]}"
     reset = bind_request_id(rid)
     try:
-        if request.url.path == "/recommend" and not _rate_limiter.allow(request.client.host if request.client else "anonymous"):
+        if request.url.path in ("/recommend", "/api/v1/recommend") and not _rate_limiter.allow(request.client.host if request.client else "anonymous"):
             from fastapi.responses import JSONResponse
             return JSONResponse(status_code=429, content={"error": "rate limit exceeded"}, headers={"X-Request-ID": rid})
         response = await call_next(request)
@@ -286,6 +316,63 @@ def _compute_bitmask(context: dict) -> int:
     return mask
 
 
+def _not_ready_response() -> JSONResponse:
+    return JSONResponse(
+        status_code=503,
+        content={
+            "error": "service not ready",
+            "reason": getattr(app.state, "ready_reason", None) or "; ".join(getattr(app.state, "boot_errors", [])),
+        },
+    )
+
+
+@app.post("/api/v1/session/start")
+async def external_session_start(req: ExternalSessionStartRequest):
+    if not getattr(app.state, "ready", False):
+        return _not_ready_response()
+    context = map_cust_tags_to_context(
+        [{"tag": t.tag, "value": t.value} for t in req.cust_tags]
+    )
+    session_id = await _create_session(
+        req.customer.cust_no, context, session_id=req.call_id,
+        call_info=req.call_info, agent=req.agent,
+    )
+    return {"call_id": session_id}
+
+
+@app.post("/api/v1/recommend")
+async def external_recommend(req: ExternalRecommendRequest):
+    if not getattr(app.state, "ready", False):
+        return _not_ready_response()
+    conv_ctx = " ".join(req.history_context + [req.current_text])
+    result = await _run_turn(req.call_id, req.current_text, conv_ctx)
+    if result is None:
+        return JSONResponse(status_code=404, content={"error": "session not found", "call_id": req.call_id})
+    turn = result["entry"]["turn"]
+    rec_id = f"rec_{req.call_id}_{turn:03d}"
+    state_tags = result["extraction"].get("facts", []) + result["extraction"].get("emotions", [])
+    rec_result = result["rec_result"]
+    recommendation = rec_result.get("script_text") if rec_result else None
+    confidence = rec_result.get("confidence", 0.0) if rec_result else 0.0
+    return {
+        "recommendation": recommendation,
+        "state_tags": state_tags,
+        "confidence": confidence,
+        "rec_id": rec_id,
+        "info": "",
+    }
+
+
+@app.delete("/api/v1/session/end")
+async def external_session_end(call_id: str = Query(...)):
+    if not getattr(app.state, "ready", False):
+        return _not_ready_response()
+    session = _end_session(call_id)
+    if session is None:
+        return JSONResponse(status_code=404, content={"error": "session not found", "call_id": call_id})
+    return {"code": 0, "message": "session closed", "call_id": call_id}
+
+
 def _get_db():
     return getattr(app.state, "db", None)
 
@@ -295,9 +382,46 @@ async def _persist_session(session_id: str, session: dict) -> None:
     if db is None:
         return
     try:
-        await db.save_session(session_id, session["cust_no"], session["context"], session["conversation_state"])
+        await db.save_session(
+            session_id, session["cust_no"], session["context"], session["conversation_state"],
+            call_info=session.get("call_info"), agent=session.get("agent"),
+        )
     except Exception:
         _log.warning("failed to persist session %s", session_id, exc_info=True)
+
+
+async def _create_session(
+    cust_no: str,
+    context: dict,
+    session_id: str | None = None,
+    call_info: dict | None = None,
+    agent: dict | None = None,
+) -> str:
+    """Create session in SessionStore + persist to DB.
+
+    If session_id is None, auto-generate (SocketIO behavior).
+    call_info and agent are stored on the session for external API context.
+    Returns session_id.
+    """
+    if session_id is None:
+        session_id = sessions.create(cust_no, context)
+    else:
+        session_id = sessions.create_with_id(session_id, cust_no, context)
+    if session_id is None:
+        raise RuntimeError("failed to create session")
+    session = sessions.get(session_id)
+    if session is not None:
+        if call_info is not None:
+            session["call_info"] = call_info
+        if agent is not None:
+            session["agent"] = agent
+        await _persist_session(session_id, session)
+    return session_id
+
+
+def _end_session(session_id: str) -> dict | None:
+    """Remove session from SessionStore. Returns session dict or None."""
+    return sessions.remove(session_id)
 
 
 @sio.on("start_session")
@@ -306,8 +430,7 @@ async def start_session(sid, data):
         payload = _validate_start_session(data or {})
     except ValueError as e:
         return {"error": "invalid payload", "detail": str(e)}
-    session_id = sessions.create(payload.cust_no, payload.context)
-    await _persist_session(session_id, sessions.get(session_id))
+    session_id = await _create_session(payload.cust_no, payload.context)
     return {"session_id": session_id, "conversation_state": sessions.get(session_id)["conversation_state"]}
 
 
@@ -337,6 +460,8 @@ async def resume_session(sid, data):
             "conversation_context_buffer": "".join(f" {t['utterance']}" for t in turns),
             "transcript": turns,
             "start_time": start_time,
+            "call_info": row.get("call_info") or {},
+            "agent": row.get("agent") or {},
         }
         sessions.restore(session_id, session)
         return {"session_id": session_id, "conversation_state": session["conversation_state"], "transcript": session["transcript"], "recovered": True}
@@ -345,19 +470,15 @@ async def resume_session(sid, data):
         return {"error": "recovery failed", "detail": str(e)}
 
 
-@sio.on("customer_turn")
-async def customer_turn(sid, data):
-    try:
-        payload = _validate_customer_turn(data or {})
-    except ValueError as e:
-        return {"error": "invalid payload", "detail": str(e)}
-    session_id = payload.session_id
+async def _run_turn(session_id: str, utterance: str, conv_ctx: str) -> dict | None:
+    """Core recommendation logic shared by SocketIO customer_turn and external REST /api/v1/recommend.
+
+    Returns dict with: extraction, merged, rec_result, latency_ms, entry
+    or None if session not found.
+    """
     session = sessions.get(session_id)
     if not session:
-        return {"error": "session not found"}
-
-    utterance = payload.utterance
-    conv_ctx = payload.conversation_context
+        return None
 
     async with sessions.lock(session_id):
         start = time.time()
@@ -385,10 +506,7 @@ async def customer_turn(sid, data):
 
         latency_ms = int((time.time() - start) * 1000)
 
-        if rec_result is None:
-            top = {}
-        else:
-            top = rec_result
+        top = rec_result if rec_result is not None else {}
 
         entry = {"turn": len(session["transcript"]) + 1, "role": "customer", "utterance": utterance}
         if top:
@@ -405,11 +523,33 @@ async def customer_turn(sid, data):
             try:
                 extra = {"recommendation": entry["recommendation"]} if "recommendation" in entry else {}
                 await db.append_transcript_turn(session_id, entry["turn"], "customer", utterance, extra)
-                await db.save_session(session_id, session["cust_no"], session["context"], session["conversation_state"])
+                await db.save_session(session_id, session["cust_no"], session["context"], session["conversation_state"], call_info=session.get("call_info"), agent=session.get("agent"))
             except Exception:
                 _log.warning("failed to persist turn for session %s", session_id, exc_info=True)
 
-    result = {
+    return {
+        "extraction": extraction,
+        "merged": merged,
+        "rec_result": rec_result,
+        "latency_ms": latency_ms,
+        "entry": entry,
+    }
+
+
+@sio.on("customer_turn")
+async def customer_turn(sid, data):
+    try:
+        payload = _validate_customer_turn(data or {})
+    except ValueError as e:
+        return {"error": "invalid payload", "detail": str(e)}
+    session_id = payload.session_id
+
+    result = await _run_turn(session_id, payload.utterance, payload.conversation_context)
+    if result is None:
+        return {"error": "session not found"}
+
+    top = result["rec_result"] if result["rec_result"] is not None else {}
+    response = {
         "script_text": top.get("script_text", ""),
         "script_id": top.get("script_id", ""),
         "state_id": top.get("state_id", ""),
@@ -419,15 +559,15 @@ async def customer_turn(sid, data):
         "bitmask_score": top.get("bitmask_score", 1.0),
         "final_score": top.get("final_score", 0),
         "confidence": top.get("confidence", 1.0),
-        "extraction_method": extraction.get("method", "unknown"),
-        "conversation_state": merged,
+        "extraction_method": result["extraction"].get("method", "unknown"),
+        "conversation_state": result["merged"],
         "ranking_weights": get_ranking_weights(),
         "fallbacks": top.get("fallbacks", []),
-        "latency_ms": latency_ms,
+        "latency_ms": result["latency_ms"],
     }
 
-    await sio.emit("recommendation", {"session_id": session_id, **result}, room=sid)
-    return result
+    await sio.emit("recommendation", {"session_id": session_id, **response}, room=sid)
+    return response
 
 
 @sio.on("collector_turn")
@@ -460,7 +600,7 @@ async def collector_turn(sid, data):
             try:
                 turn_idx = len(session["transcript"])
                 await db.append_transcript_turn(session_id, turn_idx, "collector", utterance, {"extracted_actions": new_actions})
-                await db.save_session(session_id, session["cust_no"], session["context"], session["conversation_state"])
+                await db.save_session(session_id, session["cust_no"], session["context"], session["conversation_state"], call_info=session.get("call_info"), agent=session.get("agent"))
             except Exception:
                 _log.warning("failed to persist turn for session %s", session_id, exc_info=True)
 
@@ -470,7 +610,7 @@ async def collector_turn(sid, data):
 @sio.on("end_session")
 async def end_session(sid, data):
     session_id = (data or {}).get("session_id", "")
-    session = sessions.remove(session_id)
+    session = _end_session(session_id)
     if not session:
         return {"error": "session not found"}
 

@@ -25,10 +25,13 @@ class SessionStore:
         self._locks.clear()
 
     def create(self, cust_no: str, context: dict) -> str | None:
+        session_id = f"sess_{uuid.uuid4().hex[:8]}"
+        return self.create_with_id(session_id, cust_no, context)
+
+    def create_with_id(self, session_id: str, cust_no: str, context: dict) -> str | None:
         self.evict_expired()
         if len(self._sessions) >= self.max_sessions:
             self._evict_oldest()
-        session_id = f"sess_{uuid.uuid4().hex[:8]}"
         self._sessions[session_id] = {
             "cust_no": cust_no,
             "context": context,

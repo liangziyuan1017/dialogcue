@@ -303,20 +303,23 @@ class AsyncSentenceDB:
             g["frequency"] = max(g["frequency"], int(r["frequency"] or 0))
         return taxonomy
 
-    async def save_session(self, session_id: str, cust_no: str, context: dict, conversation_state: dict) -> None:
+    async def save_session(self, session_id: str, cust_no: str, context: dict, conversation_state: dict, call_info: dict | None = None, agent: dict | None = None) -> None:
         import json
         async with self._acquire() as conn:
             await conn.execute(
                 """
-                INSERT INTO sessions (session_id, cust_no, context, conversation_state)
-                VALUES ($1, $2, $3::jsonb, $4::jsonb)
+                INSERT INTO sessions (session_id, cust_no, context, conversation_state, call_info, agent)
+                VALUES ($1, $2, $3::jsonb, $4::jsonb, $5::jsonb, $6::jsonb)
                 ON CONFLICT (session_id) DO UPDATE SET
                     cust_no = EXCLUDED.cust_no,
                     context = EXCLUDED.context,
                     conversation_state = EXCLUDED.conversation_state,
+                    call_info = EXCLUDED.call_info,
+                    agent = EXCLUDED.agent,
                     last_active = now()
                 """,
                 session_id, cust_no, json.dumps(context), json.dumps(conversation_state),
+                json.dumps(call_info or {}), json.dumps(agent or {}),
             )
 
     async def append_transcript_turn(self, session_id: str, turn_index: int, role: str, utterance: str, extra: dict | None = None) -> None:
@@ -334,7 +337,7 @@ class AsyncSentenceDB:
             if row is None:
                 return None
             d = _row_to_dict(row)
-            for k in ("context", "conversation_state"):
+            for k in ("context", "conversation_state", "call_info", "agent"):
                 if isinstance(d.get(k), str):
                     d[k] = json.loads(d[k])
             return d
