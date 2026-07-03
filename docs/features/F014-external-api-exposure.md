@@ -1,7 +1,7 @@
 ---
 id: F014
 name: External API Exposure
-status: draft
+status: planned
 owner: agent
 related_features: [F009, F012, F013]
 topics: [api, external, rest, integration]
