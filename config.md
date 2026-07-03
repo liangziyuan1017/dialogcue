@@ -107,7 +107,7 @@ server:
   request_max_chars: 8000
   rate_limit_rps: 20
   rate_limit_burst: 40
-  session_ttl: 1800
+  session_ttl: 7200
   session_max: 10000
   allowed_origins: ["*"]
 

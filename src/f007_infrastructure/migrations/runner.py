@@ -112,6 +112,10 @@ def _phase_f_statements() -> list[str]:
 MIGRATIONS: list[Migration] = [
     Migration(1, "baseline", _baseline_statements()),
     Migration(2, "phase_f_sessions_relabel", _phase_f_statements()),
+    Migration(3, "f014_call_info_agent", [
+        "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS call_info JSONB",
+        "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS agent JSONB",
+    ]),
 ]
 
 

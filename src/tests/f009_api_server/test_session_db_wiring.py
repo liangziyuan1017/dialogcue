@@ -15,6 +15,49 @@ def _setup_db_mock():
     return db
 
 
+class TestCreateSession:
+    def test_create_session_with_explicit_id(self):
+        sessions.clear()
+        from f009_api_server.server import _create_session, app
+        app.state.db = _setup_db_mock()
+        sid = asyncio.run(_create_session("c1", {"k": "v"}, session_id="call_123"))
+        assert sid == "call_123"
+        assert sessions.get("call_123") is not None
+
+    def test_create_session_auto_generates_id(self):
+        sessions.clear()
+        from f009_api_server.server import _create_session, app
+        app.state.db = _setup_db_mock()
+        sid = asyncio.run(_create_session("c1", {}))
+        assert sid.startswith("sess_")
+
+    def test_create_session_persists_to_db(self):
+        sessions.clear()
+        from f009_api_server.server import _create_session, app
+        db = _setup_db_mock()
+        app.state.db = db
+        asyncio.run(_create_session("c1", {"k": "v"}, session_id="call_456"))
+        db.save_session.assert_awaited_once()
+
+
+class TestEndSession:
+    def test_end_session_returns_session_dict(self):
+        sessions.clear()
+        from f009_api_server.server import _create_session, _end_session, app
+        app.state.db = _setup_db_mock()
+        asyncio.run(_create_session("c1", {}, session_id="call_789"))
+        result = _end_session("call_789")
+        assert result is not None
+        assert result["cust_no"] == "c1"
+        assert sessions.get("call_789") is None
+
+    def test_end_session_unknown_returns_none(self):
+        sessions.clear()
+        from f009_api_server.server import _end_session
+        result = _end_session("nonexistent")
+        assert result is None
+
+
 class TestStartSessionPersistsToDB:
     def test_start_session_calls_save_session(self):
         sessions.clear()
