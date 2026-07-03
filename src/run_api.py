@@ -4,24 +4,25 @@ Quickstart:
     # Terminal 1 — start the server
     python src/run_api.py
 
-    # Terminal 2 — call an API (opens $EDITOR to edit the JSON payload)
+    # Terminal 2 — interactive API caller
     python src/run_api.py --call
-
-    # Or skip the editor and use the default sample payload
-    python src/run_api.py --call --no-edit
 
     # Custom port (must match on both terminals)
     python src/run_api.py --port 9000
     python src/run_api.py --call --port 9000
 
+The --call flag starts an interactive loop:
+  1. Show menu of APIs (session/start, recommend, session/end)
+  2. Open default JSON in $EDITOR for editing
+  3. Send request, show response + HTTP status
+  4. If session/start succeeded, remember call_id for subsequent calls
+  5. Loop back to menu (Ctrl-C to exit)
+
 Usage:
     python src/run_api.py                        # start server only
     python src/run_api.py --port 9000            # custom port
-    python src/run_api.py --call                 # choose an API and call it
-    python src/run_api.py --call --no-edit       # use default sample, skip editor
-
-The --call flag lets you pick one of the three external APIs, opens a
-default JSON payload in $EDITOR for editing, then sends the request.
+    python src/run_api.py --call                 # interactive API caller
+    python src/run_api.py --call --no-edit       # use defaults, skip editor
 """
 
 import argparse
@@ -40,73 +41,61 @@ os.environ["PG_DSN"] = "postgresql://jiani@localhost/icbc"
 
 import uvicorn
 
-SAMPLES = {
-    "1": {
-        "name": "POST /api/v1/session/start",
-        "method": "POST",
-        "path": "/api/v1/session/start",
-        "body": {
-            "call_id": "2346430930132135291",
-            "call_info": {
-                "dial_date": "20260608183813",
-                "connect_date": "20260608183852",
-                "dial_type": "1",
-                "ring_time": "37",
-                "channel": "X",
-                "mob_type": "M1",
-            },
-            "agent": {
-                "coll_user_id": "AA11100",
-                "coll_id": "A0BW9",
-                "coll_area": "2",
-                "coll_group_id": "CK002",
-            },
-            "customer": {
-                "cust_no": "0000000221241219",
-                "ac_no": "0221241219001001",
-                "called_no": "13383023270",
-            },
-            "cust_tags": [
-                {"tag": "经营贷款余额", "value": "0.0"},
-                {"tag": "理财时点值", "value": "0.0"},
-                {"tag": "其他贷款余额", "value": "0.0"},
-                {"tag": "学历", "value": "大专"},
-                {"tag": "商业房贷余额", "value": "0.0"},
-                {"tag": "持卡用户是否疑似高风险代理投诉", "value": "否"},
-                {"tag": "持卡用户是否疑似代理中介投诉", "value": "否"},
-                {"tag": "持卡人当前是否缴纳社保", "value": ""},
-                {"tag": "目前余额", "value": "7129.18"},
-                {"tag": "ct标签", "value": ",667,040,"},
-                {"tag": "（掌生APP操作）近7天-还款操作", "value": "N"},
-                {"tag": "持卡用户名下历史车辆数", "value": "0"},
-                {"tag": "近7日接通次数", "value": "19"},
-                {"tag": "客户风险标识等级", "value": "3级"},
-            ],
+
+def default_session_start():
+    return {
+        "call_id": "2346430930132135291",
+        "call_info": {
+            "dial_date": "20260608183813",
+            "connect_date": "20260608183852",
+            "dial_type": "1",
+            "ring_time": "37",
+            "channel": "X",
+            "mob_type": "M1",
         },
-    },
-    "2": {
-        "name": "POST /api/v1/recommend",
-        "method": "POST",
-        "path": "/api/v1/recommend",
-        "body": {
-            "call_id": "2346430930132135291",
-            "current_text": "我失业了，没钱还",
-            "history_context": [],
+        "agent": {
+            "coll_user_id": "AA11100",
+            "coll_id": "A0BW9",
+            "coll_area": "2",
+            "coll_group_id": "CK002",
         },
-    },
-    "3": {
-        "name": "DELETE /api/v1/session/end",
-        "method": "DELETE",
-        "path": "/api/v1/session/end",
-        "query": {"call_id": "2346430930132135291"},
-        "body": None,
-    },
-}
+        "customer": {
+            "cust_no": "0000000221241219",
+            "ac_no": "0221241219001001",
+            "called_no": "13383023270",
+        },
+        "cust_tags": [
+            {"tag": "经营贷款余额", "value": "0.0"},
+            {"tag": "理财时点值", "value": "0.0"},
+            {"tag": "其他贷款余额", "value": "0.0"},
+            {"tag": "学历", "value": "大专"},
+            {"tag": "商业房贷余额", "value": "0.0"},
+            {"tag": "持卡用户是否疑似高风险代理投诉", "value": "否"},
+            {"tag": "持卡用户是否疑似代理中介投诉", "value": "否"},
+            {"tag": "持卡人当前是否缴纳社保", "value": ""},
+            {"tag": "目前余额", "value": "7129.18"},
+            {"tag": "ct标签", "value": ",667,040,"},
+            {"tag": "（掌生APP操作）近7天-还款操作", "value": "N"},
+            {"tag": "持卡用户名下历史车辆数", "value": "0"},
+            {"tag": "近7日接通次数", "value": "19"},
+            {"tag": "客户风险标识等级", "value": "3级"},
+        ],
+    }
 
 
-def edit_json(default: dict | None) -> dict | None:
-    if default is None:
-        return None
+def default_recommend(call_id: str, history: list[str]):
+    return {
+        "call_id": call_id,
+        "current_text": "我失业了，没钱还",
+        "history_context": list(history),
+    }
+
+
+def default_session_end(call_id: str):
+    return {"call_id": call_id}
+
+
+def edit_json(default: dict) -> dict:
     editor = os.environ.get("EDITOR", "vim")
     with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
         json.dump(default, f, indent=2, ensure_ascii=False)
@@ -119,46 +108,111 @@ def edit_json(default: dict | None) -> dict | None:
         os.unlink(tmp)
 
 
-def do_call(base_url: str, choice: str, edit: bool):
-    spec = SAMPLES[choice]
-    print(f"\n=== {spec['name']} ===")
-    body = spec.get("body")
-    if edit and body is not None:
-        print("(editing JSON payload — save & quit to send)")
-        body = edit_json(body)
-    url = base_url + spec["path"]
-    if spec.get("query"):
-        qs = "&".join(f"{k}={v}" for k, v in spec["query"].items())
-        url += f"?{qs}"
-    cmd = ["curl", "-s", "-w", "\nHTTP %{http_code}", "-X", spec["method"],
-           url, "-H", "Content-Type: application/json"]
+def send(method: str, url: str, body: dict | None = None) -> tuple[int, dict | str | None]:
+    cmd = ["curl", "-s", "-w", "\n%{http_code}", "-X", method, url,
+           "-H", "Content-Type: application/json"]
     if body is not None:
         cmd += ["-d", json.dumps(body, ensure_ascii=False)]
-    print(f"-> {spec['method']} {url}")
-    if body is not None:
-        print(f"   body: {json.dumps(body, ensure_ascii=False)}")
-    subprocess.run(cmd)
-    print()
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    lines = result.stdout.rsplit("\n", 1)
+    code = int(lines[-1]) if lines[-1].isdigit() else 0
+    raw = lines[0] if len(lines) > 1 else ""
+    try:
+        parsed = json.loads(raw) if raw else None
+    except json.JSONDecodeError:
+        parsed = raw
+    return code, parsed
+
+
+def interactive_loop(base_url: str, edit: bool):
+    call_id = None
+    history = []
+
+    while True:
+        print(f"\n{'='*50}")
+        if call_id:
+            print(f"  Active session: {call_id}  ({len(history)} turns)")
+        else:
+            print("  No active session")
+        print(f"{'='*50}")
+        print("  1) session/start")
+        print("  2) recommend")
+        print("  3) session/end")
+        print("  q) quit")
+
+        choice = input("\n> ").strip().lower()
+        if choice == "q":
+            break
+        if choice not in ("1", "2", "3"):
+            print("Invalid choice")
+            continue
+
+        try:
+            if choice == "1":
+                body = default_session_start()
+                if edit:
+                    body = edit_json(body)
+                print(f"\n-> POST {base_url}/api/v1/session/start")
+                code, resp = send("POST", f"{base_url}/api/v1/session/start", body)
+                print(f"   HTTP {code}")
+                print(f"   {json.dumps(resp, ensure_ascii=False, indent=2)}" if resp else "")
+                if code == 200 and resp and "call_id" in resp:
+                    call_id = resp["call_id"]
+                    history = []
+                    print(f"\n✓ Session started: {call_id}")
+
+            elif choice == "2":
+                if not call_id:
+                    print("\n  No active session. Start a session first (option 1).")
+                    continue
+                body = default_recommend(call_id, history)
+                if edit:
+                    body = edit_json(body)
+                print(f"\n-> POST {base_url}/api/v1/recommend")
+                code, resp = send("POST", f"{base_url}/api/v1/recommend", body)
+                print(f"   HTTP {code}")
+                print(f"   {json.dumps(resp, ensure_ascii=False, indent=2)}" if resp else "")
+                if code == 200 and resp:
+                    history.append(body.get("current_text", ""))
+                    rec_id = resp.get("rec_id", "")
+                    print(f"\n✓ Turn {len(history)} | rec_id: {rec_id}")
+
+            elif choice == "3":
+                if not call_id:
+                    print("\n  No active session.")
+                    continue
+                body = default_session_end(call_id)
+                if edit:
+                    body = edit_json(body)
+                cid = body.get("call_id", call_id)
+                print(f"\n-> DELETE {base_url}/api/v1/session/end?call_id={cid}")
+                code, resp = send("DELETE", f"{base_url}/api/v1/session/end?call_id={cid}")
+                print(f"   HTTP {code}")
+                print(f"   {json.dumps(resp, ensure_ascii=False, indent=2)}" if resp else "")
+                if code == 200:
+                    call_id = None
+                    history = []
+                    print("\n✓ Session closed")
+
+        except KeyboardInterrupt:
+            print()
+            continue
+        except Exception as e:
+            print(f"\n  Error: {e}")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Run the F009 API server and/or make sample API calls")
     parser.add_argument("--port", type=int, default=8114)
     parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--call", action="store_true", help="Make an API call instead of starting the server")
-    parser.add_argument("--no-edit", action="store_true", help="Use default sample payload, skip editor")
+    parser.add_argument("--call", action="store_true", help="Interactive API caller (instead of starting server)")
+    parser.add_argument("--no-edit", action="store_true", help="Use default payloads, skip editor")
     args = parser.parse_args()
 
     base_url = f"http://{args.host}:{args.port}"
 
     if args.call:
-        print("Available APIs:")
-        for k, v in SAMPLES.items():
-            print(f"  {k}) {v['name']}")
-        choice = input("\nChoose [1-3]: ").strip()
-        if choice not in SAMPLES:
-            print("Invalid choice"); sys.exit(1)
-        do_call(base_url, choice, edit=not args.no_edit)
+        interactive_loop(base_url, edit=not args.no_edit)
     else:
         uvicorn.run("f009_api_server.server:app", host=args.host, port=args.port)
 
