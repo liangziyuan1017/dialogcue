@@ -1,20 +1,22 @@
 ---
 id: F012
 name: Runtime Robustness Hardening
-status: in-progress
+status: complete
 owner: agent
 related_features: [F007, F007b, F008, F009, F011]
 topics: [robustness, db, logging, retry, concurrency, validation, ops]
 doc_kind: spec
 created: 2026-07-01
-updated: 2026-07-01
+updated: 2026-07-02
+worktree: /Users/jiani/Desktop/ICBC-f012-rest
+branch: feat/f012-rest
 ---
 
 # F012: Runtime Robustness Hardening
 
-> **Status**: in-progress (Phase A+B merged to main; C–F pending) | **Owner**: agent | **Priority**: P0
+> **Status**: complete (Phase A–F all implemented on `feat/f012-rest`) | **Owner**: agent | **Priority**: P0
 >
-> **Merged to:** `main` · **Phase A:** 366 passed, 8 skipped · **Phase B:** 392 passed, 8 skipped · **Quality gate:** PASS
+> **Merged to:** `main` (A+B) · **`feat/f012-rest`** (C–F) · **Phase A:** 366 passed, 8 skipped · **Phase B:** 392 passed, 8 skipped · **Phase C–F:** 445 passed, 7 skipped · **Phase F2/F3:** 542 passed, 8 skipped · **Quality gate:** PASS
 
 ## Why
 
@@ -93,27 +95,27 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 - [x] AC-B6: `_write_py_results` round-trips a string value containing `": null"` unchanged
 
 ### Phase C（API Server）
-- [ ] AC-C1: Oversize payload → 422; malformed SocketIO event → structured error; over-limit → 429
-- [ ] AC-C2: 10k sessions created → memory bounded by cap + TTL eviction
-- [ ] AC-C3: Concurrent same-session `customer_turn` → no lost transcript entries
-- [ ] AC-C4: `/health` 200 liveness; `/readyz` 503 when tree/taxonomy missing; SIGTERM → pool closed, clean exit
-- [ ] AC-C5: Boot with missing scored-tree → process stays up, `/recommend` 503
+- [x] AC-C1: Oversize payload → 422; malformed SocketIO event → structured error; over-limit → 429
+- [x] AC-C2: 10k sessions created → memory bounded by cap + TTL eviction
+- [x] AC-C3: Concurrent same-session `customer_turn` → no lost transcript entries
+- [x] AC-C4: `/health` 200 liveness; `/readyz` 503 when tree/taxonomy missing; SIGTERM → pool closed, clean exit
+- [x] AC-C5: Boot with missing scored-tree → process stays up, `/recommend` 503
 
 ### Phase D（Retrieval & State）
-- [ ] AC-D1: 20 facts + 20 emotions request → bounded time, `subset_search_truncated` fallback logged
-- [ ] AC-D2: `descend_for_sentences` stops at `find_node_max_levels`; confidence never negative mid-loop
-- [ ] AC-D3: `merge_state` hypothesis tests pass (idempotent, no dup, no loss, single-element branch_key)
-- [ ] AC-D4: 50 concurrent `extract_state` → no corrupted CSV; map reads never see partial writes
+- [x] AC-D1: 20 facts + 20 emotions request → bounded time, `subset_search_truncated` fallback logged
+- [x] AC-D2: `descend_for_sentences` stops at `find_node_max_levels`; confidence never negative mid-loop
+- [x] AC-D3: `merge_state` hypothesis tests pass (idempotent, no dup, no loss, single-element branch_key)
+- [x] AC-D4: 50 concurrent `extract_state` → no corrupted CSV; map reads never see partial writes
 
 ### Phase E（Freshness）
-- [ ] AC-E1: NULL-embedding rows logged at build; backfill script fills them
-- [ ] AC-E2: DB keyword update → `/admin/reload-taxonomy` → new keyword matches without restart
-- [ ] AC-E3: Repeated identical utterance → one LLM call (LRU cache hit)
+- [x] AC-E1: NULL-embedding rows logged at build; backfill script fills them
+- [x] AC-E2: DB keyword update → `/admin/reload-taxonomy` → new keyword matches without restart
+- [x] AC-E3: Repeated identical utterance → one LLM call (LRU cache hit)
 
 ### Phase F（Persistence & Migrations）
-- [ ] AC-F1: Fresh DB → migrations apply; existing DB → idempotent no-op
-- [ ] AC-F2: Restart mid-session → transcript recoverable from DB
-- [ ] AC-F3: Restart across midnight → exactly one pipeline run per allowed day
+- [x] AC-F1: Fresh DB → migrations apply; existing DB → idempotent no-op
+- [x] AC-F2: Restart mid-session → transcript recoverable from DB (async SessionStore→DB wiring: start_session/turns persist; resume_session handler rehydrates from DB)
+- [x] AC-F3: Restart across midnight → exactly one pipeline run per allowed day (SchedulerState persists last_run_date to disk)
 
 ## Dependencies
 
@@ -163,6 +165,9 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 | 2026-07-01 | Phase B review: 4 issues found & fixed; LL-006 recorded |
 | 2026-07-01 | Phase A merged to main (fast-forward) |
 | 2026-07-01 | Phase B merged to main (fast-forward, rebased onto post-A main) |
+| 2026-07-03 | Phase F2/F3 deferred items complete; AC-F2/F3 ✅; 535 passed, 8 skipped |
+| 2026-07-03 | Critical review: 3 bugs + 1 minor found & fixed; 541 passed, 8 skipped |
+| 2026-07-03 | Critical review round 2: Bug 5 (tz→local conversion) + 3 minor issues fixed; 542 passed, 8 skipped |
 
 ## Review Gate
 
@@ -264,3 +269,39 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 | 4 | `zip(all_sentences, vecs, strict=False)` silently drops on count mismatch | Pre-existing | Changed to `strict=True` | `90ee50d` |
 
 **Post-fix verification:** 392 passed / 8 skipped · ruff clean · mypy clean (81 files) · 0 regressions.
+
+## Review Notes (Phase F2/F3 — deferred items)
+
+**Reviewer:** agent self-check (TDD) · **Date:** 2026-07-03 · **Verdict:** all ACs pass
+
+### AC-F2: async SessionStore→DB wiring
+
+| Change | File |
+|--------|------|
+| `AsyncSentenceDB.ping()` — `SELECT 1` liveness check (fixes latent `readyz` bug) | `src/f007_infrastructure/async_db.py` |
+| `AsyncSentenceDB.load_transcript_turns()` — returns turns ordered by turn_index with extra JSONB merged | `src/f007_infrastructure/async_db.py` |
+| `AsyncSentenceDB.load_session()` — now parses JSONB string fields (context, conversation_state) | `src/f007_infrastructure/async_db.py` |
+| `SessionStore.restore()` — rehydrate a session dict into the in-memory store | `src/f009_api_server/session_store.py` |
+| `start_session` → `db.save_session` on session creation | `src/f009_api_server/server.py` |
+| `customer_turn` → `db.append_transcript_turn` + `db.save_session` per turn | `src/f009_api_server/server.py` |
+| `collector_turn` → `db.append_transcript_turn` + `db.save_session` per turn | `src/f009_api_server/server.py` |
+| `resume_session` handler — loads session + transcript from DB, rehydrates into SessionStore | `src/f009_api_server/server.py` |
+| `_persist_session` / `_get_db` helpers — best-effort persistence with degrade-mode guard | `src/f009_api_server/server.py` |
+
+### AC-F3: scheduler last_run_at midnight persistence
+
+| Change | File |
+|--------|------|
+| `SchedulerState` — load/save `last_run_date` to `data/.scheduler_state.json` | `src/f007_infrastructure/scheduler_state.py` |
+| `should_run_pipeline()` — pure decision function (ran_today, last_run_date, today) | `src/f007_infrastructure/scheduler_state.py` |
+| `_run_with_scheduler` — loads `last_run_date` on startup, persists after each run | `src/whole_pipeline.py` |
+
+### New test files
+
+| File | Tests |
+|------|-------|
+| `src/tests/f007_infrastructure/test_session_persistence.py` | 7 (ping, load_transcript_turns, load_session JSONB) |
+| `src/tests/f009_api_server/test_session_db_wiring.py` | 9 (start_session/customer_turn/collector_turn persist, resume_session recovery) |
+| `src/tests/f007_infrastructure/test_scheduler_state.py` | 12 (SchedulerState roundtrip, should_run_pipeline, restart scenarios) |
+
+**Post-fix verification:** 535 passed / 8 skipped · ruff clean (source files) · mypy clean (106 source files) · 0 regressions.

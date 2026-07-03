@@ -235,17 +235,27 @@ def _run_skip_llm(args) -> None:
 
 
 def _run_with_scheduler(input_file: Path, forbid_start: int, forbid_end: int, interval: int) -> None:
+    from f007_infrastructure.scheduler_state import SchedulerState, persist_run, should_run_pipeline
+
+    state = SchedulerState(DATA_DIR / ".scheduler_state.json")
+    last_run_date = state.load_last_run_date()
+    current_date = datetime.now().date()
+    ran_today = last_run_date is not None and last_run_date == current_date
     print(f"Scheduler enabled — forbidden hours: {forbid_start}:00 – {forbid_end}:00")
-    print(f"Checking every {interval}s\n")
-    ran_today = False
+    print(f"Checking every {interval}s")
+    print(f"Last run date: {last_run_date}\n")
 
     while True:
         now = datetime.now()
         if _is_within_allowed_hours(forbid_start, forbid_end):
-            if not ran_today:
+            current_date = now.date()
+            if should_run_pipeline(ran_today, last_run_date, current_date):
                 print(f"\n[{now:%Y-%m-%d %H:%M:%S}] Outside forbidden hours. Running pipeline...")
                 run_pipeline(input_file)
                 ran_today = True
+                last_run_date = current_date
+                if not persist_run(state, current_date):
+                    print(f"[{now:%Y-%m-%d %H:%M:%S}] Warning: failed to persist scheduler state")
                 print(f"[{now:%Y-%m-%d %H:%M:%S}] Pipeline finished for today. Sleeping until tomorrow...\n")
             else:
                 print(f"[{now:%Y-%m-%d %H:%M:%S}] Already ran today. Sleeping...")

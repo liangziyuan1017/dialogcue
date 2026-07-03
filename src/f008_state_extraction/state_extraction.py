@@ -1,5 +1,7 @@
 import asyncio
 import csv
+import threading
+from collections import OrderedDict as _OrderedDict
 from pathlib import Path
 
 from f007_infrastructure.config import get as _cfg
@@ -9,6 +11,17 @@ from f007_infrastructure.logging import get_logger as _get_logger
 _log = _get_logger(__name__)
 
 _DATA_LABELS_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "data_labels"
+
+_relabel_lock = threading.Lock()
+
+_extract_cache: _OrderedDict = _OrderedDict()
+_taxonomy_version = 0
+
+
+def invalidate_extract_cache() -> None:
+    global _taxonomy_version
+    _taxonomy_version += 1
+    _extract_cache.clear()
 
 _FACT_CSV_MAP = None
 _EMOTION_CSV_MAP = None
@@ -138,13 +151,14 @@ def _append_relabel_to_csv(category: str, mappings: dict[str, str]) -> None:
     if not mappings:
         return
     path = _DATA_LABELS_DIR / f"{category}_relabeled.csv"
-    file_exists = path.exists()
-    with open(path, "a", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["tag", "example", "count", "old_label", "new_label"])
-        if not file_exists:
-            writer.writeheader()
-        for tag, new_label in mappings.items():
-            writer.writerow({"tag": tag, "example": "", "count": 1, "old_label": tag, "new_label": new_label})
+    with _relabel_lock:
+        file_exists = path.exists()
+        with open(path, "a", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=["tag", "example", "count", "old_label", "new_label"])
+            if not file_exists:
+                writer.writeheader()
+            for tag, new_label in mappings.items():
+                writer.writerow({"tag": tag, "example": "", "count": 1, "old_label": tag, "new_label": new_label})
 
 
 def _apply_relabel(result: dict) -> None:
@@ -190,7 +204,8 @@ def _apply_relabel(result: dict) -> None:
                     seen.add(item)
             if new_mappings:
                 _append_relabel_to_csv(key, new_mappings)
-                csv_map.update(new_mappings)
+                with _relabel_lock:
+                    csv_map.update(new_mappings)
 
         result[key] = kept
 
@@ -298,6 +313,12 @@ async def extract_state_keyword(utterance: str, taxonomy: dict, db=None) -> dict
 
 
 async def extract_state(utterance: str, taxonomy: dict, db=None) -> dict:
+    cache_key = (utterance, _taxonomy_version)
+    cached = _extract_cache.get(cache_key)
+    if cached is not None:
+        _extract_cache.move_to_end(cache_key)
+        return cached
+
     try:
         llm_result = await asyncio.to_thread(extract_state_llm, utterance, taxonomy)
     except LLMResponseError as e:
@@ -318,6 +339,12 @@ async def extract_state(utterance: str, taxonomy: dict, db=None) -> dict:
         result = kw_result
 
     _apply_relabel(result)
+
+    cache_size = _cfg("extraction.cache_size", 512)
+    if cache_size > 0:
+        _extract_cache[cache_key] = result
+        if len(_extract_cache) > cache_size:
+            _extract_cache.popitem(last=False)
     return result
 
 
@@ -328,19 +355,39 @@ def relabel_state(state: dict) -> dict:
 
 
 def merge_state(existing_state: dict, new_extraction: dict) -> dict:
+    """Merge a new turn's extraction into the path-structured conversation state.
+
+    Semantics (ADR-021 / ADR-015):
+      - `branch_key` holds exactly ONE label — the most recent branching
+        decision. Priority when a turn yields multiple new labels:
+        facts > emotions > actions. The winner lives in `branch_key`;
+        every other new label is absorbed into `inherited_facts` /
+        `inherited_emotions` (ordered-set, dedup).
+      - `inherited_facts` / `inherited_emotions` accumulate from ancestors
+        and never lose a prior label. The current `branch_key` winner is
+        NOT duplicated into inherited.
+      - `willingness` is a scalar: overwritten by any non-null new value.
+      - Actions are transient (the collector's current move); they set
+        `branch_key` but are not accumulated.
+
+    Idempotency: for facts+emotions-only extractions, applying the same
+    extraction twice yields the same state (all labels are absorbed on
+    the first pass). Re-applying an action legitimately updates
+    `branch_key` (a move can be re-emitted).
+    """
     bk = dict(existing_state.get("branch_key", {}))
     inh_facts = list(existing_state.get("inherited_facts", []))
     inh_emotions = list(existing_state.get("inherited_emotions", []))
 
-    all_facts = set(inh_facts)
+    seen_facts = set(inh_facts)
     if "facts" in bk:
-        all_facts.update(bk["facts"])
-    all_emotions = set(inh_emotions)
+        seen_facts.update(bk["facts"])
+    seen_emotions = set(inh_emotions)
     if "emotions" in bk:
-        all_emotions.update(bk["emotions"])
+        seen_emotions.update(bk["emotions"])
 
-    new_facts = [f for f in new_extraction.get("facts", []) if f not in all_facts]
-    new_emotions = [e for e in new_extraction.get("emotions", []) if e not in all_emotions]
+    new_facts = [f for f in new_extraction.get("facts", []) if f not in seen_facts]
+    new_emotions = [e for e in new_extraction.get("emotions", []) if e not in seen_emotions]
     new_actions = new_extraction.get("actions", [])
 
     if new_facts or new_emotions or new_actions:
@@ -353,16 +400,25 @@ def merge_state(existing_state: dict, new_extraction: dict) -> dict:
                 if e not in inh_emotions:
                     inh_emotions.append(e)
 
-    if new_facts:
-        for f in new_facts[:-1]:
-            inh_facts.append(f)
-        bk = {"facts": [new_facts[-1]]}
-    elif new_emotions:
-        for e in new_emotions[:-1]:
-            inh_emotions.append(e)
-        bk = {"emotions": [new_emotions[-1]]}
-    elif new_actions:
-        bk = {"action": new_actions[-1]}
+        for f in new_facts:
+            if f not in inh_facts:
+                inh_facts.append(f)
+        for e in new_emotions:
+            if e not in inh_emotions:
+                inh_emotions.append(e)
+
+        if new_facts:
+            winner = new_facts[-1]
+            bk = {"facts": [winner]}
+            if winner in inh_facts:
+                inh_facts.remove(winner)
+        elif new_emotions:
+            winner = new_emotions[-1]
+            bk = {"emotions": [winner]}
+            if winner in inh_emotions:
+                inh_emotions.remove(winner)
+        elif new_actions:
+            bk = {"action": new_actions[-1]}
 
     result = {
         "branch_key": bk,

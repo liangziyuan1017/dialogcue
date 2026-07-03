@@ -42,60 +42,12 @@ class AsyncSentenceDB:
             self._vector_registered_conns.add(conn_id)
 
     async def create_tables(self):
+        from f007_infrastructure.migrations.runner import run_migrations
         async with self._acquire() as conn:
             await conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
             await conn.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm")
             await self._ensure_vector_registered(conn)
-
-            await conn.execute("""
-                CREATE TABLE IF NOT EXISTS nodes (
-                    id              SERIAL PRIMARY KEY,
-                    state_id        TEXT NOT NULL,
-                    path_signature  TEXT NOT NULL UNIQUE,
-                    branch_key      JSONB,
-                    parent_id       INTEGER REFERENCES nodes(id),
-                    depth           INTEGER NOT NULL DEFAULT 0
-                )
-            """)
-            await conn.execute("CREATE INDEX IF NOT EXISTS idx_nodes_path_sig ON nodes(path_signature)")
-            await conn.execute("CREATE INDEX IF NOT EXISTS idx_nodes_parent ON nodes(parent_id)")
-
-            await conn.execute(f"""
-                CREATE TABLE IF NOT EXISTS sentences (
-                    id                  SERIAL PRIMARY KEY,
-                    script_id           TEXT NOT NULL UNIQUE,
-                    node_id             INTEGER NOT NULL REFERENCES nodes(id),
-                    script_text         TEXT NOT NULL,
-                    bg_bitmask_int      INTEGER NOT NULL DEFAULT 0,
-                    win_rate            REAL NOT NULL DEFAULT 0,
-                    sas                 REAL NOT NULL DEFAULT 0,
-                    bg_background       JSONB,
-                    conversation_context TEXT,
-                    embedding           vector({EMBEDDING_DIM}),
-                    script_tsv          tsvector GENERATED ALWAYS AS (to_tsvector('simple', script_text)) STORED
-                )
-            """)
-            await conn.execute("CREATE INDEX IF NOT EXISTS idx_sentences_node_id ON sentences(node_id)")
-            await conn.execute("CREATE INDEX IF NOT EXISTS idx_sentences_bg_bitmask ON sentences(bg_bitmask_int)")
-            await conn.execute(f"""
-                CREATE INDEX IF NOT EXISTS idx_sentences_embedding ON sentences USING hnsw (embedding vector_cosine_ops)
-                WITH (m = {_cfg("hnsw.m", 16)}, ef_construction = {_cfg("hnsw.ef_construction", 64)})
-            """)
-            await conn.execute("CREATE INDEX IF NOT EXISTS idx_sentences_tsv ON sentences USING gin (script_tsv)")
-            await conn.execute("CREATE INDEX IF NOT EXISTS idx_sentences_script_text_trgm ON sentences USING gin (script_text gin_trgm_ops)")
-
-            await conn.execute("""
-                CREATE TABLE IF NOT EXISTS taxonomy_keywords (
-                    id          SERIAL PRIMARY KEY,
-                    group_name  TEXT NOT NULL,
-                    category    TEXT NOT NULL,
-                    keyword     TEXT NOT NULL,
-                    frequency   INTEGER NOT NULL DEFAULT 0,
-                    tsv         tsvector GENERATED ALWAYS AS (to_tsvector('simple', keyword)) STORED
-                )
-            """)
-            await conn.execute("CREATE INDEX IF NOT EXISTS idx_taxonomy_tsv ON taxonomy_keywords USING gin (tsv)")
-            await conn.execute("CREATE INDEX IF NOT EXISTS idx_taxonomy_group ON taxonomy_keywords(group_name, category)")
+            await run_migrations(conn)
 
     async def upsert_nodes(self, nodes: list[dict]):
         if not nodes:
@@ -146,7 +98,7 @@ class AsyncSentenceDB:
                            bg_background, conversation_context, node_id,
                            1 - (embedding <=> $1::vector) AS vec_score
                     FROM sentences
-                    WHERE node_id = ANY($2)
+                    WHERE node_id = ANY($2) AND embedding IS NOT NULL
                     ORDER BY vec_score DESC
                     LIMIT $3
                     """,
@@ -159,7 +111,7 @@ class AsyncSentenceDB:
                            bg_background, conversation_context, node_id,
                            1 - (embedding <=> $1::vector) AS vec_score
                     FROM sentences
-                    WHERE node_id = ANY($2)
+                    WHERE node_id = ANY($2) AND embedding IS NOT NULL
                     ORDER BY vec_score DESC
                     """,
                     qvec, node_ids,
@@ -173,6 +125,27 @@ class AsyncSentenceDB:
                 node_id,
             )
             return [_row_to_dict(r) for r in rows]
+
+    async def fetch_null_embedding_rows(self) -> list[dict]:
+        async with self._acquire() as conn:
+            rows = await conn.fetch(
+                "SELECT script_id, conversation_context FROM sentences WHERE embedding IS NULL"
+            )
+            return [_row_to_dict(r) for r in rows]
+
+    async def count_null_embeddings(self) -> int:
+        async with self._acquire() as conn:
+            row = await conn.fetchval("SELECT count(*) FROM sentences WHERE embedding IS NULL")
+            return int(row or 0)
+
+    async def update_embedding(self, script_id: str, vec: list[float]) -> None:
+        qvec = np.array(vec, dtype=np.float32)
+        async with self._acquire() as conn:
+            await self._ensure_vector_registered(conn)
+            await conn.execute(
+                "UPDATE sentences SET embedding = $1::vector WHERE script_id = $2",
+                qvec, script_id,
+            )
 
     async def search_similar(self, query_vec: list[float], node_id: int, query_bitmask: int, limit: int | None = None) -> list[dict]:
         if limit is None:
@@ -307,6 +280,103 @@ class AsyncSentenceDB:
                 query_text, _cfg("search.taxonomy_trigram_threshold", 0.1), limit,
             )
             return [dict(r) for r in rows]
+
+    async def load_taxonomy_from_db(self) -> dict:
+        async with self._acquire() as conn:
+            rows = await conn.fetch(
+                "SELECT group_name, category, keyword, frequency FROM taxonomy_keywords ORDER BY category, group_name"
+            )
+        taxonomy: dict[str, list] = {"facts": [], "emotions": [], "collector_actions": []}
+        cat_map = {"facts": "facts", "emotions": "emotions", "collector_actions": "collector_actions"}
+        groups: dict[tuple[str, str], dict] = {}
+        for r in rows:
+            cat = cat_map.get(r["category"])
+            if cat is None:
+                continue
+            key = (cat, r["group_name"])
+            g = groups.get(key)
+            if g is None:
+                g = {"group_name": r["group_name"], "keywords": [], "frequency": 0}
+                groups[key] = g
+                taxonomy[cat].append(g)
+            g["keywords"].append(r["keyword"])
+            g["frequency"] = max(g["frequency"], int(r["frequency"] or 0))
+        return taxonomy
+
+    async def save_session(self, session_id: str, cust_no: str, context: dict, conversation_state: dict) -> None:
+        import json
+        async with self._acquire() as conn:
+            await conn.execute(
+                """
+                INSERT INTO sessions (session_id, cust_no, context, conversation_state)
+                VALUES ($1, $2, $3::jsonb, $4::jsonb)
+                ON CONFLICT (session_id) DO UPDATE SET
+                    cust_no = EXCLUDED.cust_no,
+                    context = EXCLUDED.context,
+                    conversation_state = EXCLUDED.conversation_state,
+                    last_active = now()
+                """,
+                session_id, cust_no, json.dumps(context), json.dumps(conversation_state),
+            )
+
+    async def append_transcript_turn(self, session_id: str, turn_index: int, role: str, utterance: str, extra: dict | None = None) -> None:
+        import json
+        async with self._acquire() as conn:
+            await conn.execute(
+                "INSERT INTO transcript_turns (session_id, turn_index, role, utterance, extra) VALUES ($1, $2, $3, $4, $5::jsonb)",
+                session_id, turn_index, role, utterance, json.dumps(extra or {}),
+            )
+
+    async def load_session(self, session_id: str) -> dict | None:
+        import json
+        async with self._acquire() as conn:
+            row = await conn.fetchrow("SELECT * FROM sessions WHERE session_id = $1", session_id)
+            if row is None:
+                return None
+            d = _row_to_dict(row)
+            for k in ("context", "conversation_state"):
+                if isinstance(d.get(k), str):
+                    d[k] = json.loads(d[k])
+            return d
+
+    async def load_transcript_turns(self, session_id: str) -> list[dict]:
+        import json
+        async with self._acquire() as conn:
+            rows = await conn.fetch(
+                "SELECT turn_index, role, utterance, extra FROM transcript_turns WHERE session_id = $1 ORDER BY turn_index",
+                session_id,
+            )
+        result = []
+        for r in rows:
+            entry = {"turn": r["turn_index"], "role": r["role"], "utterance": r["utterance"]}
+            extra = r["extra"]
+            if extra:
+                if isinstance(extra, str):
+                    extra = json.loads(extra)
+                entry.update(extra)
+            result.append(entry)
+        return result
+
+    async def ping(self) -> bool:
+        async with self._acquire() as conn:
+            await conn.fetchval("SELECT 1")
+        return True
+
+    async def save_relabel_mapping(self, category: str, tag: str, new_label: str) -> None:
+        async with self._acquire() as conn:
+            await conn.execute(
+                """
+                INSERT INTO relabel_map (category, tag, new_label)
+                VALUES ($1, $2, $3)
+                ON CONFLICT (category, tag) DO UPDATE SET new_label = EXCLUDED.new_label, updated_at = now()
+                """,
+                category, tag, new_label,
+            )
+
+    async def load_relabel_map_from_db(self, category: str) -> dict[str, str]:
+        async with self._acquire() as conn:
+            rows = await conn.fetch("SELECT tag, new_label FROM relabel_map WHERE category = $1", category)
+        return {r["tag"]: r["new_label"] for r in rows}
 
 
 def _row_to_dict(r: asyncpg.Record) -> dict:

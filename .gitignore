@@ -23,4 +23,5 @@ pyproject.toml
 .worktrees/
 data/collector_analysis.json
 data/customer_analysis.json
+data/.scheduler_state.json
 .venv

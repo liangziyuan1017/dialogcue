@@ -202,6 +202,7 @@ class TestCreateTables:
     @pytest.mark.asyncio
     async def test_creates_nodes_table(self):
         pool, conn = _make_mock_pool()
+        conn.fetchval = AsyncMock(return_value=None)
         with _patch_create_pool(pool):
             db = AsyncSentenceDB("postgresql://localhost/test")
             await db.connect()
@@ -212,6 +213,7 @@ class TestCreateTables:
     @pytest.mark.asyncio
     async def test_creates_sentences_table(self):
         pool, conn = _make_mock_pool()
+        conn.fetchval = AsyncMock(return_value=None)
         with _patch_create_pool(pool):
             db = AsyncSentenceDB("postgresql://localhost/test")
             await db.connect()
@@ -222,6 +224,7 @@ class TestCreateTables:
     @pytest.mark.asyncio
     async def test_creates_hnsw_index(self):
         pool, conn = _make_mock_pool()
+        conn.fetchval = AsyncMock(return_value=None)
         with _patch_create_pool(pool):
             db = AsyncSentenceDB("postgresql://localhost/test")
             await db.connect()

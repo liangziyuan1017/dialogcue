@@ -104,6 +104,17 @@ reward:
 server:
   tree_explorer_port: 8420
   session_id_length: 8
+  request_max_chars: 8000
+  rate_limit_rps: 20
+  rate_limit_burst: 40
+  session_ttl: 1800
+  session_max: 10000
+  allowed_origins: ["*"]
+
+# ── Extraction ──
+extraction:
+  cache_size: 512
+  max_labels: 40
 
 # ── Pipeline ──
 pipeline:

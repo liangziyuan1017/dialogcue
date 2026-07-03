@@ -103,6 +103,9 @@ def _find_matching_nodes_subset(all_facts, all_emotions, all_actions, index, lab
                 continue
             drop_order.append((n_drop_e, n_drop_f))
 
+    max_combos = _cfg("decision_tree.max_subset_combinations", 4096)
+    combo_count = 0
+    truncated = False
     for n_drop_e, n_drop_f in drop_order:
         found_nodes = []
         keep_e = n_emo - n_drop_e
@@ -110,9 +113,15 @@ def _find_matching_nodes_subset(all_facts, all_emotions, all_actions, index, lab
 
         for emo_subset in combinations(all_emotions, keep_e):
             for fact_subset in combinations(all_facts, keep_f):
+                combo_count += 1
+                if combo_count > max_combos:
+                    truncated = True
+                    break
                 label_set = frozenset(fact_subset) | frozenset(emo_subset) | frozenset(all_actions)
                 if label_set in label_set_index:
                     found_nodes.extend(label_set_index[label_set])
+            if truncated:
+                break
 
         if found_nodes:
             seen_ids = set()
@@ -129,12 +138,22 @@ def _find_matching_nodes_subset(all_facts, all_emotions, all_actions, index, lab
                     n_dropped = n_drop_e + n_drop_f
                     conf = max(0.0, 1.0 - n_dropped * _cfg("confidence.subset_drop_penalty", 0.1))
                     fb = ["subset_drop_emotion"] * n_drop_e + ["subset_drop_fact"] * n_drop_f
+                    if truncated:
+                        fb.append("subset_search_truncated")
                     return unique, conf, fb
+        if truncated:
+            break
 
     root_nodes = label_set_index.get(frozenset(), [])
     if root_nodes and aggregate_pools(root_nodes):
-        return root_nodes, _cfg("confidence.root_fallback", 0.2), ["root_fallback"]
-    return [], 0.0, ["no_match"]
+        fb = ["root_fallback"]
+        if truncated:
+            fb.append("subset_search_truncated")
+        return root_nodes, _cfg("confidence.root_fallback", 0.2), fb
+    fb = ["no_match"]
+    if truncated:
+        fb.append("subset_search_truncated")
+    return [], 0.0, fb
 
 
 def descend_for_sentences(nodes):
@@ -147,15 +166,17 @@ def descend_for_sentences(nodes):
     confidence = 1.0
     fallbacks = []
     current = list(nodes)
+    max_levels = _cfg("decision_tree.find_node_max_levels", 4)
+    level = 0
 
-    while True:
+    while level < max_levels:
         next_level = []
         for node in current:
             for child in node.get("children") or []:
                 next_level.append(child)
         if not next_level:
             return [], confidence, fallbacks
-        confidence -= _cfg("confidence.descend_penalty", 0.05)
+        confidence = max(0.0, confidence - _cfg("confidence.descend_penalty", 0.05))
         fallbacks.append("descend")
         pool = []
         for node in next_level:
@@ -163,6 +184,8 @@ def descend_for_sentences(nodes):
         if pool:
             return pool, confidence, fallbacks
         current = next_level
+        level += 1
+    return [], confidence, fallbacks
 
 
 def _bit_count(n):
