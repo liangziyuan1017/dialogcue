@@ -109,6 +109,19 @@ def compute_hwr(call_ids, reward_lookup):
     return (wins + alpha) / (total + beta)
 
 
+def compute_node_hwr(sentence_pool, reward_lookup):
+    all_call_ids = set()
+    for s in sentence_pool:
+        all_call_ids.update(s.get("source_call_ids", []))
+    if not all_call_ids:
+        return _cfg("hwr.default", 0.5)
+    alpha = _cfg("hwr.laplace_alpha", 1)
+    beta = _cfg("hwr.laplace_beta", 2)
+    wins = sum(1 for cid in all_call_ids if reward_lookup.get(cid) == 1)
+    total = len(all_call_ids)
+    return (wins + alpha) / (total + beta)
+
+
 def cosine_similarity(a, b):
     a = np.array(a, dtype=np.float64)
     b = np.array(b, dtype=np.float64)

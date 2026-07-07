@@ -5,9 +5,9 @@
 | F000 | State Keyword Discovery | complete | agent | feature doc | [F000](features/F000-state-keyword-discovery.md) |
 | F001 | Data Schema Alignment | complete | agent | feature doc | [F001](features/F001-data-schema-alignment.md) |
 | F003 | Reward Labeling | complete | agent | feature doc | [F003](features/F003-reward-labeling.md) |
-| F004 | Decision Tree Construction | complete | agent | feature doc | [F004](features/F004-decision-tree-construction.md) |
+| F004 | Decision Tree Construction | in-progress | agent | feature doc | [F004](features/F004-decision-tree-construction.md) |
 | F004-dedup | Sentence Pool Deduplication | complete | agent | F004 | [F004-dedup](features/F004-sentence-pool-dedup.md) |
-| F005 | Context Tagging & Quality Scoring | complete | agent | feature doc | [F005](features/F005-context-tagging-quality-scoring.md) |
+| F005 | Context Tagging & Quality Scoring | in-progress | agent | feature doc | [F005](features/F005-context-tagging-quality-scoring.md) |
 | F006 | Retrieval & Ranking Engine | complete | agent | feature doc | [F006](features/F006-retrieval-ranking-engine.md) |
 | F007 | Infrastructure Layer | review | agent | [impl-steps](features/F007-F009-implementation-steps.md) | [F007](features/F007-infra-layer.md) |
 | F007b | Vector Retrieval Integration | review | agent | [impl-steps](features/F007-F009-implementation-steps.md) | [F007b](features/F007b-vector-retrieval-integration.md) |

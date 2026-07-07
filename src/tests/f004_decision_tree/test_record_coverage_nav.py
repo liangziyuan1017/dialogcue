@@ -287,13 +287,20 @@ def test_every_record_has_greeting_in_tree(tree_and_records):
 def test_every_record_all_facts_have_nodes(tree_and_records):
     tree, records = tree_and_records
     all_facts_in_tree = _collect_all_facts(tree)
+    all_inherited = set()
+    def _walk(node):
+        all_inherited.update(node.get("inherited_facts", []))
+        for child in node.get("children", []):
+            _walk(child)
+    _walk(tree)
+    all_facts_available = all_facts_in_tree | all_inherited
     missing_from_tree = []
     for rec in records:
         call_id = rec["call_id"]
         for turn in rec.get("turns_annotated", []):
             state = turn.get("state") or {}
             for f in state.get("facts", []):
-                if f not in all_facts_in_tree:
+                if f not in all_facts_available:
                     missing_from_tree.append(f"{call_id} t{turn['turn_index']}: fact '{f}' not in tree at all")
     assert not missing_from_tree, "Facts in data but completely absent from tree:\n" + "\n".join(missing_from_tree)
 
@@ -301,13 +308,20 @@ def test_every_record_all_facts_have_nodes(tree_and_records):
 def test_every_record_all_emotions_have_nodes(tree_and_records):
     tree, records = tree_and_records
     all_emotions_in_tree = _collect_all_emotions(tree)
+    all_inherited = set()
+    def _walk(node):
+        all_inherited.update(node.get("inherited_emotions", []))
+        for child in node.get("children", []):
+            _walk(child)
+    _walk(tree)
+    all_emotions_available = all_emotions_in_tree | all_inherited
     missing_from_tree = []
     for rec in records:
         call_id = rec["call_id"]
         for turn in rec.get("turns_annotated", []):
             state = turn.get("state") or {}
             for e in state.get("emotions", []):
-                if e not in all_emotions_in_tree:
+                if e not in all_emotions_available:
                     missing_from_tree.append(f"{call_id} t{turn['turn_index']}: emotion '{e}' not in tree at all")
     assert not missing_from_tree, "Emotions in data but completely absent from tree:\n" + "\n".join(missing_from_tree)
 

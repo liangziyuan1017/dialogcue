@@ -84,7 +84,7 @@ output_aligned.py  (overwritten with relabeled tags)                            
         ▼  F003  (LLM reward R∈{0,1} + counterfactual credit)                         │
 output_rewarded.py  (reward + reward_action_credit + reward_evidence)                 │
         │                                                                            │
-        ▼  F004  (segment extraction → fact-by-fact walk → transforms → dedup)        │
+        ▼  F004  (additive per-dialog insertion → action split at insert → consolidate endpoints)  │
 decision_tree.json  (309 nodes, 782 sentences, DAG)                                   │
         │                                                                            │
         ▼  F005  (bitmask tagging + HWR + SAS + conversation_context)                 │
@@ -443,20 +443,17 @@ Same structure as `output_aligned.py`, but:
 
 #### What this does
 
-Builds a collector decision tree (309 nodes, 782 sentences, max depth 17) where nodes are collector action points, branches are customer facts/emotions, and willingness is a per-sentence label. Conversations are decomposed into segments of (customer branch key → collector sentences), walked fact-by-fact to create single-key nodes, then transformed (action splitting, redundant fact/emotion collapse, node-identity dedup) into a DAG.
+Builds a collector decision tree where nodes are collector action points, branches are customer facts/emotions, and willingness is a per-sentence label. Uses **additive per-dialog insertion** (`add_dialog_to_tree`) — each conversation is placed in its final home at insert time, with no global post-transform passes. The tree is a persistent artifact that grows dialog-by-dialog via `merge_dialogs`, supporting incremental rebuild (Scaling Path).
 
 #### Design considerations & decisions
 
-- **ADR-011**: Nodes = collector action points, branches = customer (facts, emotions), willingness = sentence label. Eliminated chain structure (single-child ratio 14.4%). Consolidated `initial_contact` root + `normal_end` / `abrupt_end` terminals.
-- **ADR-012**: `collector_action` field on sentence entries — UI display + O(1) action filtering without traversing to parent.
-- **ADR-015**: Local tree building (no global node reuse) — global reuse broke path continuity; match only against `current_node` children.
+- **ADR-011**: Nodes = collector action points, branches = customer (facts, emotions), willingness = sentence label. Consolidated `initial_contact` root + `normal_end` / `abrupt_end` terminals.
+- **ADR-012**: `collector_action` field on sentence entries — UI display + O(1) action filtering.
 - **ADR-016**: Fact-by-fact walking — walk each fact/emotion one at a time, creating single-key nodes; eliminates composite-node bugs.
-- **ADR-017**: Action node splitting — force-split pools into `a:xxx` children for fact/emotion parents; uniform `fact→emotion→action→sentences` structure.
-- **ADR-018 (superseded by ADR-022)**: Redundant fact collapse with `inherited_facts` propagation.
-- **ADR-019**: `state=None` collector turns captured without synthetic other` label (58 turns, 14.5%) — merged into parent pool.
+- **ADR-019**: `state=None` collector turns captured without synthetic `other` label.
 - **ADR-021**: Node identity dedup — identity = `(inherited_facts, inherited_emotions, branch_key)`; DAG with cycle protection via `_is_ancestor`.
-- **ADR-022**: Redundant emotion collapse — extends ADR-018 to collapse `anger → anger` nested emotion paths.
-- **ADR-023**: Sentence pool dedup at transform boundaries — `_dedup_pool` by `script_text` after every `.extend()`.
+- **ADR-029**: Additive tree building — replaces global post-transform chain (`_split_composite_nodes`, `_merge_sibling_facts`, `_collapse_redundant_facts`, `_split_by_action`). Each dialog is inserted atomically via `add_dialog_to_tree`; action split, ending consolidation, and redundant-fact skip happen at insert time. Supersedes ADR-015/017/018/022/023.
+- **ADR-030**: Node role tagging — every node has `role ∈ {opening, ending, decision, action}` at creation. All transforms/inserters respect roles. Prevents `_split_by_action` from corrupting root and end nodes.
 - **Willingness as sentence label, not branch key**: same (facts, emotions) = same decision point regardless of willingness.
 - **Segment-based extraction**: each conversation decomposed into (customer branch key → collector sentences), not individual turns.
 - **LLM-guided collector turn merging**: merge fragmented consecutive collector turns before segment extraction; hard limit `MAX_MERGED_WORDS=150`.
@@ -464,16 +461,27 @@ Builds a collector decision tree (309 nodes, 782 sentences, max depth 17) where 
 
 **Input**: `output_rewarded.py`
 
-**Process**: Extract state-transition paths from annotated conversations, merge identical/near-identical state sequences, accumulate historical collector sentences at each node.
+**Process** (additive):
+1. `make_base_tree()` → root (role=opening) + normal_end (role=ending) + abrupt_end (role=ending)
+2. For each conversation record, `add_dialog_to_tree(tree, record, registry)`:
+   - Greeting turns → root.sentence_pool (gesture_type=opening)
+   - Extract segments (fact/emotion branch keys → collector sentences)
+   - Walk facts/emotions one at a time; reuse or spawn decision nodes (role=decision)
+   - Place sentences: action split at insert for decision nodes → a:xxx children (role=action); unassigned → node pool
+   - Closing sentences → normal_end.sentence_pool (gesture_type=ending)
+   - Redundant-fact skip: if fact already in accumulated_facts, skip spawn
+3. Final touches: `_propagate_facts`, `_deduplicate_nodes`, `_ensure_leaf_termination`, `_consolidate_endpoints`, `_sort_keywords`
+4. `merge_dialogs(tree_path, new_records)` — load-or-create, add each, save. Incremental = merge only new call_ids; full rebuild = delete tree file + merge all.
 
 **Output**: `/src/f004_decision_tree/data/decision_tree.json`
 
-Tree structure (309 nodes, 782 sentences):
+Tree structure:
 
 ```json
 {
   "state_id": "initial_contact",
   "branch_key": {},
+  "role": "opening",
   "inherited_facts": [],
   "inherited_emotions": [],
   "sentence_pool": [
@@ -485,23 +493,17 @@ Tree structure (309 nodes, 782 sentences):
   ],
   "children": [
     {
-      "state_id": "a:closure",
-      "branch_key": {"action": "closure"},
-      "inherited_facts": [],
-      "inherited_emotions": [],
-      "sentence_pool": [...],
-      "children": []
-    },
-    {
       "state_id": "f:request_installment",
       "branch_key": {"facts": ["request_installment"]},
+      "role": "decision",
       "inherited_facts": [],
       "inherited_emotions": [],
-      "sentence_pool": [...],
+      "sentence_pool": [],
       "children": [
         {
           "state_id": "a:information",
           "branch_key": {"action": "information"},
+          "role": "action",
           "inherited_facts": ["request_installment"],
           "inherited_emotions": [],
           "sentence_pool": [...],
@@ -510,35 +512,33 @@ Tree structure (309 nodes, 782 sentences):
         {
           "state_id": "e:disappointment",
           "branch_key": {"emotions": ["disappointment"]},
+          "role": "decision",
           "inherited_facts": ["request_installment"],
           "inherited_emotions": [],
           "sentence_pool": [],
-          "children": [
-            {
-              "state_id": "a:plan_proposal",
-              "branch_key": {"action": "plan_proposal"},
-              "inherited_facts": ["request_installment"],
-              "inherited_emotions": ["disappointment"],
-              "sentence_pool": [...],
-              "children": []
-            },
-            {
-              "state_id": "f:ability_to_pay",
-              "branch_key": {"facts": ["ability_to_pay"]},
-              "inherited_facts": ["request_installment"],
-              "inherited_emotions": ["disappointment"],
-              "sentence_pool": [],
-              "children": [...]
-            }
-          ]
+          "children": [...]
         }
       ]
+    },
+    {
+      "state_id": "normal_end",
+      "branch_key": {"end_type": "normal"},
+      "role": "ending",
+      "sentence_pool": [...],
+      "children": []
+    },
+    {
+      "state_id": "abrupt_end",
+      "branch_key": {"end_type": "abrupt"},
+      "role": "ending",
+      "sentence_pool": [...],
+      "children": []
     }
   ]
 }
 ```
 
-**Key**: `branch_key` is a dict with one key — either `"facts"`, `"emotions"`, or `"action"` — containing the state group that led to this branch. `inherited_facts` accumulates facts from ancestor nodes. `inherited_emotions` accumulates emotions from ancestor nodes. The `state` label on customer turns may also include a `willingness` field (e.g. `"conditional"`, `"negotiating"`, `"strong"`) from F000's willingness levels — willingness is tracked in conversation state but is not used in the node key or tree structure.
+**Key**: `branch_key` is a dict with one key — either `"facts"`, `"emotions"`, or `"action"` — containing the state group that led to this branch. `role` tags the node's function: `opening` (root), `ending` (terminal), `decision` (fact/emotion branch), `action` (collector action leaf). `inherited_facts` accumulates facts from ancestor nodes. `inherited_emotions` accumulates emotions from ancestor nodes.
 
 ### Step 1.6: F005 — Context Scoring + Embedding + Database Load
 
@@ -991,7 +991,7 @@ Examples:
 - Sentence `bg_bitmask_int=0` (no constraints) → score 1.0
 - Sentence `bg_bitmask_int=2` (requires `has_mortgage`), query has bit 1 → 1/1 = 1.0
 - Sentence `bg_bitmask_int=18` (requires `has_mortgage` + `credit_rating_good`), query has bit 1 only → 1/2 = 0.50
-- Sentence `bg_bitmask_int=31` (requires 5 bits), query has 3 of them → 3/5 = 0.60
+- Sentence `bg_bitmask_int=1023` (requires 10 bits), query has 3 of them → 3/10 = 0.30
 
 **Confidence penalty**: If top result has `bitmask_score < 1.0`, confidence is reduced by `(1.0 - bitmask_score) × bitmask_mismatch_penalty` (default 0.1).
 
@@ -1633,17 +1633,20 @@ Authoritative decision records. Each is one line here; see
 | [ADR-012](docs/decisions/ADR-012-collector-action-field.md) | collector_action field | `collector_action` on sentence entries for UI display + O(1) action filtering without parent traversal. |
 | [ADR-013](docs/decisions/ADR-013-dialog-tracer.md) | Dialog tracer | Animated walkthrough (1400ms/step) validating real conversations map to tree paths. |
 | [ADR-014](docs/decisions/ADR-014-bundled-js-libs.md) | Bundled JS libs | Bundle cytoscape/dagre locally (~1.5MB) for offline operation — bank internal deployments require offline. |
-| [ADR-015](docs/decisions/ADR-015-local-tree-building.md) | Local tree building | Match only against `current_node` children, not globally — global reuse broke path continuity. |
+| [ADR-015](docs/decisions/ADR-015-local-tree-building.md) | Local tree building | **Superseded by ADR-029.** Match only against `current_node` children, not globally. |
 | [ADR-016](docs/decisions/ADR-016-fact-by-fact-walking.md) | Fact-by-fact walking | Walk each fact/emotion one at a time, creating single-key nodes; eliminates composite-node bugs. |
-| [ADR-017](docs/decisions/ADR-017-action-node-splitting.md) | Action node splitting | Force-split pools into `a:xxx` children for fact/emotion parents; uniform `fact→emotion→action→sentences`. |
-| [ADR-018](docs/decisions/ADR-018-redundant-fact-collapse.md) | Redundant fact collapse | **Superseded by ADR-022.** Remove `f:X → f:X` redundant nodes; propagate `inherited_facts`. |
+| [ADR-017](docs/decisions/ADR-017-action-node-splitting.md) | Action node splitting | **Superseded by ADR-029.** Force-split pools into `a:xxx` children for fact/emotion parents. |
+| [ADR-018](docs/decisions/ADR-018-redundant-fact-collapse.md) | Redundant fact collapse | **Superseded by ADR-029.** Remove `f:X → f:X` redundant nodes; propagate `inherited_facts`. |
 | [ADR-019](docs/decisions/ADR-019-state-none-handling.md) | state=None handling | Capture 58 no-action collector turns in parent pool without synthetic `other` label. |
 | [ADR-020](docs/decisions/ADR-020-f005-bitmask-scoring-design.md) | F005 bitmask + scoring | 10-bit bitmask for soft scoring (matched_bits/required_bits); intersection merge; Laplace-smoothed HWR; char-bigram TF-IDF SAS (numpy only). Expanded 5→10 bits on 2026-06-22. Soft scoring replaced hard filter on 2026-06-29. |
 | [ADR-021](docs/decisions/ADR-021-node-identity-dedup.md) | Node identity dedup | Identity = `(inherited_facts, inherited_emotions, branch_key)`; DAG with cycle protection. |
-| [ADR-022](docs/decisions/ADR-022-redundant-emotion-collapse.md) | Redundant emotion collapse | Extend ADR-018 to collapse `anger → anger` nested emotion paths; symmetric with fact collapse. |
-| [ADR-023](docs/decisions/ADR-023-sentence-pool-dedup.md) | Sentence pool dedup | `_dedup_pool` by `script_text` after every `.extend()` in 3 transforms; fixes data for all consumers. |
+| [ADR-022](docs/decisions/ADR-022-redundant-emotion-collapse.md) | Redundant emotion collapse | **Superseded by ADR-029.** Extend ADR-018 to collapse `anger → anger` nested emotion paths. |
+| [ADR-023](docs/decisions/ADR-023-sentence-pool-dedup.md) | Sentence pool dedup | **Superseded by ADR-029.** `_dedup_pool` by `script_text` after every `.extend()` in transforms. |
 | [ADR-024](docs/decisions/ADR-024-embedding-architecture.md) | Embedding architecture | bge-m3 via Ollama (1024-dim, OpenAI-compatible) replaces char-ngram TF-IDF; local/no-cost/offline; unified ranking replaces dual-strategy. |
 | [ADR-025](docs/decisions/ADR-025-f010-ui-architecture.md) | F010 UI architecture | Vanilla JS + FastAPI StaticFiles; no build step; CodeMirror 6 + Tailwind via CDN; same server/port; `/recommend/debug` endpoint. |
 | [ADR-026](docs/decisions/ADR-026-open-set-extraction-relabel.md) | Open-set extraction + sync relabel | Open-set extraction for facts/emotions (free-form labels), closed-set for willingness; synchronous relabel pipeline normalizes through `*_descriptions` → `*_relabeled` → `llm_relabel`; self-extending taxonomy. |
 | [ADR-027](docs/decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md) | DB concurrency: asyncpg runtime | `psycopg2.pool.ThreadedConnectionPool` + `run_in_threadpool` was an interim fix (F012 Phase B); F013 replaced the runtime DB driver with native `asyncpg` — all hot-path DB methods are `async`, no thread overhead. Build-time batch loads keep `psycopg2`. |
 | [ADR-028](docs/decisions/ADR-028-sql-side-cosine-scoring.md) | SQL-side cosine scoring | Move `vec_score` computation from Python/numpy to PostgreSQL via pgvector `<=>` operator; eliminates raw embedding transfer to Python. |
+| [ADR-029](docs/decisions/ADR-029-additive-tree-building.md) | Additive tree building | Replace global post-transform chain with per-dialog insertion (`add_dialog_to_tree`). Action split, ending consolidation, redundant-fact skip happen at insert time. Enables incremental merge via `merge_dialogs`. Supersedes ADR-015/017/018/022/023. |
+| [ADR-030](docs/decisions/ADR-030-node-role-tagging.md) | Node role tagging | Every node gets `role ∈ {opening, ending, decision, action}` at creation. Prevents `_split_by_action` from corrupting root and end nodes. |
+| [ADR-031](docs/decisions/ADR-031-node-hwr-blending.md) | Node HWR blending | Compute node-level HWR from all `source_call_ids` in pool; blend with sentence-level: `win_rate = weight*sentence_hwr + (1-weight)*node_hwr` where `weight = n/(n+2)`. |

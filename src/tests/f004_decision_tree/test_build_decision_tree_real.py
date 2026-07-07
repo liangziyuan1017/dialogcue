@@ -198,10 +198,10 @@ def test_real_data_abrupt_end_exists():
     records = mod.results
 
     tree = build_tree(records)
-    abrupt = _find_nodes_by_state_id(tree, "abrupt_end")
-    normal = _find_nodes_by_state_id(tree, "normal_end")
-    assert len(abrupt) == 1, "Exactly one abrupt_end node"
-    assert len(normal) == 1, "Exactly one normal_end node"
+    abrupt_as_root = [c for c in tree.get("children", []) if c.get("state_id") == "abrupt_end"]
+    normal_as_root = [c for c in tree.get("children", []) if c.get("state_id") == "normal_end"]
+    assert len(abrupt_as_root) == 1, "Exactly one abrupt_end as root child"
+    assert len(normal_as_root) == 1, "Exactly one normal_end as root child"
 
 
 def test_real_data_leaf_termination():

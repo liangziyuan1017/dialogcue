@@ -13,10 +13,11 @@ def _make_abrupt_end_node():
         ],
         "children": [],
         "gesture_type": "ending",
+        "role": "ending",
     }
 
 
-def _ensure_leaf_termination(node, _visited=None):
+def _ensure_leaf_termination(node, abrupt_end_ref, _visited=None):
     if _visited is None:
         _visited = set()
     nid = id(node)
@@ -25,14 +26,14 @@ def _ensure_leaf_termination(node, _visited=None):
     _visited.add(nid)
     children = node.get("children", [])
     if not children:
-        is_end = node.get("state_id") == "abrupt_end" or any(
+        is_end = node.get("state_id") in ("normal_end", "abrupt_end") or any(
             s.get("gesture_type") == "ending" for s in node.get("sentence_pool", [])
         )
         if not is_end:
-            node["children"] = [_make_abrupt_end_node()]
+            node["children"] = [abrupt_end_ref]
     else:
         for child in children:
-            _ensure_leaf_termination(child, _visited)
+            _ensure_leaf_termination(child, abrupt_end_ref, _visited)
 
 
 def _dedup_pool(pool):
@@ -46,6 +47,54 @@ def _dedup_pool(pool):
     return result
 
 
+def _link_leaves_to_abrupt_end(node, abrupt_end, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
+    children = node.get("children", [])
+    if not children and node.get("state_id") not in ("normal_end", "abrupt_end"):
+        node["children"] = [abrupt_end]
+    else:
+        for child in children:
+            _link_leaves_to_abrupt_end(child, abrupt_end, _visited)
+
+
+def _remove_stray_abrupt_ends(node, root_abrupt_end, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
+    new_children = []
+    for child in node.get("children", []):
+        if child.get("state_id") == "abrupt_end" and node.get("state_id") != "initial_contact":
+            continue
+        new_children.append(child)
+    node["children"] = new_children
+    for child in new_children:
+        _remove_stray_abrupt_ends(child, root_abrupt_end, _visited)
+
+
+def _strip_ending_from_non_end(node, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
+    if node.get("state_id") not in ("normal_end", "abrupt_end"):
+        node["sentence_pool"] = [
+            s for s in node.get("sentence_pool", [])
+            if s.get("gesture_type") != "ending"
+        ]
+    for child in node.get("children", []):
+        _strip_ending_from_non_end(child, _visited)
+
+
 def _consolidate_endpoints(root):
     normal_end = {
         "state_id": "normal_end",
@@ -53,6 +102,7 @@ def _consolidate_endpoints(root):
         "sentence_pool": [],
         "children": [],
         "gesture_type": "ending",
+        "role": "ending",
     }
     abrupt_end = {
         "state_id": "abrupt_end",
@@ -68,6 +118,7 @@ def _consolidate_endpoints(root):
         ],
         "children": [],
         "gesture_type": "ending",
+        "role": "ending",
     }
 
     ending_sentences = []
@@ -85,9 +136,13 @@ def _consolidate_endpoints(root):
         })
 
     _strip_terminal_nodes(root)
+    _strip_ending_from_non_end(root)
 
     root["children"].append(normal_end)
     root["children"].append(abrupt_end)
+
+    _link_leaves_to_abrupt_end(root, abrupt_end)
+    _remove_stray_abrupt_ends(root, abrupt_end)
 
 
 def _collect_ending_sentences(node, results, _visited=None):
@@ -156,6 +211,7 @@ def _split_composite_nodes(node, _visited=None):
                 "branch_key": {"facts": [fact]},
                 "sentence_pool": [] if not is_last else [],
                 "children": [] if not is_last else [],
+                "role": "decision",
             }
             chain.append(n)
         if sorted_emotions:
@@ -164,6 +220,7 @@ def _split_composite_nodes(node, _visited=None):
                 "branch_key": {"emotions": sorted_emotions},
                 "sentence_pool": child.get("sentence_pool", []),
                 "children": child.get("children", []),
+                "role": "decision",
             }
             if chain:
                 chain[-1]["children"] = [emotion_node]
@@ -221,6 +278,8 @@ def _split_by_action(node, _visited=None):
     _visited.add(nid)
     for child in node.get("children", []):
         _split_by_action(child, _visited)
+    if node.get("role") != "decision":
+        return
     pool = node.get("sentence_pool", [])
     if not pool:
         return
@@ -246,6 +305,7 @@ def _split_by_action(node, _visited=None):
             "branch_key": {"action": action},
             "sentence_pool": by_action[action],
             "children": [],
+            "role": "action",
         }
         action_children.append(action_node)
     node["children"] = action_children + node.get("children", [])

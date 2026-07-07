@@ -100,7 +100,11 @@ def run(args) -> None:
     _log.info(f"\n{ts()} F004: build_decision_tree")
     import f004_decision_tree.build_decision_tree as bdt
     tree_path = BASE_DIR / "f004_decision_tree" / "data" / "decision_tree.json"
-    node_count = bdt.write_decision_tree(rewarded, output_path=str(tree_path))
+    if args.rebuild or not tree_path.exists():
+        node_count = bdt.write_decision_tree(rewarded, output_path=str(tree_path))
+    else:
+        node_count = bdt.merge_dialogs(str(tree_path), rewarded)
+        node_count = bdt._count_nodes(node_count) if isinstance(node_count, dict) else node_count
     _log.info(f"  → {tree_path.name}  ({node_count} nodes)")
 
     # ── F005: score_tree ───────────────────────────────────────────────────
@@ -136,6 +140,10 @@ def main() -> None:
     parser.add_argument(
         "--merged-file", type=Path, default=None,
         help="Path to merged output (default: data/data_output/output_merged.py)",
+    )
+    parser.add_argument(
+        "--rebuild", action="store_true", default=False,
+        help="Force full rebuild of decision tree from scratch",
     )
     run(parser.parse_args())
 

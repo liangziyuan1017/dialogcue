@@ -1,11 +1,11 @@
 ---
 id: F004
 name: Decision Tree Construction
-status: complete
+status: approved
 owner: agent
 source: ROADMAP.md
 created: 2026-06-11
-updated: 2026-06-23
+updated: 2026-07-07
 depends_on: F003
 ---
 

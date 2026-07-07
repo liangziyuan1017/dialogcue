@@ -189,7 +189,7 @@ def test_all_7_action_categories_render_as_action_type():
             assert ntype == "action", (
                 f"Action node {node['state_id']} (action={act}) is type '{ntype}', expected 'action'"
             )
-    expected_actions = {"greeting", "information", "plan_proposal", "pressure", "empathy", "legal_threat", "closure"}
+        expected_actions = {"information", "plan_proposal", "pressure", "empathy", "legal_threat"}
     assert seen_actions == expected_actions, (
         f"Action categories mismatch: expected {expected_actions}, got {seen_actions}"
     )

@@ -6,6 +6,7 @@ from f005_context_scoring.scoring_metrics import (
     compute_bg_background,
     compute_bg_constraints,
     compute_hwr,
+    compute_node_hwr,
     compute_sas_for_pool,
     encode_bitmask,
     encode_bitmask_int,
@@ -113,6 +114,9 @@ def build_conversation_context_lookup(tree, turns_lookup=None):
 
 
 def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup=None, embed_fn=None):
+    if not sentence_pool:
+        return sentence_pool
+    node_hwr = compute_node_hwr(sentence_pool, reward_lookup)
     for s in sentence_pool:
         call_ids = s.get("source_call_ids", [])
         bg = compute_bg_constraints(call_ids, context_lookup)
@@ -121,7 +125,11 @@ def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_
         s["bg_bitmask"] = bg_bitmask
         s["bg_bitmask_int"] = encode_bitmask_int(bg_bitmask)
         s["bg_background"] = compute_bg_background(call_ids, customer_info_lookup)
-        s["win_rate"] = compute_hwr(call_ids, reward_lookup)
+        sentence_hwr = compute_hwr(call_ids, reward_lookup)
+        n = len(call_ids)
+        weight = n / (n + 2)
+        s["win_rate"] = weight * sentence_hwr + (1 - weight) * node_hwr
+        s["win_rate_node"] = node_hwr
         s["uplift_score"] = 0
         s["csi"] = 0
         s["deferred"] = True

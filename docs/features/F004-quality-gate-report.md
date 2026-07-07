@@ -1,7 +1,7 @@
 ## Quality Gate Report — F004
 
 Spec: F004-decision-tree-construction.md
-检查时间: 2026-06-17
+检查时间: 2026-07-07
 
 ### 愿景覆盖（Step 0）
 | # | Human原始需求 | AC 覆盖？ | 实现？ |
@@ -27,53 +27,58 @@ Spec: F004-decision-tree-construction.md
 | 19 | All emotions from data have tree nodes | AC#19 | ✅ |
 | 20 | state=None collector turns captured without synthetic label | AC#20 | ✅ |
 | 21 | Empty-sentence segments create branch nodes | AC#21 | ✅ |
+| 22 | Every node has role ∈ {opening, ending, decision, action} | ADR-030 | ✅ |
+| 23 | Tree supports incremental merge via merge_dialogs | ADR-029 | ✅ |
+| 24 | No ending sentences outside end nodes | ADR-029 | ✅ |
+| 25 | Root has no a:greeting action child | ADR-030 | ✅ |
 
 ### 功能验收
 | # | 要求 | 状态 | 代码位置 | 测试覆盖 |
 |---|------|------|----------|----------|
-| 1 | Root initial_contact | ✅ | src/f004_decision_tree/build_decision_tree.py | test_build_tree_has_root_initial_contact |
-| 2 | Leaf sentence_pool non-empty | ✅ | src/f004_decision_tree/build_decision_tree.py | test_build_tree_leaf_has_sentence_pool |
-| 3 | Sentence entry fields | ✅ | src/f004_decision_tree/build_decision_tree.py | test_sentence_entry_has_required_fields |
-| 4 | All 31 call_ids represented | ✅ | src/f004_decision_tree/build_decision_tree.py | test_all_call_ids_represented |
-| 5 | Keywords sorted | ✅ | src/f004_decision_tree/build_decision_tree.py | test_keywords_sorted_at_every_node |
-| 6 | Fallback tag removal | ✅ | src/f004_decision_tree/build_decision_tree.py | test_find_node_fallback_removes_emotions |
-| 7 | Real data integration | ✅ | src/f004_decision_tree/build_decision_tree.py | test_real_data_all_criteria |
-| 8 | Branches keyed by (facts, emotions) | ✅ | src/f004_decision_tree/build_decision_tree.py | test_build_tree_branches_on_facts_emotions |
-| 9 | Tree is branching | ✅ | src/f004_decision_tree/build_decision_tree.py | test_real_data_branches_not_chains |
-| 10 | Opening gestures | ✅ | src/f004_decision_tree/build_decision_tree.py | test_real_data_opening_gestures |
-| 11 | Consolidated endpoints | ✅ | src/f004_decision_tree/build_decision_tree.py | test_tree_has_exactly_one_normal_end_and_one_abrupt_end |
-| 12 | Path termination | ✅ | src/f004_decision_tree/build_decision_tree.py | test_every_leaf_is_end_node_or_abrupt_end |
-| 13 | collector_action on sentences | ✅ | src/f004_decision_tree/build_decision_tree.py | test_greeting_sentences_have_collector_action |
-| 14 | No composite branch keys | ✅ | src/f004_decision_tree/build_decision_tree.py | test_no_composite_branch_keys |
-| 15 | No redundant fact nodes | ✅ | src/f004_decision_tree/build_decision_tree.py | test_no_redundant_fact_nodes |
-| 16 | Strict inherited_facts | ✅ | src/f004_decision_tree/build_decision_tree.py | test_inherited_facts_strictly_from_parent_chain |
-| 17 | Sentences under action nodes | ✅ | src/f004_decision_tree/build_decision_tree.py | test_sentences_under_action_nodes_for_fact_emotion_parents |
-| 18 | Every record has greeting | ✅ | src/test_record_coverage.py | test_every_record_has_greeting_in_tree |
-| 19 | All facts have nodes | ✅ | src/test_record_coverage.py | test_every_record_all_facts_have_nodes |
-| 20 | All emotions have nodes | ✅ | src/test_record_coverage.py | test_every_record_all_emotions_have_nodes |
-| 21 | All collector actions in tree | ✅ | src/test_record_coverage.py | test_every_record_all_collector_actions_in_tree |
-| 22 | Record sequence correctness | ✅ | src/test_record_coverage.py | test_every_record_sequence_is_correct |
-| 23 | All 31 call_ids (coverage) | ✅ | src/test_record_coverage.py | test_all_31_call_ids_represented |
-| 24 | Node category correctness | ✅ | src/test_record_coverage.py | test_node_category_correctness |
+| 1 | Root initial_contact | ✅ | build_decision_tree.py | test_root_state_id |
+| 2 | Leaf sentence_pool non-empty | ✅ | build_decision_tree.py | test_build_tree_leaf_has_sentence_pool |
+| 3 | Sentence entry fields | ✅ | build_decision_tree.py | test_every_sentence_has_required_fields |
+| 4 | All 31 call_ids represented | ✅ | build_decision_tree.py | test_all_call_ids_in_tree |
+| 5 | Keywords sorted | ✅ | build_decision_tree.py | test_keywords_sorted |
+| 6 | Fallback tag removal | ✅ | build_decision_tree.py | test_find_node_fallback_removes_emotions |
+| 7 | Real data integration | ✅ | build_decision_tree.py | test_real_data_all_criteria |
+| 8 | Branches keyed by (facts, emotions) | ✅ | build_decision_tree.py | test_build_tree_branches_on_facts_emotions |
+| 9 | Tree is branching | ✅ | build_decision_tree.py | test_real_data_branches_not_chains |
+| 10 | Opening gestures | ✅ | build_decision_tree.py | test_real_data_opening_gestures |
+| 11 | Consolidated endpoints | ✅ | build_decision_tree.py | test_exactly_one_normal_end_as_root_child |
+| 12 | Path termination | ✅ | build_decision_tree.py | test_every_leaf_is_end_node |
+| 13 | collector_action on sentences | ✅ | build_decision_tree.py | test_greeting_sentences_have_collector_action |
+| 14 | No composite branch keys | ✅ | build_decision_tree.py | test_no_composite_branch_keys |
+| 15 | No redundant fact nodes | ✅ | build_decision_tree.py | test_no_redundant_fact_nodes |
+| 16 | Strict inherited_facts | ✅ | build_decision_tree.py | test_inherited_facts_strictly_from_parent_chain |
+| 17 | Sentences under action nodes | ✅ | build_decision_tree.py | test_sentences_under_action_nodes_for_fact_emotion_parents |
+| 18 | Every record has greeting | ✅ | test_record_coverage.py | test_every_record_has_greeting_in_tree |
+| 19 | All facts have nodes | ✅ | test_record_coverage.py | test_every_record_all_facts_have_nodes |
+| 20 | All emotions have nodes | ✅ | test_record_coverage.py | test_every_record_all_emotions_have_nodes |
+| 21 | All collector actions in tree | ✅ | test_record_coverage.py | test_every_record_all_collector_actions_in_tree |
+| 22 | Record sequence correctness | ✅ | test_record_coverage.py | test_every_record_sequence_is_correct |
+| 23 | All 31 call_ids (coverage) | ✅ | test_record_coverage.py | test_all_31_call_ids_represented |
+| 24 | Node category correctness | ✅ | test_record_coverage.py | test_node_category_correctness |
+| 25 | Every node has valid role | ✅ | test_role_tagging.py | test_every_node_has_valid_role |
+| 26 | Root role=opening | ✅ | test_role_tagging.py | test_root_role_is_opening |
+| 27 | End nodes role=ending | ✅ | test_role_tagging.py | test_end_nodes_role_is_ending |
+| 28 | Greetings stay in root | ✅ | test_role_tagging.py | test_greetings_stay_in_root_after_write |
+| 29 | Endings consolidated | ✅ | test_role_tagging.py | test_endings_consolidated_in_normal_end_after_write |
+| 30 | Additive idempotency | ✅ | test_additive.py | test_idempotent_double_insert |
+| 31 | Incremental merge | ✅ | test_additive.py | test_incremental_merge |
+| 32 | Additive equivalence | ✅ | test_additive.py | test_same_call_id_coverage |
+| 33 | 19 artifact invariants | ✅ | test_tree_invariants.py | all 19 tests |
 
-### Tree Statistics (2026-06-17)
-- Total nodes: 333
-- Leaf nodes: 222
+### Tree Statistics (2026-07-07, additive pipeline)
+- Total nodes: 200
 - Max depth: 17
-- Single-child nodes: 16
-- Multi-child nodes: 95
-- Single-child ratio: 14.4%
-- Opening gesture sentences: 217
-- Ending gesture sentences: 345
-- Non-gesture sentences: 772
 - Unique call_ids: 31/31
-- Branch key actions: 7
-- Branch key facts: 53
-- Branch key emotions: 23
+- Pipeline: additive (make_base_tree → add_dialog_to_tree per record → _propagate_facts → _deduplicate_nodes → _ensure_leaf_termination → _consolidate_endpoints → _sort_keywords)
+- Global transforms removed: _split_composite_nodes, _merge_sibling_facts, _collapse_redundant_facts, _split_by_action
 
-### Pipeline
+### Pipeline (additive, ADR-029)
 ```
-build_tree → _split_composite_nodes → _merge_sibling_facts → _collapse_redundant_facts → _split_by_action → _propagate_facts
+make_base_tree → add_dialog_to_tree (per record) → _propagate_facts → _deduplicate_nodes → _ensure_leaf_termination → _consolidate_endpoints → _sort_keywords
 ```
 
 ### UI Features

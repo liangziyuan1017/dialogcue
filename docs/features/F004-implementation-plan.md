@@ -202,3 +202,42 @@
 **Step 3: Remove** — `assignCompactLayout` and `compact` parameter (no longer needed)
 **Step 4: Verify** — open in browser, select record 13, confirm no overlap and comfortable zoom
 **Step 5: Commit**
+
+### Task 17: Additive Tree Building (ADR-029)
+
+**Files:**
+- Modify: `src/f004_decision_tree/build_decision_tree.py`
+- Create: `src/tests/f004_decision_tree/test_additive.py`
+
+**Step 1: Implement** — `make_base_tree()` → root + normal_end + abrupt_end with roles
+**Step 2: Implement** — `add_dialog_to_tree(tree, record, registry)` per ADR-029: greeting→root, action split at insert, closing→normal_end, redundant-fact skip
+**Step 3: Implement** — `build_registry_from_tree(tree)` → walk tree, populate {identity: node}
+**Step 4: Implement** — `merge_dialogs(tree_path, new_records)` → load-or-create, add each, save
+**Step 5: Refactor** — `build_tree()` to use additive approach; `write_decision_tree()` to remove global transforms (`_split_composite_nodes`, `_merge_sibling_facts`, `_collapse_redundant_facts`, `_split_by_action`)
+**Step 6: Write tests** — idempotency, incremental merge, call_id coverage equivalence
+**Step 7: Verify** — all tests pass, tree output unchanged
+**Step 8: Commit**
+
+### Task 18: Node Role Tagging (ADR-030)
+
+**Files:**
+- Modify: `src/f004_decision_tree/build_decision_tree.py`
+- Modify: `src/f004_decision_tree/tree_transforms.py`
+- Create: `src/tests/f004_decision_tree/test_role_tagging.py`
+
+**Step 1: Implement** — Add `role` to all node creation sites: root→"opening", fact/emotion→"decision", action→"action", end→"ending"
+**Step 2: Implement** — `_split_by_action` guard: `if node.get("role") != "decision": return`
+**Step 3: Implement** — Ending-mark aliasing fix: mark `gesture_type="ending"` before `_merge_sentences`; propagate in merge
+**Step 4: Implement** — `_strip_ending_from_non_end()` + `_link_leaves_to_abrupt_end()` in `_consolidate_endpoints`
+**Step 5: Write tests** — every node has valid role, root role=opening, end roles=ending, greetings stay in root, endings consolidated
+**Step 6: Verify** — all tests pass
+**Step 7: Commit**
+
+### Task 19: Artifact-Level Invariant Tests
+
+**Files:**
+- Create: `src/tests/f004_decision_tree/test_tree_invariants.py`
+
+**Step 1: Write tests** — 19 invariant tests loading generated JSON: root structure, opening gestures, ending consolidation, end node structure, leaf termination, sentence fields, call_id coverage, node metadata (role, node_id, inherited_facts/emotions, sorted keywords, no composite keys)
+**Step 2: Verify** — all pass on current output
+**Step 3: Commit**

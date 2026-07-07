@@ -112,6 +112,8 @@ def _merge_sentences(existing, new_entries):
                     if cid not in existing_entry["source_call_ids"]:
                         existing_entry["source_call_ids"].append(cid)
                         existing_entry["source_call_ids"].sort()
+                if entry.get("gesture_type") and not existing_entry.get("gesture_type"):
+                    existing_entry["gesture_type"] = entry["gesture_type"]
                 break
         else:
             by_key[k].append(entry)
@@ -126,130 +128,294 @@ def _is_ancestor(node, target):
     return False
 
 
-def build_tree(records, merge_decisions=None):
+def make_base_tree():
+    normal_end = {
+        "state_id": "normal_end",
+        "branch_key": {"end_type": "normal"},
+        "sentence_pool": [],
+        "children": [],
+        "gesture_type": "ending",
+        "role": "ending",
+    }
+    abrupt_end = {
+        "state_id": "abrupt_end",
+        "branch_key": {"end_type": "abrupt"},
+        "sentence_pool": [
+            {
+                "script_text": "[对话未正常结束]",
+                "script_id": "abrupt_end_marker",
+                "source_call_ids": [],
+                "customer_willingness": None,
+                "gesture_type": "ending",
+            }
+        ],
+        "children": [],
+        "gesture_type": "ending",
+        "role": "ending",
+    }
     root = {
         "state_id": "initial_contact",
         "branch_key": {},
         "sentence_pool": [],
-        "children": [],
+        "children": [normal_end, abrupt_end],
+        "role": "opening",
     }
-    node_registry = {}
+    return root
 
-    for record in records:
-        call_id = record.get("call_id", "")
-        turns = record.get("turns_annotated", [])
 
-        if merge_decisions is not None:
-            turns = _apply_merges(turns, call_id, merge_decisions)
+def build_registry_from_tree(tree):
+    registry = {}
+    def walk(node, acc_facts, acc_emotions):
+        own_facts = node.get("branch_key", {}).get("facts", [])
+        own_emotions = node.get("branch_key", {}).get("emotions", [])
+        merged_facts = sorted(set(acc_facts) | set(own_facts))
+        merged_emotions = sorted(set(acc_emotions) | set(own_emotions))
+        if node.get("branch_key"):
+            identity = _make_identity(acc_facts, acc_emotions, node.get("branch_key", {}))
+            registry[identity] = node
+        for child in node.get("children", []):
+            walk(child, merged_facts, merged_emotions)
+    walk(tree, [], [])
+    return registry
 
-        has_closing = False
 
-        for turn in turns:
-            if turn["role"] == "催收员" and turn.get("state", {}).get("action") == "greeting":
-                entry = {
-                    "script_text": turn["text"],
-                    "script_id": f"{call_id}_t{turn['turn_index']}",
-                    "source_call_ids": [call_id],
-                    "customer_willingness": None,
-                    "gesture_type": "opening",
-                    "collector_action": "greeting",
-                }
-                _merge_sentences(root["sentence_pool"], [entry])
+def _find_or_create_child(parent, branch_key, state_id, role, identity, registry):
+    for child in parent.get("children", []):
+        if child.get("branch_key") == branch_key:
+            return child
+    node = {
+        "state_id": state_id,
+        "branch_key": branch_key,
+        "sentence_pool": [],
+        "children": [],
+        "node_id": _compute_node_id(identity),
+        "role": role,
+    }
+    parent.setdefault("children", []).append(node)
+    registry[identity] = node
+    return node
 
-        segments = _extract_segments(turns, call_id)
 
-        current_node = root
-        accumulated_facts = []
-        accumulated_emotions = []
-        for seg in segments:
-            branch_key = seg["branch_key"]
-            seg_facts = branch_key.get("facts", [])
-            seg_emotions = branch_key.get("emotions", [])
+def _place_sentences_in_node(node, sentences, registry):
+    if not sentences:
+        return
+    role = node.get("role", "")
+    if role == "opening":
+        _merge_sentences(node["sentence_pool"], sentences)
+        return
+    if role != "decision":
+        _merge_sentences(node["sentence_pool"], sentences)
+        return
+    by_action = {}
+    unassigned = []
+    for s in sentences:
+        action = s.get("collector_action")
+        if action:
+            by_action.setdefault(action, []).append(s)
+        else:
+            unassigned.append(s)
+    if unassigned:
+        _merge_sentences(node["sentence_pool"], unassigned)
+    for action in sorted(by_action):
+        action_bk = {"action": action}
+        action_identity = _make_identity(
+            node.get("inherited_facts", []),
+            node.get("inherited_emotions", []),
+            action_bk,
+        )
+        action_child = None
+        for child in node.get("children", []):
+            if child.get("branch_key") == action_bk:
+                action_child = child
+                break
+        if action_child is None:
+            action_child = {
+                "state_id": f"a:{action}",
+                "branch_key": action_bk,
+                "sentence_pool": [],
+                "children": [],
+                "role": "action",
+            }
+            node.setdefault("children", []).append(action_child)
+            registry[action_identity] = action_child
+        _merge_sentences(action_child["sentence_pool"], by_action[action])
 
-            if not branch_key:
-                _merge_sentences(current_node["sentence_pool"], seg["sentences"])
-            else:
+
+def add_dialog_to_tree(tree, record, registry, merge_decisions=None):
+    call_id = record.get("call_id", "")
+    turns = record.get("turns_annotated", [])
+
+    if merge_decisions is not None:
+        turns = _apply_merges(turns, call_id, merge_decisions)
+
+    normal_end = None
+    for child in tree.get("children", []):
+        if child.get("state_id") == "normal_end":
+            normal_end = child
+            break
+
+    has_closing = False
+
+    for turn in turns:
+        if turn["role"] == "催收员" and turn.get("state", {}).get("action") == "greeting":
+            entry = {
+                "script_text": turn["text"],
+                "script_id": f"{call_id}_t{turn['turn_index']}",
+                "source_call_ids": [call_id],
+                "customer_willingness": None,
+                "gesture_type": "opening",
+                "collector_action": "greeting",
+            }
+            _merge_sentences(tree["sentence_pool"], [entry])
+
+    segments = _extract_segments(turns, call_id)
+
+    current_node = tree
+    accumulated_facts = []
+    accumulated_emotions = []
+
+    for seg in segments:
+        branch_key = seg["branch_key"]
+        seg_facts = branch_key.get("facts", [])
+        seg_emotions = branch_key.get("emotions", [])
+
+        if seg.get("is_closing"):
+            has_closing = True
+            for s in seg["sentences"]:
+                s["gesture_type"] = "ending"
+            if branch_key:
                 for fact in seg_facts:
+                    if fact in accumulated_facts:
+                        continue
                     single_bk = {"facts": [fact]}
                     child_identity = _make_identity(accumulated_facts, accumulated_emotions, single_bk)
-
-                    if child_identity in node_registry:
-                        matching = node_registry[child_identity]
-                        if _is_ancestor(matching, current_node):
-                            current_node = matching
-                            accumulated_facts = sorted(set(accumulated_facts) | {fact})
-                            continue
-                    else:
-                        children = current_node.setdefault("children", [])
-                        matching = None
-                        for child in children:
-                            if child.get("branch_key") == single_bk:
-                                matching = child
-                                break
-                        if matching is None:
-                            matching = {
-                                "state_id": f"f:{fact}",
-                                "branch_key": single_bk,
-                                "sentence_pool": [],
-                                "children": [],
-                                "node_id": _compute_node_id(child_identity),
-                            }
-                        node_registry[child_identity] = matching
-
-                    children = current_node.setdefault("children", [])
-                    if matching not in children:
-                        children.append(matching)
-                    current_node = matching
+                    if child_identity in registry:
+                        matching = registry[child_identity]
+                        if not _is_ancestor(matching, current_node):
+                            children = current_node.setdefault("children", [])
+                            if matching not in children:
+                                children.append(matching)
+                        current_node = matching
+                        accumulated_facts = sorted(set(accumulated_facts) | {fact})
+                        continue
+                    current_node = _find_or_create_child(
+                        current_node, single_bk, f"f:{fact}", "decision", child_identity, registry
+                    )
                     accumulated_facts = sorted(set(accumulated_facts) | {fact})
-
                 for emotion in seg_emotions:
+                    if emotion in accumulated_emotions:
+                        continue
                     single_bk = {"emotions": [emotion]}
                     child_identity = _make_identity(accumulated_facts, accumulated_emotions, single_bk)
+                    if child_identity in registry:
+                        matching = registry[child_identity]
+                        if not _is_ancestor(matching, current_node):
+                            children = current_node.setdefault("children", [])
+                            if matching not in children:
+                                children.append(matching)
+                        current_node = matching
+                        accumulated_emotions = sorted(set(accumulated_emotions) | {emotion})
+                        continue
+                    current_node = _find_or_create_child(
+                        current_node, single_bk, f"e:{emotion}", "decision", child_identity, registry
+                    )
+                    accumulated_emotions = sorted(set(accumulated_emotions) | {emotion})
+            if normal_end is not None:
+                _merge_sentences(normal_end["sentence_pool"], seg["sentences"])
+            continue
 
-                    if child_identity in node_registry:
-                        matching = node_registry[child_identity]
-                        if _is_ancestor(matching, current_node):
-                            current_node = matching
-                            accumulated_emotions = sorted(set(accumulated_emotions) | {emotion})
-                            continue
-                    else:
+        if not branch_key:
+            _place_sentences_in_node(current_node, seg["sentences"], registry)
+        else:
+            for fact in seg_facts:
+                if fact in accumulated_facts:
+                    continue
+                single_bk = {"facts": [fact]}
+                child_identity = _make_identity(accumulated_facts, accumulated_emotions, single_bk)
+
+                if child_identity in registry:
+                    matching = registry[child_identity]
+                    if not _is_ancestor(matching, current_node):
                         children = current_node.setdefault("children", [])
-                        matching = None
-                        for child in children:
-                            if child.get("branch_key") == single_bk:
-                                matching = child
-                                break
-                        if matching is None:
-                            matching = {
-                                "state_id": f"e:{emotion}",
-                                "branch_key": single_bk,
-                                "sentence_pool": [],
-                                "children": [],
-                                "node_id": _compute_node_id(child_identity),
-                            }
-                        node_registry[child_identity] = matching
+                        if matching not in children:
+                            children.append(matching)
+                    current_node = matching
+                    accumulated_facts = sorted(set(accumulated_facts) | {fact})
+                    continue
 
-                    children = current_node.setdefault("children", [])
-                    if matching not in children:
-                        children.append(matching)
+                current_node = _find_or_create_child(
+                    current_node, single_bk, f"f:{fact}", "decision", child_identity, registry
+                )
+                accumulated_facts = sorted(set(accumulated_facts) | {fact})
+
+            for emotion in seg_emotions:
+                if emotion in accumulated_emotions:
+                    continue
+                single_bk = {"emotions": [emotion]}
+                child_identity = _make_identity(accumulated_facts, accumulated_emotions, single_bk)
+
+                if child_identity in registry:
+                    matching = registry[child_identity]
+                    if not _is_ancestor(matching, current_node):
+                        children = current_node.setdefault("children", [])
+                        if matching not in children:
+                            children.append(matching)
                     current_node = matching
                     accumulated_emotions = sorted(set(accumulated_emotions) | {emotion})
+                    continue
 
-                _merge_sentences(current_node["sentence_pool"], seg["sentences"])
+                current_node = _find_or_create_child(
+                    current_node, single_bk, f"e:{emotion}", "decision", child_identity, registry
+                )
+                accumulated_emotions = sorted(set(accumulated_emotions) | {emotion})
 
-            if seg.get("is_closing"):
-                has_closing = True
-                for s in seg["sentences"]:
-                    s["gesture_type"] = "ending"
+            _place_sentences_in_node(current_node, seg["sentences"], registry)
 
-        if not has_closing:
-            _ensure_abrupt_end(current_node, call_id, turns)
+    if not has_closing and normal_end is not None:
+        pass
 
-    _propagate_sentences(root)
-    _sort_keywords(root)
-    _ensure_leaf_termination(root)
-    _consolidate_endpoints(root)
-    return root
+
+def _get_abrupt_end(tree):
+    for child in tree.get("children", []):
+        if child.get("state_id") == "abrupt_end":
+            return child
+    return None
+
+
+def merge_dialogs(tree_path, new_records, merge_decisions=None):
+    tree = None
+    if os.path.exists(tree_path):
+        try:
+            with open(tree_path, encoding="utf-8") as f:
+                tree = json.load(f)
+        except (json.JSONDecodeError, ValueError):
+            tree = None
+    if tree is None:
+        tree = make_base_tree()
+        registry = {}
+    else:
+        registry = build_registry_from_tree(tree)
+    for record in new_records:
+        add_dialog_to_tree(tree, record, registry, merge_decisions=merge_decisions)
+    _propagate_facts(tree, [], [])
+    _propagate_sentences(tree)
+    _consolidate_endpoints(tree)
+    _sort_keywords(tree)
+    with open(tree_path, "w", encoding="utf-8") as f:
+        json.dump(tree, f, indent=2, ensure_ascii=False)
+    return tree
+
+
+def build_tree(records, merge_decisions=None):
+    tree = make_base_tree()
+    registry = {}
+    for record in records:
+        add_dialog_to_tree(tree, record, registry, merge_decisions=merge_decisions)
+    _propagate_facts(tree, [], [])
+    _propagate_sentences(tree)
+    _consolidate_endpoints(tree)
+    _sort_keywords(tree)
+    return tree
 
 def _extract_segments(turns, call_id):
     segments = []
@@ -358,14 +524,15 @@ def write_decision_tree(records=None, output_path=None):
         output_path = os.path.join(os.path.dirname(__file__), "data", "decision_tree.json")
 
     merge_cache = _load_merge_cache()
-    tree = build_tree(records, merge_decisions=merge_cache)
+    tree = make_base_tree()
+    registry = {}
+    for record in records:
+        add_dialog_to_tree(tree, record, registry, merge_decisions=merge_cache)
     _save_merge_cache(merge_cache)
-    _split_composite_nodes(tree)
-    _merge_sibling_facts(tree)
-    _collapse_redundant_facts(tree)
-    _split_by_action(tree)
     _propagate_facts(tree, [], [])
     _deduplicate_nodes(tree)
+    _consolidate_endpoints(tree)
+    _sort_keywords(tree)
 
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(tree, f, indent=2, ensure_ascii=False)

@@ -113,3 +113,34 @@
 **Step 2: Write integration tests** — verify all 868 sentences have bg_constraints (10 fields), bg_bitmask (0–1023), win_rate (0–1), sas (0–1), uplift_score=0, csi=0, deferred=true; verify all 31 call_ids represented; verify bitmask AND filtering correctness
 **Step 3: Run integration tests**
 **Step 4: Commit**
+
+### Task 9: Node-Level HWR + Blending (ADR-031)
+
+**Files:**
+- Modify: `src/f005_context_scoring/scoring_metrics.py`
+- Modify: `src/f005_context_scoring/score_tree.py`
+- Modify: `src/tests/f005_context_scoring/test_score_tree.py`
+
+**Step 1: Implement** — `compute_node_hwr(sentence_pool, reward_lookup)` → union of all source_call_ids in pool → Laplace `(wins+1)/(total+2)`
+**Step 2: Implement** — In `_score_sentence_pool`: compute `node_hwr` once per pool; for each sentence compute `sentence_hwr`, `weight = n/(n+2)`, `win_rate = weight*sentence_hwr + (1-weight)*node_hwr`, set `win_rate_node = node_hwr`
+**Step 3: Write tests** — `win_rate_node` presence + blend formula; edge cases (empty pool, single sentence)
+**Step 4: Verify** — all tests pass, every sentence has `win_rate_node` ∈ [0,1]
+**Step 5: Commit**
+
+### Task 10: Artifact-Level Invariant Tests
+
+**Files:**
+- Create: `src/tests/f005_context_scoring/test_scored_invariants.py`
+
+**Step 1: Write tests** — 12 invariant tests loading scored JSON: bg_constraints 10 fields, bg_bitmask 10 fields, bg_bitmask_int ∈ [0,1023], win_rate ∈ [0,1], win_rate_node exists + ∈ [0,1], sas ∈ [0,1], embedding absent, conversation_context present, uplift_score=0, csi=0, deferred=true
+**Step 2: Verify** — all pass on current output
+**Step 3: Commit**
+
+### Task 11: F004→F005 Wiring
+
+**Files:**
+- Modify: `src/f005_context_scoring/build_and_score_tree.py`
+
+**Step 1: Implement** — Use `merge_dialogs` when tree file exists; add `--rebuild` flag for full rebuild
+**Step 2: Verify** — end-to-end pipeline completes
+**Step 3: Commit**

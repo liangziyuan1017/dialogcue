@@ -253,21 +253,21 @@ def test_closing_sentences_have_ending_gesture_type():
 def test_dialog_without_closing_has_abrupt_end_node():
     rec = _sample_record_no_closing()
     tree = build_tree([rec])
-    abrupt_nodes = _find_nodes_by_state_id(tree, "abrupt_end")
-    assert len(abrupt_nodes) == 1, "Should have exactly one consolidated abrupt_end node"
-    assert abrupt_nodes[0].get("gesture_type") == "ending"
+    abrupt_as_root_child = [c for c in tree.get("children", []) if c.get("state_id") == "abrupt_end"]
+    assert len(abrupt_as_root_child) == 1, "Should have exactly one abrupt_end as root child"
+    assert abrupt_as_root_child[0].get("gesture_type") == "ending"
 
 
 def test_tree_has_exactly_one_normal_end_and_one_abrupt_end():
     r1 = _sample_record_with_closing("call-A")
     r2 = _sample_record_no_closing("call-B")
     tree = build_tree([r1, r2])
-    normal = _find_nodes_by_state_id(tree, "normal_end")
-    abrupt = _find_nodes_by_state_id(tree, "abrupt_end")
-    assert len(normal) == 1, "Should have exactly one normal_end node"
-    assert len(abrupt) == 1, "Should have exactly one abrupt_end node"
-    assert normal[0].get("gesture_type") == "ending"
-    assert abrupt[0].get("gesture_type") == "ending"
+    normal_as_root = [c for c in tree.get("children", []) if c.get("state_id") == "normal_end"]
+    abrupt_as_root = [c for c in tree.get("children", []) if c.get("state_id") == "abrupt_end"]
+    assert len(normal_as_root) == 1, "Should have exactly one normal_end as root child"
+    assert len(abrupt_as_root) == 1, "Should have exactly one abrupt_end as root child"
+    assert normal_as_root[0].get("gesture_type") == "ending"
+    assert abrupt_as_root[0].get("gesture_type") == "ending"
 
 
 def test_end_nodes_are_root_children():
@@ -283,9 +283,9 @@ def test_every_leaf_is_end_node_or_abrupt_end():
     r1 = _sample_record_with_closing("call-A")
     r2 = _sample_record_no_closing("call-B")
     tree = build_tree([r1, r2])
-    normal = _find_nodes_by_state_id(tree, "normal_end")
-    abrupt = _find_nodes_by_state_id(tree, "abrupt_end")
-    assert len(normal) == 1 and len(abrupt) == 1, "Exactly 2 terminal nodes"
+    normal_as_root = [c for c in tree.get("children", []) if c.get("state_id") == "normal_end"]
+    abrupt_as_root = [c for c in tree.get("children", []) if c.get("state_id") == "abrupt_end"]
+    assert len(normal_as_root) == 1 and len(abrupt_as_root) == 1, "Exactly 1 normal_end + 1 abrupt_end as root children"
 
 
 def test_greeting_sentences_have_collector_action():
