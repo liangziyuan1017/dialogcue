@@ -78,6 +78,9 @@ state_keywords.json          output_labeled.py   (per-turn state labels)
         ▼  F001  (schema alignment, carry F000 labels, derive context) ──────────────┐
 output_aligned.py  (turns_annotated + context + reward:null)                          │
         │                                                                            │
+        ▼  F003  (state relabeling: facts/emotions CSV remap)                         │
+output_aligned.py  (overwritten with relabeled tags)                                  │
+        │                                                                            │
         ▼  F003  (LLM reward R∈{0,1} + counterfactual credit)                         │
 output_rewarded.py  (reward + reward_action_credit + reward_evidence)                 │
         │                                                                            │

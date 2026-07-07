@@ -29,7 +29,7 @@ Produced by `src/whole_pipeline.py` (run from project root). Phase-1 outputs are
 | `output_complete.py` | 3 — data_complete | Dialogue reconstruction (merge/split/reorder turns, infer missing replies). |
 | `output_merged.py` | 4 — data_merge | Source field merge (no LLM); matched by `(call_id, cust_no)`. |
 
-Phase 2 analysis outputs (`collector_analysis.json`, `customer_analysis.json`) are written to `src/f003_reward_labeling/data/` (owned by the producer module). Phase 3 outputs (`output_aligned.py`, `output_rewarded.py`, `output_relabeled.py`) live under `src/f001_schema_alignment/data/` and `src/f003_reward_labeling/data/`.
+Phase 2 analysis outputs (`collector_analysis.json`, `customer_analysis.json`) are written to `src/f003_reward_labeling/data/` (owned by the producer module). Phase 3 outputs (`output_aligned.py`, `output_rewarded.py`) live under `src/f001_schema_alignment/data/` and `src/f003_reward_labeling/data/`. State relabeling is applied before reward labeling, so `output_aligned.py` already contains the final relabeled tags.
 
 ## data_cleaning/
 

@@ -45,12 +45,13 @@ ANALYSIS_OUTPUTS = {
     "analyze_customer_turns": BASE_DIR / "f003_reward_labeling" / "data" / "customer_analysis.json",
     "align_schema": BASE_DIR / "f001_schema_alignment" / "data" / "output_aligned.py",
     "reward_label": BASE_DIR / "f003_reward_labeling" / "data" / "output_rewarded.py",
-    "relabel_state": BASE_DIR / "f003_reward_labeling" / "data" / "output_relabeled.py",
 }
 
 
 def _load_py_results(path: Path) -> list[dict]:
     spec = importlib.util.spec_from_file_location("results_mod", path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Cannot load Python module from {path}")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod.results
@@ -151,37 +152,35 @@ def run_pipeline(input_file: Path) -> None:
           f"Emotions: {len(customer_result.get('emotions', []))}")
 
     print("\n" + "=" * 60)
-    print("PHASE 3: Reward Labeling")
+    print("PHASE 3: Schema Alignment + State Relabeling")
     print("=" * 60)
 
     print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Aligning schema...")
     import f001_schema_alignment.align_schema as als
     aligned = als.align_all(records)
+    print(f"  Aligned {len(aligned)} records")
+
+    print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Relabeling facts and emotions...")
+    import f001_schema_alignment.relabel_state as rs
+    relabeled, stats = rs.relabel_all(aligned)
     aligned_out = ANALYSIS_OUTPUTS["align_schema"]
-    _write_py_results(aligned, aligned_out)
-    print(f"  Aligned {len(aligned)} records → {aligned_out.name}")
+    _write_py_results(relabeled, aligned_out)
+    print(f"  Aligned+relabeled output written to {aligned_out.name}")
+    print(f"  Fact map: {stats['fact_map_size']} entries, {len(stats['facts_relabeled'])} tags relabeled")
+    print(f"  Emotion map: {stats['emotion_map_size']} entries, {len(stats['emotions_relabeled'])} tags relabeled")
+
+    print("\n" + "=" * 60)
+    print("PHASE 4: Reward Labeling")
+    print("=" * 60)
 
     print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Running reward_label...")
     import f003_reward_labeling.reward_label as rl
-    rewarded = rl.label_all(aligned)
+    rewarded = rl.label_all(relabeled)
     reward_out = ANALYSIS_OUTPUTS["reward_label"]
     _write_py_results(rewarded, reward_out)
     print(f"  Reward output written to {reward_out.name}")
     reward_count = sum(1 for r in rewarded if r.get("reward") == 1)
     print(f"  Rewarded (R=1): {reward_count}/{len(rewarded)}")
-
-    print("\n" + "=" * 60)
-    print("PHASE 4: State Relabeling")
-    print("=" * 60)
-
-    print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Relabeling facts and emotions...")
-    import f003_reward_labeling.relabel_state as rs
-    relabeled, stats = rs.relabel_all(rewarded)
-    relabeled_out = ANALYSIS_OUTPUTS["relabel_state"]
-    _write_py_results(relabeled, relabeled_out)
-    print(f"  Relabeled output written to {relabeled_out.name}")
-    print(f"  Fact map: {stats['fact_map_size']} entries, {len(stats['facts_relabeled'])} tags relabeled")
-    print(f"  Emotion map: {stats['emotion_map_size']} entries, {len(stats['emotions_relabeled'])} tags relabeled")
 
     print("\n" + "=" * 60)
     print(f"[{datetime.now():%Y-%m-%d %H:%M:%S}] Pipeline complete.")
@@ -223,14 +222,15 @@ def _run_skip_llm(args) -> None:
 
     import f001_schema_alignment.align_schema as als
     aligned = als.align_all(records)
-    _write_py_results(aligned, ANALYSIS_OUTPUTS["align_schema"])
-    import f003_reward_labeling.reward_label as rl
-    rewarded = rl.label_all(aligned)
-    _write_py_results(rewarded, ANALYSIS_OUTPUTS["reward_label"])
 
-    import f003_reward_labeling.relabel_state as rs
-    relabeled, stats = rs.relabel_all(rewarded)
-    _write_py_results(relabeled, ANALYSIS_OUTPUTS["relabel_state"])
+    import f001_schema_alignment.relabel_state as rs
+    relabeled, stats = rs.relabel_all(aligned)
+    _write_py_results(relabeled, ANALYSIS_OUTPUTS["align_schema"])
+    print(f"  Relabeled {len(stats['facts_relabeled'])} fact tags, {len(stats['emotions_relabeled'])} emotion tags")
+
+    import f003_reward_labeling.reward_label as rl
+    rewarded = rl.label_all(relabeled)
+    _write_py_results(rewarded, ANALYSIS_OUTPUTS["reward_label"])
     print("Done.")
 
 
@@ -266,6 +266,8 @@ def _run_with_scheduler(input_file: Path, forbid_start: int, forbid_end: int, in
         time.sleep(interval)
 
 
+_DEFAULT_INPUT = INPUT_DIR / str(_cfg("pipeline.default_data_file", "matched_data.jsonl"))
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Run the full pipeline: clean → logic → complete → merge → discover → analysis → reward"
@@ -274,7 +276,7 @@ def main() -> None:
         "input_file",
         type=Path,
         nargs="?",
-        default=INPUT_DIR / _cfg("pipeline.default_data_file", "matched_data.jsonl"),
+        default=_DEFAULT_INPUT,
         help="Input data file (default: matched_data.jsonl)",
     )
     parser.add_argument(

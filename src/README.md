@@ -172,7 +172,7 @@ Discovers facts, emotions, collector actions, and willingness levels from the me
 
 This runs automatically as part of `whole_pipeline.py` (Phase 1.5).
 
-### Stage 3: Analysis & Schema Alignment
+### Stage 3: Analysis, Schema Alignment & State Relabeling
 
 **Input:** `output_labeled.py`, `output_merged.py`, `data/data_labels/*.csv`
 
@@ -182,9 +182,8 @@ This runs automatically as part of `whole_pipeline.py` (Phase 1.5).
 - `src/f003_reward_labeling/data/customer_analysis.json`
 - `src/f001_schema_alignment/data/output_aligned.py`
 - `src/f003_reward_labeling/data/output_rewarded.py`
-- `src/f003_reward_labeling/data/output_relabeled.py`
 
-Runs collector/customer turn analysis, schema alignment, reward labeling, and state relabeling.
+Runs collector/customer turn analysis, schema alignment, state relabeling, then reward labeling. Relabeling is applied **before** reward labeling so that `output_aligned.py` and `output_rewarded.py` both contain the final relabeled tags — no separate `output_relabeled.py` is needed.
 
 **Requires:** DeepSeek API, `data/data_labels/*.csv` (relabel maps)
 
@@ -278,7 +277,7 @@ After completing **First-Time Setup** above:
 # 0. Validate input data
 python3 src/check_data_format.py data/data_input/matched_data.jsonl --strict
 
-# 1. Run data pipeline (stages 1-3: clean → discover → align → reward → relabel)
+# 1. Run data pipeline (stages 1-3: clean → discover → align → relabel → reward)
 python3 src/whole_pipeline.py data/data_input/matched_data.jsonl
 
 # 2. Build tree + score + populate database (stages 4-6, single command)
@@ -328,7 +327,7 @@ When new call records arrive and you want to incorporate them without re-running
    python3 src/whole_pipeline.py data/data_input/new_data.jsonl
    ```
 
-   This overwrites `data/data_output/output_merged.py` with only the new records. It also overwrites the downstream outputs (`output_aligned.py`, `output_rewarded.py`, etc.) — that's expected; they'll be regenerated in step 6.
+   This overwrites `data/data_output/output_merged.py` with only the new records. It also overwrites the downstream outputs (`output_aligned.py`, `output_rewarded.py`) — that's expected; they'll be regenerated in step 6.
 
 5. **Merge new records with existing merged output**:
 
@@ -371,7 +370,7 @@ When new call records arrive and you want to incorporate them without re-running
 If the new records have already been cleaned and merged (e.g. from a prior run), and you just need to rebuild the tree and database:
 
 ```bash
-# Re-run analysis + reward + relabel on existing merged output (stages 2-3)
+# Re-run analysis + relabel + reward on existing merged output (stages 2-3)
 python3 src/whole_pipeline.py --skip-llm
 
 # Rebuild tree, score, and repopulate database (stages 4-6)
@@ -422,7 +421,7 @@ python3 src/build_tree_and_db.py
 | Orchestrator | — | `whole_pipeline.py`, `build_tree_and_db.py`, `launch_ui.py`, `check_data_format.py` | — |
 | `f000_keyword_discovery/` | F000 | `discover_keywords.py`, `load_data.py` | `state_keywords.json`, `output_labeled.py` |
 | `f001_schema_alignment/` | F001 | `align_schema.py` | `output_aligned.py` |
-| `f003_reward_labeling/` | F003 | `analyze_collector_turns.py`, `reward_label.py`, `relabel_state.py` | `output_rewarded.py`, `output_relabeled.py`, `collector_analysis.json`, `customer_analysis.json` |
+| `f003_reward_labeling/` | F003 | `analyze_collector_turns.py`, `reward_label.py`, `relabel_state.py` | `output_rewarded.py`, `collector_analysis.json`, `customer_analysis.json` |
 | `f004_decision_tree/` | F004 | `build_decision_tree.py`, `merge_collector.py`, `tree_transforms.py` | `decision_tree.json`, `merge_decisions.json` |
 | `f005_context_scoring/` | F005 | `score_tree.py`, `scoring_metrics.py` | `decision_tree_scored.json` |
 | `f006_retrieval_engine/` | F006 | `retrieval_engine.py`, `retrieval_ranking.py` | — (runtime: PostgreSQL) |
@@ -433,8 +432,7 @@ python3 src/build_tree_and_db.py
 **Cross-module data flow:**
 
 ```
-f000/output_labeled.py ──→ f001/align_schema.py
-f001/output_aligned.py ──→ f003/reward_label.py ──→ f004/build_decision_tree.py
+f000/output_labeled.py ──→ f001/align_schema.py ──→ f003/relabel_state.py ──→ f003/reward_label.py ──→ f004/build_decision_tree.py
 f004/decision_tree.json ──→ f005/score_tree.py ──→ f006/retrieval_engine.py
 f005/decision_tree_scored.json ──→ f009/server.py
 f000/state_keywords.json ──→ f009/server.py
