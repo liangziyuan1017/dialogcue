@@ -78,8 +78,9 @@ Spec: F004-decision-tree-construction.md
 
 ### Pipeline (additive, ADR-029)
 ```
-make_base_tree → add_dialog_to_tree (per record) → _propagate_facts → _deduplicate_nodes → _ensure_leaf_termination → _consolidate_endpoints → _sort_keywords
+build_tree → _split_composite_nodes → _merge_sibling_facts → _collapse_redundant_facts → _split_by_action → _propagate_facts → _link_leaves_to_abrupt_end → _remove_stray_abrupt_ends
 ```
+Note: `_ensure_leaf_termination` was removed from the pipeline (it created duplicate `abrupt_end` nodes). Replaced by `_link_leaves_to_abrupt_end` + `_remove_stray_abrupt_ends`. Leaf nodes without children are implicitly terminated at `abrupt_end` (no explicit child).
 
 ### UI Features
 - Cytoscape.js + dagre hierarchical layout (bundled locally)

@@ -269,6 +269,19 @@ Use `--strict` to exit with code 1 on any error (for CI/pre-commit hooks).
 
 ---
 
+## Tree Invariant Checking
+
+Validate the built decision tree against 138 invariants across 10 categories (S, N, SE, D, G, C, SC, B, A, O):
+
+```bash
+python3 -m f004_decision_tree.check_tree          # F004 checks only
+python3 -m f004_decision_tree.check_tree --scored  # F004 + F005 checks
+```
+
+Exit code 0 = all invariants pass. Exit code 1 = violations found (printed to stderr).
+
+---
+
 ## Quick Start (Full Pipeline)
 
 After completing **First-Time Setup** above:
@@ -422,7 +435,7 @@ python3 src/build_tree_and_db.py
 | `f000_keyword_discovery/` | F000 | `discover_keywords.py`, `load_data.py` | `state_keywords.json`, `output_labeled.py` |
 | `f001_schema_alignment/` | F001 | `align_schema.py`, `relabel_state.py` | `output_aligned.py` |
 | `f003_reward_labeling/` | F003 | `analyze_collector_turns.py`, `reward_label.py`, `relabel_state.py` | `output_rewarded.py` (deduplicated by `call_id`), `collector_analysis.json`, `customer_analysis.json` |
-| `f004_decision_tree/` | F004 | `build_decision_tree.py`, `merge_collector.py`, `tree_transforms.py` | `decision_tree.json`, `merge_decisions.json` |
+| `f004_decision_tree/` | F004 | `build_decision_tree.py`, `merge_collector.py`, `tree_transforms.py`, `check_tree.py` | `decision_tree.json`, `merge_decisions.json` |
 | `f005_context_scoring/` | F005 | `score_tree.py`, `scoring_metrics.py` | `decision_tree_scored.json` |
 | `f006_retrieval_engine/` | F006 | `retrieval_engine.py`, `retrieval_ranking.py` | — (runtime: PostgreSQL) |
 | `f007_infrastructure/` | F007 | `db.py`, `embeddings.py`, `llm_client.py`, `retry.py`, `config.py` | — |

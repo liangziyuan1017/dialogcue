@@ -1,7 +1,7 @@
 ---
 id: F004
 name: Decision Tree Construction
-status: approved
+status: merged
 owner: agent
 source: ROADMAP.md
 created: 2026-06-11
@@ -127,9 +127,10 @@ See [implementation-plan.md](F004-implementation-plan.md)
 - **Segment-based extraction**: Each conversation is decomposed into segments of (customer branch key → collector sentences), not individual turns. This avoids the chain problem.
 - **Fact-by-fact tree walking**: `build_tree` walks each segment's facts and emotions one at a time, creating single-key nodes at each step. Composites are never created, eliminating the need for `_split_composite_nodes` as a non-trivial operation.
 - **Local tree building (no global reuse)**: Each segment's branch key is matched only against children of `current_node`, not searched globally. This preserves path continuity — every record's conversation path is a connected subtree.
-- **Start/end node model**: The tree has exactly 1 opening node (root) and 2 consolidated end nodes (`normal_end` and `abrupt_end`) as direct children of root. All properly-closed dialogs converge into `normal_end`; all dialogs without proper closings converge into `abrupt_end`. This gives the tree a clean vertical structure: opening at top → decision branches → two end nodes at bottom.
-- **Consolidated endpoints**: Rather than scattering many `abrupt_end` leaves throughout the tree, all ending sentences are collected into a single `normal_end` node and all abrupt terminations into a single `abrupt_end` node. This ensures the tree has exactly 2 terminal nodes regardless of data size.
+- **Start/end node model**: The tree has exactly 1 opening node (root) and 2 consolidated end nodes (`normal_end` and `abrupt_end`) as direct children of root. All properly-closed dialogs converge into `normal_end`; all dialogs without proper closings converge into `abrupt_end`. Leaf nodes without children are implicitly terminated at `abrupt_end` — they do not have `abrupt_end` as an explicit child. This gives the tree a clean vertical structure: opening at top → decision branches → two end nodes at bottom.
+- **Consolidated endpoints**: Rather than scattering many `abrupt_end` leaves throughout the tree, all ending sentences are collected into a single `normal_end` node and all abrupt terminations into a single `abrupt_end` node. This ensures the tree has exactly 2 end nodes regardless of data size. The `_ensure_leaf_termination` function was removed from the build pipeline (it was creating a new `abrupt_end` node for every leaf instead of linking to the shared root-level one). Instead, `_link_leaves_to_abrupt_end` links unterminated leaves to the root's `abrupt_end`, and `_remove_stray_abrupt_ends` strips any stray `abrupt_end` children from non-root nodes afterward.
 - **Safe terminal stripping**: `_strip_terminal_nodes` only removes `abrupt_end`/`normal_end` nodes during consolidation, not decision nodes that happen to contain ending sentences deep in their subtree. This prevents cascading deletion of valid branches.
+- **Implicit leaf termination**: Leaf nodes without children are implicitly terminated at the root's `abrupt_end` node — they do not have `abrupt_end` as an explicit child. The build pipeline uses `_link_leaves_to_abrupt_end` followed by `_remove_stray_abrupt_ends` (instead of the removed `_ensure_leaf_termination`, which was creating duplicate `abrupt_end` nodes).
 - **Cytoscape.js + dagre layout**: Tree is rendered as an interactive graph using Cytoscape.js with the dagre hierarchical layout engine. Supports zoom, pan, drag, click-to-inspect. Nodes are styled by type: rectangles (opening/decision), ellipse (normal end/emotion), diamond (action), triangle (abrupt end). Edges carry branch labels (facts|emotions).
 - **collector_action field on sentences**: Each sentence entry carries `collector_action` (e.g. greeting, information, plan_proposal, pressure, empathy, legal_threat, closure) for UI display and filtering. Sentences without an action label are included without this key.
 - **Action nodes always created for fact/emotion parents**: `_split_by_action` force-splits sentence pools into action child nodes for any fact or emotion parent, ensuring sentences with `collector_action` always live under `a:xxx` nodes. Sentences without `collector_action` remain in the parent pool. This keeps the tree structure uniform: fact → action → sentences.
@@ -162,6 +163,7 @@ See [implementation-plan.md](F004-implementation-plan.md)
 |------|---------|
 | `src/f004_decision_tree/build_decision_tree.py` | Decision tree construction with registry dedup and cycle prevention |
 | `src/f004_decision_tree/tree_transforms.py` | Tree transforms with DAG-safe visited tracking and emotion collapse |
+| `src/f004_decision_tree/check_tree.py` | Standalone invariant checker: 138 invariants across 10 categories (S, N, SE, D, G, C, SC, B, A, O). Run via `python3 -m f004_decision_tree.check_tree` or `--scored` for F005 checks |
 | `src/test_build_decision_tree.py` | Unit tests (613 lines, 34 tests) |
 | `src/test_record_coverage.py` | Record-level coverage tests (436 lines, 10 tests) |
 | `src/test_ui_rendering.py` | UI rendering type/shape/color/depth tests (396 lines, 20 tests) |

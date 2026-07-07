@@ -1,7 +1,7 @@
 ---
 id: F005
 name: Context Tagging & Quality Scoring
-status: approved
+status: merged
 owner: agent
 source: plan_feature_base.md
 created: 2026-06-18

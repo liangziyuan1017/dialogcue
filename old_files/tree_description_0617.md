@@ -233,7 +233,7 @@ The tree has exactly **2 terminal nodes** as direct children of the root (create
 ### `abrupt_end`
 - **1 sentence**: `[对话未正常结束]` — a marker for conversations that terminated without a proper closing gesture
 
-All original terminal nodes throughout the tree were stripped during consolidation, their ending sentences harvested into `normal_end`, and unterminated leaves were given an `abrupt_end` child before consolidation.
+All original terminal nodes throughout the tree were stripped during consolidation, their ending sentences harvested into `normal_end`, and unterminated leaves are implicitly terminated at the root's `abrupt_end` (no explicit `abrupt_end` child on leaves).
 
 ## 6. Globally Deduplicated Nodes (Cross-Conversation Merging)
 
@@ -429,11 +429,12 @@ build_tree(records):
      d. If dialog has no closing action → attach abrupt_end
 
   3. Post-processing (4 passes):
-     a. _propagate_sentences: fill empty pools by inheriting from parent
-     b. _sort_keywords: lexicographic sort of facts/emotions at every node
-     c. _ensure_leaf_termination: attach abrupt_end to any unterminated leaf
-     d. _consolidate_endpoints: harvest all ending sentences, strip terminal
-        nodes, attach exactly one normal_end + one abrupt_end as root children
+      a. _propagate_sentences: fill empty pools by inheriting from parent
+      b. _sort_keywords: lexicographic sort of facts/emotions at every node
+      c. _link_leaves_to_abrupt_end: link unterminated leaves to root's abrupt_end
+      d. _remove_stray_abrupt_ends: strip stray abrupt_end children from non-root nodes
+      e. _consolidate_endpoints: harvest all ending sentences, strip terminal
+         nodes, attach exactly one normal_end + one abrupt_end as root children
 ```
 
 **Key design decisions:**

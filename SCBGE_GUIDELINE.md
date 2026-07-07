@@ -447,8 +447,9 @@ Builds a collector decision tree where nodes are collector action points, branch
 
 #### Design considerations & decisions
 
-- **ADR-011**: Nodes = collector action points, branches = customer (facts, emotions), willingness = sentence label. Consolidated `initial_contact` root + `normal_end` / `abrupt_end` terminals.
-- **ADR-012**: `collector_action` field on sentence entries — UI display + O(1) action filtering.
+- **ADR-011**: Nodes = collector action points, branches = customer (facts, emotions), willingness = sentence label. Eliminated chain structure (single-child ratio 14.4%). Consolidated `initial_contact` root + `normal_end` / `abrupt_end` terminals. Exactly 2 end nodes as direct children of root; leaf nodes without children are implicitly terminated at `abrupt_end` (no explicit `abrupt_end` child). `_ensure_leaf_termination` removed; `_remove_stray_abrupt_ends` strips stray `abrupt_end` children from non-root nodes after `_link_leaves_to_abrupt_end`.
+- **ADR-012**: `collector_action` field on sentence entries — UI display + O(1) action filtering without traversing to parent.
+- **ADR-015**: Local tree building (no global node reuse) — global reuse broke path continuity; match only against `current_node` children.
 - **ADR-016**: Fact-by-fact walking — walk each fact/emotion one at a time, creating single-key nodes; eliminates composite-node bugs.
 - **ADR-019**: `state=None` collector turns captured without synthetic `other` label.
 - **ADR-021**: Node identity dedup — identity = `(inherited_facts, inherited_emotions, branch_key)`; DAG with cycle protection via `_is_ancestor`.
@@ -457,7 +458,7 @@ Builds a collector decision tree where nodes are collector action points, branch
 - **Willingness as sentence label, not branch key**: same (facts, emotions) = same decision point regardless of willingness.
 - **Segment-based extraction**: each conversation decomposed into (customer branch key → collector sentences), not individual turns.
 - **LLM-guided collector turn merging**: merge fragmented consecutive collector turns before segment extraction; hard limit `MAX_MERGED_WORDS=150`.
-- **Start/end node model**: exactly 1 opening root + 2 consolidated end nodes as direct children of root; clean vertical structure.
+- **Start/end node model**: exactly 1 opening root + 2 consolidated end nodes (1 `normal_end` + 1 `abrupt_end`) as direct children of root; leaf nodes without children are implicitly terminated at `abrupt_end` (no explicit `abrupt_end` child on leaves); clean vertical structure.
 
 **Input**: `output_rewarded.py`
 
@@ -1629,7 +1630,7 @@ Authoritative decision records. Each is one line here; see
 | [ADR-008](docs/decisions/ADR-008-output-format-py-file.md) | Output format .py file | Output `.py` with `results = [...]` for `importlib` loading consistency; JSON would break downstream. |
 | [ADR-009](docs/decisions/ADR-009-eliminate-f002-llm-state-extraction.md) | Eliminate F002 | Remove offline LLM state extraction — F001's 493/805 annotations (LLM-labelled by F000, carried into F001 per ADR-007) suffice; online extraction is the only hot-path LLM call. |
 | [ADR-010](docs/decisions/ADR-010-reward-labeling-approach.md) | Reward labeling approach | LLM + counterfactual verification + cross-validation against `plan_evaluation` for scalable, auditable R labels. |
-| [ADR-011](docs/decisions/ADR-011-decision-tree-approach.md) | Decision tree approach | Nodes = collector action points, branches = customer (facts, emotions), willingness = sentence label. Consolidated start/end nodes. |
+| [ADR-011](docs/decisions/ADR-011-decision-tree-approach.md) | Decision tree approach | Nodes = collector action points, branches = customer (facts, emotions), willingness = sentence label. Consolidated start/end nodes. Exactly 2 end nodes as root children; implicit abrupt_end termination for leaf nodes. |
 | [ADR-012](docs/decisions/ADR-012-collector-action-field.md) | collector_action field | `collector_action` on sentence entries for UI display + O(1) action filtering without parent traversal. |
 | [ADR-013](docs/decisions/ADR-013-dialog-tracer.md) | Dialog tracer | Animated walkthrough (1400ms/step) validating real conversations map to tree paths. |
 | [ADR-014](docs/decisions/ADR-014-bundled-js-libs.md) | Bundled JS libs | Bundle cytoscape/dagre locally (~1.5MB) for offline operation — bank internal deployments require offline. |
