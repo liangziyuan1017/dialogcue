@@ -4,189 +4,1067 @@
       "group_name": "financial_hardship",
       "keywords": [
         "最近经济压力有点大",
-        "一下子拿20000多真的不行",
-        "一下子拿20000多拿不出来",
-        "还不上500块钱",
+        "暂时还不上",
+        "现在还不上500块钱",
         "50块钱都很难",
         "500块钱我还是还不上",
         "负债太高了",
+        "都还不上了",
+        "负债太高",
         "经济困难",
         "经济非常紧张",
         "周转比较困难",
         "现在确实困难",
-        "我暂时没有那么多钱",
         "近期没有钱",
         "最低还款还不了",
-        "现在没有钱",
-        "现在没钱",
+        "没钱",
         "这两天有点困难",
         "钱……凑不齐啊",
         "钱有点紧张",
         "没有钱",
         "利息我也承担不了",
         "利息这么高，根本承担不了了",
-        "资金有限",
+        "手上资金有限",
         "一次性拿不出来",
-        "近期经济会有点压力",
-        "目前这个收入会有点问题",
-        "我现在有点难度",
-        "现在现在没钱了"
+        "收入会有点问题",
+        "工资还没发",
+        "工资还没到账",
+        "老板说周日才发",
+        "现在还有难度",
+        "现在有点难度",
+        "没钱了",
+        "没有这么多钱可以还",
+        "没钱去检查",
+        "资金周转比较困难",
+        "外面的欠款还没有回来",
+        "资金卡在那边我没办法还",
+        "负债比较多",
+        "不想生活压力太大",
+        "现在拿不了那么多",
+        "25000够呛",
+        "没有钱了",
+        "生活费都没有了",
+        "经济很困难",
+        "我确实有困难",
+        "资金不够",
+        "资金上困难",
+        "资金有点困难",
+        "最近压力比较大",
+        "最近有点困难",
+        "有点困难",
+        "暂时没法周转",
+        "没有那个能力",
+        "借不到钱",
+        "好多开支，压力都压着",
+        "实在没钱了",
+        "我有我的困难",
+        "我昨天还了那一部分我还是拼凑的",
+        "能周转的我都周转了",
+        "暂时先还不出来",
+        "借也借不到",
+        "每个月只能还个500块钱",
+        "确实没办法",
+        "没有普卡",
+        "好不容易才还进去",
+        "资金困难",
+        "我没有钱",
+        "钱都给他交住院费了",
+        "前两天空",
+        "花了几万块钱",
+        "全给他转上了",
+        "手了几下是没有",
+        "10000钱也多回不来的",
+        "钱都交住院费了",
+        "压力大",
+        "没能力还",
+        "没收入",
+        "还在想办法筹，还没凑齐",
+        "手上只有2000多块钱",
+        "困难",
+        "现在有困难",
+        "没有困难就不会逾期",
+        "没办法",
+        "有办法早就还了",
+        "没办法，真的没办法",
+        "收入太低",
+        "应该能凑出来两千",
+        "我现在没有这么多，我只有明天",
+        "失业",
+        "没能力每期还5000",
+        "有困难",
+        "没有这个能力去还这个钱",
+        "周转不过",
+        "逾期",
+        "还不上",
+        "经济这一块确实有点困难",
+        "资金上有点问题",
+        "最近经济出了点状况",
+        "产了还不上了",
+        "什么都还不了",
+        "连最低还款都还不上",
+        "1000几百块都还不上",
+        "还不上了",
+        "没有收入",
+        "负债有几十万",
+        "顾我都还不上",
+        "每个月放款压力太大了",
+        "刚给家里边汇了钱",
+        "遇到困难",
+        "没有发工资",
+        "按个人还还不上",
+        "分期金额压力太大",
+        "手里确实没有那么多",
+        "刨除每个月必须的花销",
+        "还款能力有限",
+        "每个月只有固定的微博收入",
+        "没有大额的资金来源",
+        "没有大额资金收入",
+        "手里就500块钱",
+        "吃饭都成问题",
+        "没有筹到",
+        "钱没筹到",
+        "没有",
+        "凑不到的话能凑到多少是多少",
+        "资金跟不上",
+        "资金有问题",
+        "房租花掉了",
+        "看病上药花掉了",
+        "手里面有困难",
+        "每个月承担不了那么多",
+        "不够分",
+        "这两个月不好周转",
+        "每个月还1500多的话，可能还是有点压力",
+        "今天的话，还这1500，可能这边暂时先还不上",
+        "身上就几百多块钱嘛，四五百块钱",
+        "千块钱",
+        "筹钱筹不到那么多",
+        "每个月那个金额有点高",
+        "收入减少",
+        "工资发不下来",
+        "资金没有",
+        "我现在手里就1500块",
+        "我搞过了就1500块",
+        "现在没有钱",
+        "我看看吧，我周转一下",
+        "我这个最近钱比较紧张",
+        "因为做生意嘛，做生意做钱，然后现在就是说资金周转不过来",
+        "现在确实困难，一下子就是……呃，一下子现在还10000万多确实还不了",
+        "就是做生意嘛，做生意然后就是亏了了点钱嘛",
+        "还不了",
+        "没有借到钱",
+        "手里不到一千块",
+        "贫苦老百姓",
+        "银行卡上要付点生活费",
+        "周转不上了",
+        "没有能力一下子还上",
+        "还完了都没有生活费了",
+        "现在没有钱还",
+        "现在落难了",
+        "现在我是真没办法",
+        "临时性的困难",
+        "10天半个月的周转问题",
+        "已经跟朋友周转过了",
+        "现在确实拿不出来",
+        "暂时没有办法拿出",
+        "暂时没有办法拿出钱来还",
+        "钱不够",
+        "饭都吃不起"
       ],
-      "frequency": 29,
+      "frequency": 190,
       "example_turn": "但是这样……因为就是我每个月，大概是可以有20000块钱的收入的，但是我不是……不是我不是马上一次性呃，出20000块的，我是可能一个星期出5000这样子。所以说我是有还款的能力，只是你一下子让我还20000多，可能就有点困难。你也看到我的记录了，就是我一直都是有还款的，只不过……就真的是最近那个经济压力有点大，所以才会逾期。",
+      "source": "observed"
+    },
+    {
+      "group_name": "unemployment",
+      "keywords": [
+        "失业了",
+        "没有工作",
+        "没工作了",
+        "失业了两个月",
+        "失业",
+        "还没有上班",
+        "失业2个月没有单位地址",
+        "没有收入",
+        "工作没有了",
+        "找工作找不到",
+        "工作还没找到",
+        "目前就是失业了",
+        "半失业"
+      ],
+      "frequency": 22,
+      "example_turn": "嗯，一段时间了",
+      "source": "observed"
+    },
+    {
+      "group_name": "health_issue",
+      "keywords": [
+        "生病了",
+        "生病",
+        "脚崴了一下",
+        "脚还没有好",
+        "一个多月快2个月了",
+        "下个月要好了",
+        "身体原因",
+        "脚坏了",
+        "4月20号脚崴的",
+        "病是长期的"
+      ],
+      "frequency": 13,
+      "example_turn": "没什么事，就是生病了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "salary_delay",
+      "keywords": [
+        "12号才发工资",
+        "工资没发",
+        "10号发工资",
+        "工作没发",
+        "提成和工资没有到账",
+        "工资要晚几天，有可能周三到账",
+        "明天我就可以到账",
+        "工资发不下来"
+      ],
+      "frequency": 12,
+      "example_turn": "嗯，对。",
+      "source": "observed"
+    },
+    {
+      "group_name": "multiple_debts",
+      "keywords": [
+        "多行欠款",
+        "网贷会比较多",
+        "名下不止这一个信用卡",
+        "还有别的平台",
+        "还有朋友人情债",
+        "债务多笔叠加",
+        "很多银行都要求我先还一部分",
+        "不光欠了你们这一家",
+        "不止欠招商银行一家的钱",
+        "微信支付宝也欠钱",
+        "用的不止一张的信用卡"
+      ],
+      "frequency": 11,
+      "example_turn": "噢我知道，嗯嗯，对，不是，对我就是要延后一点",
+      "source": "observed"
+    },
+    {
+      "group_name": "family_emergency",
+      "keywords": [
+        "老人住院",
+        "家里有事",
+        "在医院照顾病号",
+        "明天给病号办出院",
+        "家里有病号在住院",
+        "今天就出院了",
+        "医生说再观察两天",
+        "有编病号",
+        "做手术",
+        "家里出了意外",
+        "家里出现特殊情况"
+      ],
+      "frequency": 11,
+      "example_turn": "也是老人。因为老人，老人，老人也是在住院嘛，所以说的话，这个费用的话……",
+      "source": "observed"
+    },
+    {
+      "group_name": "debt_amount",
+      "keywords": [
+        "只剩8000多没还",
+        "欠款1314元",
+        "超10000多块钱",
+        "欠款2000多",
+        "总欠款接近13万",
+        "3140",
+        "18000",
+        "41000",
+        "总的欠款是七万三千多",
+        "欠了五六万",
+        "今天还信用卡的2500加E招贷的600多"
+      ],
+      "frequency": 11,
+      "example_turn": "你这个利息太高了。我总共才10000多的额度，每个月你扣我200多的利息，我觉得这个是有点太高了。我之前反映过的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "card_status",
+      "keywords": [
+        "有卡能提",
+        "卡片不能用",
+        "8月份以后都不能刷出来",
+        "卡片恢复",
+        "卡片恢复正常",
+        "卡片状态",
+        "卡片注销",
+        "协商不注销",
+        "卡片冻结",
+        "要正常用卡"
+      ],
+      "frequency": 11,
+      "example_turn": "那个查询码就是有卡能提。",
+      "source": "observed"
+    },
+    {
+      "group_name": "business_failure",
+      "keywords": [
+        "做生意亏本",
+        "公司员工工资出不来",
+        "资金链断了",
+        "厂子停了",
+        "生意店关了",
+        "创业失败",
+        "做什么生意亏什么生意",
+        "倒闭了",
+        "投了几十万都倒闭了",
+        "生意没做好"
+      ],
+      "frequency": 11,
+      "example_turn": "就是原来是做生意的，现在就是说亏本了，就现在没有什么。",
+      "source": "observed"
+    },
+    {
+      "group_name": "promise_to_pay",
+      "keywords": [
+        "我说14号之前会还进去",
+        "那点钱过几天我把它还了",
+        "款一到，我立马就还",
+        "下来的话，620块钱我立马我就还进去",
+        "今天下午2点钟，差不多能把钱给我打过来",
+        "星期三就可以把那期的欠款给处理掉",
+        "最快也要明天，明天下午可不可以就把它还进去",
+        "会尽快想办法把这个还进来"
+      ],
+      "frequency": 8,
+      "example_turn": "嗯，我说14号之前会还进去的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "partial_payment",
+      "keywords": [
+        "昨天还了11000",
+        "还一点点进去",
+        "还了一个1000块钱",
+        "一点点还",
+        "上上个月已经还了一个月了",
+        "已经还了2000",
+        "今天有还了几百块",
+        "把掌上生活负的还进去了"
+      ],
+      "frequency": 8,
+      "example_turn": "行，我知道了。一会儿一会儿处理吧，好吧，嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "future_income",
+      "keywords": [
+        "20号发工资",
+        "15号发工资",
+        "后面有钱到了",
+        "治疗完到账",
+        "下个月就转正",
+        "10号会有钱"
+      ],
+      "frequency": 7,
+      "example_turn": "现在啊，20号发工资了以后那……",
+      "source": "observed"
+    },
+    {
+      "group_name": "funds_not_received",
+      "keywords": [
+        "钱没到账",
+        "钱没到",
+        "我的钱没到账"
+      ],
+      "frequency": 7,
+      "example_turn": "现在我钱没到账嘛，对对。",
+      "source": "observed"
+    },
+    {
+      "group_name": "future_payment_plan",
+      "keywords": [
+        "再有5天的周转期就没问题",
+        "款项最快11号中午才能到",
+        "明天中午前把2500转进去",
+        "2500明天中午前还",
+        "六点前可以",
+        "这个月21号之前，我把它还清了",
+        "月21号之前，我想全部把那个钱款全部结清"
+      ],
+      "frequency": 7,
+      "example_turn": "如果再有5天的周转期就没问题。我的款项最快11号中午才能到。",
       "source": "observed"
     },
     {
       "group_name": "request_installment",
       "keywords": [
         "整个账单分期",
-        "分期完之后信用卡取消",
-        "整个账单来做一个个分期",
-        "分期完之后这张信用卡就不用了",
-        "整个账单来做一个分期",
-        "分期完之后银行卡取消"
+        "整个账单做分期",
+        "能力以内分期慢慢还",
+        "想跟你们协商分期处理",
+        "之前有个停息分期还款的业务"
       ],
       "frequency": 6,
       "example_turn": "我想问一下，唉，譬如说，呃，不是说我是想整个账单分期，然后呃，分期完之后，这个信用卡就没有了，就要取消了，是这个意思吗？",
       "source": "observed"
     },
     {
-      "group_name": "multiple_debts",
+      "group_name": "repayment_plan",
       "keywords": [
-        "信用卡都逾期了",
-        "多行负债全面爆发",
-        "多行欠款",
-        "中信银行最低400也还不了",
-        "网贷会比较多"
+        "还分期",
+        "答应还900多",
+        "资金到账就还",
+        "15号以内结清",
+        "这个星期以内还",
+        "现在还3700，减3天以后工作日就减成6900"
+      ],
+      "frequency": 6,
+      "example_turn": "嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "family_illness",
+      "keywords": [
+        "老人住院",
+        "母亲癌症住院",
+        "家人住院",
+        "一年现在还不能自理",
+        "老人中风"
       ],
       "frequency": 5,
-      "example_turn": "我现在负债太高了，基本上信用卡都逾期了，都还不上了。就是说……哪家银行可以帮我去做一下个性化分期嘛，如果能做的话，就先处理这家银行，好吧？",
+      "example_turn": "对对。",
       "source": "observed"
     },
     {
-      "group_name": "salary_delay",
+      "group_name": "account_frozen",
       "keywords": [
-        "工资没发",
-        "工资还没发",
-        "工资还没到账",
-        "老板说周日才发"
+        "卡被冻结15天",
+        "卡号跟微信点人锁了",
+        "银行卡被法院冻结了",
+        "都冻结了"
       ],
       "frequency": 5,
-      "example_turn": "是",
+      "example_turn": "嗯，我前段时间接到了一个反诈中心的电话，然后为了保护我的财产安全，他们把我的所有卡冻结了15天，今天才能解卡解除。",
       "source": "observed"
     },
     {
-      "group_name": "income_statement",
+      "group_name": "future_payment_promise",
       "keywords": [
-        "每个月大概可以有20000块钱的收入",
-        "一个星期出5000",
-        "一个星期给你发5000",
-        "这个星期不发就拖到下个星期"
+        "等15号发工资我一定还",
+        "明天下午来处理",
+        "明天下午还进去",
+        "我明天下午还进去"
       ],
-      "frequency": 4,
-      "example_turn": "但是这样……因为就是我每个月，大概是可以有20000块钱的收入的，但是我不是……不是我不是马上一次性呃，出20000块的，我是可能一个星期出5000这样子。所以说我是有还款的能力，只是你一下子让我还20000多，可能就有点困难。你也看到我的记录了，就是我一直都是有还款的，只不过……就真的是最近那个经济压力有点大，所以才会逾期。",
+      "frequency": 5,
+      "example_turn": "我现在真的拿不出来，等15号发工资我一定还。",
       "source": "observed"
     },
     {
-      "group_name": "ability_to_pay",
+      "group_name": "asset_liquidation",
       "keywords": [
-        "有还款的能力",
-        "每个月还几千块钱是没问题的",
-        "每个月还5000是没问题的"
+        "开始卖电脑",
+        "闲鱼上卖一卖",
+        "东西都卖了",
+        "在卖我的房子",
+        "挂在那，有人看"
+      ],
+      "frequency": 5,
+      "example_turn": "我知道，我知道。",
+      "source": "observed"
+    },
+    {
+      "group_name": "address_change",
+      "keywords": [
+        "没居住在那边了",
+        "也没在那边了",
+        "户籍地址变更",
+        "户籍地址变更为社区无具体地址",
+        "办公地址不在"
+      ],
+      "frequency": 5,
+      "example_turn": "嗯，也没在那边了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "job_change",
+      "keywords": [
+        "没有",
+        "那个单位我都没在了",
+        "工作变动",
+        "换了工作"
+      ],
+      "frequency": 5,
+      "example_turn": "嗯……收入不稳定。",
+      "source": "observed"
+    },
+    {
+      "group_name": "business_loss",
+      "keywords": [
+        "账款收不回来",
+        "人家拖款",
+        "那个人跑路了",
+        "货款的人跑掉了",
+        "20个供应商全部被跑单"
+      ],
+      "frequency": 5,
+      "example_turn": "对对对，差不多。我有提前跟你们沟通，我们不是想去恶意逾期，从还款记录也能看到。但确实是今年5月份确定那笔账款收不回来之后，我没办法还了。我们做小生意的，就怕人家拖款。去年已经有压力了，但坚持在还。到了4月份，那个人跑路了，我们供应商的钱……这个跟银行没关系，你问我原因，我把原因讲给你。我希望你们能协调一下，让我少还一点，慢慢还。但一下子让我还四五千，我现目前没这个能力。从现在到明年3月，我没能力每期还5000的最低还款。希望跟你们协商，互相理解一下。",
+      "source": "observed"
+    },
+    {
+      "group_name": "partial_payment_commitment",
+      "keywords": [
+        "E招贷的620我今天可以还进去",
+        "今天先把E招贷还了",
+        "6620我现在就还进去",
+        "多还一点的话",
+        "还万把块钱的"
+      ],
+      "frequency": 5,
+      "example_turn": "嗯，明白。那E招贷的620我今天可以还进去，但是那个2500能不能缓两天？",
+      "source": "observed"
+    },
+    {
+      "group_name": "card_closure",
+      "keywords": [
+        "信用卡取消",
+        "信用卡就不用了",
+        "冻结银行卡",
+        "银行卡取消"
       ],
       "frequency": 4,
-      "example_turn": "但是这样……因为就是我每个月，大概是可以有20000块钱的收入的，但是我不是……不是我不是马上一次性呃，出20000块的，我是可能一个星期出5000这样子。所以说我是有还款的能力，只是你一下子让我还20000多，可能就有点困难。你也看到我的记录了，就是我一直都是有还款的，只不过……就真的是最近那个经济压力有点大，所以才会逾期。",
+      "example_turn": "我想问一下，唉，譬如说，呃，不是说我是想整个账单分期，然后呃，分期完之后，这个信用卡就没有了，就要取消了，是这个意思吗？",
+      "source": "observed"
+    },
+    {
+      "group_name": "billing_dispute",
+      "keywords": [
+        "余额不对",
+        "上一期余额1000多现在2000多",
+        "账单余额越来越多"
+      ],
+      "frequency": 4,
+      "example_turn": "嗯，那个余额不对啊。",
       "source": "observed"
     },
     {
       "group_name": "expected_income",
       "keywords": [
         "有1000多块钱要转",
-        "有一个小账他们银行还给我"
+        "有一个小账银行还给我",
+        "15号会全部给我",
+        "15号左右有一笔钱到"
       ],
-      "frequency": 3,
+      "frequency": 4,
       "example_turn": "大概1000多块钱，他们要转。",
       "source": "observed"
     },
     {
-      "group_name": "account_frozen",
+      "group_name": "external_debt",
       "keywords": [
-        "反诈中心电话",
-        "所有卡冻结了15天",
-        "今天才能解卡解除"
+        "外部有钱款未收回",
+        "打电话天天催他",
+        "今天推明天，明天推后天",
+        "着急得不得了"
       ],
-      "frequency": 3,
-      "example_turn": "嗯，我前段时间接到了一个反诈中心的电话，然后为了保护我的财产安全，他们把我的所有卡冻结了15天，今天才能解卡解除。",
+      "frequency": 4,
+      "example_turn": "对对，没错没错。我也是打电话天天催他，我也是打电话天天在催。它就是说，今天推明天，明天推后天，一直拖给我，我现在也是着急得不得了。今年可能他的生意也不好做吧，可能估计是这么个情况。",
       "source": "observed"
     },
     {
-      "group_name": "prior_contact_attempt",
+      "group_name": "salary_delayed",
       "keywords": [
-        "打过几次电话",
-        "提过要提前还款",
-        "我主动打电话给专员"
+        "工资还没发",
+        "还没发工资",
+        "下个礼拜就发工资了",
+        "18号还20号，20号左右这样子"
       ],
-      "frequency": 3,
-      "example_turn": "嗯……呃，现在是这样的。之前的时候，我打过几次电话，就是说我要提前还，然后……一直没有人来处理那个事情。",
+      "frequency": 4,
+      "example_turn": "工资还没发",
       "source": "observed"
     },
     {
-      "group_name": "unresolved_issue",
+      "group_name": "occupation",
       "keywords": [
-        "一直没有人来处理",
-        "一直都没有来处理",
-        "工作人员没有再跟我去沟通"
+        "自己做工程的",
+        "做小生意的",
+        "做工程类的",
+        "搞游戏的"
+      ],
+      "frequency": 4,
+      "example_turn": "呃，我们自己做工程的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "illness",
+      "keywords": [
+        "生病",
+        "身体不舒服",
+        "说话都费力",
+        "生病了"
+      ],
+      "frequency": 4,
+      "example_turn": "好，我再想下办法，反正最迟10号就可以处理，10号发工资，已经确定10号发。",
+      "source": "observed"
+    },
+    {
+      "group_name": "financial_loss",
+      "keywords": [
+        "贷了十万块钱，她拿着走掉了",
+        "一年多时间亏了这么多钱",
+        "亏了这么多钱",
+        "赔了一些钱"
+      ],
+      "frequency": 4,
+      "example_turn": "嗯嗯……我的妻子……跟我离婚了……唉……我贷了十万块钱，她拿着走掉了。然后我有三个小孩上着学。",
+      "source": "observed"
+    },
+    {
+      "group_name": "income_instability",
+      "keywords": [
+        "收入不稳定",
+        "好一点的时候可能一两万，差的时候可能只有一两千",
+        "不稳定"
+      ],
+      "frequency": 4,
+      "example_turn": "好一点的时候可能一两万，差的时候可能只有一两千，就这种情况。",
+      "source": "observed"
+    },
+    {
+      "group_name": "wage_delay",
+      "keywords": [
+        "这个月15号就发4月份的，还要压我半个月的工资",
+        "还没发，3月份也没发",
+        "2月份也没发",
+        "5月份的工资要等到15号才能发"
+      ],
+      "frequency": 4,
+      "example_turn": "我们是5号发，好像是这个月15号就发4月份的，还要压我半个月的工资。",
+      "source": "observed"
+    },
+    {
+      "group_name": "funds_delayed",
+      "keywords": [
+        "我的钱没到账",
+        "两笔钱没到账",
+        "两笔款项没到"
+      ],
+      "frequency": 4,
+      "example_turn": "我的钱没到账，我的钱因为有些问题耽误了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "unemployed",
+      "keywords": [
+        "没出来上班赚钱",
+        "不在原单位工作",
+        "没有工作",
+        "在家带孩子"
+      ],
+      "frequency": 4,
+      "example_turn": "嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "ability_to_pay",
+      "keywords": [
+        "有还款的能力",
+        "每个月还几千块钱没问题"
       ],
       "frequency": 3,
-      "example_turn": "嗯……呃，现在是这样的。之前的时候，我打过几次电话，就是说我要提前还，然后……一直没有人来处理那个事情。",
+      "example_turn": "但是这样……因为就是我每个月，大概是可以有20000块钱的收入的，但是我不是……不是我不是马上一次性呃，出20000块的，我是可能一个星期出5000这样子。所以说我是有还款的能力，只是你一下子让我还20000多，可能就有点困难。你也看到我的记录了，就是我一直都是有还款的，只不过……就真的是最近那个经济压力有点大，所以才会逾期。",
+      "source": "observed"
+    },
+    {
+      "group_name": "asset_frozen",
+      "keywords": [
+        "工资卡冻结",
+        "冻结的账户解封",
+        "银行卡都被冻结了"
+      ],
+      "frequency": 3,
+      "example_turn": "嗯，嗯，对，嗯，我现在本身工资卡也冻结了",
+      "source": "observed"
+    },
+    {
+      "group_name": "prior_contact",
+      "keywords": [
+        "前两天打过电话",
+        "打过几次电话说要提前还",
+        "提过要提前还款"
+      ],
+      "frequency": 3,
+      "example_turn": "嗯，知道。我前两天给你们打过电话的，就是14号之前。",
       "source": "observed"
     },
     {
       "group_name": "previous_agreement",
       "keywords": [
-        "当时他们跟我说，是每个月还600多",
-        "他当时跟我说是先还这个回来再协商的",
-        "当时我还那个钱，他说给我免两期利息"
+        "之前被告知每月还600多",
+        "先还这个回来再协商",
+        "当时说免两期利息"
       ],
       "frequency": 3,
       "example_turn": "当时他们跟我说，是每个月还600多。",
       "source": "observed"
     },
     {
-      "group_name": "bank_account_frozen",
+      "group_name": "receivables_delayed",
       "keywords": [
-        "工资卡冻结"
+        "工程被欠款",
+        "一个项目可能会拖比较久",
+        "款被拖了"
       ],
-      "frequency": 2,
-      "example_turn": "嗯，嗯，对，嗯，我现在本身工资卡也冻结了",
+      "frequency": 3,
+      "example_turn": "呃，我们现在是做工程，目前是因为工程被欠款，所以我这边才会欠款。",
       "source": "observed"
     },
     {
-      "group_name": "debt_priority",
+      "group_name": "overdue",
       "keywords": [
-        "排到工行之后"
+        "逾期",
+        "拖欠一段时间"
       ],
-      "frequency": 2,
-      "example_turn": "对对对对，我知道我知道，银行走流程更麻烦，对吧？我知道，你还不一定走到，因为你怎么排都排到工行之后，对吧？",
+      "frequency": 3,
+      "example_turn": "对。",
       "source": "observed"
     },
     {
-      "group_name": "billing_dispute",
+      "group_name": "promised_date",
       "keywords": [
-        "余额不对"
+        "承诺日期6号到8号",
+        "承诺日期是今天",
+        "我最晚11号把这个钱还进去"
       ],
-      "frequency": 2,
-      "example_turn": "嗯，那个余额不对啊。",
+      "frequency": 3,
+      "example_turn": "6号到8号。",
       "source": "observed"
     },
     {
-      "group_name": "income_timing",
+      "group_name": "hospitalization",
       "keywords": [
-        "20号发工资",
-        "到20号"
+        "住院",
+        "在东共在后市里待了老长时间"
+      ],
+      "frequency": 3,
+      "example_turn": "我记着，我记着6号到8号我在医院呢。前天我前天刚出院。",
+      "source": "observed"
+    },
+    {
+      "group_name": "payment_method",
+      "keywords": [
+        "银行卡转账",
+        "还的都是同一张卡还的呀",
+        "我那还款日账户都是同一张卡呀"
+      ],
+      "frequency": 3,
+      "example_turn": "银行卡转账啊。",
+      "source": "observed"
+    },
+    {
+      "group_name": "proposed_payment_amount",
+      "keywords": [
+        "一个月想还个几百块钱",
+        "想一个月还几百块钱",
+        "10000多、20000来块钱我还能想想"
+      ],
+      "frequency": 3,
+      "example_turn": "呃，我看能承担……基本上，我能分那个，打比方啊，不是有个能分几十期的嘛，我一个月想还个几百块钱，因为我不想生活压力太大。咱说第一正常生活得维持，第二吧，我也不是名下只有这一个信用卡，兴业银行我也是个性化分期了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "medical_condition",
+      "keywords": [
+        "做了两次手术",
+        "15号还要去做一次手术",
+        "4月份5月份都有动手术"
+      ],
+      "frequency": 3,
+      "example_turn": "因为我做了两次手术，知道吗？我15号我还要去做一次手术，4月份5月份我都有动手术，我现在经济很困难。现在逼着我天天打我这个电话。",
+      "source": "observed"
+    },
+    {
+      "group_name": "overdue_status",
+      "keywords": [
+        "第二期账单逾期",
+        "已经逾期了",
+        "已经逾期"
+      ],
+      "frequency": 3,
+      "example_turn": "知道",
+      "source": "observed"
+    },
+    {
+      "group_name": "overdue_duration",
+      "keywords": [
+        "都一个30天了",
+        "欠了五年了",
+        "逾期半个多月"
+      ],
+      "frequency": 3,
+      "example_turn": "嗯，那个啥，你帮忙申请一下，我的确真实不是有这个特殊是。这个，这都一个30天了，个10000钱也多回不来的，有效期间。",
+      "source": "observed"
+    },
+    {
+      "group_name": "has_funds",
+      "keywords": [
+        "有钱",
+        "能力还",
+        "资金没问题"
+      ],
+      "frequency": 3,
+      "example_turn": "我有钱，里边有最低还款日还了两到3天可以正常使用。卡不出限制。",
+      "source": "observed"
+    },
+    {
+      "group_name": "hospitalization_duration",
+      "keywords": [
+        "下住3个月",
+        "过完年就开始住销",
+        "在一年"
+      ],
+      "frequency": 3,
+      "example_turn": "噢，我对，下住3个月月了。我2个月不还了吗？",
+      "source": "observed"
+    },
+    {
+      "group_name": "self_employed",
+      "keywords": [
+        "我在做工程，做工程又不是固定一个单位的",
+        "现在自己做了",
+        "自己做生意"
+      ],
+      "frequency": 3,
+      "example_turn": "我在做工程，做工程又不是固定一个单位的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "borrowing_intent",
+      "keywords": [
+        "我要借钱了",
+        "我刚刚借3000块先还进去",
+        "我看看我能借3000块，我先还进去了"
+      ],
+      "frequency": 3,
+      "example_turn": "我看看，四点钟之前要解决，解决要多少钱呐？我看看，如果这样的话，我要借钱了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "total_debt_amount",
+      "keywords": [
+        "58000",
+        "125000多所有款项",
+        "10多万"
+      ],
+      "frequency": 3,
+      "example_turn": "好好，那这个2900我现在还，我看几号能还。现在是8号，估计15号左右有一笔钱到。能不能每次减到2000或者1900？这样我压力小一点，还起来比较顺。",
+      "source": "observed"
+    },
+    {
+      "group_name": "seeking_funds",
+      "keywords": [
+        "要找别人先拿点现金",
+        "找别人拿现金",
+        "在想办法找钱还"
+      ],
+      "frequency": 3,
+      "example_turn": "我现在在国外，我要去找别人先拿点现金来还上。",
+      "source": "observed"
+    },
+    {
+      "group_name": "expected_funds",
+      "keywords": [
+        "律师说会有一笔款项进来",
+        "医疗费用我就能下来",
+        "银行给我赔偿"
+      ],
+      "frequency": 3,
+      "example_turn": "我这边工作变动，资金上有点问题。律师说会有一笔款项进来，到时候可以先还一部分。我想跟你们协商分期处理。",
+      "source": "observed"
+    },
+    {
+      "group_name": "insufficient_funds",
+      "keywords": [
+        "现在只有1500",
+        "还不够这个3000、3602呢",
+        "动不了那么多钱，凑不够那么多"
+      ],
+      "frequency": 3,
+      "example_turn": "是的。嗯，请……嗯，刚钱不是都给你了吗？现在只有1500，不够了呀。",
+      "source": "observed"
+    },
+    {
+      "group_name": "family_support",
+      "keywords": [
+        "给家里面拿钱",
+        "家里借钱",
+        "家里面帮我筹钱"
+      ],
+      "frequency": 3,
+      "example_turn": "嗯……就是现在换了工作嘛，换了工作然后这边每个月放款压力太大了，又给家里面拿钱。我就说你们这边给我弄一个方案出来嘛，我慢慢还。",
+      "source": "observed"
+    },
+    {
+      "group_name": "excessive_contact",
+      "keywords": [
+        "每天发这么多",
+        "10几条短信",
+        "10几个电话"
+      ],
+      "frequency": 3,
+      "example_turn": "我担心……",
+      "source": "observed"
+    },
+    {
+      "group_name": "limited_repayment_ability",
+      "keywords": [
+        "每月只能还1000多",
+        "一个月只能还个一千两千",
+        "如果卡停用了，我只能还一千两千"
+      ],
+      "frequency": 3,
+      "example_turn": "啊，就是现在是打工了，然后1个月有几千块钱。对，然后呢，就说呃因为我以前有几个银行也是在做那种分期的嘛，就分期的，你说像以前1个月还大几千啊那种可能就没有办法了，只能是说1个月1000多块钱样子，分分分，然后呢慢慢把以前的钱还了，就只能是这样子了。嗯，因为我现在我等个负债的，呃，就看你，你能提供什么政策，有些发视频。停卡，然后它那个利息是比较低点嘛。因为如果不停卡，那利息高，但是这个你们那边有什么方案咯？",
+      "source": "observed"
+    },
+    {
+      "group_name": "income_level",
+      "keywords": [
+        "许昌的平均工资一个月也就是两三千块钱",
+        "目前是实习，每个月是2000",
+        "转正之后每个月是3000"
+      ],
+      "frequency": 3,
+      "example_turn": "嗯，41000。",
+      "source": "observed"
+    },
+    {
+      "group_name": "employment_status",
+      "keywords": [
+        "实习",
+        "转正",
+        "工作了"
+      ],
+      "frequency": 3,
+      "example_turn": "那个8月都上了5个月班了，那就那就好说了嘛。",
+      "source": "observed"
+    },
+    {
+      "group_name": "available_funds",
+      "keywords": [
+        "2000块",
+        "还有1000来块钱"
+      ],
+      "frequency": 3,
+      "example_turn": "2000块。",
+      "source": "observed"
+    },
+    {
+      "group_name": "work_status",
+      "keywords": [
+        "请假",
+        "明天去工作"
+      ],
+      "frequency": 3,
+      "example_turn": "所以我就请了假，然后可能……这个收入方面的话可能会有减少，就这个意思。所以我就想把这个……嗯，对对对，我这个病是长期的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "dispute_overdue_period",
+      "keywords": [
+        "我应该是有一期吧",
+        "我上一个月，就是上一期的还款日，不是应该是24号嘛",
+        "那为什么现在是逾期两期呢"
+      ],
+      "frequency": 3,
+      "example_turn": "嗯那我一会我看一下吧",
+      "source": "observed"
+    },
+    {
+      "group_name": "current_balance",
+      "keywords": [
+        "73000多",
+        "73828块3毛6",
+        "73828.36"
+      ],
+      "frequency": 3,
+      "example_turn": "打比方说啊，我现在是73000多，我还上3700。",
+      "source": "observed"
+    },
+    {
+      "group_name": "debt_calculation",
+      "keywords": [
+        "73828.36减去3700等于70128.36",
+        "下个月还等于67469.99"
+      ],
+      "frequency": 3,
+      "example_turn": "等于70128块3毛6。",
+      "source": "observed"
+    },
+    {
+      "group_name": "income_statement",
+      "keywords": [
+        "每个月大概可以有20000块钱的收入",
+        "一个星期给你发5000"
       ],
       "frequency": 2,
-      "example_turn": "现在啊，20号发工资了以后那……",
+      "example_turn": "但是这样……因为就是我每个月，大概是可以有20000块钱的收入的，但是我不是……不是我不是马上一次性呃，出20000块的，我是可能一个星期出5000这样子。所以说我是有还款的能力，只是你一下子让我还20000多，可能就有点困难。你也看到我的记录了，就是我一直都是有还款的，只不过……就真的是最近那个经济压力有点大，所以才会逾期。",
+      "source": "observed"
+    },
+    {
+      "group_name": "payment_plan_proposal",
+      "keywords": [
+        "一个星期出5000",
+        "每个月还5000没问题"
+      ],
+      "frequency": 2,
+      "example_turn": "但是这样……因为就是我每个月，大概是可以有20000块钱的收入的，但是我不是……不是我不是马上一次性呃，出20000块的，我是可能一个星期出5000这样子。所以说我是有还款的能力，只是你一下子让我还20000多，可能就有点困难。你也看到我的记录了，就是我一直都是有还款的，只不过……就真的是最近那个经济压力有点大，所以才会逾期。",
+      "source": "observed"
+    },
+    {
+      "group_name": "liquidity_constraint",
+      "keywords": [
+        "一下子拿20000多不行",
+        "一下子拿20000多拿不出来"
+      ],
+      "frequency": 2,
+      "example_turn": "我的意思说我每个月还几千块钱，我是没问题的。是你，我一下子拿20000多出来真的不行。所以我现在是想整个账单来做一个分期，然后就分期完之后，你不是说做这样一个分期的话就冻结我的银行卡嘛，冻结完分期完之后那个银行卡就取消，我可以接受这个方案。",
+      "source": "observed"
+    },
+    {
+      "group_name": "multiple_overdue",
+      "keywords": [
+        "信用卡都逾期了",
+        "名下所有信用卡全部都出现逾期"
+      ],
+      "frequency": 2,
+      "example_turn": "我现在负债太高了，基本上信用卡都逾期了，都还不上了。就是说……哪家银行可以帮我去做一下个性化分期嘛，如果能做的话，就先处理这家银行，好吧？",
+      "source": "observed"
+    },
+    {
+      "group_name": "wage_garnishment",
+      "keywords": [
+        "工资被其他银行强制扣划"
+      ],
+      "frequency": 2,
+      "example_turn": "现在不扣了，扣完了已经。",
+      "source": "observed"
+    },
+    {
+      "group_name": "previous_offer",
+      "keywords": [
+        "第一次联系时承诺减免到6000",
+        "之前沟通只有最低18000方案"
+      ],
+      "frequency": 2,
+      "example_turn": "记得你们……听我说哈，我记得你们第一次联系我的时候，我减，就是说我一次性还完了以后，你给我减减到6000。",
+      "source": "observed"
+    },
+    {
+      "group_name": "other_debt",
+      "keywords": [
+        "中信银行最低400也还不了",
+        "我这边有还卡"
+      ],
+      "frequency": 2,
+      "example_turn": "你这个最低，这个最低，最低还款我还不了。包括那个什么这个，这个中信银行的要我还最低400块钱，我都还不了。",
       "source": "observed"
     },
     {
@@ -200,27 +1078,592 @@
       "source": "observed"
     },
     {
-      "group_name": "debt_amount",
+      "group_name": "special_circumstances",
       "keywords": [
-        "只剩下8000多块钱没还",
-        "总共才10000多的额度"
+        "出现了特殊情况",
+        "特殊金情况"
       ],
       "frequency": 2,
-      "example_turn": "对，就是帮我申请免息，然后大概做个15期20期这样子。我应该只剩下8000多块钱没还了是不是？",
+      "example_turn": "是啊，这不是出现了特殊情况嘛？对，对。",
       "source": "observed"
     },
     {
-      "group_name": "high_interest",
+      "group_name": "death_certificate",
       "keywords": [
-        "利息太高",
-        "每个月扣200多的利息"
+        "有死亡证明"
+      ],
+      "frequency": 2,
+      "example_turn": "提供什么证明？这都有死亡证明什么的，这种事情不能开玩笑。",
+      "source": "observed"
+    },
+    {
+      "group_name": "unresolved_issue",
+      "keywords": [
+        "一直没有人来处理",
+        "工作人员没有再跟我去沟通"
+      ],
+      "frequency": 2,
+      "example_turn": "嗯……呃，现在是这样的。之前的时候，我打过几次电话，就是说我要提前还，然后……一直没有人来处理那个事情。",
+      "source": "observed"
+    },
+    {
+      "group_name": "repayment_proposal",
+      "keywords": [
+        "申请免息分期15-20期",
+        "想协商每月定期还"
       ],
       "frequency": 2,
       "example_turn": "你这个利息太高了。我总共才10000多的额度，每个月你扣我200多的利息，我觉得这个是有点太高了。我之前反映过的。",
       "source": "observed"
     },
     {
-      "group_name": "payment_history",
+      "group_name": "payment_failure",
+      "keywords": [
+        "手出失败",
+        "扣了一下没扣成"
+      ],
+      "frequency": 2,
+      "example_turn": "那个……手出……失败了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "expected_payment_timeline",
+      "keywords": [
+        "3个月它能出工程款",
+        "等工程款进来"
+      ],
+      "frequency": 2,
+      "example_turn": "呃，就因为我们有两个项目，一个项目可能会拖比较久，那另外一个项目我已经在审核了，就是已经在拆分了，也就是这3个月它能出工程款。所以才会说我只要拖这3个月我就可以还。",
+      "source": "observed"
+    },
+    {
+      "group_name": "recent_discharge",
+      "keywords": [
+        "刚出院"
+      ],
+      "frequency": 2,
+      "example_turn": "我记着，我记着6号到8号我在医院呢。前天我前天刚出院。",
+      "source": "observed"
+    },
+    {
+      "group_name": "temporary_difficulty",
+      "keywords": [
+        "暂时的",
+        "暂时困难"
+      ],
+      "frequency": 2,
+      "example_turn": "对，我这也是暂时的，因为我这不是永久的。没准来年我那个冻结的账户给我解封了，那我就一把都还上了，就不用去操这个本金了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "future_lump_sum_payment",
+      "keywords": [
+        "一把都还上",
+        "解封可以一次性还"
+      ],
+      "frequency": 2,
+      "example_turn": "对，我这也是暂时的，因为我这不是永久的。没准来年我那个冻结的账户给我解封了，那我就一把都还上了，就不用去操这个本金了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "inability_to_borrow",
+      "keywords": [
+        "外面有朋友亲戚借钱的话",
+        "借不到"
+      ],
+      "frequency": 2,
+      "example_turn": "我要是有钱，我外面有朋友亲戚借钱的话，我为什么要用信用卡呢？就是没有我才用信用卡的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "income_timing",
+      "keywords": [
+        "15号发工资",
+        "10号发工资"
+      ],
+      "frequency": 2,
+      "example_turn": "你看我的那个还款记录，我是不是每个月都是履行还的嘛？因为有经济状况，动手术，我也要15号才发，我都没钱。",
+      "source": "observed"
+    },
+    {
+      "group_name": "good_payment_history",
+      "keywords": [
+        "每个月都是履行还的",
+        "从来都没有出现过逾期"
+      ],
+      "frequency": 2,
+      "example_turn": "你看我的那个还款记录，我是不是每个月都是履行还的嘛？因为有经济状况，动手术，我也要15号才发，我都没钱。",
+      "source": "observed"
+    },
+    {
+      "group_name": "credibility_claim",
+      "keywords": [
+        "我不会骗你",
+        "骗你没意义"
+      ],
+      "frequency": 2,
+      "example_turn": "确实有困难。我明天下午还进去。好，这是我……我不会骗你，是吧？我跟你说我不骗你，就我明天下午去，好吧。",
+      "source": "observed"
+    },
+    {
+      "group_name": "fee_amount",
+      "keywords": [
+        "利息是100多，违约金是10来块",
+        "息费大概1000块钱左右"
+      ],
+      "frequency": 2,
+      "example_turn": "等一下，我利息是100多，违约金是10来块。它利息100多，等于是9000多的本金的利息，是吧？那我等于每个月都有利息100多，等于是这个样子嘛，对吧？",
+      "source": "observed"
+    },
+    {
+      "group_name": "borrowing_attempt",
+      "keywords": [
+        "昨天我都跟对方都已经那啥了，已经沟通完了",
+        "他那边今天下午2点钟，他给我外边打，给我找，给我转"
+      ],
+      "frequency": 2,
+      "example_turn": "嗯，因为我都沟通好几天了。昨天我都跟对方都已经那啥了，已经沟通完了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "payment_error",
+      "keywords": [
+        "还错了",
+        "还到那个中信的去了"
+      ],
+      "frequency": 2,
+      "example_turn": "嗯，还到那个中信的去了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "card_blocked",
+      "keywords": [
+        "刷不出来钱",
+        "卡显示不能用"
+      ],
+      "frequency": 2,
+      "example_turn": "那那不是，我，那我的现在怎么不叫我？我用怎么回事？我者也刷不出来了钱。",
+      "source": "observed"
+    },
+    {
+      "group_name": "borrowing_from_others",
+      "keywords": [
+        "找别人借钱",
+        "朋友那个借了1500"
+      ],
+      "frequency": 2,
+      "example_turn": "没办法啊，你要我，我现在还，我还要去找别人借钱，我明天还，然后……",
+      "source": "observed"
+    },
+    {
+      "group_name": "forgetfulness",
+      "keywords": [
+        "忘了",
+        "可能这次忘记还了"
+      ],
+      "frequency": 2,
+      "example_turn": "没有，我忘了，真的时间久了，真忘了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "communication_issue",
+      "keywords": [
+        "手机忘家里了",
+        "手机我比较少用"
+      ],
+      "frequency": 2,
+      "example_turn": "嗯，招行183，噢，这两天家里有点事，我手机一直没有拿。在医院照顾病号，手机忘家里了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "expected_refund",
+      "keywords": [
+        "医保一报能退回来",
+        "一报起来也能报一大半"
+      ],
+      "frequency": 2,
+      "example_turn": "不是，嗯，有那个家里有病号在住院呢，钱都给他交住院费了。它一出院，医保上一报，能退回来。",
+      "source": "observed"
+    },
+    {
+      "group_name": "missed_payment",
+      "keywords": [
+        "4月份也没还",
+        "5月份没有还款"
+      ],
+      "frequency": 2,
+      "example_turn": "嗯，全部还了，有，我4月份也没还嘛。",
+      "source": "observed"
+    },
+    {
+      "group_name": "auto_deduction_issue",
+      "keywords": [
+        "还点钱到信用卡被E招贷扣完",
+        "存钱被秒扣"
+      ],
+      "frequency": 2,
+      "example_turn": "没有还错账户，每个月不是从我的招行卡里扣吗？我一存进去，那会儿存了点钱，马上就给扣了，秒扣。",
+      "source": "observed"
+    },
+    {
+      "group_name": "low_income",
+      "keywords": [
+        "每个月工资就这一点，三四千块",
+        "每个月工资那一点点"
+      ],
+      "frequency": 2,
+      "example_turn": "压力太大了，每个月工资就这一点，三四千块，然后要还这么多。",
+      "source": "observed"
+    },
+    {
+      "group_name": "fraud_victim",
+      "keywords": [
+        "我被骗了",
+        "被朋友骗"
+      ],
+      "frequency": 2,
+      "example_turn": "不是，还有别的平台，就是我被骗了。还有别的平台，不是说只有你们这个平台，只是说别的平台会相对还款少一点，所以我还得起，但是招行相对来说……",
+      "source": "observed"
+    },
+    {
+      "group_name": "no_borrowing_source",
+      "keywords": [
+        "没地方借钱",
+        "没地方借了"
+      ],
+      "frequency": 2,
+      "example_turn": "唉呀，还不清。就是真的都没地方借钱了，我去哪里拿钱出来嘛，一下子。",
+      "source": "observed"
+    },
+    {
+      "group_name": "living_expenses",
+      "keywords": [
+        "要交房租",
+        "要生活"
+      ],
+      "frequency": 2,
+      "example_turn": "你是说真的，我餐都吃不起，我每个月工资那一点点，我要生活，我也要交房租。我这样子已经持续了几年，23年了，好像是今年不知道第几年了，我都记不清了。唉。",
+      "source": "observed"
+    },
+    {
+      "group_name": "location_constraint",
+      "keywords": [
+        "在外面",
+        "我在国外"
+      ],
+      "frequency": 2,
+      "example_turn": "来不及，我晚上之前行不行？我现在在外面，要回到家才能操作。",
+      "source": "observed"
+    },
+    {
+      "group_name": "credit_limit",
+      "keywords": [
+        "额度37000",
+        "临时额度"
+      ],
+      "frequency": 2,
+      "example_turn": "嗯我知道了。那我在再合一下，就是你说的就是说，嗯，我看，嗯，2000多赔上，然后剩余的还有330000几？30000？总共总共的额度，我那张卡的额度是37000。",
+      "source": "observed"
+    },
+    {
+      "group_name": "previous_contact",
+      "keywords": [
+        "昨天下午接过电话",
+        "他说那你就等着"
+      ],
+      "frequency": 2,
+      "example_turn": "昨天下午不是接了吗？我不是说在车上开车。",
+      "source": "observed"
+    },
+    {
+      "group_name": "good_credit_history",
+      "keywords": [
+        "我这么多年用这个卡我都没有逾期过",
+        "都是按期还"
+      ],
+      "frequency": 2,
+      "example_turn": "都是按期还……嗯，好。",
+      "source": "observed"
+    },
+    {
+      "group_name": "payment_made",
+      "keywords": [
+        "刚钱不是都给你了吗",
+        "已经还进去了"
+      ],
+      "frequency": 2,
+      "example_turn": "是的。嗯，请……嗯，刚钱不是都给你了吗？现在只有1500，不够了呀。",
+      "source": "observed"
+    },
+    {
+      "group_name": "dispute_fee",
+      "keywords": [
+        "违约金",
+        "解决违约金"
+      ],
+      "frequency": 2,
+      "example_turn": "帮我说一个违约金。",
+      "source": "observed"
+    },
+    {
+      "group_name": "payment_amount",
+      "keywords": [
+        "每个月还6000多",
+        "994.34"
+      ],
+      "frequency": 2,
+      "example_turn": "但是你每个月还6000多，我现在是真还不了那么多，压力大。我前面还没到还款日的时候，我就跟你们这边……微信上面不是有个专属客服嘛，我都给他沟通过了的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "debt_inquiry",
+      "keywords": [
+        "欠了银行多少本金多少利息",
+        "账面本金"
+      ],
+      "frequency": 2,
+      "example_turn": "我的数据，我现在欠了银行多少本金，多少利息，看得到吧。",
+      "source": "observed"
+    },
+    {
+      "group_name": "payment_plan",
+      "keywords": [
+        "叫我老婆帮我存进去",
+        "还分期"
+      ],
+      "frequency": 2,
+      "example_turn": "没有，我叫我老婆帮我存进去。",
+      "source": "observed"
+    },
+    {
+      "group_name": "card_limit_reduction",
+      "keywords": [
+        "还了进去，这一划了嘛，但降额",
+        "还进去降额"
+      ],
+      "frequency": 2,
+      "example_turn": "啊，主要不是说不想还，就还了进去，这一划了嘛，但降额。",
+      "source": "observed"
+    },
+    {
+      "group_name": "debt_for_others",
+      "keywords": [
+        "替别人借钱"
+      ],
+      "frequency": 2,
+      "example_turn": "知道……呃，因为它这个分期我本来就是替别人去借钱的。然后我现在现在也是跟别人打官司的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "legal_dispute",
+      "keywords": [
+        "跟别人打官司"
+      ],
+      "frequency": 2,
+      "example_turn": "知道……呃，因为它这个分期我本来就是替别人去借钱的。然后我现在现在也是跟别人打官司的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "contact_attempt",
+      "keywords": [
+        "打电话没有人接",
+        "一直在打电话"
+      ],
+      "frequency": 2,
+      "example_turn": "我知道，这个他跟我下午讲过了。然后我今天我刚刚打电话，打过去了，但是没有人接。可能就是沟通这个事情。",
+      "source": "observed"
+    },
+    {
+      "group_name": "job_search",
+      "keywords": [
+        "要找到新的工作",
+        "找工作比较难"
+      ],
+      "frequency": 2,
+      "example_turn": "要等到找到新的工作，大概在下个月，或者是呃，大下个月嘛，然后找到工作了，我赚到钱了，我这边我会自动，我会接着还的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "account_status",
+      "keywords": [
+        "信用卡负1600多",
+        "没有额度"
+      ],
+      "frequency": 2,
+      "example_turn": "对，稍等一下我，我等一下啊，稍等一下。那你这意思就是……噢，我现在每个月只需要还2000块钱，相当于是吧？8月份……它违约金是没有了，但我利息呢？打个比方说，我现在呃，5月12月6号的账单，那5月6号的时候，我看那个信用卡是……我我是没有额度的，然后现在我信用卡是负1600多。啊，那那这个你……分期的利息，它是免不了了，是吧？嗯，那那我现在，我现现在有多少违约金和那个个利息呢？",
+      "source": "observed"
+    },
+    {
+      "group_name": "long_term_relationship",
+      "keywords": [
+        "第一个工资卡就是招商银行的",
+        "用了10来年"
+      ],
+      "frequency": 2,
+      "example_turn": "那你报一下那个……嗯……6225……然后呢……7687……19262125……然后……另一个……嗯……225……7524……1385……638……嗯……嗯……嗯……嗯……好，好，好。那我，我只要在今天转就可以了，是吗？好，好，六点之前我找人帮我转一下。那我发等一下，等一下，等一下，那我8月份的还，那我8月份假如说你8月14号跟我说8月14号我还是还2100多是吗？2000就2000多一点……噢好知道了……到了……好好好……你先就一年吧。因为我现在找工作的确比较难。那肯那……那肯定的，因为你也看你，咱说实说实在的，对吧？你说我也不是说……就是说借完钱不还了。你现在招商银行的钱我自从出，我自从出来上班之后，第一个工资卡就是招商银行的，我就一直用用到现在。对说，你看你，你公司银行也应该能查到，然后说出我自己也知道，对吧？你说我分期也好啊，借款也好，我的利息咱们用了10来年了，利息怎么说我也应该都翻倍了，对吧？我也没有说在纠结这个问题，咱们是用钱了，你说？我借钱，我还钱是很正常的，天经地义的一件事。对，是的是的……银行……好。",
+      "source": "observed"
+    },
+    {
+      "group_name": "new_job",
+      "keywords": [
+        "找到工作了",
+        "今天第1天上班"
+      ],
+      "frequency": 2,
+      "example_turn": "嗯，我现在，我现在，我现在找到工作了，然后我今天第1天上班，我目前是在实习阶段。",
+      "source": "observed"
+    },
+    {
+      "group_name": "probation",
+      "keywords": [
+        "目前是在实习阶段",
+        "都有试用期"
+      ],
+      "frequency": 2,
+      "example_turn": "嗯，我现在，我现在，我现在找到工作了，然后我今天第1天上班，我目前是在实习阶段。",
+      "source": "observed"
+    },
+    {
+      "group_name": "interest_waiver",
+      "keywords": [
+        "等于是你们把利息都给我免了",
+        "后面的分期的利息都停掉了"
+      ],
+      "frequency": 2,
+      "example_turn": "呃，额度的那个本金就没有利息了。等于是你们把利息都给我免了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "income_amount",
+      "keywords": [
+        "2000",
+        "3000"
+      ],
+      "frequency": 2,
+      "example_turn": "那个8月都上了5个月班了，那就那就好说了嘛。",
+      "source": "observed"
+    },
+    {
+      "group_name": "account_balance",
+      "keywords": [
+        "信息还是5000多",
+        "1100.45"
+      ],
+      "frequency": 2,
+      "example_turn": "但是，但是我看那个刚才收到的信息是，还是5000多呀？",
+      "source": "observed"
+    },
+    {
+      "group_name": "repayment",
+      "keywords": [
+        "还钱"
+      ],
+      "frequency": 2,
+      "example_turn": "嗯，那现在是这个。还有一个问题就是比如说这个钱我一笔一笔还完之后，那这个卡片是恢复正常了还是是都银行会会对？",
+      "source": "observed"
+    },
+    {
+      "group_name": "negotiation_request",
+      "keywords": [
+        "你们一点协商的余力都没有吗",
+        "就是想跟你们就是协商一下嘛"
+      ],
+      "frequency": 2,
+      "example_turn": "嗯……因为是这样子，我上次好像跟你们那个客服沟通过，然后有一个那个……你们有一个什么部门，他跟我联系，然后我说有有……就说跟你们银行有个协商那个还款日，然后他是当时跟我回复的是，他说只能还最低还款，没有协商。我说，我说，你们一点协商的余力都没有吗？他说，那你就等着。呃，他说等到5号之后说有另外一个部门跟我联系，然后然后他说你有任何问题你就跟你就是跟我联系的那个部门反馈了是不是，然后我现在意思就是说，你们现在有没有什么协商的那个政策或者怎么样的？减免啊，或者说每个月把那个还款金额就是调低一点。因为我现在是需要说……",
+      "source": "observed"
+    },
+    {
+      "group_name": "proposed_plan",
+      "keywords": [
+        "我每个月我还1000",
+        "做个分期嘛，就是我每个月给……工费还个几万块钱多1000多块钱这样子"
+      ],
+      "frequency": 2,
+      "example_turn": "喂你好",
+      "source": "observed"
+    },
+    {
+      "group_name": "temporary_location",
+      "keywords": [
+        "在外面",
+        "带着孩子在外面"
+      ],
+      "frequency": 2,
+      "example_turn": "我在外面呢现在。",
+      "source": "observed"
+    },
+    {
+      "group_name": "personal_purchase",
+      "keywords": [
+        "我买东西的",
+        "买东西的，没有进货"
+      ],
+      "frequency": 2,
+      "example_turn": "我买东西的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "credit_limit_change",
+      "keywords": [
+        "临时额度调没了",
+        "临时额度停了"
+      ],
+      "frequency": 2,
+      "example_turn": "你们看有没有什么方案？一次性我搞不了，只能每个月还点。",
+      "source": "observed"
+    },
+    {
+      "group_name": "unstable_income",
+      "keywords": [
+        "之前好多年不稳定",
+        "工作不稳定，收入不稳定"
+      ],
+      "frequency": 2,
+      "example_turn": "没有，我就这一张信用卡。",
+      "source": "observed"
+    },
+    {
+      "group_name": "limited_funds",
+      "keywords": [
+        "微信还有几百块钱",
+        "明天还有600块钱"
+      ],
+      "frequency": 2,
+      "example_turn": "明天还有600块钱。好吧，那我，那我还完了，我都没有生活费了，怎么办呢？人家答应借给我呀，我还得再问。102。对。喂，生活这么难。对，没钱。唉，真的真的麻烦了。还你们602，我先还602。服务微信。那我微信就没有钱了怎么办？就还还完了，不行，进去没有办过费。嗯，八。差多少钱？好，还差多少？那我就10多万，10多万之后怎么规划去还呢？工作不稳定，收入不稳定。那个转给人家了，下时间我还出差一点。好，麻烦你了。好，你好。好，千，钱，好好。嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "at_bank",
+      "keywords": [
+        "在银行",
+        "来到银行了"
+      ],
+      "frequency": 2,
+      "example_turn": "唉，对对对对对，我现在就在银行，就在咱招行。",
+      "source": "observed"
+    },
+    {
+      "group_name": "delayed_income",
+      "keywords": [
+        "3个月以后才能回账",
+        "等一个星期才能结账"
+      ],
+      "frequency": 2,
+      "example_turn": "保卡减免吧，先保持一个信用卡，因为我3个月以后才能回账。这段时间太累了，还受伤了个工人。",
+      "source": "observed"
+    },
+    {
+      "group_name": "third_party_payment",
+      "keywords": [
+        "别人给我还",
+        "我让别人给我还"
+      ],
+      "frequency": 2,
+      "example_turn": "等……几、几？1分钟，1分钟，马上，马上。",
+      "source": "observed"
+    },
+    {
+      "group_name": "past_payment_history",
       "keywords": [
         "一直都是有还款的"
       ],
@@ -229,21 +1672,21 @@
       "source": "observed"
     },
     {
-      "group_name": "other_bank_policy",
+      "group_name": "income_irregularity",
       "keywords": [
-        "朋友在工商银行有全额分期"
+        "这个星期不发就拖到下个星期"
       ],
       "frequency": 1,
-      "example_turn": "知道，我知道。但是因为我朋友也有这个情况，然后他在工商银行，人家工商银行是有那个就全部的分期，分期完之后，虽然说就把那个信用卡就取消了，但是是有这个全额的分期的噢。",
+      "example_turn": "嗯，对啊，就是……他们也不是不发，就是可能一个星期给你发5000，要不然的话可能就这个星期不发就拖到下个星期这样子。",
       "source": "observed"
     },
     {
-      "group_name": "no_installment",
+      "group_name": "request_limit_reduction",
       "keywords": [
-        "招商银行没有分期方案"
+        "把我额度调低"
       ],
       "frequency": 1,
-      "example_turn": "招商银行是没有的。",
+      "example_turn": "你可以把我额度调低啊。",
       "source": "observed"
     },
     {
@@ -256,34 +1699,52 @@
       "source": "observed"
     },
     {
-      "group_name": "temporary_inability_to_pay",
+      "group_name": "multi_bank_overdue",
       "keywords": [
-        "暂时还不上"
-      ],
-      "frequency": 1,
-      "example_turn": "暂时还不上，暂时还不上。",
-      "source": "observed"
-    },
-    {
-      "group_name": "self_employed",
-      "keywords": [
-        "做生意的"
-      ],
-      "frequency": 1,
-      "example_turn": "暂时，我肯定会还的，我做生意的这点信用。",
-      "source": "observed"
-    },
-    {
-      "group_name": "repayment_intent",
-      "keywords": [
-        "每个月多少还一点"
+        "信用卡都逾期了"
       ],
       "frequency": 1,
       "example_turn": "嗯，对。也不是说一定要60期，就是需要每个月多少还一点，你懂我意思吗？",
       "source": "observed"
     },
     {
-      "group_name": "legal_procedure_pending",
+      "group_name": "location_expense",
+      "keywords": [
+        "在<LOCATION>产生的费用"
+      ],
+      "frequency": 1,
+      "example_turn": "对呀，你是不是在<LOCATION>产生的费用吗？是吧？",
+      "source": "observed"
+    },
+    {
+      "group_name": "previous_request",
+      "keywords": [
+        "上次让你们开美金"
+      ],
+      "frequency": 1,
+      "example_turn": "唉，我上次不是说让你们给我开开开吗？怎么会出现逾期呢？都不知道我走之前都跟你们说了我直接开一个美金，把那个换成美金，你怎么莫名其妙又造成？",
+      "source": "observed"
+    },
+    {
+      "group_name": "request_relief",
+      "keywords": [
+        "希望减免息费"
+      ],
+      "frequency": 1,
+      "example_turn": "噢我知道，嗯嗯，对，不是，对我就是要延后一点",
+      "source": "observed"
+    },
+    {
+      "group_name": "failed_attempt",
+      "keywords": [
+        "没操作起来"
+      ],
+      "frequency": 1,
+      "example_turn": "上次我就跟他讲过了，我也想按他这个方法，但是没操作起来",
+      "source": "observed"
+    },
+    {
+      "group_name": "legal_process_pending",
       "keywords": [
         "法拍程序还没走"
       ],
@@ -292,160 +1753,52 @@
       "source": "observed"
     },
     {
-      "group_name": "legal_resolution",
+      "group_name": "fee_dispute",
       "keywords": [
-        "法拍完以后双方协商就解封了"
+        "其他费用"
       ],
       "frequency": 1,
-      "example_turn": "它程序还没走，当时执行了，但法拍程序还没走，唉，法拍完以后双方协商就解封了，知道吧",
+      "example_turn": "那是不是有一些什么？什么其他的费用债？",
       "source": "observed"
     },
     {
-      "group_name": "legal_procedure_awareness",
+      "group_name": "fee_waiver_history",
       "keywords": [
-        "银行走流程更麻烦"
+        "上个月减掉费用"
       ],
       "frequency": 1,
-      "example_turn": "对对对对，我知道我知道，银行走流程更麻烦，对吧？我知道，你还不一定走到，因为你怎么排都排到工行之后，对吧？",
+      "example_turn": "对啊而且上个上个月的话呢？他们都将这笔费用的话给我减掉的呀。",
       "source": "observed"
     },
     {
-      "group_name": "family_illness",
+      "group_name": "balance_discrepancy",
       "keywords": [
-        "老人住院"
+        "余额从1900多涨到2600多"
       ],
       "frequency": 1,
-      "example_turn": "对对",
+      "example_turn": "但是我记得之前你们有给因为我，我不知道我手机上面还有没没有信息因为我记得就是之前有信息的话呢，就像之前。上个月啊，再上个月是2200多的余额。上上个月的话呢，就还完之后呢，就余额的话是1900多。为什么现在的话你你又回又回到到2600多？",
       "source": "observed"
     },
     {
-      "group_name": "promise_to_pay",
+      "group_name": "card_suspended",
       "keywords": [
-        "14号之前会还进去"
+        "招商银行已停卡"
       ],
       "frequency": 1,
-      "example_turn": "嗯，我说14号之前会还进去的。",
+      "example_turn": "我是这么……去医院了不是？听我说哈，我这么这么多月了，你们招商银行早就给我停卡了。",
       "source": "observed"
     },
     {
-      "group_name": "promise_date",
+      "group_name": "other_bank_penalty",
       "keywords": [
-        "14号"
+        "建行返还违约金1400多"
       ],
       "frequency": 1,
-      "example_turn": "呃……14号，14号。",
+      "example_turn": "对，一直在这，一直在这给我扣着扣。六违约金……这我给我给我给我给你说啊，我给建行还款的时候，就是我给建行还款的时候，建行返还的我违约金都1400多块钱。",
       "source": "observed"
     },
     {
-      "group_name": "acknowledge_debt",
-      "keywords": [
-        "我知道"
-      ],
-      "frequency": 1,
-      "example_turn": "我知道，这两天处理好。",
-      "source": "observed"
-    },
-    {
-      "group_name": "wage_garnishment",
-      "keywords": [
-        "工资被其他银行强制扣划"
-      ],
-      "frequency": 1,
-      "example_turn": "对。",
-      "source": "observed"
-    },
-    {
-      "group_name": "card_frozen",
-      "keywords": [
-        "招商银行早就给我停卡"
-      ],
-      "frequency": 1,
-      "example_turn": "对，一直在这，一直在这给我扣着扣。违约金……这我给我给我给我给你说啊，我给建行还款的时候，就是我给建行还款的时候，建行返还的我违约金都1400多块钱。",
-      "source": "observed"
-    },
-    {
-      "group_name": "other_bank_refund",
-      "keywords": [
-        "建行返还我违约金1400多块钱"
-      ],
-      "frequency": 1,
-      "example_turn": "嗯，不知道你们是……",
-      "source": "observed"
-    },
-    {
-      "group_name": "previous_offer",
-      "keywords": [
-        "第一次联系时承诺减到6000"
-      ],
-      "frequency": 1,
-      "example_turn": "记得你们……听我说哈，我记得你们第一次联系我的时候，我减，就是说我一次性还完了以后，你给我减减到6000。",
-      "source": "observed"
-    },
-    {
-      "group_name": "payment_commitment_date",
-      "keywords": [
-        "2号才能还"
-      ],
-      "frequency": 1,
-      "example_turn": "2号才能还，知道不？",
-      "source": "observed"
-    },
-    {
-      "group_name": "illness",
-      "keywords": [
-        "生病了"
-      ],
-      "frequency": 1,
-      "example_turn": "没什么事，就是生病了。",
-      "source": "observed"
-    },
-    {
-      "group_name": "negotiating_with_others",
-      "keywords": [
-        "现在也在协商"
-      ],
-      "frequency": 1,
-      "example_turn": "噢，我现在是这样，现在就是说外面欠我的钱我也要不回来，我自己……是这样，没有钱，就是现在这个……那个……还不了。现在就是我现在也在协商，我也没法还。现在确实是，我也很着急，我想着想着……",
-      "source": "observed"
-    },
-    {
-      "group_name": "external_debt",
-      "keywords": [
-        "外部有钱款未收回"
-      ],
-      "frequency": 1,
-      "example_turn": "对对，没错没错。我也是打电话天天催他，我也是打电话天天在催。它就是说，今天推明天，明天推后天，一直拖给我，我现在也是着急得不得了。今年可能他的生意也不好做吧，可能估计是这么个情况。",
-      "source": "observed"
-    },
-    {
-      "group_name": "collection_effort",
-      "keywords": [
-        "打电话天天催他"
-      ],
-      "frequency": 1,
-      "example_turn": "对对，没错没错。我也是打电话天天催他，我也是打电话天天在催。它就是说，今天推明天，明天推后天，一直拖给我，我现在也是着急得不得了。今年可能他的生意也不好做吧，可能估计是这么个情况。",
-      "source": "observed"
-    },
-    {
-      "group_name": "debtor_delay",
-      "keywords": [
-        "今天推明天，明天推后天"
-      ],
-      "frequency": 1,
-      "example_turn": "对对，没错没错。我也是打电话天天催他，我也是打电话天天在催。它就是说，今天推明天，明天推后天，一直拖给我，我现在也是着急得不得了。今年可能他的生意也不好做吧，可能估计是这么个情况。",
-      "source": "observed"
-    },
-    {
-      "group_name": "urgency",
-      "keywords": [
-        "着急得不得了"
-      ],
-      "frequency": 1,
-      "example_turn": "对对，没错没错。我也是打电话天天催他，我也是打电话天天在催。它就是说，今天推明天，明天推后天，一直拖给我，我现在也是着急得不得了。今年可能他的生意也不好做吧，可能估计是这么个情况。",
-      "source": "observed"
-    },
-    {
-      "group_name": "repayment_capacity",
+      "group_name": "repayment_limitation",
       "keywords": [
         "最高能还本金"
       ],
@@ -454,7 +1807,7 @@
       "source": "observed"
     },
     {
-      "group_name": "interest_accumulation",
+      "group_name": "interest_dispute",
       "keywords": [
         "上次还了以后又多了34000多"
       ],
@@ -463,21 +1816,66 @@
       "source": "observed"
     },
     {
-      "group_name": "special_circumstance",
+      "group_name": "account_unfrozen_today",
       "keywords": [
-        "出现了特殊情况"
+        "今天才能解卡"
       ],
       "frequency": 1,
-      "example_turn": "是啊，这不是出现了特殊情况嘛？对，对。",
+      "example_turn": "嗯，我前段时间接到了一个反诈中心的电话，然后为了保护我的财产安全，他们把我的所有卡冻结了15天，今天才能解卡解除。",
       "source": "observed"
     },
     {
-      "group_name": "no_funds_yet",
+      "group_name": "deceased",
       "keywords": [
-        "现在还没有"
+        "张先生已经去世"
       ],
       "frequency": 1,
-      "example_turn": "现在还没有。",
+      "example_turn": "张先生已经去世了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "death_of_debtor",
+      "keywords": [
+        "张先生已经去世"
+      ],
+      "frequency": 1,
+      "example_turn": "朋友，朋友。",
+      "source": "observed"
+    },
+    {
+      "group_name": "death_date",
+      "keywords": [
+        "4月底"
+      ],
+      "frequency": 1,
+      "example_turn": "4月底。",
+      "source": "observed"
+    },
+    {
+      "group_name": "cause_of_death",
+      "keywords": [
+        "癌症三年"
+      ],
+      "frequency": 1,
+      "example_turn": "一直就是癌症，三年了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "household_not_cancelled",
+      "keywords": [
+        "没注销户口"
+      ],
+      "frequency": 1,
+      "example_turn": "啊，但是没有注销户口，就是现在有死亡证明，因为家里人现在都没在，在外边呢，说等等回来以后再看看后续还有什么事。",
+      "source": "observed"
+    },
+    {
+      "group_name": "family_absent",
+      "keywords": [
+        "家人不在"
+      ],
+      "frequency": 1,
+      "example_turn": "啊，但是没有注销户口，就是现在有死亡证明，因为家里人现在都没在，在外边呢，说等等回来以后再看看后续还有什么事。",
       "source": "observed"
     },
     {
@@ -486,20 +1884,11 @@
         "生意不好做"
       ],
       "frequency": 1,
-      "example_turn": "我不是……这两天生意不好做，然后我的卡号跟微信点人锁了。股东啊……嗯，我、我知道了我今天……嗯，我，我叫我把存进去。我叫我儿子转哈，好吗？",
+      "example_turn": "我不是……这2天生意不好做，然后我的卡号跟微信点人锁了。股东啊……嗯，我、我知道了我今天……嗯，我，我叫我把存进去。我叫我儿子转哈，好吗？",
       "source": "observed"
     },
     {
-      "group_name": "account_locked",
-      "keywords": [
-        "卡号跟微信点人锁了"
-      ],
-      "frequency": 1,
-      "example_turn": "我不是……这两天生意不好做，然后我的卡号跟微信点人锁了。股东啊……嗯，我、我知道了我今天……嗯，我，我叫我把存进去。我叫我儿子转哈，好吗？",
-      "source": "observed"
-    },
-    {
-      "group_name": "missed_contact_explanation",
+      "group_name": "missed_calls",
       "keywords": [
         "不能保证每一个电话都能接到"
       ],
@@ -508,30 +1897,1785 @@
       "source": "observed"
     },
     {
-      "group_name": "unemployment",
+      "group_name": "remaining_balance",
       "keywords": [
-        "失业了"
+        "只剩下8000多块钱没还"
       ],
       "frequency": 1,
-      "example_turn": "嗯，呃，失业了呗",
+      "example_turn": "对，就是帮我申请免息，然后大概做个15期20期这样子。我应该只剩下8000多块钱没还了是不是？",
+      "source": "observed"
+    },
+    {
+      "group_name": "interest_complaint",
+      "keywords": [
+        "利息太高，每月扣200多"
+      ],
+      "frequency": 1,
+      "example_turn": "你这个利息太高了。我总共才10000多的额度，每个月你扣我200多的利息，我觉得这个是有点太高了。我之前反映过的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "complaint",
+      "keywords": [
+        "投诉内容"
+      ],
+      "frequency": 1,
+      "example_turn": "您说……您说……看我的投诉内容。嗯，不要跟我在这里混淆，那个招联金融是招商银行APP里的，你不要脱离关系。",
+      "source": "observed"
+    },
+    {
+      "group_name": "debt_amount_confusion",
+      "keywords": [
+        "欠100多的就解决这10000多了"
+      ],
+      "frequency": 1,
+      "example_turn": "我欠100多的就解决这10000多了？",
+      "source": "observed"
+    },
+    {
+      "group_name": "payment_delay",
+      "keywords": [
+        "货款几几年结还得过几天"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，我知道那货款几几年结还得过几天。",
+      "source": "observed"
+    },
+    {
+      "group_name": "multiple_projects",
+      "keywords": [
+        "两个项目"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，就因为我们有两个项目，一个项目可能会拖比较久，那另外一个项目我已经在审核了，就是已经在拆分了，也就是这3个月它能出工程款。所以才会说我只要拖这3个月我就可以还。",
+      "source": "observed"
+    },
+    {
+      "group_name": "receivables_pending",
+      "keywords": [
+        "另外一个项目已经在审核了"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，就因为我们有两个项目，一个项目可能会拖比较久，那另外一个项目我已经在审核了，就是已经在拆分了，也就是这3个月它能出工程款。所以才会说我只要拖这3个月我就可以还。",
+      "source": "observed"
+    },
+    {
+      "group_name": "income_source",
+      "keywords": [
+        "以工程款为主"
+      ],
+      "frequency": 1,
+      "example_turn": "好，对，我都以工程款为主，因为目前是我们被拖欠，所以才会这么难受。",
+      "source": "observed"
+    },
+    {
+      "group_name": "expected_financial_recovery",
+      "keywords": [
+        "缓过这个时间就没有任何问题"
+      ],
+      "frequency": 1,
+      "example_turn": "我只要缓过这个时间就没有任何问题。我现在是刚好那边没到，这边又卡到了，所以才会这么难受。",
+      "source": "observed"
+    },
+    {
+      "group_name": "confirmation",
+      "keywords": [
+        "嗯，对"
+      ],
+      "frequency": 1,
+      "example_turn": "如果你们实在不相信，你们可以过来看我，我确实生病啊，再加上工资没发，你们可以过来看的呀。",
+      "source": "observed"
+    },
+    {
+      "group_name": "contact_violation",
+      "keywords": [
+        "紧急联系人"
+      ],
+      "frequency": 1,
+      "example_turn": "紧急联系人，你们为什么要拨打？",
+      "source": "observed"
+    },
+    {
+      "group_name": "just_returned_to_work",
+      "keywords": [
+        "才上班挣钱"
+      ],
+      "frequency": 1,
+      "example_turn": "我、我现在处理不了，因为我刚刚刚刚出院，才上班挣钱，我的钱基本上是4天一结嘛，差不多是。",
+      "source": "observed"
+    },
+    {
+      "group_name": "irregular_income",
+      "keywords": [
+        "工资4天一结"
+      ],
+      "frequency": 1,
+      "example_turn": "我、我现在处理不了，因为我刚刚刚刚出院，才上班挣钱，我的钱基本上是4天一结嘛，差不多是。",
+      "source": "observed"
+    },
+    {
+      "group_name": "caregiving",
+      "keywords": [
+        "陪护"
+      ],
+      "frequency": 1,
+      "example_turn": "对，我当时周转过，试过，因为、因为我现在我妈得了癌症住院嘛，然后我在医院陪护了很长时间，然后现在我在我朋友那块就、就周转过资金，所以说这次就没周转到。",
+      "source": "observed"
+    },
+    {
+      "group_name": "already_borrowed",
+      "keywords": [
+        "已周转过资金"
+      ],
+      "frequency": 1,
+      "example_turn": "对，我当时周转过，试过，因为、因为我现在我妈得了癌症住院嘛，然后我在医院陪护了很长时间，然后现在我在我朋友那块就、就周转过资金，所以说这次就没周转到。",
+      "source": "observed"
+    },
+    {
+      "group_name": "current_activity",
+      "keywords": [
+        "在骑车"
+      ],
+      "frequency": 1,
+      "example_turn": "七点半再给我打个电话，等我怕我忘了。因为我现在在骑车，我现在不方便搞。",
+      "source": "observed"
+    },
+    {
+      "group_name": "delay_payment",
+      "keywords": [
+        "最快也要到明天"
+      ],
+      "frequency": 1,
+      "example_turn": "这边的话最快也要到明天了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "request_negotiation",
+      "keywords": [
+        "申请个性化分期"
+      ],
+      "frequency": 1,
+      "example_turn": "那、那个，我申请那个个性化分期，申请不了是吗？",
+      "source": "observed"
+    },
+    {
+      "group_name": "fraud_claim",
+      "keywords": [
+        "被诈骗"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "other_debt_arrangement",
+      "keywords": [
+        "兴业银行我也是个性化分期了"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，我看能承担……基本上，我能分那个，打比方啊，不是有个能分几十期的嘛，我一个月想还个几百块钱，因为我不想生活压力太大。咱说第一正常生活得维持，第二吧，我也不是名下只有这一个信用卡，兴业银行我也是个性化分期了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "existing_negotiation",
+      "keywords": [
+        "兴业银行也个性化分期了"
+      ],
+      "frequency": 1,
+      "example_turn": "就是……五六百块钱。",
+      "source": "observed"
+    },
+    {
+      "group_name": "medical_issue",
+      "keywords": [
+        "动手术"
+      ],
+      "frequency": 1,
+      "example_turn": "你看我的那个还款记录，我是不是每个月都是履行还的嘛？因为有经济状况，动手术，我也要15号才发，我都没钱。",
+      "source": "observed"
+    },
+    {
+      "group_name": "reduced_income",
+      "keywords": [
+        "4月份、5月份也才做了半个月的工"
+      ],
+      "frequency": 1,
+      "example_turn": "4月份、5月份也才做了半个月的工，半个月的工资，超10000多块钱。",
+      "source": "observed"
+    },
+    {
+      "group_name": "work_schedule",
+      "keywords": [
+        "上夜班"
+      ],
+      "frequency": 1,
+      "example_turn": "我现在就是在上夜班，你白天打给我，就是骚扰我。",
+      "source": "observed"
+    },
+    {
+      "group_name": "future_resolution",
+      "keywords": [
+        "大概这个星期会解决好吧"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，是的。大概这个星期会解决好吧。",
+      "source": "observed"
+    },
+    {
+      "group_name": "external_obstacle",
+      "keywords": [
+        "下很大的雨"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，我今天确实不方便，我们这地方又在下雨，下很大的雨。",
+      "source": "observed"
+    },
+    {
+      "group_name": "bill_period",
+      "keywords": [
+        "5月份的账单"
+      ],
+      "frequency": 1,
+      "example_turn": "等于是说这一期我还个480多，利息跟那个违约金帮我免除掉，等于是5月份的嘛？我这边的5月份的账单，对吧？",
+      "source": "observed"
+    },
+    {
+      "group_name": "previous_adjustment",
+      "keywords": [
+        "4月份的利息跟违约金已经帮我免除掉了"
+      ],
+      "frequency": 1,
+      "example_turn": "那4月份的利息跟违约金已经帮我免除掉了，等于是这个样子。调整是怎么调整？你要跟我讲清楚啊，它是怎么的？",
+      "source": "observed"
+    },
+    {
+      "group_name": "principal_amount",
+      "keywords": [
+        "9000多的本金"
+      ],
+      "frequency": 1,
+      "example_turn": "等一下，我利息是100多，违约金是10来块。它利息100多，等于是9000多的本金的利息，是吧？那我等于每个月都有利息100多，等于是这个样子嘛，对吧？",
+      "source": "observed"
+    },
+    {
+      "group_name": "policy_inquiry",
+      "keywords": [
+        "国家逾期补息政策"
+      ],
+      "frequency": 1,
+      "example_turn": "国家不是有那个逾期补息的政策吗？",
+      "source": "observed"
+    },
+    {
+      "group_name": "family_crisis",
+      "keywords": [
+        "妻子跟我离婚了"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯嗯……我的妻子……跟我离婚了……唉……我贷了十万块钱，她拿着走掉了。然后我有三个小孩上着学。",
+      "source": "observed"
+    },
+    {
+      "group_name": "family_dependents",
+      "keywords": [
+        "三个小孩上着学"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯嗯……我的妻子……跟我离婚了……唉……我贷了十万块钱，她拿着走掉了。然后我有三个小孩上着学。",
+      "source": "observed"
+    },
+    {
+      "group_name": "ongoing_difficulty",
+      "keywords": [
+        "现在还是没解决掉"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯……现在还是没解决掉，然后我本……",
+      "source": "observed"
+    },
+    {
+      "group_name": "unpaid_wage",
+      "keywords": [
+        "我这几天跟人家在地里面干活，还没接到工资"
+      ],
+      "frequency": 1,
+      "example_turn": "我知道我知道……嗯……我目前现在给我，你给我点时间。600多块钱，因为我这几天跟人家在地里面干活，还没接到工资。",
+      "source": "observed"
+    },
+    {
+      "group_name": "payment_attempt",
+      "keywords": [
+        "已经可以了呀"
+      ],
+      "frequency": 1,
+      "example_turn": "对啊。",
+      "source": "observed"
+    },
+    {
+      "group_name": "willing_to_pay",
+      "keywords": [
+        "愿意还款"
+      ],
+      "frequency": 1,
+      "example_turn": "先打电话不就沟通过吗？你们要是有协商方案给到我的话，我这边能承受的话，我是愿意还款的，不是说不还了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "previous_repayment_history",
+      "keywords": [
+        "上期借钱还了2480"
+      ],
+      "frequency": 1,
+      "example_turn": "我首先啊，我先给你说清楚，你再接打电话是吧？我在我的上上期这一期和上一期的时候，我就跟专员已经讲过了，我说上期是我借钱借了2480块钱，好我还进去之后……",
+      "source": "observed"
+    },
+    {
+      "group_name": "request_for_hardship_program",
+      "keywords": [
+        "要求协商还款纾困政策"
+      ],
+      "frequency": 1,
+      "example_turn": "然后上就是上个单单，就是你前面一个，在前面一个，然后呢？讲。然后呢，一个女同志。然后我跟她讲了，我说我说我需要做的是……协商还款赎困政策，然后我说，你我不是不还。唉，你把我的期限延长。我让我让我每1个月的月供稍微……月还的稍微低一点，就能够承受。我说不……太多。我说你这样的话，那就是让我还的……什么然后其他行卡……怎么帮你看我给你减免……其他不是有减免，但是也就是要办2天卡。回忆呢……你上你的上一任专员跟我沟通专员也这个话一模一样的说法，也就是说在上上逾期的时候。现在来……政策都没有。我不可能再去借钱了，不可能。到了……我……后呢我……我可以在15号的时候给你处理500多块钱。嗯嗯……嗯……OKOK好。",
+      "source": "observed"
+    },
+    {
+      "group_name": "refuse_to_borrow",
+      "keywords": [
+        "不可能再去借钱"
+      ],
+      "frequency": 1,
+      "example_turn": "然后上就是上个单单，就是你前面一个，在前面一个，然后呢？讲。然后呢，一个女同志。然后我跟她讲了，我说我说我需要做的是……协商还款赎困政策，然后我说，你我不是不还。唉，你把我的期限延长。我让我让我每1个月的月供稍微……月还的稍微低一点，就能够承受。我说不……太多。我说你这样的话，那就是让我还的……什么然后其他行卡……怎么帮你看我给你减免……其他不是有减免，但是也就是要办2天卡。回忆呢……你上你的上一任专员跟我沟通专员也这个话一模一样的说法，也就是说在上上逾期的时候。现在来……政策都没有。我不可能再去借钱了，不可能。到了……我……后呢我……我可以在15号的时候给你处理500多块钱。嗯嗯……嗯……OKOK好。",
+      "source": "observed"
+    },
+    {
+      "group_name": "unfinished_application",
+      "keywords": [
+        "没有办理完成"
+      ],
+      "frequency": 1,
+      "example_turn": "对，没有。",
+      "source": "observed"
+    },
+    {
+      "group_name": "call_time",
+      "keywords": [
+        "九点10几分打的"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，不是，是九点10几分打的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "call_record",
+      "keywords": [
+        "有通话记录"
+      ],
+      "frequency": 1,
+      "example_turn": "我确有通话记录。",
+      "source": "observed"
+    },
+    {
+      "group_name": "dispute_contact_record",
+      "keywords": [
+        "有通话记录"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "card_blocked_after_payment",
+      "keywords": [
+        "还进去就不让我用了"
+      ],
+      "frequency": 1,
+      "example_turn": "要是刚开始我还进去让我用的话，我都按时还。关键是我还进去就不让我用了，还进去就没了，还进去就没了。你让我再给银行钱，我搞不出来了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "business_capital_tied_up",
+      "keywords": [
+        "货都压在外面了，回不来款"
+      ],
+      "frequency": 1,
+      "example_turn": "现在就是资金，货都压在外面了，回不来款啊。",
+      "source": "observed"
+    },
+    {
+      "group_name": "accounts_frozen_by_court",
+      "keywords": [
+        "所有账号全被法院冻结了"
+      ],
+      "frequency": 1,
+      "example_turn": "那前两天我没还进去，是因为我所有的账号全被法院冻结了。之后招行给我封了，完了给我分了7天，我才没还进去。",
+      "source": "observed"
+    },
+    {
+      "group_name": "medical_emergency",
+      "keywords": [
+        "急生住院了"
+      ],
+      "frequency": 1,
+      "example_turn": "呃对象。",
+      "source": "observed"
+    },
+    {
+      "group_name": "family_member_illness",
+      "keywords": [
+        "对象"
+      ],
+      "frequency": 1,
+      "example_turn": "呃对象。",
+      "source": "observed"
+    },
+    {
+      "group_name": "discharge",
+      "keywords": [
+        "现在出来了"
+      ],
+      "frequency": 1,
+      "example_turn": "对呀。他在东共在后市里待了老长时间，现在出来了，出来的还不行。",
+      "source": "observed"
+    },
+    {
+      "group_name": "payment_history",
+      "keywords": [
+        "最低还款日还了"
+      ],
+      "frequency": 1,
+      "example_turn": "我有钱，里边有最低还款日还了两到3天可以正常使用。卡不出限制。",
+      "source": "observed"
+    },
+    {
+      "group_name": "account_type",
+      "keywords": [
+        "是信用卡"
+      ],
+      "frequency": 1,
+      "example_turn": "是信用卡。",
+      "source": "observed"
+    },
+    {
+      "group_name": "fee_issue",
+      "keywords": [
+        "4月份有违约金"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，我，我，我还上，我4月份有违约金吧。噢，4009是要么利息要，没违约金就5月份要。正常还款是几号啊？6月6号今天几号？那是不是6月份要不还的呀？噢，嗯，下时给我退回人家的利息和违约金。嗯好，你不说我6月份还没出账单没有利息和违约金嘛，现月不是还没出嘛，你给我，你下来给我做申请不行吗？我把5月份那账单还上。好，噢然后我这卡还能正常使用，看我看了呀，我卡里我看着卡它，我看那个后台嘞这卡显示不能用了我给你们打电话，我一直就打不通，一直就打不通吗？它它不是打不通它是转不到人工那个地方去，所以我就等着你们给我打电话了。你，你说的是1400我看，好像是1900多吧？月份最低我还进4月份去了我5月份的不是还不还吗？我要把4月份的还进去。嗯，过5天能能正常使用话，5月份那不行吗？然后你把50和六数的那个那个逾期，那个逾期费用还他利息给我做个减免，这样行吗？我就，嗯，对，我就我你。你听我说我现在把4月份的1400没还上。5月份和6月份，你就给我做个申请。然后，呃，过上5天的卡能用的话我再还5月份行吗？啊，对，你就给我做个那个它那个违约金和利息你不是给我做减免申请吗？吗？然后我现在还完4月份咱再还完，还完4月份10040000不是。是吧，啊，5月份，6月份你去给给我申请那个减免那个逾期和那个利息。呃，这个卡你不是说过7天以后就能正常用了了吗？过5天以后，我得还还5月份那个分期。行吗？它只要能正常，问，我就我就是怕你刷卡两到3天以后刷不还，逾期一下刷不出来，我真的想的是D卡那个你还的话我现在没能力还我一直走着行等着过一段时间我比方稍微好点的话，我可以上班是吧？或者是，嗯，行，行，我一会儿，还你给我申请吧。那个我我，就要分期嘛，我不分期啊，啊，我不分逾期啊。我已经分期，还分期，我没收入入，我也还不进去去啊，对吧？啊，我给你们打电话的时候打哪一个号码找你们啊？嗯，那个那个分，那个分机后头是166，然后转它。那个转，咋弄啊？那个，是按完的，前面能数指接以，后面能说是从从以后再不再应啊。前面打不通没日你你那你那官方客服，你什么时候什么什，我就打你那官方客服，那是接后边好几个？六是你名吗？您能不能给我发信息啊？那也行啊。我联系你不就行吗？我就，官上客服都打不通，它冷难大，他转不到人工方请。发，不是02138890000。是吧，给发信息啊那，6666那个，喂你好，真能大同点这个我是不是，这不，接通以后，我才能再在后本23。62啊，我，我，我找我打里呀然后打前面6666这个这个号码，它不同。不人急，你也不能确保我这啥银行系统，对吧？这个你能给我清清些，噢你们这都有申请不，申请这个，这个，这个，这个，最的，这个管制，你说两到3天的管职用申请吧。我看看看看，招商银行是吧，我想1813还款，34，好，一登哈，那，卡支付扣不上的，以前呗，嗯，你给我登记吧我一会就还，一会就换哈，嗯，嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "contact_issue",
+      "keywords": [
+        "打不通人工"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，我，我，我还上，我4月份有违约金吧。噢，4009是要么利息要，没违约金就5月份要。正常还款是几号啊？6月6号今天几号？那是不是6月份要不还的呀？噢，嗯，下时给我退回人家的利息和违约金。嗯好，你不说我6月份还没出账单没有利息和违约金嘛，现月不是还没出嘛，你给我，你下来给我做申请不行吗？我把5月份那账单还上。好，噢然后我这卡还能正常使用，看我看了呀，我卡里我看着卡它，我看那个后台嘞这卡显示不能用了我给你们打电话，我一直就打不通，一直就打不通吗？它它不是打不通它是转不到人工那个地方去，所以我就等着你们给我打电话了。你，你说的是1400我看，好像是1900多吧？月份最低我还进4月份去了我5月份的不是还不还吗？我要把4月份的还进去。嗯，过5天能能正常使用话，5月份那不行吗？然后你把50和六数的那个那个逾期，那个逾期费用还他利息给我做个减免，这样行吗？我就，嗯，对，我就我你。你听我说我现在把4月份的1400没还上。5月份和6月份，你就给我做个申请。然后，呃，过上5天的卡能用的话我再还5月份行吗？啊，对，你就给我做个那个它那个违约金和利息你不是给我做减免申请吗？吗？然后我现在还完4月份咱再还完，还完4月份10040000不是。是吧，啊，5月份，6月份你去给给我申请那个减免那个逾期和那个利息。呃，这个卡你不是说过7天以后就能正常用了了吗？过5天以后，我得还还5月份那个分期。行吗？它只要能正常，问，我就我就是怕你刷卡两到3天以后刷不还，逾期一下刷不出来，我真的想的是D卡那个你还的话我现在没能力还我一直走着行等着过一段时间我比方稍微好点的话，我可以上班是吧？或者是，嗯，行，行，我一会儿，还你给我申请吧。那个我我，就要分期嘛，我不分期啊，啊，我不分逾期啊。我已经分期，还分期，我没收入入，我也还不进去去啊，对吧？啊，我给你们打电话的时候打哪一个号码找你们啊？嗯，那个那个分，那个分机后头是166，然后转它。那个转，咋弄啊？那个，是按完的，前面能数指接以，后面能说是从从以后再不再应啊。前面打不通没日你你那你那官方客服，你什么时候什么什，我就打你那官方客服，那是接后边好几个？六是你名吗？您能不能给我发信息啊？那也行啊。我联系你不就行吗？我就，官上客服都打不通，它冷难大，他转不到人工方请。发，不是02138890000。是吧，给发信息啊那，6666那个，喂你好，真能大同点这个我是不是，这不，接通以后，我才能再在后本23。62啊，我，我，我找我打里呀然后打前面6666这个这个号码，它不同。不人急，你也不能确保我这啥银行系统，对吧？这个你能给我清清些，噢你们这都有申请不，申请这个，这个，这个，这个，最的，这个管制，你说两到3天的管职用申请吧。我看看看看，招商银行是吧，我想1813还款，34，好，一登哈，那，卡支付扣不上的，以前呗，嗯，你给我登记吧我一会就还，一会就换哈，嗯，嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "amount_dispute",
+      "keywords": [
+        "1900多"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，我，我，我还上，我4月份有违约金吧。噢，4009是要么利息要，没违约金就5月份要。正常还款是几号啊？6月6号今天几号？那是不是6月份要不还的呀？噢，嗯，下时给我退回人家的利息和违约金。嗯好，你不说我6月份还没出账单没有利息和违约金嘛，现月不是还没出嘛，你给我，你下来给我做申请不行吗？我把5月份那账单还上。好，噢然后我这卡还能正常使用，看我看了呀，我卡里我看着卡它，我看那个后台嘞这卡显示不能用了我给你们打电话，我一直就打不通，一直就打不通吗？它它不是打不通它是转不到人工那个地方去，所以我就等着你们给我打电话了。你，你说的是1400我看，好像是1900多吧？月份最低我还进4月份去了我5月份的不是还不还吗？我要把4月份的还进去。嗯，过5天能能正常使用话，5月份那不行吗？然后你把50和六数的那个那个逾期，那个逾期费用还他利息给我做个减免，这样行吗？我就，嗯，对，我就我你。你听我说我现在把4月份的1400没还上。5月份和6月份，你就给我做个申请。然后，呃，过上5天的卡能用的话我再还5月份行吗？啊，对，你就给我做个那个它那个违约金和利息你不是给我做减免申请吗？吗？然后我现在还完4月份咱再还完，还完4月份10040000不是。是吧，啊，5月份，6月份你去给给我申请那个减免那个逾期和那个利息。呃，这个卡你不是说过7天以后就能正常用了了吗？过5天以后，我得还还5月份那个分期。行吗？它只要能正常，问，我就我就是怕你刷卡两到3天以后刷不还，逾期一下刷不出来，我真的想的是D卡那个你还的话我现在没能力还我一直走着行等着过一段时间我比方稍微好点的话，我可以上班是吧？或者是，嗯，行，行，我一会儿，还你给我申请吧。那个我我，就要分期嘛，我不分期啊，啊，我不分逾期啊。我已经分期，还分期，我没收入入，我也还不进去去啊，对吧？啊，我给你们打电话的时候打哪一个号码找你们啊？嗯，那个那个分，那个分机后头是166，然后转它。那个转，咋弄啊？那个，是按完的，前面能数指接以，后面能说是从从以后再不再应啊。前面打不通没日你你那你那官方客服，你什么时候什么什，我就打你那官方客服，那是接后边好几个？六是你名吗？您能不能给我发信息啊？那也行啊。我联系你不就行吗？我就，官上客服都打不通，它冷难大，他转不到人工方请。发，不是02138890000。是吧，给发信息啊那，6666那个，喂你好，真能大同点这个我是不是，这不，接通以后，我才能再在后本23。62啊，我，我，我找我打里呀然后打前面6666这个这个号码，它不同。不人急，你也不能确保我这啥银行系统，对吧？这个你能给我清清些，噢你们这都有申请不，申请这个，这个，这个，这个，最的，这个管制，你说两到3天的管职用申请吧。我看看看看，招商银行是吧，我想1813还款，34，好，一登哈，那，卡支付扣不上的，以前呗，嗯，你给我登记吧我一会就还，一会就换哈，嗯，嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "debt_amount_inquiry",
+      "keywords": [
+        "两万几"
+      ],
+      "frequency": 1,
+      "example_turn": "好，那就是包含逾期罚息都算进去了是吧？",
+      "source": "observed"
+    },
+    {
+      "group_name": "debt_composition_inquiry",
+      "keywords": [
+        "包含逾期罚息"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "other_debts",
+      "keywords": [
+        "有"
+      ],
+      "frequency": 1,
+      "example_turn": "房贷。",
+      "source": "observed"
+    },
+    {
+      "group_name": "mortgage_debt",
+      "keywords": [
+        "房贷"
+      ],
+      "frequency": 1,
+      "example_turn": "房贷还有……4000多块钱。",
+      "source": "observed"
+    },
+    {
+      "group_name": "mortgage_amount",
+      "keywords": [
+        "4000多块钱"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，没问题，电话畅通，只是有时候可能电话在忙的时候接不了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "fund_transfer_delay",
+      "keywords": [
+        "钱提现估计有点慢"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，因为钱提现估计有点慢。这样子吧，我手上的话还有……我还个500块钱进去，然后剩余的话尽量在明天周五之前。",
+      "source": "observed"
+    },
+    {
+      "group_name": "good_history",
+      "keywords": [
+        "不是经常逾期的人"
+      ],
+      "frequency": 1,
+      "example_turn": "我那天想还点钱到信用卡，然后就被E招贷扣完了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "living_situation",
+      "keywords": [
+        "我爸的名，我爸的房"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，我爸的名，我爸的房。",
+      "source": "observed"
+    },
+    {
+      "group_name": "property_ownership",
+      "keywords": [
+        "我爸的名，我爸的房"
+      ],
+      "frequency": 1,
+      "example_turn": "是，没办法，真的没办法。我早就还了，不需要你们一个个电话来催。我不是有钱不还，这都欠了五年了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "no_assets",
+      "keywords": [
+        "没有啊"
+      ],
+      "frequency": 1,
+      "example_turn": "没有啊，唉。",
+      "source": "observed"
+    },
+    {
+      "group_name": "income_history",
+      "keywords": [
+        "我账户去年一直是有钱打进来的"
+      ],
+      "frequency": 1,
+      "example_turn": "现在自己做了。你应该查到我账户啊，我账户去年一直是有钱打进来的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "income_method",
+      "keywords": [
+        "它是转账转上来的"
+      ],
+      "frequency": 1,
+      "example_turn": "是啊，它是转账转上来的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "partial_repayment_plan",
+      "keywords": [
+        "还了6000块，最起码给1个月嘛，10000多嘛"
+      ],
+      "frequency": 1,
+      "example_turn": "15号会全部给我，还了6000块，最起码给1个月嘛，10000多嘛。我就先还一部分。",
+      "source": "observed"
+    },
+    {
+      "group_name": "still_working",
+      "keywords": [
+        "是啊"
+      ],
+      "frequency": 1,
+      "example_turn": "是啊。",
+      "source": "observed"
+    },
+    {
+      "group_name": "job_role",
+      "keywords": [
+        "我都是管现场的"
+      ],
+      "frequency": 1,
+      "example_turn": "是啊，我都是管现场的，你以为我是做办公室的吗？施工县城管管建城的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "wage_dispute",
+      "keywords": [
+        "这个月15号再不发工资，就要闹工调了，罢工了"
+      ],
+      "frequency": 1,
+      "example_turn": "对，你要这个月15号再不发工资，就要闹工调了，罢工了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "partial_wage",
+      "keywords": [
+        "4月份发了6000块"
+      ],
+      "frequency": 1,
+      "example_turn": "3月份也没发，2月份也没发。2月份说不发，因为2月份是过年，过年我们工程的话最起码放10天假，它不发我也可以。但是3月份也没发，4月份发了6000块，5月份还没发。5月份的工资要等到15号才能发。",
+      "source": "observed"
+    },
+    {
+      "group_name": "deadline_awareness",
+      "keywords": [
+        "四点钟之前要解决"
+      ],
+      "frequency": 1,
+      "example_turn": "我看看，四点钟之前要解决，解决要多少钱呐？我看看，如果这样的话，我要借钱了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "immediate_action",
+      "keywords": [
+        "我马上啊"
+      ],
+      "frequency": 1,
+      "example_turn": "我马上啊，我知道，我明白明白明白。好的好的，我马上挂电话，我看看我能借3000块，我先还进去了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "previous_application",
+      "keywords": [
+        "我已经申请过了，就是说二次分期"
+      ],
+      "frequency": 1,
+      "example_turn": "我已经申请过了，就是说二次分期看可不可以。",
+      "source": "observed"
+    },
+    {
+      "group_name": "social_debt",
+      "keywords": [
+        "朋友人情债"
+      ],
+      "frequency": 1,
+      "example_turn": "唉呀，还不清。就是真的都没地方借钱了，我去哪里拿钱出来嘛，一下子。",
+      "source": "observed"
+    },
+    {
+      "group_name": "unable_to_repay",
+      "keywords": [
+        "还不清"
+      ],
+      "frequency": 1,
+      "example_turn": "唉呀，还不清。就是真的都没地方借钱了，我去哪里拿钱出来嘛，一下子。",
+      "source": "observed"
+    },
+    {
+      "group_name": "exhausted_borrowing",
+      "keywords": [
+        "朋友亲戚都借了"
+      ],
+      "frequency": 1,
+      "example_turn": "我已经被那个朋友骗了，他连骗过一年，一个骗过一个，说要还我。我朋友亲戚都借了，没地方借了，我拆东墙补西墙，是真的没办法我才会说。",
+      "source": "observed"
+    },
+    {
+      "group_name": "debt_cycle",
+      "keywords": [
+        "拆东墙补西墙"
+      ],
+      "frequency": 1,
+      "example_turn": "我已经被那个朋友骗了，他连骗过一年，一个骗过一个，说要还我。我朋友亲戚都借了，没地方借了，我拆东墙补西墙，是真的没办法我才会说。",
+      "source": "observed"
+    },
+    {
+      "group_name": "extreme_poverty",
+      "keywords": [
+        "餐都吃不起"
+      ],
+      "frequency": 1,
+      "example_turn": "你是说真的，我餐都吃不起，我每个月工资那一点点，我要生活，我也要交房租。我这样子已经持续了几年，23年了，好像是今年不知道第几年了，我都记不清了。唉。",
+      "source": "observed"
+    },
+    {
+      "group_name": "long_term_difficulty",
+      "keywords": [
+        "持续了几年"
+      ],
+      "frequency": 1,
+      "example_turn": "你是说真的，我餐都吃不起，我每个月工资那一点点，我要生活，我也要交房租。我这样子已经持续了几年，23年了，好像是今年不知道第几年了，我都记不清了。唉。",
+      "source": "observed"
+    },
+    {
+      "group_name": "gig_work",
+      "keywords": [
+        "跑了一段时间外卖"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，之前之前失业跑了一段时间外卖，然后最近又生病了，外卖又没有。",
+      "source": "observed"
+    },
+    {
+      "group_name": "no_income",
+      "keywords": [
+        "不跑外卖又没钱"
+      ],
+      "frequency": 1,
+      "example_turn": "不跑外卖又没钱了呀。",
+      "source": "observed"
+    },
+    {
+      "group_name": "first_time_default",
+      "keywords": [
+        "第一次遇到这种情况"
+      ],
+      "frequency": 1,
+      "example_turn": "肯定要用啊，肯定要用。我毕竟是你们招商银行这么多年的客户了，我第一次遇到这种情况，从来没有过嘛。",
+      "source": "observed"
+    },
+    {
+      "group_name": "current_delinquency",
+      "keywords": [
+        "这个月暂时没有还，晚了几天"
+      ],
+      "frequency": 1,
+      "example_turn": "是这个月就是说暂时没有还，晚了几天。",
+      "source": "observed"
+    },
+    {
+      "group_name": "payment_timing",
+      "keywords": [
+        "明天到账"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，我现在明白了。但是我现在就是跟你们协商，就是说我是会按时支付，会完全配合，但是我确实要明天。但是如果说你们要强制地给我……就是类似于什么给我，嗯，强行的冻结我的微信呐或支付流水，那我确实后面就还不了了，11笔都还不了了。我就是这个意思。",
+      "source": "observed"
+    },
+    {
+      "group_name": "installment_issue",
+      "keywords": [
+        "1000块钱没有分进去"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯",
+      "source": "observed"
+    },
+    {
+      "group_name": "debt_composition",
+      "keywords": [
+        "连本带息加违约金"
+      ],
+      "frequency": 1,
+      "example_turn": "好好，那这个2900我现在还，我看几号能还。现在是8号，估计15号左右有一笔钱到。能不能每次减到2000或者1900？这样我压力小一点，还起来比较顺。",
+      "source": "observed"
+    },
+    {
+      "group_name": "initiated_negotiation",
+      "keywords": [
+        "主动跟你们协商"
+      ],
+      "frequency": 1,
+      "example_turn": "我、我、我之前给你们打电话是吧？然后我现在事实上是有困难，对吧？我也不是说是想要那个不还钱或者什么东西，我也主动跟你们协商，是不是有那个免息分期的这种业务提供给我？然后我也跟你们沟通过，然后你们也说一直是网上递交或者申请。呃，这个现在是什么样的一个情况呢？",
+      "source": "observed"
+    },
+    {
+      "group_name": "admitted_default",
+      "keywords": [
+        "违约了"
+      ],
+      "frequency": 1,
+      "example_turn": "如果说你们银行就是刚说的什么重点名单要起诉啊什么的，那这个东西说白了就是人性化的东西，对吧？我事实上也是违约了，对吧？如果你们要起诉，那我可能也愿意配合，但是如果能沟通的，我也希望你们银行能给我一个相对委婉的政策，是吧？",
+      "source": "observed"
+    },
+    {
+      "group_name": "past_compliance",
+      "keywords": [
+        "我一直都是有按时还的"
+      ],
+      "frequency": 1,
+      "example_turn": "我一直都是有按时还的，可能这次忘记还了吧。",
+      "source": "observed"
+    },
+    {
+      "group_name": "credit_limit_reduction",
+      "keywords": [
+        "上上个月是把我额度给降了"
+      ],
+      "frequency": 1,
+      "example_turn": "我想问一下，我把上个月的还清了之后你帮我开卡，那我还了这个钱之后，你们会不会把我这额度给扣掉啊？",
+      "source": "observed"
+    },
+    {
+      "group_name": "location_abroad",
+      "keywords": [
+        "在国外"
+      ],
+      "frequency": 1,
+      "example_turn": "好，我知道卡号。",
+      "source": "observed"
+    },
+    {
+      "group_name": "previous_credit_limit_reduction",
+      "keywords": [
+        "降额记录"
+      ],
+      "frequency": 1,
+      "example_turn": "我现在把这个钱还上之后，它会给我恢复额度吗？它不会说马上把我额度给扣掉吧？好像上上个月你能查到的，我把钱还上之后，它马上给我扣了额度。",
+      "source": "observed"
+    },
+    {
+      "group_name": "unexpected_credit_limit_reduction",
+      "keywords": [
+        "突然降额"
+      ],
+      "frequency": 1,
+      "example_turn": "你能不能查到上一次有降额的记录？我从来没有逾期过，突然给我降额了，我也搞不懂。",
+      "source": "observed"
+    },
+    {
+      "group_name": "normal_spending",
+      "keywords": [
+        "正常消费"
+      ],
+      "frequency": 1,
+      "example_turn": "正常消费啊。",
+      "source": "observed"
+    },
+    {
+      "group_name": "minimum_payment_history",
+      "keywords": [
+        "扣款500多"
+      ],
+      "frequency": 1,
+      "example_turn": "对，之前最近前几个月还是没还上，都是还的最低款，还了最低款，问题是你们看得到的。这笔款一扣一扣下来就是500多。",
+      "source": "observed"
+    },
+    {
+      "group_name": "found_job",
+      "keywords": [
+        "这找了工作了"
+      ],
+      "frequency": 1,
+      "example_turn": "唉，这找了工作了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "raising_money",
+      "keywords": [
+        "在筹钱"
+      ],
+      "frequency": 1,
+      "example_turn": "对，差差不多，我们下个礼拜，下个礼拜就发工资了，可给我还进去。",
+      "source": "observed"
+    },
+    {
+      "group_name": "income_decrease",
+      "keywords": [
+        "收入降低了"
+      ],
+      "frequency": 1,
+      "example_turn": "工作变动，收入降低了，有个时间差。",
+      "source": "observed"
+    },
+    {
+      "group_name": "need_time",
+      "keywords": [
+        "需要点时间"
+      ],
+      "frequency": 1,
+      "example_turn": "我这边需要点时间，等款项下来就立马还第一期。如果本周内不管怎么样都会想办法还上。",
+      "source": "observed"
+    },
+    {
+      "group_name": "conditional_promise",
+      "keywords": [
+        "等款项下来就立马还"
+      ],
+      "frequency": 1,
+      "example_turn": "我这边需要点时间，等款项下来就立马还第一期。如果本周内不管怎么样都会想办法还上。",
+      "source": "observed"
+    },
+    {
+      "group_name": "commitment_to_pay",
+      "keywords": [
+        "本周内不管怎么样都会想办法还上"
+      ],
+      "frequency": 1,
+      "example_turn": "我这边需要点时间，等款项下来就立马还第一期。如果本周内不管怎么样都会想办法还上。",
+      "source": "observed"
+    },
+    {
+      "group_name": "family_reason",
+      "keywords": [
+        "孩子刚出生"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，因为我在……呃，我现在在家，那个……我孩子刚出生，然后我们还没有上班。",
+      "source": "observed"
+    },
+    {
+      "group_name": "borrowed_money",
+      "keywords": [
+        "我刚才给也是借的"
+      ],
+      "frequency": 1,
+      "example_turn": "那不要。啊，就要不要到时候给我搞其他的，反正这款我我刚才给也是借的嘛，想办法搞借来的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "address_confirmed",
+      "keywords": [
+        "地址没问题"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，对，地址没问题。",
+      "source": "observed"
+    },
+    {
+      "group_name": "address_changed",
+      "keywords": [
+        "这个房子现在卖了"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯……这个房子现在卖了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "disagreement_on_deadline",
+      "keywords": [
+        "他非要12点钟"
+      ],
+      "frequency": 1,
+      "example_turn": "那他跟我说，非要说12点半之前一定要还上。",
+      "source": "observed"
+    },
+    {
+      "group_name": "failed_to_borrow",
+      "keywords": [
+        "找朋友筹钱没筹到"
+      ],
+      "frequency": 1,
+      "example_turn": "我昨天有事情，本来找那个朋友，那个朋友……呃，不是说去开车去了吗？没筹到。",
+      "source": "observed"
+    },
+    {
+      "group_name": "address_available",
+      "keywords": [
+        "家庭地址可以收到函件"
+      ],
+      "frequency": 1,
+      "example_turn": "没有人住了。你那个家庭地址收得到的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "card_frozen_notification",
+      "keywords": [
+        "收到卡片冻结短信"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，我昨天下午应该有收到。我看到过。",
+      "source": "observed"
+    },
+    {
+      "group_name": "card_retention",
+      "keywords": [
+        "留了你们这一张"
+      ],
+      "frequency": 1,
+      "example_turn": "如果说能用的话，肯定还是用。实在不行的话，我也就不用了，因为我把所有信用卡全注销了，就留了你们这一张。",
+      "source": "observed"
+    },
+    {
+      "group_name": "funds_unavailable",
+      "keywords": [
+        "钱在那个工作日账户里面"
+      ],
+      "frequency": 1,
+      "example_turn": "现在吗？那等等，我钱在那个工作日账户里面，我给提出来，前两个小时。",
+      "source": "observed"
+    },
+    {
+      "group_name": "partial_payment_intent",
+      "keywords": [
+        "想先少还一部分"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，就是因为收入锐减，然后债务多笔叠加，现在造成整个家庭有困难，所以才招行逾期。",
+      "source": "observed"
+    },
+    {
+      "group_name": "income_decline",
+      "keywords": [
+        "收入锐减"
+      ],
+      "frequency": 1,
+      "example_turn": "原来可能一个月8万块钱都有了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "family_financial_difficulty",
+      "keywords": [
+        "家庭有困难"
+      ],
+      "frequency": 1,
+      "example_turn": "原来可能一个月8万块钱都有了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "previous_high_income",
+      "keywords": [
+        "原来一个月8万"
+      ],
+      "frequency": 1,
+      "example_turn": "唉，目前只有几千块钱了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "current_low_income",
+      "keywords": [
+        "目前只有几千块钱"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，对。",
+      "source": "observed"
+    },
+    {
+      "group_name": "full_repayment_intent",
+      "keywords": [
+        "把它还完"
+      ],
+      "frequency": 1,
+      "example_turn": "喂，是的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "no_future_use",
+      "keywords": [
+        "先不消费"
+      ],
+      "frequency": 1,
+      "example_turn": "喂，是的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "repayment_intent",
+      "keywords": [
+        "直接还的"
+      ],
+      "frequency": 1,
+      "example_turn": "还款行为，我是要有钱啊。我给你们打几次电话都有讲过，今年家里出了意外，家里出现特殊情况。",
+      "source": "observed"
+    },
+    {
+      "group_name": "previous_good_payment_history",
+      "keywords": [
+        "正常上班赚钱的话每个月都没欠过"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "applied_for_relief",
+      "keywords": [
+        "申请过"
+      ],
+      "frequency": 1,
+      "example_turn": "我说了，我会尽快想办法把这个还进来。",
+      "source": "observed"
+    },
+    {
+      "group_name": "third_party_harassment",
+      "keywords": [
+        "你们委托其他人发短信"
+      ],
+      "frequency": 1,
+      "example_turn": "我说了，我会尽快想办法把这个还进来。",
+      "source": "observed"
+    },
+    {
+      "group_name": "threatening_messages",
+      "keywords": [
+        "搞些威胁短信"
+      ],
+      "frequency": 1,
+      "example_turn": "我说了，我会尽快想办法把这个还进来。",
+      "source": "observed"
+    },
+    {
+      "group_name": "willing_but_unable",
+      "keywords": [
+        "我有钱我不愿意欠这个钱"
+      ],
+      "frequency": 1,
+      "example_turn": "我说了，我会尽快想办法把这个还进来。",
+      "source": "observed"
+    },
+    {
+      "group_name": "harassment_timing",
+      "keywords": [
+        "不分时间不分地点"
+      ],
+      "frequency": 1,
+      "example_turn": "我担心……",
+      "source": "observed"
+    },
+    {
+      "group_name": "life_disruption",
+      "keywords": [
+        "影响了我的正常生活"
+      ],
+      "frequency": 1,
+      "example_turn": "我担心……",
+      "source": "observed"
+    },
+    {
+      "group_name": "collateral_held_by_bank",
+      "keywords": [
+        "大本在你们银行里压着"
+      ],
+      "frequency": 1,
+      "example_turn": "我不管他评估机构什么情况，我已经一年多时间亏了这么多钱去了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "unable_to_pay_remaining",
+      "keywords": [
+        "收回去反正剩下的钱我也没钱还"
+      ],
+      "frequency": 1,
+      "example_turn": "我不管他评估机构什么情况，我已经一年多时间亏了这么多钱去了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "future_repayment_plan",
+      "keywords": [
+        "房子卖了过后我就可以全部还"
+      ],
+      "frequency": 1,
+      "example_turn": "知道，因为我现在在卖我的房子。我房子卖了过后，我就可以全部还。就准备把它注销了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "location",
+      "keywords": [
+        "成都"
+      ],
+      "frequency": 1,
+      "example_turn": "成都。",
+      "source": "observed"
+    },
+    {
+      "group_name": "card_closure_intention",
+      "keywords": [
+        "准备银行我就不用了"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯……我准备银行我就不用了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "previous_negotiation_attempt",
+      "keywords": [
+        "之前我已经打电话给你们协商了"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，之前我已经打电话给你们协商了，就说……它说没有什么政策，反正就是现在，反正每个月我尽量还一点。",
+      "source": "observed"
+    },
+    {
+      "group_name": "policy_rejection",
+      "keywords": [
+        "它说没有什么政策"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，之前我已经打电话给你们协商了，就说……它说没有什么政策，反正就是现在，反正每个月我尽量还一点。",
+      "source": "observed"
+    },
+    {
+      "group_name": "income_low",
+      "keywords": [
+        "现在打工月收入几千"
+      ],
+      "frequency": 1,
+      "example_turn": "啊，就是现在是打工了，然后1个月有几千块钱。对，然后呢，就说呃因为我以前有几个银行也是在做那种分期的嘛，就分期的，你说像以前1个月还大几千啊那种可能就没有办法了，只能是说1个月1000多块钱样子，分分分，然后呢慢慢把以前的钱还了，就只能是这样子了。嗯，因为我现在我等个负债的，呃，就看你，你能提供什么政策，有些发视频。停卡，然后它那个利息是比较低点嘛。因为如果不停卡，那利息高，但是这个你们那边有什么方案咯？",
+      "source": "observed"
+    },
+    {
+      "group_name": "previous_installment",
+      "keywords": [
+        "以前有分期还款"
+      ],
+      "frequency": 1,
+      "example_turn": "啊，就是现在是打工了，然后1个月有几千块钱。对，然后呢，就说呃因为我以前有几个银行也是在做那种分期的嘛，就分期的，你说像以前1个月还大几千啊那种可能就没有办法了，只能是说1个月1000多块钱样子，分分分，然后呢慢慢把以前的钱还了，就只能是这样子了。嗯，因为我现在我等个负债的，呃，就看你，你能提供什么政策，有些发视频。停卡，然后它那个利息是比较低点嘛。因为如果不停卡，那利息高，但是这个你们那边有什么方案咯？",
+      "source": "observed"
+    },
+    {
+      "group_name": "principal_concern",
+      "keywords": [
+        "本金还存在"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，我知道，就是这56000我也要还啊，是不是到7月份我也要还？",
+      "source": "observed"
+    },
+    {
+      "group_name": "repayment_capacity",
+      "keywords": [
+        "每个月大概3000左右"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯那好，那我研究一下。现在是没有这么多，我现在能保证每个月……大概3000左右吧。因为我现在的情况是，刨除每个月必须的花销，大概也就能剩这么些了，提不出来了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "credit_impact",
+      "keywords": [
+        "已经显示有逾期"
+      ],
+      "frequency": 1,
+      "example_turn": "因为他之前跟我一直沟通的是让我还这18000，我关键没有大额资金收入，我怎么还上18000呀？",
+      "source": "observed"
+    },
+    {
+      "group_name": "good_faith",
+      "keywords": [
+        "用了10来年"
+      ],
+      "frequency": 1,
+      "example_turn": "要是做一次的话就是本月先还3000多？",
+      "source": "observed"
+    },
+    {
+      "group_name": "system_display",
+      "keywords": [
+        "APP显示最低20000多"
+      ],
+      "frequency": 1,
+      "example_turn": "3140元是你们这边主动划扣还是怎么样？因为我看我那个APP里好像我还不了那个最低，它最低显示20000多。",
+      "source": "observed"
+    },
+    {
+      "group_name": "medical_reason",
+      "keywords": [
+        "前期我刚住院，刚出院"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，能处理。因为最近这几天我的那个……医疗费用我就能下来，下来之后我就能还。因为前期我刚住院，刚出院。呃，对，就最近几天了吧。嗯，我今天问问律师，我问问我律师。",
+      "source": "observed"
+    },
+    {
+      "group_name": "compensation",
+      "keywords": [
+        "银行赔偿"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，还了，还没有。",
+      "source": "observed"
+    },
+    {
+      "group_name": "medical_expense",
+      "keywords": [
+        "医疗费"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，对，家里给我借钱弄的，因为现在我医疗费……呃，刚凑出来。我治疗完我就到账了，就这几天吧。我这几天我给后台打电话，我看怎么处理这个账。",
+      "source": "observed"
+    },
+    {
+      "group_name": "loan_termination",
+      "keywords": [
+        "信合抽贷"
+      ],
+      "frequency": 1,
+      "example_turn": "喂，一个是货款，第二个就是信合车贷。4月21号信合抽贷造成现在公司……名下公司现在员工工资都出不来，没办法正常运行。主要是车贷……基金募……目前的话没有，你说刚开始8月21号抽贷的嘛？那到现在这个月天天找钱，你现在都找不到，吃饭都成问题了。所以我说你们这个能不能缓缓？我先过渡看看，到时候再过3个月我能找到钱，能找到钱。因为现在这个我是做……不要采的，目前在陕西省这边最大的土原雅殖基地中药材。只要手里有钱，就能活过来。现在是没辙了，现在是。我不动了，知道不？对，对。现在目前等于一抽贷的话资金链整个断了，然后上下根本就现在没办法动。我这厂子里面现在都停了，现在没办法弄了嘛。子里面你得动着，后期钱才能慢慢还。你这不动，这……",
+      "source": "observed"
+    },
+    {
+      "group_name": "timeline",
+      "keywords": [
+        "下个月或大下个月"
+      ],
+      "frequency": 1,
+      "example_turn": "要等到找到新的工作，大概在下个月，或者是呃，大下个月嘛，然后找到工作了，我赚到钱了，我这边我会自动，我会接着还的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "auto_deduction",
+      "keywords": [
+        "自动扣款"
+      ],
+      "frequency": 1,
+      "example_turn": "想着这个费用……的确，因为说实在的就是，我不是不止欠你招商银行一家的钱。微信还有那个支付宝也也都欠钱了。所以说我现在它能扣钱呢，自动扣款的，它说已经自动扣了。那我这2000，那你等一下，等一下，等一下。那我这4003天我存进去，我怎么还呢呢？因为它，我还款的时候它，它不让选那个……手额度……嗯，您……一共是多少钱？我看一下我让别人给我转一下。呃，一……1246……2146是吧？2136，那那我，现在，你我如果要转到这张，我让别人给我转到这张卡里，它不会……那个……是我说，我现在不是先转到我的那个……呃，1471的这个储蓄卡里面吗？有啊。所以说，我现在转钱进来它，它不就自动扣掉了吗？嗯，晚上……你能加我个微信吗？我现在打电话，我打不开这个软件。",
+      "source": "observed"
+    },
+    {
+      "group_name": "affordable_amount",
+      "keywords": [
+        "每个月可能能承担500块钱"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，41000。",
+      "source": "observed"
+    },
+    {
+      "group_name": "calculated_amount",
+      "keywords": [
+        "每个月783也就算800块钱"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，每个月783也就算800块钱，是吧？",
+      "source": "observed"
+    },
+    {
+      "group_name": "annual_payment",
+      "keywords": [
+        "一年还了11900多"
+      ],
+      "frequency": 1,
+      "example_turn": "一年还了11900多嘛。",
+      "source": "observed"
+    },
+    {
+      "group_name": "current_payment_amount",
+      "keywords": [
+        "每个月要还900多"
+      ],
+      "frequency": 1,
+      "example_turn": "噢，好，那我明白了。那现那现在我还我有一个问题，就是第一那个就是账单日，包括那个还款日延期的这个我明白了。然后第二个问题就是我现在每个月要还900多就将近1000块钱，然后账单一下顺延到8月份，中间都不会违约。但是这个基金等于是就还进去这个900多，这个卡片是不能用的，对吧？",
+      "source": "observed"
+    },
+    {
+      "group_name": "payment_deferral",
+      "keywords": [
+        "账单顺延到8月份"
+      ],
+      "frequency": 1,
+      "example_turn": "噢，好，那我明白了。那现那现在我还我有一个问题，就是第一那个就是账单日，包括那个还款日延期的这个我明白了。然后第二个问题就是我现在每个月要还900多就将近1000块钱，然后账单一下顺延到8月份，中间都不会违约。但是这个基金等于是就还进去这个900多，这个卡片是不能用的，对吧？",
+      "source": "observed"
+    },
+    {
+      "group_name": "future_employment",
+      "keywords": [
+        "8月份工作稳定"
+      ],
+      "frequency": 1,
+      "example_turn": "还完之后，那个钱是可以刷出来的吗？",
+      "source": "observed"
+    },
+    {
+      "group_name": "employment",
+      "keywords": [
+        "工作稳定"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "past_good_standing",
+      "keywords": [
+        "之前用得好好的"
+      ],
+      "frequency": 1,
+      "example_turn": "唉，之前一直用得好好的，就这两个月不太好周转。一个星期以内我会处理的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "expected_funding",
+      "keywords": [
+        "今天下午会有朋友给我打款了"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，目前……今天下午会有朋友给我打款了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "vague_difficulty",
+      "keywords": [
+        "现在有点问题"
+      ],
+      "frequency": 1,
+      "example_turn": "因为我现在嗯有点问题吧。",
+      "source": "observed"
+    },
+    {
+      "group_name": "salary_uncertainty",
+      "keywords": [
+        "8月7号工资能不能发下来不知道"
+      ],
+      "frequency": 1,
+      "example_turn": "8月7号到时候我工资能不能发下来？我不知道，一般工作日的话就是说……",
+      "source": "observed"
+    },
+    {
+      "group_name": "previous_waiver",
+      "keywords": [
+        "上次就给我免除了"
+      ],
+      "frequency": 1,
+      "example_turn": "你们上次就给我免除了，你听我说，如果违约金给免……",
+      "source": "observed"
+    },
+    {
+      "group_name": "invoice_issued",
+      "keywords": [
+        "开了发票"
+      ],
+      "frequency": 1,
+      "example_turn": "你听我说，我开了发票，但是这次违约金你没给我开啊。",
+      "source": "observed"
+    },
+    {
+      "group_name": "previous_invoice",
+      "keywords": [
+        "上次开的发票"
+      ],
+      "frequency": 1,
+      "example_turn": "你听我说完。我是上次开的发票。",
+      "source": "observed"
+    },
+    {
+      "group_name": "partial_repayment",
+      "keywords": [
+        "我能还多少我先还多少"
+      ],
+      "frequency": 1,
+      "example_turn": "喂你好",
+      "source": "observed"
+    },
+    {
+      "group_name": "early_settlement_option",
+      "keywords": [
+        "如果说在这个一年期内，我有钱的话，我也可以选择全都一次性还清"
+      ],
+      "frequency": 1,
+      "example_turn": "喂你好",
+      "source": "observed"
+    },
+    {
+      "group_name": "environmental_context",
+      "keywords": [
+        "因为我现在在外面"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，就是我这边就是想跟你们就是协商一下嘛，协商一下，就是给我……呃，就通……给我做……呃，做个分期嘛，就是我每个月给……工费还个几万块钱多1000多块钱这样子。嗯，对，唉，对，因为现在确实困难，一下子就是……呃，一下子现在还10000万多确实还不了。不是，我我这边不说，现在你们……你那边给我一个方案吧。",
+      "source": "observed"
+    },
+    {
+      "group_name": "current_income",
+      "keywords": [
+        "现在是在正常上班的，正常上班的话反正一个月千个钱钱还一个进来"
+      ],
+      "frequency": 1,
+      "example_turn": "这边讲我，现边我怎么处理？我处理。我每个月我就还了呃，1000多块钱。我我还有个E招贷，我才在是在正常处理吧。嗯嗯嗯",
+      "source": "observed"
+    },
+    {
+      "group_name": "current_repayment",
+      "keywords": [
+        "我每个月我就还了呃，1000多块钱"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯对对对，我知道",
+      "source": "observed"
+    },
+    {
+      "group_name": "other_debt_status",
+      "keywords": [
+        "我我还有个E招贷，我才在是在正常处理吧"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯对对对，我知道",
+      "source": "observed"
+    },
+    {
+      "group_name": "card_retention_intent",
+      "keywords": [
+        "用啊，肯定用啊"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，我我就是有点没听清楚啊，就是说如果说说如果我不使用这个卡，就说我每个月就就呃，还还1000多是吧？",
+      "source": "observed"
+    },
+    {
+      "group_name": "no_loan_obtained",
+      "keywords": [
+        "没有借到钱"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "no_fixed_address",
+      "keywords": [
+        "没有固定地址"
+      ],
+      "frequency": 1,
+      "example_turn": "现在没有固定地址。",
       "source": "observed"
     },
     {
       "group_name": "unemployment_duration",
       "keywords": [
-        "一段时间了"
+        "有一年多了"
       ],
       "frequency": 1,
-      "example_turn": "嗯，一段时间了",
+      "example_turn": "嗯，有一年多了吧。",
       "source": "observed"
     },
     {
-      "group_name": "no_funds",
+      "group_name": "past_repayment_history",
       "keywords": [
-        "没有"
+        "以前都还了"
       ],
       "frequency": 1,
-      "example_turn": "没有",
+      "example_turn": "行啊，我以前都还了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "contact_change",
+      "keywords": [
+        "联系人以前留的，不跟他合作了"
+      ],
+      "frequency": 1,
+      "example_turn": "啊，我的联系人以前留的，那他们都不跟他合作了，都现在。",
+      "source": "observed"
+    },
+    {
+      "group_name": "contact_available",
+      "keywords": [
+        "我的电话都是随时畅通的"
+      ],
+      "frequency": 1,
+      "example_turn": "我的电话都是随时畅通的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "has_asset",
+      "keywords": [
+        "有房产"
+      ],
+      "frequency": 1,
+      "example_turn": "你没有必要冻结我的，冻结我的这房产，我这也不是不还。",
+      "source": "observed"
+    },
+    {
+      "group_name": "card_usage",
+      "keywords": [
+        "现在有用卡需要，但基本不再用了，因为再用的话也还不上"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯……我现在有用卡需要，但是基本不不再用了，因为再用的话也还不上。",
+      "source": "observed"
+    },
+    {
+      "group_name": "cannot_pay_lump_sum",
+      "keywords": [
+        "一次性我搞不了"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "income_stabilized",
+      "keywords": [
+        "现在应该没问题了，至少半年内没问题"
+      ],
+      "frequency": 1,
+      "example_turn": "没有，我就这一张信用卡。",
+      "source": "observed"
+    },
+    {
+      "group_name": "single_debt",
+      "keywords": [
+        "没有，我就这一张信用卡"
+      ],
+      "frequency": 1,
+      "example_turn": "逾期是因为……我在5月份之前有五年左右没做事，闲晃。然后我用临时额度加上自己的收入，再跟家里借点，来回倒。实际上我没欠那么多钱，利息滚太多了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "long_term_unemployment",
+      "keywords": [
+        "五年左右没做事，闲晃"
+      ],
+      "frequency": 1,
+      "example_turn": "现在临时额度停了，我没法再还进去取出来。如果卡还能用，我可以多还点；如果卡停用了，我只能还一千两千。",
+      "source": "observed"
+    },
+    {
+      "group_name": "interest_accumulation",
+      "keywords": [
+        "利息滚太多了"
+      ],
+      "frequency": 1,
+      "example_turn": "现在临时额度停了，我没法再还进去取出来。如果卡还能用，我可以多还点；如果卡停用了，我只能还一千两千。",
+      "source": "observed"
+    },
+    {
+      "group_name": "confirm_amount",
+      "keywords": [
+        "微信903是吧"
+      ],
+      "frequency": 1,
+      "example_turn": "等我一下，我现在还进去。",
+      "source": "observed"
+    },
+    {
+      "group_name": "high_interest_fee",
+      "keywords": [
+        "3602块本金息费要2000多块钱"
+      ],
+      "frequency": 1,
+      "example_turn": "给你弄给你弄。",
+      "source": "observed"
+    },
+    {
+      "group_name": "proposed_payment_date",
+      "keywords": [
+        "明天可以吗"
+      ],
+      "frequency": 1,
+      "example_turn": "明天还有600块钱。好吧，那我，那我还完了，我都没有生活费了，怎么办呢？人家答应借给我呀，我还得再问。102。对。喂，生活这么难。对，没钱。唉，真的真的麻烦了。还你们602，我先还602。服务微信。那我微信就没有钱了怎么办？就还还完了，不行，进去没有办过费。嗯，八。差多少钱？好，还差多少？那我就10多万，10多万之后怎么规划去还呢？工作不稳定，收入不稳定。那个转给人家了，下时间我还出差一点。好，麻烦你了。好，你好。好，千，钱，好好。嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "intent_to_pay",
+      "keywords": [
+        "如果有钱的话我真的会还"
+      ],
+      "frequency": 1,
+      "example_turn": "现在我就说，我想把这个先还了再说。我现在具体方面，我现在还不上，所以对这个知道。",
+      "source": "observed"
+    },
+    {
+      "group_name": "injury_accident",
+      "keywords": [
+        "受伤了个工人"
+      ],
+      "frequency": 1,
+      "example_turn": "保卡减免吧，先保持一个信用卡，因为我3个月以后才能回账。这段时间太累了，还受伤了个工人。",
+      "source": "observed"
+    },
+    {
+      "group_name": "denial_of_intent",
+      "keywords": [
+        "不是故意拖欠"
+      ],
+      "frequency": 1,
+      "example_turn": "我不是故意拖欠，实在是有办法的话就不会这样了。我已经跟朋友周转过了，现在确实拿不出来。",
+      "source": "observed"
+    },
+    {
+      "group_name": "funding_status",
+      "keywords": [
+        "基本上没什么问题了"
+      ],
+      "frequency": 1,
+      "example_turn": "基本上没什么问题了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "negotiation_history",
+      "keywords": [
+        "按照昨天跟你们协商的"
+      ],
+      "frequency": 1,
+      "example_turn": "我先按照我们昨天跟你们协商的，你们帮我优惠一下那个手续费。",
+      "source": "observed"
+    },
+    {
+      "group_name": "fee_reduction_request",
+      "keywords": [
+        "优惠一下那个手续费"
+      ],
+      "frequency": 1,
+      "example_turn": "我先按照我们昨天跟你们协商的，你们帮我优惠一下那个手续费。",
+      "source": "observed"
+    },
+    {
+      "group_name": "intention_to_pay_full",
+      "keywords": [
+        "想尽量把它全部结完"
+      ],
+      "frequency": 1,
+      "example_turn": "我是想嗯……是想尽量把它全部结完。因为我还是想用我们招行的卡。",
+      "source": "observed"
+    },
+    {
+      "group_name": "card_frozen",
+      "keywords": [
+        "卡冻结掉了"
+      ],
+      "frequency": 1,
+      "example_turn": "是目前你们卡中心好像说已经把我卡冻结掉了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "overdue_amount",
+      "keywords": [
+        "最低金额18817块钱"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，到还款期了是吧？我知道，我也不想逾期，最近生意没做好，弄不来，我一直在想办法。",
+      "source": "observed"
+    },
+    {
+      "group_name": "family_assistance_pending",
+      "keywords": [
+        "家里帮我筹钱，但是现在暂时没收到"
+      ],
+      "frequency": 1,
+      "example_turn": "是没凑到那么多？是还没凑，还没凑到钱？",
+      "source": "observed"
+    },
+    {
+      "group_name": "dispute_payment",
+      "keywords": [
+        "我不是还了吗"
+      ],
+      "frequency": 1,
+      "example_turn": "好，我马上，马上，1分钟，行吧，1分钟。",
+      "source": "observed"
+    },
+    {
+      "group_name": "job_instability",
+      "keywords": [
+        "工作不稳定"
+      ],
+      "frequency": 1,
+      "example_turn": "那你不办分期怎么还？",
+      "source": "observed"
+    },
+    {
+      "group_name": "dispute_overdue",
+      "keywords": [
+        "这个号没有逾期"
+      ],
+      "frequency": 1,
+      "example_turn": "这个号没有逾期啊。",
+      "source": "observed"
+    },
+    {
+      "group_name": "admit_overdue",
+      "keywords": [
+        "5月份逾期了"
+      ],
+      "frequency": 1,
+      "example_turn": "啊，5月份对对对，5月份逾期了。",
       "source": "observed"
     },
     {
@@ -557,16 +3701,6 @@
       "source": "suggested"
     },
     {
-      "group_name": "negotiation_history",
-      "keywords": [
-        "之前协商过",
-        "上次说好的"
-      ],
-      "frequency": 0,
-      "example_turn": "",
-      "source": "suggested"
-    },
-    {
       "group_name": "family_issue",
       "keywords": [
         "家里出事",
@@ -582,109 +3716,387 @@
       "group_name": "frustration",
       "keywords": [
         "唉",
-        "不耐烦",
+        "抱怨",
+        "叹气",
         "利息是得多高啊这是",
-        "不满"
+        "不满",
+        "抱怨利息高",
+        "不耐烦",
+        "犹豫叹气",
+        "你们并没有给我",
+        "被拖欠，所以才会这么难受",
+        "刚好那边没到，这边又卡到了，所以才会这么难受",
+        "这样逼真的不好",
+        "没办法",
+        "困惑不满",
+        "天天这样子打电话",
+        "逼着我天天打我这个电话",
+        "还了全额我怎么还得了啊",
+        "我也不想拖",
+        "枪毙我了",
+        "无奈",
+        "来气",
+        "烦躁",
+        "没办法，真的没办法",
+        "唉呀",
+        "我还不了这么多",
+        "说什么都没用",
+        "刚钱不是都给你了吗",
+        "这不是废话",
+        "说提前结清，那还要违约金说的是不是费",
+        "叹息",
+        "沮丧",
+        "我不管",
+        "关键是",
+        "生活压力",
+        "反正迟早要被你们",
+        "我的天",
+        "转来转去的人",
+        "没钱我怎么还"
       ],
-      "frequency": 8,
+      "frequency": 66,
       "example_turn": "噢，唉，这样子……唉，我想问一下，唉，譬如说，我是整个账单来做一个个分期，然后就分期完之后，我这张信用卡就不用了。那想问一下，就是可以怎么样分期吗？",
       "source": "observed"
     },
     {
-      "group_name": "confusion",
+      "group_name": "defensive",
       "keywords": [
-        "困惑"
+        "坚持",
+        "不能开玩笑",
+        "防御",
+        "混淆",
+        "不要逼我",
+        "逼",
+        "困难",
+        "质问",
+        "都是资金上困难了，不然谁会",
+        "我有我的困难",
+        "能周转的我都周转了",
+        "你压力大不大",
+        "不是想逃避",
+        "肯定要用啊",
+        "不是想去恶意逾期",
+        "你也懂的",
+        "辩解",
+        "不接受",
+        "解释",
+        "不是不是",
+        "没有想要逾期",
+        "干嘛，什么事",
+        "不是故意拖欠"
       ],
-      "frequency": 4,
-      "example_turn": "我不明白，你可以解释再清楚一点吗？",
+      "frequency": 34,
+      "example_turn": "我没有记错。",
       "source": "observed"
     },
     {
       "group_name": "pleading",
       "keywords": [
         "恳求",
-        "再给我申请一下吧"
+        "免利息好吗",
+        "恳求再申请",
+        "恳求验证",
+        "你给我点时间",
+        "可不可以跟我沟通一下",
+        "通融一下",
+        "拜托",
+        "麻烦帮我开一下嘛",
+        "互相理解一下",
+        "人性化的东西",
+        "协商",
+        "还能往下调一点吗",
+        "你给我停个半年",
+        "前那个半年一年的嘛"
       ],
-      "frequency": 4,
-      "example_turn": "要给我一点时间啊。",
-      "source": "observed"
-    },
-    {
-      "group_name": "defensive",
-      "keywords": [
-        "是啊",
-        "不用找我",
-        "辩解"
-      ],
-      "frequency": 4,
-      "example_turn": "是啊，这不是出现了特殊情况嘛？对，对。",
-      "source": "observed"
-    },
-    {
-      "group_name": "anger",
-      "keywords": [
-        "愤怒",
-        "不要跟我在这里混淆",
-        "就是去投诉"
-      ],
-      "frequency": 4,
-      "example_turn": "知道了。你们能不能不要一天打十几个电话？我会录音的，你们这是骚扰。",
+      "frequency": 32,
+      "example_turn": "那我现在确实困难，能不能宽限几天？",
       "source": "observed"
     },
     {
       "group_name": "anxiety",
       "keywords": [
         "烦恼",
+        "压力有多大",
         "很着急",
-        "着急得不得了"
+        "着急得不得了",
+        "我这边也是，我也着急",
+        "担忧",
+        "焦虑",
+        "压力太大了",
+        "压力真的是大",
+        "以后都用不了了吗",
+        "啊，那我以后怎么办呢",
+        "那我想问，这个怎么能解冻呢",
+        "那以后就是说，比如我后天还进去了招商银行的信用卡，银行都用不了了，都没有额度了吗",
+        "我、我、我之前",
+        "我怕我还不上",
+        "如果半年之后钱没凑齐怎么弄",
+        "压力比较大",
+        "担心",
+        "怕你们等不及",
+        "是不是我一还利息就扣完了"
       ],
-      "frequency": 3,
+      "frequency": 27,
       "example_turn": "那剩下的话，我下个月又就要烦恼啊。",
       "source": "observed"
     },
     {
-      "group_name": "skepticism",
+      "group_name": "helplessness",
       "keywords": [
-        "质疑",
-        "质疑/不满"
+        "无力",
+        "根本承担不了了",
+        "有心无力",
+        "真的没办法我才会去拖",
+        "没办法",
+        "实在没办法了",
+        "划算我也没办法，现在我真的是……",
+        "借也借不到",
+        "确实没办法",
+        "无奈",
+        "还不起",
+        "是真的没办法",
+        "我有什么办法",
+        "实在没办法"
       ],
-      "frequency": 3,
-      "example_turn": "问题是这个调整账单只能维持短期，你办理不了个性化分期还是干嘛？",
+      "frequency": 21,
+      "example_turn": "我现在还不上500块钱，我还不上，我现在50块钱都很难。",
+      "source": "observed"
+    },
+    {
+      "group_name": "anger",
+      "keywords": [
+        "指责一天打十几个电话是骚扰",
+        "投诉",
+        "愤怒",
+        "为什么要拨打",
+        "威胁投诉",
+        "要求停止骚扰",
+        "骚扰我",
+        "我早就还了，不需要你们一个个电话来催"
+      ],
+      "frequency": 15,
+      "example_turn": "知道了。你们能不能不要一天打十几个电话？我会录音的，你们这是骚扰。",
+      "source": "observed"
+    },
+    {
+      "group_name": "confusion",
+      "keywords": [
+        "我欠100多的就解决这10000多了",
+        "困惑",
+        "质疑",
+        "我搞个我还还的是什么东西",
+        "脑子回着",
+        "疑惑"
+      ],
+      "frequency": 14,
+      "example_turn": "我欠100多的就解决这10000多了？",
+      "source": "observed"
+    },
+    {
+      "group_name": "irritation",
+      "keywords": [
+        "你不要一直说一直说",
+        "干嘛呀",
+        "你不要催我了",
+        "你说那么多",
+        "烦躁",
+        "少问点",
+        "不耐烦"
+      ],
+      "frequency": 8,
+      "example_turn": "我就问你周五行不行嘛？你不要一直说一直说。",
+      "source": "observed"
+    },
+    {
+      "group_name": "defensiveness",
+      "keywords": [
+        "质疑强行扣款说法",
+        "没钱，你又逼我，我也没用",
+        "防御",
+        "正常计收那你就正常流水",
+        "辩解",
+        "你不听就算了"
+      ],
+      "frequency": 8,
+      "example_turn": "扯什么淡呢？怎么可能？",
+      "source": "observed"
+    },
+    {
+      "group_name": "sigh",
+      "keywords": [
+        "唉"
+      ],
+      "frequency": 7,
+      "example_turn": "没有啊，唉。",
+      "source": "observed"
+    },
+    {
+      "group_name": "distrust",
+      "keywords": [
+        "怀疑",
+        "银行都说不清",
+        "质疑",
+        "忽悠人"
+      ],
+      "frequency": 5,
+      "example_turn": "就还不一定能不能给办呗，是那意思不？",
+      "source": "observed"
+    },
+    {
+      "group_name": "hesitation",
+      "keywords": [
+        "犹豫",
+        "嗯……"
+      ],
+      "frequency": 4,
+      "example_turn": "嗯……唉，下午看看吧，好吧。",
+      "source": "observed"
+    },
+    {
+      "group_name": "exhaustion",
+      "keywords": [
+        "疲惫",
+        "太累了"
+      ],
+      "frequency": 4,
+      "example_turn": "嗯……我现在确实困难，一次性拿不出来。",
+      "source": "observed"
+    },
+    {
+      "group_name": "resignation",
+      "keywords": [
+        "唉",
+        "无奈",
+        "放弃",
+        "反正迟早都要挨投诉"
+      ],
+      "frequency": 4,
+      "example_turn": "唉……好，好拜。",
+      "source": "observed"
+    },
+    {
+      "group_name": "concern",
+      "keywords": [
+        "担忧",
+        "费用影响",
+        "顾虑"
+      ],
+      "frequency": 4,
+      "example_turn": "我想问一下，我把上个月的还清了之后你帮我开卡，那我还了这个钱之后，你们会不会把我这额度给扣掉啊？",
       "source": "observed"
     },
     {
       "group_name": "distress",
       "keywords": [
         "我也很苦",
-        "我也很痛苦"
+        "我也很痛苦",
+        "困难"
       ],
-      "frequency": 2,
+      "frequency": 3,
       "example_turn": "我也很苦，我也很痛苦啊。",
       "source": "observed"
     },
     {
-      "group_name": "hesitation",
+      "group_name": "indifference",
       "keywords": [
-        "犹豫"
+        "无所谓"
       ],
-      "frequency": 2,
-      "example_turn": "是我在想想想想想，赶快帮它弄出去，弄进去。",
+      "frequency": 3,
+      "example_turn": "好……这……好，我都行，我随便。",
       "source": "observed"
     },
     {
-      "group_name": "helplessness",
+      "group_name": "despair",
       "keywords": [
-        "根本承担不了了",
-        "无奈"
+        "不想活了",
+        "绝望",
+        "生活这么难"
+      ],
+      "frequency": 3,
+      "example_turn": "今天这些债，搞得我真的都不想活了。",
+      "source": "observed"
+    },
+    {
+      "group_name": "gratitude",
+      "keywords": [
+        "谢谢",
+        "感谢"
+      ],
+      "frequency": 3,
+      "example_turn": "嗯，谢谢，我们不是故意的。当时提前打电话，那个接线员说没到时间点，没办法处理。",
+      "source": "observed"
+    },
+    {
+      "group_name": "argumentative",
+      "keywords": [
+        "争辩"
+      ],
+      "frequency": 3,
+      "example_turn": "你们上次就给我免除了，你听我说，如果违约金给免……",
+      "source": "observed"
+    },
+    {
+      "group_name": "desperation",
+      "keywords": [
+        "我真的真的没事做",
+        "用不了我这个还进去没钱用了",
+        "现在饭都吃不起"
+      ],
+      "frequency": 3,
+      "example_turn": "1000多能不能再少一点？我真的真的没事做，我这……",
+      "source": "observed"
+    },
+    {
+      "group_name": "annoyance",
+      "keywords": [
+        "烦死了"
       ],
       "frequency": 2,
-      "example_turn": "就是这利息这么高，根本承担不了了。它每天我都得想尽一切办法。",
+      "example_turn": "不想你们天天打电话，烦死了，知道吧。",
+      "source": "observed"
+    },
+    {
+      "group_name": "hope",
+      "keywords": [
+        "那也是最好了",
+        "希望"
+      ],
+      "frequency": 2,
+      "example_turn": "好吧，你就按你这个方案吧，然后我尽量还。账务还不上，也没办法还哈。嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "stress",
+      "keywords": [
+        "压力大"
+      ],
+      "frequency": 2,
+      "example_turn": "嗯……就是现在换了工作嘛，换了工作然后这边每个月放款压力太大了，又给家里面拿钱。我就说你们这边给我弄一个方案出来嘛，我慢慢还。",
+      "source": "observed"
+    },
+    {
+      "group_name": "surprise",
+      "keywords": [
+        "啊，这是催收？",
+        "这么多吗"
+      ],
+      "frequency": 2,
+      "example_turn": "也也没有利息，那违约金对不是？",
+      "source": "observed"
+    },
+    {
+      "group_name": "urgency",
+      "keywords": [
+        "急切"
+      ],
+      "frequency": 2,
+      "example_turn": "嗯……1000多块钱？他行卡？",
       "source": "observed"
     },
     {
       "group_name": "disappointment",
       "keywords": [
-        "这样子……"
+        "这样子"
       ],
       "frequency": 1,
       "example_turn": "这样子……那那你还有其他的办法吗？",
@@ -700,114 +4112,166 @@
       "source": "observed"
     },
     {
-      "group_name": "agreement",
+      "group_name": "doubt",
       "keywords": [
-        "认同"
+        "怀疑"
       ],
       "frequency": 1,
-      "example_turn": "对呀对啊对啊。",
+      "example_turn": "那是我记错吗？我要翻一下记录看一下因为我是觉得那个是那个金额是不对的。",
       "source": "observed"
     },
     {
-      "group_name": "rejection",
+      "group_name": "discontent",
       "keywords": [
-        "拒绝"
+        "质疑/不满"
       ],
       "frequency": 1,
-      "example_turn": "我知道，以前的工作人员已经给我介绍过这个方案了，我真的不需要，好吗？",
-      "source": "observed"
-    },
-    {
-      "group_name": "stress",
-      "keywords": [
-        "压力大"
-      ],
-      "frequency": 1,
-      "example_turn": "这个减免没有必要。每个月还6000多，我压力有多大你知道吗？",
-      "source": "observed"
-    },
-    {
-      "group_name": "threat",
-      "keywords": [
-        "威胁"
-      ],
-      "frequency": 1,
-      "example_turn": "我说我要反馈到上面去。",
-      "source": "observed"
-    },
-    {
-      "group_name": "insistence",
-      "keywords": [
-        "坚持"
-      ],
-      "frequency": 1,
-      "example_turn": "那你们就是不给我办。",
-      "source": "observed"
-    },
-    {
-      "group_name": "accusation",
-      "keywords": [
-        "指责"
-      ],
-      "frequency": 1,
-      "example_turn": "那7月份我还是要还6000多。",
+      "example_turn": "400太少了，你的利息多少？400块钱的违约金，你有点少了点。",
       "source": "observed"
     },
     {
       "group_name": "impatience",
       "keywords": [
-        "不耐烦"
+        "好了好了好了好了好"
       ],
       "frequency": 1,
-      "example_turn": "没有我，我现在那个什么？我，我现在不那个。呃，手机不方便再给你讲电话。我又没带耳机。",
+      "example_turn": "好了，好了好了好了好，好了好了你直接帮我报。",
       "source": "observed"
     },
     {
-      "group_name": "defensiveness",
+      "group_name": "disbelief",
       "keywords": [
-        "防御"
+        "没有跟我这样说"
       ],
       "frequency": 1,
-      "example_turn": "我没有记错。",
+      "example_turn": "跟我说的是……到一个是……如需要……",
       "source": "observed"
     },
     {
-      "group_name": "urgency",
+      "group_name": "sadness",
       "keywords": [
-        "急切"
+        "唉"
       ],
       "frequency": 1,
-      "example_turn": "也是老人。因为老人，老人，老人也是在住院嘛，所以说的话，这个费用的话……",
+      "example_turn": "嗯嗯……我的妻子……跟我离婚了……唉……我贷了十万块钱，她拿着走掉了。然后我有三个小孩上着学。",
       "source": "observed"
     },
     {
-      "group_name": "exhaustion",
+      "group_name": "skepticism",
       "keywords": [
-        "疲惫"
+        "怀疑"
       ],
       "frequency": 1,
-      "example_turn": "你们已经提醒够多次了。",
+      "example_turn": "嗯。",
       "source": "observed"
     },
     {
-      "group_name": "relief",
+      "group_name": "threat",
       "keywords": [
-        "那太好了"
+        "就要闹工调了，罢工了"
       ],
       "frequency": 1,
-      "example_turn": "那太好了",
+      "example_turn": "对，你要这个月15号再不发工资，就要闹工调了，罢工了。",
       "source": "observed"
     },
     {
-      "group_name": "resignation",
+      "group_name": "assertive",
       "keywords": [
-        "随便吧",
-        "无所谓",
-        "随你们"
+        "一定不会逃避"
       ],
-      "frequency": 0,
-      "example_turn": "",
-      "source": "suggested"
+      "frequency": 1,
+      "example_turn": "能不能申请说在我能力以内分期慢慢还？我不是想逃避这个责任，我一定不会逃避，我是一定会还的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "sigh_resignation",
+      "keywords": [
+        "唉"
+      ],
+      "frequency": 1,
+      "example_turn": "你是说真的，我餐都吃不起，我每个月工资那一点点，我要生活，我也要交房租。我这样子已经持续了几年，23年了，好像是今年不知道第几年了，我都记不清了。唉。",
+      "source": "observed"
+    },
+    {
+      "group_name": "complaint",
+      "keywords": [
+        "抱怨"
+      ],
+      "frequency": 1,
+      "example_turn": "那他跟我说，非要说12点半之前一定要还上。",
+      "source": "observed"
+    },
+    {
+      "group_name": "skeptical",
+      "keywords": [
+        "质疑"
+      ],
+      "frequency": 1,
+      "example_turn": "签有给我看啊？",
+      "source": "observed"
+    },
+    {
+      "group_name": "resentment",
+      "keywords": [
+        "不满"
+      ],
+      "frequency": 1,
+      "example_turn": "我说了，我会尽快想办法把这个还进来。",
+      "source": "observed"
+    },
+    {
+      "group_name": "worry",
+      "keywords": [
+        "担忧"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯，我知道，就是这56000我也要还啊，是不是到7月份我也要还？",
+      "source": "observed"
+    },
+    {
+      "group_name": "negotiating",
+      "keywords": [
+        "协商"
+      ],
+      "frequency": 1,
+      "example_turn": "好，逾期费不行我想减免，知道不？行，然后我这笔钱我可以跟你商量晚上9点之前处理，行不行？嗯，最晚九点。呃，你听我说，我最晚是九点，因为我得筹钱去。",
+      "source": "observed"
+    },
+    {
+      "group_name": "interruption",
+      "keywords": [
+        "打断"
+      ],
+      "frequency": 1,
+      "example_turn": "嗯……您先听我说行吗？",
+      "source": "observed"
+    },
+    {
+      "group_name": "nostalgia",
+      "keywords": [
+        "有感情"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，就是我相当于就是停息嘛，停息嘛，然后我就正常还本金嘛。因为这张卡的话，说句不好听的，也是我的第一张卡，然后我对他也是非常有感情的。但是呢，现在的问题呢，就是我现在是已经该是没有什么能力去……暂时哈，暂时我未了，我不知道怎么说哈，反正暂时的话，我是暂时是应该是没有能力去一下子把这个钱给还上的。",
+      "source": "observed"
+    },
+    {
+      "group_name": "apologetic",
+      "keywords": [
+        "麻烦你了"
+      ],
+      "frequency": 1,
+      "example_turn": "明天还有600块钱。好吧，那我，那我还完了，我都没有生活费了，怎么办呢？人家答应借给我呀，我还得再问。102。对。喂，生活这么难。对，没钱。唉，真的真的麻烦了。还你们602，我先还602。服务微信。那我微信就没有钱了怎么办？就还还完了，不行，进去没有办过费。嗯，八。差多少钱？好，还差多少？那我就10多万，10多万之后怎么规划去还呢？工作不稳定，收入不稳定。那个转给人家了，下时间我还出差一点。好，麻烦你了。好，你好。好，千，钱，好好。嗯。",
+      "source": "observed"
+    },
+    {
+      "group_name": "overwhelmed",
+      "keywords": [
+        "我真有点顶不住"
+      ],
+      "frequency": 1,
+      "example_turn": "呃，你说你刚给我说是按几年还嘛？我真有点顶不住。",
+      "source": "observed"
     },
     {
       "group_name": "embarrassment",

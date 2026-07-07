@@ -91,7 +91,7 @@ EOF
 | Variable | Required by | Description |
 |----------|-------------|-------------|
 | `DEEPSEEK_API_KEY` | Stages 1–3, API server | DeepSeek LLM API key |
-| `PG_DSN` | Stage 6, API server | PostgreSQL connection string |
+| `PG_DSN` | Stage 6, API server | PostgreSQL connection string (key-value or `postgresql://` URI format; key-value is auto-converted to URI for asyncpg) |
 | `EMBEDDING_MODEL` | Stages 5–6, API server | Ollama model name |
 | `EMBEDDING_BASE_URL` | Stages 5–6, API server | Ollama OpenAI-compatible endpoint |
 | `EMBEDDING_API_KEY` | Stages 5–6, API server | Ollama auth (default: `ollama`) |
@@ -183,7 +183,7 @@ This runs automatically as part of `whole_pipeline.py` (Phase 1.5).
 - `src/f001_schema_alignment/data/output_aligned.py`
 - `src/f003_reward_labeling/data/output_rewarded.py`
 
-Runs collector/customer turn analysis, schema alignment, state relabeling, then reward labeling. Relabeling is applied **before** reward labeling so that `output_aligned.py` and `output_rewarded.py` both contain the final relabeled tags — no separate `output_relabeled.py` is needed.
+Runs collector/customer turn analysis, schema alignment, state relabeling, then reward labeling. Schema alignment (`write_output_aligned`) automatically applies state relabeling after alignment using `relabel_state.py` and the maps in `data/data_labels/*.csv`. Reward labeling (`write_output_rewarded`) deduplicates records by `call_id` (keeping the first occurrence) before writing. Relabeling is applied **before** reward labeling so that `output_aligned.py` and `output_rewarded.py` both contain the final relabeled tags — no separate `output_relabeled.py` is needed.
 
 **Requires:** DeepSeek API, `data/data_labels/*.csv` (relabel maps)
 
@@ -420,8 +420,8 @@ python3 src/build_tree_and_db.py
 |--------|---------|----------|----------------|
 | Orchestrator | — | `whole_pipeline.py`, `build_tree_and_db.py`, `launch_ui.py`, `check_data_format.py` | — |
 | `f000_keyword_discovery/` | F000 | `discover_keywords.py`, `load_data.py` | `state_keywords.json`, `output_labeled.py` |
-| `f001_schema_alignment/` | F001 | `align_schema.py` | `output_aligned.py` |
-| `f003_reward_labeling/` | F003 | `analyze_collector_turns.py`, `reward_label.py`, `relabel_state.py` | `output_rewarded.py`, `collector_analysis.json`, `customer_analysis.json` |
+| `f001_schema_alignment/` | F001 | `align_schema.py`, `relabel_state.py` | `output_aligned.py` |
+| `f003_reward_labeling/` | F003 | `analyze_collector_turns.py`, `reward_label.py`, `relabel_state.py` | `output_rewarded.py` (deduplicated by `call_id`), `collector_analysis.json`, `customer_analysis.json` |
 | `f004_decision_tree/` | F004 | `build_decision_tree.py`, `merge_collector.py`, `tree_transforms.py` | `decision_tree.json`, `merge_decisions.json` |
 | `f005_context_scoring/` | F005 | `score_tree.py`, `scoring_metrics.py` | `decision_tree_scored.json` |
 | `f006_retrieval_engine/` | F006 | `retrieval_engine.py`, `retrieval_ranking.py` | — (runtime: PostgreSQL) |
@@ -432,7 +432,7 @@ python3 src/build_tree_and_db.py
 **Cross-module data flow:**
 
 ```
-f000/output_labeled.py ──→ f001/align_schema.py ──→ f003/relabel_state.py ──→ f003/reward_label.py ──→ f004/build_decision_tree.py
+f000/output_labeled.py ──→ f001/align_schema.py ──→ f001/relabel_state.py ──→ f003/reward_label.py (dedup by call_id) ──→ f004/build_decision_tree.py
 f004/decision_tree.json ──→ f005/score_tree.py ──→ f006/retrieval_engine.py
 f005/decision_tree_scored.json ──→ f009/server.py
 f000/state_keywords.json ──→ f009/server.py

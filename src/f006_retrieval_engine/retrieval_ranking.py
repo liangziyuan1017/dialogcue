@@ -47,6 +47,8 @@ def _first_val(val):
 
 def compute_bg_boost(sentence_bg, query_bg):
     boost = 0.0
+    if isinstance(sentence_bg, str):
+        sentence_bg = {}
     s_industry = _first_val(sentence_bg.get("industry", ""))
     q_industry = query_bg.get("industry", "")
     if s_industry and q_industry and s_industry == q_industry:

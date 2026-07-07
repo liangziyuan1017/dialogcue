@@ -5,6 +5,8 @@ import re
 
 from f007_infrastructure.logging import get_logger as _get_logger
 
+from f001_schema_alignment.relabel_state import relabel_all as _relabel_all
+
 _log = _get_logger(__name__)
 
 
@@ -164,6 +166,8 @@ def write_output_aligned(output_path=None):
     if output_path is None:
         output_path = os.path.join(os.path.dirname(__file__), "data", "output_aligned.py")
     aligned = align_all()
+    aligned, relabel_stats = _relabel_all(aligned)
+    _log.info(f"Relabel stats: {relabel_stats}")
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("results = ")
         f.write(_python_dumps(aligned))

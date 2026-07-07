@@ -111,6 +111,19 @@ def _validate_collector_turn(data: dict) -> CollectorTurnIn:
 
 def _init_db():
     dsn = os.environ.get("PG_DSN", "dbname=icbc user=postgres")
+    if "://" not in dsn:
+        parts = {}
+        for token in dsn.split():
+            if "=" in token:
+                k, v = token.split("=", 1)
+                parts[k] = v
+        host = parts.get("host", "localhost")
+        port = parts.get("port", "5432")
+        dbname = parts.get("dbname", "icbc")
+        user = parts.get("user", "postgres")
+        password = parts.get("password", "")
+        cred = f"{user}:{password}" if password else user
+        dsn = f"postgresql://{cred}@{host}:{port}/{dbname}"
     return AsyncSentenceDB(dsn)
 
 

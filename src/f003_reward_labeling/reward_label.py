@@ -54,7 +54,10 @@ Respond in JSON:
 
 def _build_prompt(record):
     turns = record.get("turns_annotated", [])
-    last_n = turns[-_cfg("context_window.reward_last_n_turns", 6):] if len(turns) >= _cfg("context_window.reward_last_n_turns", 6) else turns
+    if not isinstance(turns, list):
+        turns = []
+    window_size = int(_cfg("context_window.reward_last_n_turns", 6))
+    last_n = turns[-window_size:] if len(turns) >= window_size else turns
     dialog_lines = []
     for t in last_n:
         role = "Collector" if t["role"] == "催收员" else "Customer"
@@ -189,10 +192,27 @@ def _python_dumps(obj, indent=2):
     return text
 
 
+def _dedup_by_call_id(records):
+    seen = set()
+    deduped = []
+    dup_count = 0
+    for r in records:
+        cid = r.get("call_id")
+        if cid in seen:
+            dup_count += 1
+            continue
+        seen.add(cid)
+        deduped.append(r)
+    if dup_count:
+        _log.info(f"Dedup: removed {dup_count} duplicate call_id(s), kept {len(deduped)}/{len(records)} records")
+    return deduped
+
+
 def write_output_rewarded(output_path=None):
     if output_path is None:
         output_path = os.path.join(os.path.dirname(__file__), "data", "output_rewarded.py")
     rewarded = label_all()
+    rewarded = _dedup_by_call_id(rewarded)
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("results = ")
         f.write(_python_dumps(rewarded))
