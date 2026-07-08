@@ -13,12 +13,30 @@ DATA_FILE = Path(os.environ.get("DATA_FILE", str(INPUT_DIR / "matched_data.jsonl
 OUTPUT_FILE = Path(os.environ.get("OUTPUT_FILE", str(OUTPUT_DIR / "output_merged.py")))
 
 EXTRA_FIELDS = [
+    "custInfo",
+    "dialDate",
+    "connectDate",
+    "dialType",
+    "ringTime",
+    "collUserId",
+    "collId",
+    "collArea",
+    "collGroupId",
+    "acNo",
+    "isRecorded",
+    "result",
+    "talkTime",
+    "channel",
+    "corpCode",
+    "calledNo",
+    "mobTyp",
+    "phoneRoute",
+    "agentTalkTime",
     "call_date",
     "coll_user_id",
     "mob_typ",
     "talk_time",
     "plan_evaluation",
-    "customer_info",
 ]
 
 def _get_cust_no(record: dict) -> str:

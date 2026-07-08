@@ -1,10435 +1,7 @@
 results = [
   {
-    "call_id": "2317941550352385028",
-    "cust_no": "0100252354",
-    "call_date": "20260506",
-    "coll_user_id": "SX17625",
-    "mob_typ": "M1",
-    "talk_time": "613",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据                                                                 |\n|------------|----------|--------------------------------------------------------------------------|\n| 调减方案   | 提供     | [“我可以帮您把这个申请减免掉，也就是说你还20026000多，然后您的总账单会减少28000多。”] |\n| MINA方案   | 未推荐   | [未提及最低还款方案，仅建议还最低还款26000多]                           |\n| 促成技巧   | 未运用   | [未使用对比、稀缺性、从众心理等技巧引导客户接受方案]                     |\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000100252354",
-      "年龄": "49",
-      "性别": "男",
-      "申请卡片时间": "2003-10-01",
-      "学历": "未填",
-      "行业": "专业性事务所",
-      "社保缴纳情况": "有社保，但为灵活就业参保，稳定性不高",
-      "他行是否有房贷": "他行有房贷，欠款121991",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "62209",
-      "利息占欠款比例": "4%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "可正常使用卡片",
-      "24期缴款评等": "ZZZZZZZZZZZZZZBBB0",
-      "外部欠款金额": "外部欠款总余额436762，其中，信用卡欠款302621，银行贷款欠款131480，消金贷款欠款2661",
-      "外部共债机构数": "外部共债机构数共9家，其中逾期的机构共1家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款61967元，有协商方案，要么办理调减方案;003账号欠款0元，无可用的协商方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2317585420622995027,Y2317940900494444315,Y2317941550352385028,Y2318793930323088130,Y2320347850338590374,Y67a78cea444c415c81605f9bc66fee8f",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "唉，您好，请问是……喂，您好，请问是。",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "喂。"
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "唉，您好，你说，嗯。"
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "您好，请问是张女士吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "对对对。"
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "女士，您好，呃，你刚刚说那个分期嘛？然后这边分期肯定是……目前是没有方案的。而且你今天上午说，呃，你可能后续还要用卡，那如果分期的话肯定是没有，后续就不能用卡了，就需要把卡给冻了。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "好。"
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "我想问一下，唉，譬如说，呃，不是说我是想整个账单分期，然后呃，分期完之后，这个信用卡就没有了，就要取消了，是这个意思吗？",
-        "state": {
-          "facts": [
-            "installment_request",
-            "account_restriction"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "就是不能用了。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "以后都不能用了？"
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "对。"
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "这样子……那那你还有其他的办法吗？",
-        "state": {
-          "emotions": [
-            "distress"
-          ],
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "嗯，其他办法，这边的话就是说，建议你去还最低还款，26463块钱。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 14,
-        "role": "客户",
-        "text": "但是这样……因为就是我每个月，大概是可以有20000块钱的收入的，但是我不是……不是我不是马上一次性呃，出20000块的，我是可能一个星期出5000这样子。所以说我是有还款的能力，只是你一下子让我还20000多，可能就有点困难。你也看到我的记录了，就是我一直都是有还款的，只不过……就真的是最近那个经济压力有点大，所以才会逾期。",
-        "state": {
-          "facts": [
-            "future_payment_plan",
-            "income_reduction",
-            "repayment_inability",
-            "willing_to_pay",
-            "situational_hardship"
-          ],
-          "emotions": [
-            "distress"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "催收员",
-        "text": "嗯，这边的话就是说……因为你的总欠款比较高嘛，所以说最低还款也是比较高的。这边的话还建议您尽快去想办法去把那个资金筹一下。我这边的话就是考虑到您目前的困难，没发工资是吧？",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "客户",
-        "text": "嗯，对啊，就是……他们也不是不发，就是可能一个星期给你发5000，要不然的话可能就这个星期不发就拖到下个星期这样子。",
-        "state": {
-          "facts": [
-            "income_reduction"
-          ]
-        }
-      },
-      {
-        "turn_index": 17,
-        "role": "催收员",
-        "text": "嗯，好的好的。您看这样可以不吗？"
-      },
-      {
-        "turn_index": 18,
-        "role": "客户",
-        "text": "我也很苦，我也很痛苦啊。",
-        "state": {
-          "emotions": [
-            "distress"
-          ]
-        }
-      },
-      {
-        "turn_index": 19,
-        "role": "催收员",
-        "text": "嗯，这边的话就建议您尽量在规定时间内还款。因为你本次逾期然后产生的循环利息已经大概是2200多，2300块钱左右。违约金就有1400多。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 20,
-        "role": "客户",
-        "text": "噢，唉，这样子……唉，我想问一下，唉，譬如说，我是整个账单来做一个个分期，然后就分期完之后，我这张信用卡就不用了。那想问一下，就是可以怎么样分期吗？",
-        "state": {
-          "facts": [
-            "installment_request",
-            "account_restriction"
-          ],
-          "emotions": [
-            "complaint"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 21,
-        "role": "催收员",
-        "text": "呃，目前的话，我们这边是没有分期这个方案的。看你有说你的收入还是比较高的嘛。这边还是建议您去想一下办法，先把这个26000多先给他处理进来。然后这边的话就是考虑到您困难，我将来可以跟您提到，就是说……",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 22,
-        "role": "客户",
-        "text": "那剩下的话，我下个月又就要烦恼啊。",
-        "state": {
-          "emotions": [
-            "anxiety"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 23,
-        "role": "催收员",
-        "text": "要返还什么？"
-      },
-      {
-        "turn_index": 24,
-        "role": "客户",
-        "text": "我的意思说我每个月还几千块钱，我是没问题的。是你，我一下子拿20000多出来真的不行。所以我现在是想整个账单来做一个分期，然后就分期完之后，你不是说做这样一个分期的话就冻结我的银行卡嘛，冻结完分期完之后那个银行卡就取消，我可以接受这个方案。",
-        "state": {
-          "facts": [
-            "repayment_inability",
-            "account_restriction",
-            "installment_request",
-            "willing_to_pay"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 25,
-        "role": "催收员",
-        "text": "但是目前也没有这个方案啊。而且分期它也是会产生不良记录的，然后后续如果一旦违约的话，它的循环利息、违约金是非常高昂的，而且后续不再提供任何协商机会。我看到你之前的还款一般也是稳定在10000多的嘛。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 26,
-        "role": "客户",
-        "text": "招商银行没有吗？",
-        "state": {
-          "facts": [
-            "debt_inquiry"
-          ]
-        }
-      },
-      {
-        "turn_index": 27,
-        "role": "催收员",
-        "text": "嗯，我……"
-      },
-      {
-        "turn_index": 28,
-        "role": "客户",
-        "text": "我是有还款的能力，只是你一下子突然间让我拿20000多我真的一下子拿不出来，我可能每个月还5000，每个月还5000我是没问题的。",
-        "state": {
-          "facts": [
-            "future_payment_plan",
-            "willing_to_pay"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 29,
-        "role": "催收员",
-        "text": "呃，这边就是建议你合理规划资金哈。你可以降低一下自己的消费。就是把你那个总欠款减少下去了嘛，然后它可能下次最低还款就没有这么高了。但是您目前用了61000多。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 30,
-        "role": "客户",
-        "text": "你可以把我额度调低啊。",
-        "state": {
-          "facts": [
-            "income_reduction"
-          ],
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 31,
-        "role": "催收员",
-        "text": "这个确实是没有办法，您目前的总欠款就有61000多。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 32,
-        "role": "客户",
-        "text": "我想知道就是你们银行除了还最低还款额就没有其他任何的解决办法了吗？",
-        "state": {
-          "facts": [
-            "installment_request"
-          ],
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 33,
-        "role": "催收员",
-        "text": "我刚才不是给您说了嘛，因为您这个卡片是流通卡，然后这边的话就建议你去把那个最低还款还了，加上你不是因为这本次逾期嘛，产生了2000多块钱的利息和违约金，然后我可以帮您把这个申请减免掉，也就是说你还26000多，然后您的总账单会减少28000多。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 34,
-        "role": "客户",
-        "text": "好，然后什么减免？什么减免到？"
-      },
-      {
-        "turn_index": 35,
-        "role": "催收员",
-        "text": "都是从你的总账单里面减，就是从总欠款里面减，就是真金白银的减。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 36,
-        "role": "客户",
-        "text": "什么什么剪掉？"
-      },
-      {
-        "turn_index": 37,
-        "role": "客户",
-        "text": "噢噢，呃，就你的意思是说……本来要还28000多的，然后现在你把我的利息减免掉，我直接还26000多就可以了，是吗？",
-        "state": {
-          "facts": [
-            "debt_inquiry",
-            "interest_pressure"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 38,
-        "role": "催收员",
-        "text": "呃，不是这个意思：您本人需要还最低还款26000多，然后我们这边再给您申请把那2000多减掉，就相当于您的总账单会减，总欠款会减少28000多。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 39,
-        "role": "客户",
-        "text": "对。"
-      },
-      {
-        "turn_index": 40,
-        "role": "催收员",
-        "text": "嗯，你目前不是欠了121999块9毛六嘛。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 41,
-        "role": "客户",
-        "text": "我不明白，你可以解释再清楚一点吗？"
-      },
-      {
-        "turn_index": 42,
-        "role": "催收员",
-        "text": "嗯，然后你的最低还款是26462块6毛一。然后，你不是说你没有发工资嘛，然后这边的话就是说，可以调整一下，呃……",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 43,
-        "role": "客户",
-        "text": "对呀对啊对啊。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ]
-        }
-      },
-      {
-        "turn_index": 44,
-        "role": "催收员",
-        "text": "因为你之前也是我们银行的优质用户嘛，然后就说可以帮你……嗯，稍等我帮您查询一下哈。",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 45,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 46,
-        "role": "客户",
-        "text": "按理说，本来是要还28000的，怎么会做完天就是就可以减免那2000多呢？那这减免的2000多是需要还的，还是下一期再还，是什么意思呢？",
-        "state": {
-          "facts": [
-            "debt_inquiry",
-            "interest_pressure"
-          ]
-        }
-      },
-      {
-        "turn_index": 47,
-        "role": "催收员",
-        "text": "就是从你的总账单都给你减了，肯定就是你不用还了，就是从您的总欠款里面减。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 48,
-        "role": "客户",
-        "text": "嗯，噢，这样子，就从那个总额里面就……就意思说，这2000多的利息就不用还了。",
-        "state": {
-          "facts": [
-            "interest_pressure"
-          ]
-        }
-      },
-      {
-        "turn_index": 49,
-        "role": "催收员",
-        "text": "对，噢对，行。还款日就相当于这500块钱的话……"
-      },
-      {
-        "turn_index": 50,
-        "role": "客户",
-        "text": "那最后截止的日期是什么时候？"
-      },
-      {
-        "turn_index": 51,
-        "role": "催收员",
-        "text": "嗯，这边的话就因为您目前的这个卡片嘛，是已经前面也有几次逾期。嗯，这边的话就是说……",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 52,
-        "role": "客户",
-        "text": "要给我一点时间啊。",
-        "state": {
-          "emotions": [
-            "negotiation"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 53,
-        "role": "催收员",
-        "text": "尽量在明天或2天之内就是给他还进来，因为后续的话可能就是你系统检测到你的风险过高，可能会面临被降额和冻卡的风险，我也给您提到过了。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 54,
-        "role": "客户",
-        "text": "嗯，嗯。"
-      },
-      {
-        "turn_index": 55,
-        "role": "客户",
-        "text": "知道，我知道。但是因为我朋友也有这个情况，然后他在工商银行，人家工商银行是有那个就全部的分期，分期完之后，虽然说就把那个信用卡就取消了，但是是有这个全额的分期的噢。",
-        "state": {
-          "facts": [
-            "policy_reference"
-          ]
-        }
-      },
-      {
-        "turn_index": 56,
-        "role": "催收员",
-        "text": "嗯，嗯，对，但是其他银行的行为我们不做评价嘛。但是招商银行肯定要根据招商银行的的政策来嘛。然后分期，刚才也已经说过了，后续如果一旦违约的话，它产生的循环利息和违约金也是非常高的。而且后续也不再提供任何协商机会。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 57,
-        "role": "客户",
-        "text": "招商银行是没有的。",
-        "state": {
-          "facts": [
-            "policy_reference"
-          ]
-        }
-      },
-      {
-        "turn_index": 58,
-        "role": "客户",
-        "text": "没，那没关系啊，我就我就不用信用卡咯。但是我是想把这个总金额来做一个分期，最后我就以后就不用招商银行信用卡了，有多少就花多少呢？",
-        "state": {
-          "facts": [
-            "installment_request"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 59,
-        "role": "催收员",
-        "text": "嗯，这个也可以，但是确实……嗯，对，但是我毕竟我们的目标是一致嘛，肯定是需要你还款嘛。然后这边的话就是如果我有方案的话，我肯定就给你了。但是这个确实没有啊。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 60,
-        "role": "客户",
-        "text": "下我看下有没有……分期。"
-      },
-      {
-        "turn_index": 61,
-        "role": "催收员",
-        "text": "对这个确实没有。"
-      },
-      {
-        "turn_index": 62,
-        "role": "客户",
-        "text": "这样子……嗯，你的意思说，这2天，一是这2天我要把这个26000多还了的话，那我就不用付那2000多的利息是吧？",
-        "state": {
-          "facts": [
-            "repayment_inability",
-            "interest_pressure"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 63,
-        "role": "催收员",
-        "text": "对，呃，那个是利息加违约金是2200多，不是利息2000多。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 64,
-        "role": "客户",
-        "text": "你好。"
-      },
-      {
-        "turn_index": 65,
-        "role": "催收员",
-        "text": "嗯，嗯好的好的。"
-      },
-      {
-        "turn_index": 66,
-        "role": "客户",
-        "text": "嗯，好的，好的行。那那我这边我给你想想办法啊，然后到时候我解决不了我再打电话上来啊，谢谢啊。",
-        "state": {
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 67,
-        "role": "催收员",
-        "text": "好的，好的，那如果在，就是在，嗯，我尽量给您保留到明天，先给您保留到明天嘛，那如果明天，如果您没有还进来的话……",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 68,
-        "role": "客户",
-        "text": "嗯好拜拜。"
-      },
-      {
-        "turn_index": 69,
-        "role": "催收员",
-        "text": "因为您先听我说完嘛。"
-      },
-      {
-        "turn_index": 70,
-        "role": "客户",
-        "text": "后天吧。后天吧。后天今天后天你绑到绑到后天吧？好，你这太紧了时间。",
-        "state": {
-          "emotions": [
-            "complaint"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 71,
-        "role": "催收员",
-        "text": "就是你先听我说完嘛。因为后续的话就是可能因为我们这个案件是在流动的嘛。然后后续话可能就是其他工作人员会接手你这个案子。然后，那如果您愿意的话，我先给您保留到明天嘛，那如果后天的话，嗯，我到时候如果你在我手上，我再给您来个电话嘛。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 72,
-        "role": "客户",
-        "text": "嗯，嗯。"
-      },
-      {
-        "turn_index": 73,
-        "role": "催收员",
-        "text": "好的，那如果明天你没有处理的话，那后续以工作人员给您沟通为准哈。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 74,
-        "role": "客户",
-        "text": "是的。好好好行，我问一下。"
-      },
-      {
-        "turn_index": 75,
-        "role": "催收员",
-        "text": "好的，好的。那祝您生活愉快，再……呃，你那个短信上面，你这不是给我打过电话吗？我的工号是嗯，大写的SX17625。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 76,
-        "role": "客户",
-        "text": "嗯，好的好谢谢哈。嗯，唉，你现看我工号是多少？我到时怎么找你啊？"
-      },
-      {
-        "turn_index": 77,
-        "role": "催收员",
-        "text": "呃，工号这个发不了信息，工号这个发不了信息，到时候因为你那个短信是我的分机号码，您到时候可以打我这边呢？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 78,
-        "role": "客户",
-        "text": "你可以给我发信息吗？我直接找你不……"
-      },
-      {
-        "turn_index": 79,
-        "role": "催收员",
-        "text": "刚不是打进来了吗？对，好，嗯。"
-      },
-      {
-        "turn_index": 80,
-        "role": "客户",
-        "text": "分机号码可以。噢好行行行，唉，嗯谢谢啊。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": True,
-      "credit_rating": "good",
-      "days_delinquent": 30,
-      "total_debt": 62209,
-      "external_debt": 436762,
-      "has_negotiation_history": False,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": False,
-      "card_restricted": False,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 9,
-      "interest_ratio": 0.04,
-      "installment_ratio": 0.0,
-      "age": 49,
-      "gender": "男",
-      "education": "unknown",
-      "industry": "专业性事务所",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2318767580460372761",
-    "cust_no": "0100424701",
-    "call_date": "20260507",
-    "coll_user_id": "AA11385",
-    "mob_typ": "M1",
-    "talk_time": "305",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据                                                                 |\n|------------|----------|--------------------------------------------------------------------------|\n| 调减方案   | 提供     | [“我们帮您做一个账单调整的规划，您下两期账单调整为一个515元”]           |\n| MINA方案   | 未推荐   | [未提及最低还款方案，仅提及“账单调整”]                                 |\n| 促成技巧   | 未运用   | [未使用对比、稀缺性、从众心理等技巧，仅做单向陈述]                      |\n```\n\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000100424701",
-      "年龄": "50",
-      "性别": "女",
-      "申请卡片时间": "2003-12-01",
-      "学历": "高中及中专",
-      "行业": "个体经营",
-      "社保缴纳情况": "有社保，且为机关参保，客户稳定性较高",
-      "他行是否有房贷": "他行有房贷，欠款1302368",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "10281",
-      "利息占欠款比例": "3%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "2BBBBBBBBBBBBBBBBBBBBBBB",
-      "外部欠款金额": "外部欠款总余额1887567，其中，信用卡欠款180334，银行贷款欠款1707233",
-      "外部共债机构数": "外部共债机构数共19家，其中逾期的机构共8家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款10281元，有协商方案，要么还514元后办理5%MINA，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2310730630494440827,Y2312500910444247004,Y2318767580460372761",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "喂？"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "喂，您好。呃，你好，我这里招商银行信用卡中心后端风险管理部门，是张先生本人吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "是。"
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "唉，你好，张先生。是这样的，我们这里正式接到了一个前端部门工作人员递来的一个预散件，现在要转到后端的一个全款清收流程。我们之前工作人员跟您来电协商登记，说您破产了，是吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "是。",
-        "state": {
-          "facts": [
-            "income_loss"
-          ]
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "了解。之前工作人员好像跟您提到一些方案，您是对那些方案不满意，还是对工作人员不满意呢？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "我什么方案我不记得了，你说说看吧。"
-      },
-      {
-        "turn_index": 7,
-        "role": "催收员",
-        "text": "那我这里把银行能有的方案跟您说一下，希望能帮助到您。因为我们看到之前跟您合作也比较久嘛，对吧？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 9,
-        "role": "催收员",
-        "text": "呃，是这样的，我这里看到您近一期有一个逾期账款，要处理一个上一期逾期的，有496.9，对不对？最低还款额。然后您新一期账单又出来一笔107476，两期账单加起来不是有157010.66，对不对？我们银行目前力度最大的一个兜底方案，就是帮您做一个账单调整的规划，您下两期账单调整为一个515元。并且我们会帮您把近一期的息费和违约金做免收。而且您也说了，您破产了，对吧？现在压力也大，后续的还款包括息费也是没办法承担的嘛，对吧，先生。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "客户",
-        "text": "对。",
-        "state": {
-          "facts": [
-            "debt_acknowledgment"
-          ]
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "催收员",
-        "text": "这个对，我知道。"
-      },
-      {
-        "turn_index": 12,
-        "role": "客户",
-        "text": "暂时还不上，暂时还不上。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "暂时，我肯定会还的，我做生意的这点信用。",
-        "state": {
-          "facts": [
-            "payment_track_record",
-            "willing_to_pay"
-          ],
-          "willingness": "strong"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "我知道，相信您，先生，相信您。而且也相信您后续肯定也会东山再起的，这个我们完全相信您。只是说我们现在给您推出这个方案，也只是说目前能帮您暂时渡过难关。我跟您说这个515方案，就是说帮您两期账单调整完之后，您处理个515，下次还款时间是在6月13号，并且后续11个月您都可以按照515这个金额来还。而且这11个月期间，我们这里不会产生额外的循环利息和违约。张先生，等于说让您享受了一个免息将近一年的方案。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "我现在还不上500块钱，我还不上，我现在50块钱都很难。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ],
-          "emotions": [
-            "distress"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "催收员",
-        "text": "先生，我们这里很相信您。因为您这个案件确实逾期的时间比较久，两期账单都没有处理，风险因素过高，就要即将转入到后端那个全款清收流程。但是我们知道您毕竟是做生意的，讲究信用，我们也是觉得您肯定可以东山再起的。我们这也是希望能够帮助到您，帮您解一下燃眉之急。因为破产外面负债肯定也很多嘛，先生，对吧？也是希望能轮转过来嘛。",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 17,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 18,
-        "role": "催收员",
-        "text": "而且刚刚那个方案，您说……"
-      },
-      {
-        "turn_index": 19,
-        "role": "客户",
-        "text": "就是我刚才说的那个话，500块钱我还是还不上。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 20,
-        "role": "催收员",
-        "text": "嗯，没关系，先生。我们这次来电呢，也只是跟您说一下具体的情况，对吧？那我们这里看，是不是能在行内达成一个和解？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 21,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 22,
-        "role": "催收员",
-        "text": "就是说我们这里的服务态度还是很好的，是吧？我们相信您肯定会处理。因为您看，您额度也有这么些，肯定也是有实力，之前肯定是做过资产的，对吧？我们也是相信。只不过说，因为我们接到了通知，这次来电的初心都是希望能为客户解决问题。既然确实要做转接了，要做转案了，那我们就是来个电话看一下，还能不能达成和解，来避免后续一些不好的流程之类的，对吧，先生？我们也是希望能帮助到您，所以主动再跟您来电确认一下。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 23,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 24,
-        "role": "催收员",
-        "text": "那先生，身体包括生活的话，肯定是您要第一时间做保证的，对吧？那这里的话我就先不多打扰您了。如果说您有需要，觉得我刚刚跟您说的这个方案很好，那您后续再给我们来电。好吧，因为流程也走得比较快，就在近几天，差不多在9号之前，就是今明两天，您觉得还可以，突然间有了笔钱，你想处理了，那你打电话给我们。好吧，就不多打扰您了，先生，好吧。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 25,
-        "role": "客户",
-        "text": "嗯。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": True,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 10281,
-      "external_debt": 1887567,
-      "has_negotiation_history": False,
-      "available_plans": [
-        "reduction",
-        "mina"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 19,
-      "interest_ratio": 0.03,
-      "installment_ratio": 0.0,
-      "age": 50,
-      "gender": "女",
-      "education": "other",
-      "industry": "个体经营",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2320348750405373371",
-    "cust_no": "0100553742",
-    "call_date": "20260509",
-    "coll_user_id": "SX17263",
-    "mob_typ": "M1",
-    "talk_time": "1646",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据                                                                 |\n|------------|----------|--------------------------------------------------------------------------|\n| 调减方案   | 未提供   | 催收员未明确说明调减方案，仅提及“减免”但未说明具体减免比例或条件         |\n| MINA方案   | 未推荐   | 未提及最低还款方案，未引导客户还最低金额                                 |\n| 促成技巧   | 未运用   | 未使用对比、稀缺性、从众心理等技巧，仅反复强调“减免”但未促成承诺         |\n```\n\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000100553742",
-      "年龄": "49",
-      "性别": "女",
-      "申请卡片时间": "2004-01-01",
-      "学历": "未填",
-      "行业": "金融机构",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "126411",
-      "利息占欠款比例": "4%",
-      "分期金额占欠款比例": "43%",
-      "是否管制": "可正常使用卡片",
-      "24期缴款评等": "ZZZZZZZZZBBBBBB2BB2B222B",
-      "外部欠款金额": "外部欠款总余额67921，其中，信用卡欠款67921",
-      "外部共债机构数": "外部共债机构数共4家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款126411元，有协商方案，要么还6321元后办理5%MINA，要么办理调减方案;003账号欠款0元，无可用的协商方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2312700920367247505,Y2320348750405373371",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂，您好。招商银行信用卡中心，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "嗯，对，你好。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "唉，是这样的，先生，我们这边给您来电，也是看到您之前有积极跟我们沟通过，您这个招商银行的欠款问题，您是说想要办理个性化分期是吗？您这边是遇到什么困难了吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "我现在负债太高了，基本上信用卡都逾期了，都还不上了。就是说……哪家银行可以帮我去做一下个性化分期嘛，如果能做的话，就先处理这家银行，好吧？",
-        "state": {
-          "facts": [
-            "situational_hardship",
-            "debt_overwhelm"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "嗯，是这样的先生，您的意思就是说您现在多行负债全面爆发了，是吗？我看到您2004年就办了卡，之前也有还款意愿才来沟通的。您说想办60期的个性化分期，就是想少还一点？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "嗯，对。也不是说一定要60期，就是需要每个月多少还一点，你懂我意思吗？",
-        "state": {
-          "facts": [
-            "debt_inquiry",
-            "repayment_inability"
-          ],
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "嗯，是这样的先生，如果您要少还的话，我觉得您完全没有必要办理个性化分期。您听我说，我刚刚给您算了一下，哪怕您办60期，每个月也要还2106块钱。但是我们这边有一个特殊调整方案，您只需要还6320块五，而且还能减免息费。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "调整账单？还不上。",
-        "state": {
-          "facts": [
-            "repayment_inability"
-          ],
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "您听我说完嘛，先生。这个方案还可以给您减免2700多块钱的息费。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "我知道，以前的工作人员已经给我介绍过这个方案了，我真的不需要，好吗？",
-        "state": {
-          "facts": [
-            "negotiation_attempt"
-          ],
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "您听我说完，先生。这个方案比个性化分期更好，因为个性化分期是从总账款里分，而这个方案还能减免息费。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "这个减免没有必要。每个月还6000多，我压力有多大你知道吗？",
-        "state": {
-          "facts": [
-            "expense_pressure",
-            "payment_commitment"
-          ],
-          "emotions": [
-            "distress"
-          ],
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "不是每个月还6000多，您听我说完。如果只办一次这个方案，下次还款是7月12号，您觉得是一个月吗？而且您办个性化分期，这个月还了2000多，下个月又要还2000多，加起来不也是6000多吗？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "问题是这个调整账单只能维持短期，你办理不了个性化分期还是干嘛？",
-        "state": {
-          "facts": [
-            "partial_capacity",
-            "accept_terms"
-          ],
-          "emotions": [
-            "distrust"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "是这样的先生，您觉得现在有困难，银行给您方案，后续再有困难银行就不管您了吗？首先您是属于……我们银行这个……您听我说完嘛，先生。因为您之前额度不够了，而且办了个性化分期卡片也不能使用。您还三期个性化分期也是6300多，金额是一样的呀。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "催收员",
-        "text": "您为什么执意要办理个性化分期呢？您每个月想……而且您之前也是银行从业人员，也知道政策一直在变化。这个方案还6000多，还能减2700，总账款会减少。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "客户",
-        "text": "嗯，反正我……"
-      },
-      {
-        "turn_index": 17,
-        "role": "催收员",
-        "text": "这个个性化分期现在肯定没办法给您办理，因为政策在收拢，而且对征信影响很大。但是我们也不是不给您方案，这个方案不是比个性化分期更好吗？您还6000多，相当于……",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "客户",
-        "text": "什么？"
-      },
-      {
-        "turn_index": 19,
-        "role": "催收员",
-        "text": "没有让您啊，先生。您这个月还了款，之后7月份再还款。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 20,
-        "role": "客户",
-        "text": "我知道，但是……"
-      },
-      {
-        "turn_index": 21,
-        "role": "催收员",
-        "text": "不是因为现在个性化分期政策收拢了。您说什么？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 22,
-        "role": "客户",
-        "text": "我说我要反馈到上面去。",
-        "state": {
-          "facts": [
-            "negotiation_attempt"
-          ],
-          "emotions": [
-            "hostility"
-          ],
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 23,
-        "role": "催收员",
-        "text": "嗯，是这样的先生，不是说银行会看您反馈到哪里才去解决，您的心情我们非常理解，但银行不会看您反馈到哪里才给方案。您一来一回不是耽误进度吗？这个调整方案也是方案的一种啊。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 24,
-        "role": "催收员",
-        "text": "喂，是。一个月我可以帮您预约。而且如果您不预约……就是您说您只能到还款日，但只能帮您预约五次，近半年。您7月份还了，然后近半年……就是说我这帮您办一次，您7月份再看什么情况，再跟银行沟通协商。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 25,
-        "role": "催收员",
-        "text": "不是说我们银行不给您方案，您执意要办个性化分期，不是不给您办，而是对您个人影响很大，我们也有去申请，确实没申请到。而且您办个性化分期是从总账款里分，对还款没有帮助。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 26,
-        "role": "催收员",
-        "text": "您这个月还完之后，7月12号再还款就可以了。7月份12号之间我们银行都不会给您打电话。而且还能帮您把5月份账面上的循环利息和违约金做减免，总共减少9168块1毛钱。您这一次还一次款，下次还款就到7月份了。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 27,
-        "role": "催收员",
-        "text": "您7月份再跟银行沟通协商，因为这次只办一次，不帮您预约。如果您觉得每个月还6000多压力大，就这一次，您7月份再看有没有更好的方案。相当于您4月份没还款，5月份还6000多，6月份不用还款，到7月12号才是还款日。后面再有困难再沟通，总账款还会减少一两千七百多。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 28,
-        "role": "客户",
-        "text": "嗯……"
-      },
-      {
-        "turn_index": 29,
-        "role": "催收员",
-        "text": "您7月份可以再跟银行沟通协商，可以不处理那么多。我没有帮您预约，只是把还款时间拉到7月份了。到时候还多少说不定还更少。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 30,
-        "role": "客户",
-        "text": "但是个性化分期……",
-        "state": {
-          "facts": [
-            "installment_request"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 31,
-        "role": "催收员",
-        "text": "但是您办个性化分期会一直在征信上有影响。这个方案比个性化分期影响小。不是不给您申请，是因为监管政策收拢，我们也是看到您确实……",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 32,
-        "role": "客户",
-        "text": "我还是要个性化分期。",
-        "state": {
-          "facts": [
-            "installment_request"
-          ],
-          "emotions": [
-            "engagement"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 33,
-        "role": "催收员",
-        "text": "是这样的先生，银行肯定不会看您反馈到哪里才解决问题。您04年就办卡了，如果有这个方案政策，肯定会优先给到您。如果您没办法处理，后续银行流程可能直接正常开账了。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 34,
-        "role": "客户",
-        "text": "那你们就是不给我办。",
-        "state": {
-          "facts": [
-            "denial_defense"
-          ],
-          "emotions": [
-            "complaint"
-          ],
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 35,
-        "role": "催收员",
-        "text": "不是说不给您办，是现在暂时没有这样的方案。而且这个方案难道不比个性化分期更好吗？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 36,
-        "role": "客户",
-        "text": "那7月份我还是要还6000多。",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "emotions": [
-            "anxiety"
-          ],
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 37,
-        "role": "催收员",
-        "text": "什么呀先生？我说了，您7月份再跟银行沟通协商就可以了，没有说一定要您7月份处理6000多。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 38,
-        "role": "客户",
-        "text": "那到时候有没有方案？",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 39,
-        "role": "催收员",
-        "text": "我不确定有没有这个方案。但您自己想一下，您现在有困难银行给您方案，您7月份有困难银行就不给您方案了吗？如果有更好的方案也会第一时间给到您。而且我们这边可以帮您把已出的做减免，未出的也做减免，一减一免加起来多少钱啊？您这个减的有2700，免的还有3545块8毛四，一个月给您减的加免的将近6000多块钱。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 40,
-        "role": "客户",
-        "text": "嗯……"
-      },
-      {
-        "turn_index": 41,
-        "role": "催收员",
-        "text": "3545块8毛四和一个2848块5毛八，两个加在一起减免了6000多块钱啊先生。就是您这个月如果还了款，我们可以帮您从总账里减少2847块5毛八的循环利息和违约金，下个月账面上也不会有任何循环利息和违约金，这一减一免加在一起不是有6000多吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 42,
-        "role": "客户",
-        "text": "你说什么？"
-      },
-      {
-        "turn_index": 43,
-        "role": "催收员",
-        "text": "我说这个方案真的很好，您考虑一下。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "good",
-      "days_delinquent": 30,
-      "total_debt": 126411,
-      "external_debt": 67921,
-      "has_negotiation_history": False,
-      "available_plans": [
-        "reduction",
-        "mina"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": False,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 4,
-      "interest_ratio": 0.04,
-      "installment_ratio": 0.43,
-      "age": 49,
-      "gender": "女",
-      "education": "unknown",
-      "industry": "金融机构",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2321972230428936547",
-    "cust_no": "0101396020",
-    "call_date": "20260511",
-    "coll_user_id": "SX16921",
-    "mob_typ": "M1",
-    "talk_time": "115",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | [无相关减免方案提及]  |\n| MINA方案   | 未推荐   | [未提及最低还款方案]  |\n| 促成技巧   | 未运用   | [无有效引导客户接受方案]\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000101396020",
-      "年龄": "48",
-      "性别": "男",
-      "申请卡片时间": "2004-09-01",
-      "学历": "未填",
-      "行业": "医疗卫生",
-      "社保缴纳情况": "社保断缴",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "17285",
-      "利息占欠款比例": "0%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "可正常使用卡片",
-      "24期缴款评等": "2BBBBBBBBBBBBBBBBBBBBBBB",
-      "外部欠款金额": "外部无欠款",
-      "外部共债机构数": "无外部共债机构",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款17679元，无可用的协商方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2321972230428936547,Y2321973940033006407",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "唉，喂，您好。招商银行信用卡中心，请问是<PERSON>女士吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "您好，对。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "呃，是<PERSON>女士本人是吧？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "对对对，是的。"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "唉，女士，您好，来电是因为您这个招行信用卡这边已严重逾期，是您这个美金账单户，出现这个逾期美金的话是六点九三，折合成人民币的话是47.3，您这边的话还掉一个48块钱，好吧。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "啊，可以不用逾期呀，我就直接付就可以了呀。",
-        "state": {
-          "facts": [
-            "payment_commitment",
-            "debt_acknowledgment"
-          ],
-          "willingness": "strong"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "好，您就直接付是吧？那您看这边能否在线还一下呢？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "呃，不，不不不，你直接帮我扣不就完了吗？"
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "好，帮您直接扣。呃，是扣全款吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "对呀，你是不是在<LOCATION>产生的费用吗？是吧？"
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "嗯嗯，嗯对。"
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "那，那是不是美金要比人民币划算一些？好像你们上次给我说需要划算一些。"
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "呃，美金的话，我们这边看到是一个六点九三，折合成人民币的话，逾期最低是一个48块钱，女士。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "不是，我没懂什么叫逾期啊？我超过过期了付吗？",
-        "state": {
-          "facts": [
-            "debt_acknowledgment"
-          ],
-          "emotions": [
-            "confusion"
-          ]
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "是您这个美金的话，就是没有按时还掉那个款，然后这边逾期了，女士。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "唉，我上次不是说让你们给我开开开吗？怎么会出现逾期呢？都不知道我走之前都跟你们说了我直接开一个美金，把那个换成美金，你怎么莫名其妙又造成？",
-        "state": {
-          "facts": [
-            "installment_request"
-          ],
-          "emotions": [
-            "complaint"
-          ]
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "催收员",
-        "text": "嗯，女士，您看这边的话是通道没有打开还是什么情况，您可以拨打这个客服询问一下，因为我们这边的话是逾期，我们是收到您这个逾期账户名单，如果您这边需要我们给您扣的话，是扣这个全款17287.1毛五，还是直接扣这个美金账单呢？女士。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 17285,
-      "external_debt": 0,
-      "has_negotiation_history": False,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": False,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 48,
-      "gender": "男",
-      "education": "unknown",
-      "industry": "医疗卫生",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2320459500460373224",
-    "cust_no": "0101937078",
-    "call_date": "20260509",
-    "coll_user_id": "AA11450",
-    "mob_typ": "M1",
-    "talk_time": "222",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 提供     | “帮您把这个两期账单做清零” |\n| MINA方案   | 未推荐   | 未提及最低还款方案       |\n| 促成技巧   | 运用     | “您看一下这样子吧”等引导性话术 |\n```\n\n---\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000101937078",
-      "年龄": "58",
-      "性别": "女",
-      "申请卡片时间": "2005-06-01",
-      "学历": "大专",
-      "行业": "高新技术制造业",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "23759",
-      "利息占欠款比例": "3%",
-      "分期金额占欠款比例": "71%",
-      "是否管制": "已管制",
-      "24期缴款评等": "2BBBBBBBBBBBBBBBBBBBBBBB",
-      "外部欠款金额": "外部欠款总余额775769，其中，信用卡欠款215850，银行贷款欠款411080，消金贷款欠款100000，其他贷款欠款48839",
-      "外部共债机构数": "外部共债机构数共18家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款3774元，无可用的协商方案;003账号欠款19985元，有协商方案，要么还999元后办理5%MINA，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2307308270460373489,Y2308975940494440133,Y2310161240636232040,Y2310705730333272671,Y2311593790323086887,Y2315863530313051226,Y2316922680207449041,Y2317918830382414543,Y2320459500460373224,Y2322971690071388814",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "喂你好"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "喂您好，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "嗯，啊是的是的嗯"
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "唉，张先生您好，这边招商银行信用卡中心风险管理部门，工号114450。给您来电呢，是收到一线工作人员反馈，关于您身份证尾号261X名下信用卡逾期的一个情况。我们看了一下，您之前反馈过目前经济比较困难，多行欠款，希望减免息费，少还一点，减轻压力，对吧？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "噢我知道，嗯嗯，对，不是，对我就是要延后一点",
-        "state": {
-          "facts": [
-            "installment_request"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "就是说您这边想要延后是吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "对对对对"
-      },
-      {
-        "turn_index": 7,
-        "role": "催收员",
-        "text": "那之前一线工作人员不是给您提供了一个还1000块钱的方案嘛，说帮您把两期账单清零，下次还款时间到6月份。这个方案您还有印象吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "客户",
-        "text": "我知道我知道"
-      },
-      {
-        "turn_index": 9,
-        "role": "催收员",
-        "text": "那这个方案您能处理的话，我这边确实可以帮您申请下次还款日到6月份，而且相应的息费也可以申请减免掉。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "客户",
-        "text": "上次我就跟他讲过了，我也想按他这个方法，但是没操作起来",
-        "state": {
-          "facts": [
-            "negotiation_attempt"
-          ]
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "催收员",
-        "text": "就是说目前还没有周转到这个资金，是吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "客户",
-        "text": "对对对对对，嗯"
-      },
-      {
-        "turn_index": 13,
-        "role": "催收员",
-        "text": "您当时是6月5号6号的时候，但已经又过了3天时间了。如果持续没有周转到资金，这个方案就作废了。另外，如果招商银行这边走后续清收流程，到时候您压力不是更大吗？两家银行一起扣资产的话，您这边别说生活了……",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "客户",
-        "text": "嗯，嗯，对，嗯，我现在本身工资卡也冻结了",
-        "state": {
-          "facts": [
-            "asset_situation"
-          ]
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "催收员",
-        "text": "工资卡都已经被冻结了？工行那边起诉的事情是吧？",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "客户",
-        "text": "对对对对对，唉，所有啊，对"
-      },
-      {
-        "turn_index": 17,
-        "role": "催收员",
-        "text": "工行那边起诉的那个事情是吧？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "客户",
-        "text": "对，对对对对对"
-      },
-      {
-        "turn_index": 19,
-        "role": "催收员",
-        "text": "噢噢噢，了解了解"
-      },
-      {
-        "turn_index": 20,
-        "role": "客户",
-        "text": "它程序还没走，当时执行了，但法拍程序还没走，唉，法拍完以后双方协商就解封了，知道吧",
-        "state": {
-          "facts": [
-            "legal_pressure",
-            "account_restriction"
-          ]
-        }
-      },
-      {
-        "turn_index": 21,
-        "role": "催收员",
-        "text": "噢，就是说还是要等到解封，对吧？但您现在最需要的就是时间啊，张先生，对吧？",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 22,
-        "role": "客户",
-        "text": "嗯，对对对对对，就是时间"
-      },
-      {
-        "turn_index": 23,
-        "role": "催收员",
-        "text": "您看一下这样吧，您工资卡被冻结，您让家人朋友那边帮您想一下办法，直接把这个资金转到信用卡里面，也算是您还款。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 24,
-        "role": "客户",
-        "text": "好，行行，我尽量吧，尽量",
-        "state": {
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 25,
-        "role": "催收员",
-        "text": "然后那个还款方案有相应的注意事项，我大概跟您说一下好吧。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 26,
-        "role": "客户",
-        "text": "好，嗯嗯，知道，到时候会跟你们专员联系的"
-      },
-      {
-        "turn_index": 27,
-        "role": "催收员",
-        "text": "嗯，那您这边周转资金有没有个大概要多久呢？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 28,
-        "role": "客户",
-        "text": "嗯，我的意思是我这边有的话我会主动给你们打电话的",
-        "state": {
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 29,
-        "role": "催收员",
-        "text": "呃，张先生，没办法帮您申请更长的时间了。您也知道，4月13号还款到现在，即将又到5月13号了，对吧？",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 30,
-        "role": "客户",
-        "text": "嗯嗯，噢，嗯嗯嗯"
-      },
-      {
-        "turn_index": 31,
-        "role": "催收员",
-        "text": "我们也是想帮您才给您来电，不然就直接由银行走流程了。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 32,
-        "role": "客户",
-        "text": "对对对对，我知道我知道，银行走流程更麻烦，对吧？我知道，你还不一定走到，因为你怎么排都排到工行之后，对吧？"
-      },
-      {
-        "turn_index": 33,
-        "role": "催收员",
-        "text": "对对，张先生"
-      },
-      {
-        "turn_index": 34,
-        "role": "客户",
-        "text": "就算你走进去了，也要排到工行之后，对吧？更麻烦"
-      },
-      {
-        "turn_index": 35,
-        "role": "催收员",
-        "text": "张先生，所以说您看一下，想办法在周一之前把1000块钱处理进来，好吧？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 36,
-        "role": "客户",
-        "text": "嗯，好的，嗯，好好好",
-        "state": {
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 37,
-        "role": "催收员",
-        "text": "嗯嗯，好，那您明天我们也不给您来电，您专心周转，好吧？",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 38,
-        "role": "客户",
-        "text": "好好，嗯，好嗯嗯嗯"
-      },
-      {
-        "turn_index": 39,
-        "role": "催收员",
-        "text": "嗯，行，那张先生，我们到时候再联系，祝您生活愉快，再见。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 40,
-        "role": "客户",
-        "text": "好好好好好，拜"
-      }
-    ],
-    "reward": 1,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 23759,
-      "external_debt": 775769,
-      "has_negotiation_history": False,
-      "available_plans": [
-        "reduction",
-        "mina"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 18,
-      "interest_ratio": 0.03,
-      "installment_ratio": 0.71,
-      "age": 58,
-      "gender": "女",
-      "education": "college",
-      "industry": "高新技术制造业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_evidence": {
-      "trigger_text": "嗯，好的，嗯，好好好",
-      "trigger_turn_index": 36
-    },
-    "reward_action_credit": {
-      "turn_index": 36,
-      "role": "客户",
-      "action": "agree_to_pay",
-      "text": "嗯，好的，嗯，好好好",
-      "explanation": "Customer showed conditional willingness (installment request) and revealed asset hardship (frozen wages, legal pressure). Collector built empathy by acknowledging his situation, then applied pressure by warning of bank collection escalation. This shifted customer from weak willingness to agree_to_pay, as he feared worse consequences from dual bank actions."
-    }
-  },
-  {
-    "call_id": "2317838580201976431",
-    "cust_no": "0101661293",
-    "call_date": "20260506",
-    "coll_user_id": "AA11434",
-    "mob_typ": "M1",
-    "talk_time": "291",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 无相关话术             |\n| MINA方案   | 未推荐   | 无相关话术             |\n| 促成技巧   | 未运用   | 无有效引导或促成话术   |\n```\n\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000101661293",
-      "年龄": "44",
-      "性别": "女",
-      "申请卡片时间": "2004-12-01",
-      "学历": "未填",
-      "行业": "学生",
-      "社保缴纳情况": "有社保，但为灵活就业参保，稳定性不高",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "17122",
-      "利息占欠款比例": "2%",
-      "分期金额占欠款比例": "37%",
-      "是否管制": "可正常使用卡片",
-      "24期缴款评等": "2BBB2BBBBBBBBBBB2BBB0ZZZ",
-      "外部欠款金额": "外部欠款总余额540982，其中，信用卡欠款91283，银行贷款欠款362837，消金贷款欠款86862",
-      "外部共债机构数": "外部共债机构数共13家，其中逾期的机构共1家",
-      "历史协商情况": "有协商历史，其中，调减1次，合计调减金额300",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款2837元，无可用的协商方案;003账号欠款14271元，有协商方案，要么还714元后办理5%MINA，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2310108320032856990,Y2310119390555267231,Y2310912340494442937,Y2311762580307827352,Y2316789890307829843,Y2317835520460378880,Y2317836790460370493,Y2317838580201976431",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂，您好。招商银行信用卡中心，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "嗯，是的。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "先生，您这边是挂断电话了吗？之前几次都没接通，您不要挂断电话，我才能帮您转接。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "因为好久了一直也没接通，我就挂了。",
-        "state": {
-          "facts": [
-            "contact_history"
-          ]
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "噢，好的，可能那边接电客服量比较大。您稍等一下，我帮您转接过去。"
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "好的，谢谢。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 17122,
-      "external_debt": 540982,
-      "has_negotiation_history": True,
-      "available_plans": [
-        "reduction",
-        "mina"
-      ],
-      "social_insurance_stable": False,
-      "card_restricted": False,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 13,
-      "interest_ratio": 0.02,
-      "installment_ratio": 0.37,
-      "age": 44,
-      "gender": "女",
-      "education": "unknown",
-      "industry": "学生",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2322171620585885966",
-    "cust_no": "0102320973",
-    "call_date": "20260511",
-    "coll_user_id": "SX17095",
-    "mob_typ": "M1",
-    "talk_time": "314",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | [无相关减免方案提及]  |\n| MINA方案   | 未推荐   | [未提及最低还款方案]  |\n| 促成技巧   | 未运用   | [无有效促成话术]      |\n```\n\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000102320973",
-      "年龄": "48",
-      "性别": "男",
-      "申请卡片时间": "2005-09-01",
-      "学历": "未填",
-      "行业": "制造业",
-      "社保缴纳情况": "未知",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "2604",
-      "利息占欠款比例": "2%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "222222221111122222222222",
-      "外部欠款金额": "外部欠款总余额3418，其中，信用卡欠款2491，消金贷款欠款927",
-      "外部共债机构数": "外部共债机构数共7家",
-      "历史协商情况": "有协商历史，其中，调减3次，合计调减金额184",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款2789元，有协商方案，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2322171620585885966,Y2323002820631749910",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂，您好。招商银行信用卡中心的。",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "您好请说。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "呃，请问一下，您是司徒小玉女士，对吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "嗯对。"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "因本次给您来电的话，看到您这边有笔款项是逾期了，181块钱就忘记处理了吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "个账单是不是不对啊？",
-        "state": {
-          "facts": [
-            "billing_dispute"
-          ]
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "噢可以的。账单不对，什么情况呀，您可以说一下，我看一下。"
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "嗯，那个余额不对啊。",
-        "state": {
-          "facts": [
-            "billing_dispute"
-          ]
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "余额不对您指的是全款吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "是。"
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "呃，全款的话，这边是4603.51元呀。您上期的全款是2789.27元。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "稍等一下哈我这里信号不好你稍等一下。"
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "嗯好的好的。"
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "因为我记得上一期的话，好像是余额的话是1000多块钱的怎么现在又变成是2000多？",
-        "state": {
-          "facts": [
-            "billing_dispute"
-          ]
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "嗯，噢意思多1000多块钱？"
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "对啊。"
-      },
-      {
-        "turn_index": 16,
-        "role": "催收员",
-        "text": "您可以，您现在您方便打开掌上生活，可以去查看一下？您上一期的余额是？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 17,
-        "role": "客户",
-        "text": "没有我，我现在那个什么？我，我现在不那个。呃，手机不方便再给你讲电话。我又没带耳机。",
-        "state": {
-          "facts": [
-            "contact_history"
-          ]
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "催收员",
-        "text": "呃，就是您上一期的余额款项是2789.21。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 19,
-        "role": "客户",
-        "text": "因为因为我记得上之前的为什么现在的那个账单的那个，那个余额越来越越多，我记得之前的话是2000。22200多还是多少钱？你这期的话怎么是2000千600多呢？",
-        "state": {
-          "facts": [
-            "billing_dispute"
-          ]
-        }
-      },
-      {
-        "turn_index": 20,
-        "role": "催收员",
-        "text": "2600多？"
-      },
-      {
-        "turn_index": 21,
-        "role": "客户",
-        "text": "就这前你，你现在你看一下我的那个余额是多少？"
-      },
-      {
-        "turn_index": 22,
-        "role": "催收员",
-        "text": "现的余额是2603.51元。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 23,
-        "role": "客户",
-        "text": "上一期呢？"
-      },
-      {
-        "turn_index": 24,
-        "role": "催收员",
-        "text": "上一期的话是2789.27元。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 25,
-        "role": "客户",
-        "text": "那是不是有一些什么？什么其他的费用债？",
-        "state": {
-          "facts": [
-            "debt_inquiry"
-          ]
-        }
-      },
-      {
-        "turn_index": 26,
-        "role": "催收员",
-        "text": "您说的其他您指的这个应该是息费吧。因为息费的话，本期这个息费产生也就40多块钱，加上一个违约金10块钱，也就是52.53元。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 27,
-        "role": "客户",
-        "text": "对啊而且上个上个月的话呢？他们都将这笔费用的话给我减掉的呀。",
-        "state": {
-          "facts": [
-            "interest_pressure"
-          ]
-        }
-      },
-      {
-        "turn_index": 28,
-        "role": "催收员",
-        "text": "对，上个月的话，这个息费减掉，但是这个月它有产生这个费用。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 29,
-        "role": "客户",
-        "text": "但是我记得之前你们有给因为我，我不知道我手机上面还有没没有信息因为我记得就是之前有信息的话呢，就像之前。上个月啊，再上个月是2200多的余额。上上个月的话呢，就还完之后呢，就余额的话是1900多。为什么现在的话你你又回又回到到2600多？",
-        "state": {
-          "facts": [
-            "billing_dispute"
-          ],
-          "emotions": [
-            "confusion"
-          ]
-        }
-      },
-      {
-        "turn_index": 30,
-        "role": "催收员",
-        "text": "1900多，您是不是记错了呀？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 31,
-        "role": "客户",
-        "text": "我没有记错。",
-        "state": {
-          "emotions": [
-            "engagement"
-          ]
-        }
-      },
-      {
-        "turn_index": 32,
-        "role": "催收员",
-        "text": "我这边帮您看的话，没有1900多呀。您上期4月份的这个余额是2797.27元3月份的余额是2941.14元那2月份的余额是3400点5元。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 33,
-        "role": "客户",
-        "text": "那是我记错吗？我要翻一下记录看一下因为我是觉得那个是那个金额是不对的。"
-      },
-      {
-        "turn_index": 34,
-        "role": "催收员",
-        "text": "您可以翻一下，这个就是记录去查看一下因为这边我帮您查看了一下您的近期的这个。呃，上个月的话就是有和人员沟通过，这个息费也给您减掉了然后呢，临时的话一下子就增那么多，您只息费也不可能增那么多，对吧？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 35,
-        "role": "客户",
-        "text": "对呀，对呀，你那个什么，你帮我申请免税吧。到了那个15号，我，我那个会安排的。",
-        "state": {
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 36,
-        "role": "催收员",
-        "text": "免息您指的是息费对吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 37,
-        "role": "客户",
-        "text": "免免免免，嗯对对对。"
-      },
-      {
-        "turn_index": 38,
-        "role": "催收员",
-        "text": "这个的话是因为您从您逾期开始，对吧？这边的话它就有就上置过这个系统啦，我们这边没有权限去给您，就是就是取消掉这个电话。因为您的这个电话也就是系统外呼直接转到我们这边，我们是负责接听的。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 39,
-        "role": "客户",
-        "text": "那这个电话是你打给我的呀。"
-      },
-      {
-        "turn_index": 40,
-        "role": "催收员",
-        "text": "这个电话，它是系统给您打过去，然后转接到我这边，过来是这个情况。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 41,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 42,
-        "role": "催收员",
-        "text": "因为我们这边都是系统外呼，然后转接到我们人工去处理。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 43,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 44,
-        "role": "催收员",
-        "text": "对。您如果说想就是减少这个电话，只能说您将这个款项逾期款项181块钱处理进来，这边才能给您拦截掉您的电话短信。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 45,
-        "role": "客户",
-        "text": "你，你这里不是不是官方的客服吗？",
-        "state": {
-          "emotions": [
-            "distrust"
-          ]
-        }
-      },
-      {
-        "turn_index": 46,
-        "role": "催收员",
-        "text": "呃，您可以查看短信，这边是，这边，是的。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 47,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 48,
-        "role": "催收员",
-        "text": "您可以看看您来电的电话号码。您可以放心。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 49,
-        "role": "客户",
-        "text": "行嘛？那我，那我打400吧，好吧。"
-      },
-      {
-        "turn_index": 50,
-        "role": "催收员",
-        "text": "您这边可以，您可以再打一下，那这边先不打扰您了。祝您生活愉快再见。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 51,
-        "role": "客户",
-        "text": "嗯好好嗯好拜拜。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 2604,
-      "external_debt": 3418,
-      "has_negotiation_history": True,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 7,
-      "interest_ratio": 0.02,
-      "installment_ratio": 0.0,
-      "age": 48,
-      "gender": "男",
-      "education": "unknown",
-      "industry": "制造业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2320458250132136578",
-    "cust_no": "0102435454",
-    "call_date": "20260509",
-    "coll_user_id": "SX17058",
-    "mob_typ": "M1",
-    "talk_time": "171",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 提供     | “把您这边3月份罚息给您减过的，这次继续给您减掉”  |\n| MINA方案   | 未推荐   | 未提及最低还款方案或5%比例还款  |\n| 促成技巧   | 未运用   | 未使用对比、稀缺性等技巧，仅以“您明天能还”引导\n```\n\n---\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000102435454",
-      "年龄": "46",
-      "性别": "女",
-      "申请卡片时间": "2005-09-01",
-      "学历": "本科",
-      "行业": "商业贸易",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "8130",
-      "利息占欠款比例": "0%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "ZZZZZZZZZZZZZZZZZZZZZZZZ",
-      "外部欠款金额": "外部欠款总余额100230，其中，信用卡欠款95230，其他贷款欠款5000",
-      "外部共债机构数": "外部共债机构数共10家，其中逾期的机构共2家",
-      "历史协商情况": "有协商历史，其中，调减10次，合计调减金额3768",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款8660元，有协商方案，要么办理调减方案;003账号欠款0元，无可用的协商方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "N2297784230071387510,Y2297786110352383931,Y2298675890382412673,Y2317572610076197574,Y2318784420518722097,Y2320458250132136578",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "喂"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "唉，您好，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "是你讲。"
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "唉，招商银行的哈，就上午联系过您嘛，这边打扰您哈。就您的信用卡逾期了571块钱，但是您哈，还了130多嘛，还差个440。噢，您这边是没还上？是遇到什么困难吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "唉，我现在的话就是经济非常紧张，然后的话，这2天的话……",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ]
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "是我在想想想想想，赶快帮它弄出去，弄进去。",
-        "state": {
-          "willingness": "strong"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "催收员",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "明白，呃，先生，呃……"
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "也是老人。因为老人，老人，老人也是在住院嘛，所以说的话，这个费用的话……",
-        "state": {
-          "facts": [
-            "family_strain"
-          ]
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "好。"
-      },
-      {
-        "turn_index": 11,
-        "role": "催收员",
-        "text": "家人生病哈，噢，好，明白明白。好，那先生先听我说哈。呃，如果说是因为家里人生病了，那么肯定这个逾期不是您本人嘛，对吧？目前我能够帮到您的哈，只能说第一个方案嘛，去帮您把您这边呃，4月份账单上面的循环利息跟违约金啊，先生您的罚息嘛大概是有一个152块的罚息我继续给您减掉。因为上个月先生知道嘛哈，上个月工作人员也是帮您把罚金给减过的，他已经帮您哈把您这边3月份罚息嘛大概是120罚息给您减过的。那么这次同理，您这边私人罚息还有个153左右罚息继续去给减掉，这要您保证哈您还进来的钱……",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "客户",
-        "text": "对对。"
-      },
-      {
-        "turn_index": 13,
-        "role": "催收员",
-        "text": "是属于你的账单本金的那个罚息是没有的，继续给您减掉。好吧，这个第一个方案，罚息减免，但是需要您啊还是想办法要补齐一个最低还款金额，您需要再补一个442进单哈。这是第一个方案。第二个方案呢，是指这张信用卡还了这么多年了，对吧？还到现在，总欠款呢，一共还剩一个8200左右。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "如果是您本人有这个想法，先要等到有钱了哈把它一把结清的话，我去帮您看一下，您这一次还全款，可以去帮您申请减一个2500块左右，减一个2500哈，您大概是只需要自己还一个5700进来清账，5700左右清账。这是还全额的话。如果说说现在确实没有钱，您还还不了全款，那么没关系，只要您哈，这11是也一样道理，先想办法处理一个最低还款，罚息给减掉，帮您保留后续的协商资格。您后面有钱吗？那么是可以随时有钱随时调行的。这一次需要做的是再想办法补一个442进来，保证这笔逾期还够啊，那个罚息继续给您减掉。好吧，先这样。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 16,
-        "role": "客户",
-        "text": "是。"
-      },
-      {
-        "turn_index": 17,
-        "role": "客户",
-        "text": "嗯，这个400多，我应该明天的话能能还。",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "催收员",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 19,
-        "role": "客户",
-        "text": "所以说所说明天有个……"
-      },
-      {
-        "turn_index": 20,
-        "role": "催收员",
-        "text": "可以可以，明白。好，那可以哈。呃，先生，那可以哈。那我跟您讲哈，就是哈您这个方案呢，您这400多您在您知道今天和明天2天这150息都可以。好吧，先生，都是可以打方子取消的好吧。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 21,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 22,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 23,
-        "role": "催收员",
-        "text": "意思吗？"
-      },
-      {
-        "turn_index": 24,
-        "role": "客户",
-        "text": "明天，明天应该问题不大了。因为我现在的话有有……",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 25,
-        "role": "催收员",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 26,
-        "role": "客户",
-        "text": "大概1000多块钱，他们要转。",
-        "state": {
-          "facts": [
-            "income_reduction"
-          ]
-        }
-      },
-      {
-        "turn_index": 27,
-        "role": "客户",
-        "text": "呃，有一个小账，他们银行还给我。现在没到，是吧？",
-        "state": {
-          "facts": [
-            "income_reduction"
-          ]
-        }
-      },
-      {
-        "turn_index": 28,
-        "role": "催收员",
-        "text": "我明白明白哈，明白哈。行好，可以哈。那那对那好的哈。好那嗯，反正我就告知您哈，您这还到位那么可以把罚息减掉。好吧，那就不打扰您哈。402元嘛，好，再见好，再见哈，好好。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 29,
-        "role": "客户",
-        "text": "嗯嗯。"
-      },
-      {
-        "turn_index": 30,
-        "role": "客户",
-        "text": "嗯嗯。"
-      },
-      {
-        "turn_index": 31,
-        "role": "客户",
-        "text": "嗯。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "good",
-      "days_delinquent": 30,
-      "total_debt": 8130,
-      "external_debt": 100230,
-      "has_negotiation_history": True,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 10,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 46,
-      "gender": "女",
-      "education": "bachelor",
-      "industry": "商业贸易",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2322183380033009849",
-    "cust_no": "0102526223",
-    "call_date": "20260511",
-    "coll_user_id": "SX17638",
-    "mob_typ": "M1",
-    "talk_time": "167",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 未提及任何减免方案     |\n| MINA方案   | 未推荐   | 未提及最低还款方案     |\n| 促成技巧   | 未运用   | 未使用对比、稀缺性等技巧 |\n```\n\n---\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000102526223",
-      "年龄": "48",
-      "性别": "女",
-      "申请卡片时间": "2005-10-01",
-      "学历": "未填",
-      "行业": "高新技术制造业",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "54954",
-      "利息占欠款比例": "0%",
-      "分期金额占欠款比例": "96%",
-      "是否管制": "已管制",
-      "24期缴款评等": "B22211111111111111111111",
-      "外部欠款金额": "外部欠款总余额229427，其中，信用卡欠款126170，银行贷款欠款42567，消金贷款欠款28804，其他贷款欠款24435",
-      "外部共债机构数": "外部共债机构数共41家，其中逾期的机构共7家",
-      "历史协商情况": "有协商历史，其中，办理账务分期1次，账务分期逾期1次",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款54422元，有协商方案，要么办理调减方案;003账号欠款5003元，有协商方案，要么办理调减方案",
-      "当前可使用的法务工具": "有可用的法务工具，包括，电子法函",
-      "近一个月callid": "Y2322183380033009849",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "呃，喂，您好，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "是。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "呃，先生您好，我这边是招商银行信用卡中心的。之前也是给您发送了短信的，就是目前呢，您这个信用卡已经逾期了，逾期最低的一个金额是1229.17。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "嗯，知道。我前两天给你们打过电话的，就是14号之前。",
-        "state": {
-          "facts": [
-            "payment_commitment",
-            "contact_difficulty"
-          ]
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "就4号之前吗？"
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "对。"
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "呃，就是您这边是给我们客服打的电话吗？"
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "对。"
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "就是……因为我们这边是风险管理部门的哈。那您这边是给客服怎么说的呀？这个问题确实已经是逾期了嘛。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "嗯，我说14号之前会还进去的。",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "呃，10号呀。现在已经11号了呀。"
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "呃……14号，14号。",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ]
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "就是您要在14号之前才能还进去吗？"
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "对。"
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "噢，噢。那先生，您这边是遇到什么困难了吗？您可以给我说一下嘛，我看看可不可以帮到您。",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "这个是最近……是，是周转比较困难。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ]
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "催收员",
-        "text": "噢，就是周转比较困难呀。那这样吧，先生，就是您说的，如果确实要14号的话可能不太行，因为您这边的话，下个账单都要出来了，您这边还款入账也是需要时间的。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 17,
-        "role": "客户",
-        "text": "对。"
-      },
-      {
-        "turn_index": 18,
-        "role": "客户",
-        "text": "那我现在确实困难，能不能宽限几天？",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ],
-          "emotions": [
-            "negotiation"
-          ],
-          "willingness": "weak"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 54954,
-      "external_debt": 229427,
-      "has_negotiation_history": True,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 41,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.96,
-      "age": 48,
-      "gender": "女",
-      "education": "unknown",
-      "industry": "高新技术制造业",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2321953070597708357",
-    "cust_no": "0102578747",
-    "call_date": "20260511",
-    "coll_user_id": "SX16850",
-    "mob_typ": "M1",
-    "talk_time": "70",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | [未提及任何减免方案]  |\n| MINA方案   | 未推荐   | [未提及最低还款方案]  |\n| 促成技巧   | 未运用   | [未引导客户接受方案]  |\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000102578747",
-      "年龄": "51",
-      "性别": "女",
-      "申请卡片时间": "2005-10-01",
-      "学历": "大专",
-      "行业": "制造业",
-      "社保缴纳情况": "有社保，但为灵活就业参保，稳定性不高",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "23502",
-      "利息占欠款比例": "0%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "ZZZZZZZZZZZZZZZZZZZZZZZZ",
-      "外部欠款金额": "外部欠款总余额2644，其中，消金贷款欠款2006，其他贷款欠款638",
-      "外部共债机构数": "外部共债机构数共12家，其中逾期的机构共2家",
-      "历史协商情况": "有协商历史，其中，办理5%MINA1次，调减2次，合计调减金额1699",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "002账号欠款0元，无可用的协商方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2300308570597705786,Y2321953070597708357",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂，您好，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "对啊。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "先生您好，我们这边是招商银行信用卡中心上海总部，您在我行这边有一个个人信用卡和E招贷，两张卡片都在逾期。个人信用卡是欠877块6毛，E招贷是欠683块钱整。这个逾期情况您知道吧？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "我知道，这两天处理好。",
-        "state": {
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "嗯，是这样的，目前您的这个材料已经从总部转到我们风险审核室来给您做人工撤案了。给您来电，也是因为我们有收到您这个全款催销纸质函件。您目前两张卡片，就是您这个个人信用卡，这张您今天也处理不掉吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "嗯……呃，下午才知道。到时候我给你回电话吧，好吧。",
-        "state": {
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "您是要周转是吧？"
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "嗯……唉，下午看看吧，好吧。",
-        "state": {
-          "emotions": [
-            "anxiety"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "那您就是，不管能否还款，您要在两点钟之前给我们回一个，好吧。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "那那不行，那在固点……可以。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "good",
-      "days_delinquent": 30,
-      "total_debt": 23502,
-      "external_debt": 2644,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 12,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 51,
-      "gender": "女",
-      "education": "college",
-      "industry": "制造业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2322224530415653130",
-    "cust_no": "0102832190",
-    "call_date": "20260511",
-    "coll_user_id": "SX17025",
-    "mob_typ": "M1",
-    "talk_time": "46",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 未提及任何减免方案     |\n| MINA方案   | 未推荐   | 未提及最低还款方案     |\n| 促成技巧   | 未运用   | 未使用对比、稀缺性等技巧 |\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000102832190",
-      "年龄": "45",
-      "性别": "女",
-      "申请卡片时间": "2005-11-01",
-      "学历": "硕士",
-      "行业": "专业性事务所",
-      "社保缴纳情况": "未知",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "8327",
-      "利息占欠款比例": "2%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "可正常使用卡片",
-      "24期缴款评等": "212221122111122212122222",
-      "外部欠款金额": "外部欠款总余额37115，其中，信用卡欠款29432，银行贷款欠款7683",
-      "外部共债机构数": "外部共债机构数共13家，其中逾期的机构共1家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款8327元，无可用的协商方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": " ",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "唉，您好。招商银行信用卡中心，请问您是张先生，对吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "您好"
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "对"
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "是这样的，张先生，和您来电呢，是关于您在我行办理的这个信用卡后四位4056，现在有逾期的一个情况了。然后银行要求我们通知到您现在这个款项逾期，有一个逾期最低665块钱，可能需要您在今天的一个七点钟，您得去处理一下了，先生。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "嗯"
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "噢，那您这边您抓紧一下时间嘛，因为确实已经是过了您3号这个还款日了，现在这个账户已经是有逾期的一个情况了。先生，那您抓紧时间，您尽快处理一下嘛。好吧，先生。",
-        "state": {
-          "action": "pressure"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 8327,
-      "external_debt": 37115,
-      "has_negotiation_history": False,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": False,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 13,
-      "interest_ratio": 0.02,
-      "installment_ratio": 0.0,
-      "age": 45,
-      "gender": "女",
-      "education": "master",
-      "industry": "专业性事务所",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2322192470093664498",
-    "cust_no": "0102773299",
-    "call_date": "20260511",
-    "coll_user_id": "SX15389",
-    "mob_typ": "M1",
-    "talk_time": "47",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | [未提及任何减免方案]  |\n| MINA方案   | 未推荐   | [未提及最低还款方案]  |\n| 促成技巧   | 未运用   | [未使用对比、稀缺性等技巧]\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000102773299",
-      "年龄": "45",
-      "性别": "男",
-      "申请卡片时间": "2005-11-01",
-      "学历": "高中及中专",
-      "行业": "商业贸易",
-      "社保缴纳情况": "社保断缴",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "10695",
-      "利息占欠款比例": "0%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "可正常使用卡片",
-      "24期缴款评等": "222211120221211220222222",
-      "外部欠款金额": "外部欠款总余额8090，其中，银行贷款欠款4472，消金贷款欠款296，其他贷款欠款3322",
-      "外部共债机构数": "外部共债机构数共8家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款10893元，无可用的协商方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2298641630428935626,Y2298913810093663110,Y2298914870033008836",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂您好",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "您好"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "请问您是<PERSON>女士吗",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "对"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "<PERSON>女士，您好，我们这边是招商银行信用卡中心的，是这样的，这边跟您来电呢，是收到了<LOCATION>总部下发的通知，关于您身份证名下信用卡账户严重逾期的一个材料。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "到目前为止，您在我们招行总欠款有10695.29，最低还款额的话呢，有920块钱。您的卡片现在面临需要冻结和全款结清的一个流程，风险方面，您可以在线还一下最低还款额吗？女士",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "嗯"
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "嗯，可以，好的",
-        "state": {
-          "willingness": "strong"
-        }
-      }
-    ],
-    "reward": 1,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 10695,
-      "external_debt": 8090,
-      "has_negotiation_history": False,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": False,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 8,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 45,
-      "gender": "男",
-      "education": "other",
-      "industry": "商业贸易",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_evidence": {
-      "trigger_text": "嗯，可以，好的",
-      "trigger_turn_index": 7
-    },
-    "reward_action_credit": {
-      "turn_index": 7,
-      "role": "客户",
-      "action": "agree_to_pay",
-      "text": "嗯，可以，好的",
-      "explanation": "Customer showed strong willingness (\"可以，好的\") after collector clearly stated debt amount, minimum payment, and urgency (freeze/full payment risk). Collector’s logical flow: greeting → identity verification → problem statement → specific proposal. This clarity and direct call to action triggered immediate agreement."
-    }
-  },
-  {
-    "call_id": "2318632000636233576",
-    "cust_no": "0102849719",
-    "call_date": "20260507",
-    "coll_user_id": "AA11416",
-    "mob_typ": "M1",
-    "talk_time": "76",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 未提及任何减免方案     |\n| MINA方案   | 未推荐   | 未提及最低还款方案     |\n| 促成技巧   | 未运用   | 未使用对比、稀缺性等技巧 |\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000102849719",
-      "年龄": "46",
-      "性别": "女",
-      "申请卡片时间": "2005-11-01",
-      "学历": "大专",
-      "行业": "酒店、餐饮、旅游",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行有房贷，欠款3141628",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "31535",
-      "利息占欠款比例": "2%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "ZZZZZZZZZZZZZZZZZZZZZZZZ",
-      "外部欠款金额": "外部欠款总余额4003309，其中，信用卡欠款234511，银行贷款欠款3701747，消金贷款欠款67051",
-      "外部共债机构数": "外部共债机构数共10家，其中逾期的机构共4家",
-      "历史协商情况": "有协商历史，其中，办理5%MINA2次，调减2次，合计调减金额1622",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款29352元，有协商方案，要么还1493元后办理5%MINA，要么办理调减方案;002账号欠款0元，无可用的协商方案;003账号欠款2183元，无可用的协商方案",
-      "当前可使用的法务工具": "有可用的法务工具，包括，电子法函",
-      "近一个月callid": "Y2311731350555261293,Y2318632000636233576",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "至语音留言，你尝试联系的用户无法接听，请在提示音后录制留言，录音完成后挂断即可。"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "嗯，好。姚先生您好，招商银行信用卡中心找您，有关您的个人信用卡事宜需要与您沟通，请您在收到留言后立刻给招商银行回个电话，详细联系方式详见短信。祝您生活愉快，再见。",
-        "state": {
-          "action": "closure"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": True,
-      "credit_rating": "good",
-      "days_delinquent": 30,
-      "total_debt": 31535,
-      "external_debt": 4003309,
-      "has_negotiation_history": True,
-      "available_plans": [
-        "reduction",
-        "mina"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 10,
-      "interest_ratio": 0.02,
-      "installment_ratio": 0.0,
-      "age": 46,
-      "gender": "女",
-      "education": "college",
-      "industry": "酒店、餐饮、旅游",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2322003390316382406",
-    "cust_no": "0102853408",
-    "call_date": "20260511",
-    "coll_user_id": "SX16889",
-    "mob_typ": "M1",
-    "talk_time": "355",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据                                                                 |\n|------------|----------|--------------------------------------------------------------------------|\n| 调减方案   | 提供     | “可以去给您申请一下帮扶政策先生，让您只还您的一个账单本金”              |\n| MINA方案   | 未推荐   | 未提及最低还款方案，未体现对客户还款能力的精准识别                      |\n| 促成技巧   | 未运用   | 未使用对比、稀缺性、从众心理等技巧，客户未明确承诺还款                  |\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000102853408",
-      "年龄": "49",
-      "性别": "女",
-      "申请卡片时间": "2005-11-01",
-      "学历": "本科",
-      "行业": "公用事业",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "17420",
-      "利息占欠款比例": "0%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "ZZZZZZZZZZZZZZZZZZZZZZZZ",
-      "外部欠款金额": "外部欠款总余额433679，其中，信用卡欠款80892，银行贷款欠款337460，消金贷款欠款11327，其他贷款欠款4000",
-      "外部共债机构数": "外部共债机构数共21家，其中逾期的机构共7家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款19533元，有协商方案，要么还977元后办理5%MINA，要么办理调减方案;003账号欠款0元，无可用的协商方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2297801540042314735,Y2303750750046378968,Y2322003390316382406,Y2322225820379734564",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "您好，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "啊，您好，张先生，我们这边是招商银行信用卡中心的，您是张先生本人，对吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "对。"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "呃，您好，先生，本次给您来电是关于您在我们招商银行的个人信用卡逾期事宜。先生，您个人信用卡逾期最低缴款是1405块3毛2，截止今天逾期已经超过一周了。信用卡已经属于严重逾期，未及时归还，逾期不良记录我们正在上报。您从用卡以来累计未按时还款次数已经高达11次，银行总部已经下达了全额清缴及冻结通知。我们人工介入来电是跟您本人确认，最低还款1406块钱，您这边是忘记处理了，还是有什么其他情况呢？",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "嗯……钱……"
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "没有钱的原因是？我们这边看到工作人员给您登记说您在其他银行……",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "就是说，呃，每个月会扣您的那个划扣您的钱，是吗？"
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "现在不扣了，扣完了已经。",
-        "state": {
-          "facts": [
-            "billing_dispute"
-          ]
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "也就是说您的工资是被其他银行强制扣划走了，是吗？先生是这个意思，对吗？",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "对。",
-        "state": {
-          "facts": [
-            "income_delay"
-          ]
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "好的，呃，如果是这样的情况，我们这边可以去给您申请一下帮扶政策，先生，让您只还您的账单本金。先生，因为您本次逾期以来产生了循环利息和违约金，大概有400块钱左右，这个钱可以去给您进行减免，让您只还账面本金。先生，那这边需要您还到您4月份的账单1406元，建议您去周转一下，先生。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "多少？"
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "银行呃循环利息和违约金。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "这个什么什么违约金……欠多少？",
-        "state": {
-          "facts": [
-            "debt_inquiry"
-          ]
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "催收员",
-        "text": "循环利息和违约金，先生，两个加起来大概有400块钱左右。先生，如果您资金比较紧张，我们可以去申请把这个钱给您进行减免。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 17,
-        "role": "客户",
-        "text": "400太少了，你的利息多少？400块钱的违约金，你有点少了点。",
-        "state": {
-          "emotions": [
-            "distrust"
-          ]
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "催收员",
-        "text": "您本次逾期产生的循环利息和违约金两个加起来只有那么多，先生。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 19,
-        "role": "客户",
-        "text": "你那个本……"
-      },
-      {
-        "turn_index": 20,
-        "role": "催收员",
-        "text": "这的话……"
-      },
-      {
-        "turn_index": 21,
-        "role": "客户",
-        "text": "本次是本次啊。"
-      },
-      {
-        "turn_index": 22,
-        "role": "催收员",
-        "text": "是本次逾期以来的。"
-      },
-      {
-        "turn_index": 23,
-        "role": "客户",
-        "text": "我是这么……去医院了不是？听我说哈，我这么这么多月了，你们招商银行早就给我停卡了。",
-        "state": {
-          "facts": [
-            "account_restriction"
-          ],
-          "emotions": [
-            "defensive"
-          ]
-        }
-      },
-      {
-        "turn_index": 24,
-        "role": "催收员",
-        "text": "不需要，我现在的话是诺少贷的还款，再这个可以……还是说您确保个进款用我们服务的中活享？呃，先生，如果说是……"
-      },
-      {
-        "turn_index": 25,
-        "role": "客户",
-        "text": "对，一直在这，一直在这给我扣着扣。六违约金……这我给我给我给我给你说啊，我给建行还款的时候，就是我给建行还款的时候，建行返还的我违约金都1400多块钱。",
-        "state": {
-          "facts": [
-            "account_info"
-          ],
-          "emotions": [
-            "complaint"
-          ]
-        }
-      },
-      {
-        "turn_index": 26,
-        "role": "催收员",
-        "text": "呃，先生，如果说是您这边……"
-      },
-      {
-        "turn_index": 27,
-        "role": "客户",
-        "text": "嗯，不知道你们是……"
-      },
-      {
-        "turn_index": 28,
-        "role": "催收员",
-        "text": "呃，如果说是您这边能够一次性还全款，先生，那么我们这边可以去给您申请减免您之前逾期以来产生的循环利息和违约金。张先生，但是您现在目前资金比较紧张，没有办法一次性还全款，所以说我们这边才说帮您减免您本次逾期以来产生的循环利息和违约金。张先生。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 29,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 30,
-        "role": "催收员",
-        "text": "如果说您可以一次性全款结清，那么招商银行也可以给您减很多呀，先生。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 31,
-        "role": "客户",
-        "text": "好。"
-      },
-      {
-        "turn_index": 32,
-        "role": "催收员",
-        "text": "但是您现在，目前你的情况是，您没有办法一次性还全款呀。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 33,
-        "role": "客户",
-        "text": "嗯。减多少啊招商银行？",
-        "state": {
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 34,
-        "role": "催收员",
-        "text": "呃，您说还全款吗？"
-      },
-      {
-        "turn_index": 35,
-        "role": "客户",
-        "text": "记得你们……听我说哈，我记得你们第一次联系我的时候，我减，就是说我一次性还完了以后，你给我减减到6000。",
-        "state": {
-          "facts": [
-            "income_reduction"
-          ],
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 36,
-        "role": "催收员",
-        "text": "好，但如果再是的话，那这个话还想办一外上，然后……"
-      },
-      {
-        "turn_index": 37,
-        "role": "客户",
-        "text": "我减6000，我那个数吗？"
-      },
-      {
-        "turn_index": 38,
-        "role": "催收员",
-        "text": "嗯，如果说是您一次性还全款，我们这边可以给您减一个5980块钱，先生。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 39,
-        "role": "客户",
-        "text": "这个……不是6000了？",
-        "state": {
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 40,
-        "role": "催收员",
-        "text": "差不多，差不多接近6000啊，先生，就差个20块钱。5980块钱，我们银行可以去给您减这么多。但如果说是您没办法一次性还全款，那么你只能是说您还逾期……给您减逾期，您本次逾期产生的循环利息和违约金400多块钱，先生。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 41,
-        "role": "客户",
-        "text": "嗯。你们这个钱呢还没有还，但是我近期我现在没有钱。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 42,
-        "role": "催收员",
-        "text": "呃，因为您……"
-      },
-      {
-        "turn_index": 43,
-        "role": "客户",
-        "text": "你这个最低，这个最低，最低还款我还不了。包括那个什么这个，这个中信银行的要我还最低400块钱，我都还不了。",
-        "state": {
-          "facts": [
-            "willing_to_pay"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 44,
-        "role": "催收员",
-        "text": "呃，就是现在没发工资？唉，那就麻烦您记一下，我一打扰的后，您先在……",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 45,
-        "role": "客户",
-        "text": "现在啊，20号发工资了以后那……",
-        "state": {
-          "facts": [
-            "income_reduction"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 46,
-        "role": "催收员",
-        "text": "呃，是这样的，时间方便，确实不是我一个工作日员，嗯，但是您这边的话，因为银行的利息是按日进行计收的。先生，如果您想要减的话，我们这边只能给您登记到今天下午的2点钟，那么2点钟之前您补齐1406，银行这边就给您减400多块钱利息。如果没办法补齐，我们这边息费减免政策也没办法给您申请，先生。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 47,
-        "role": "客户",
-        "text": "唉，我知道，我知道，到时候我主动打电话给你，我要全还的话，我就主动给你们打电话了。",
-        "state": {
-          "emotions": [
-            "despair"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 48,
-        "role": "催收员",
-        "text": "好了。张先生，如果说是您全还的话，您可以等到后续有那么多资金了再来跟我们银行进行一个商量，但现在目前的话是您要处理您已经逾期了的，先生。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 49,
-        "role": "客户",
-        "text": "账款没钱啊。我知道你通知我，你通知我，我知道，那是我现在没有钱。你通知我，我知道。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ],
-          "emotions": [
-            "defensive"
-          ]
-        }
-      },
-      {
-        "turn_index": 50,
-        "role": "催收员",
-        "text": "呃，这个的话我知道您现在……嗯，完对。"
-      },
-      {
-        "turn_index": 51,
-        "role": "客户",
-        "text": "知道了，我收到了，但是我现在没钱，没法还，我到20号……",
-        "state": {
-          "facts": [
-            "situational_hardship",
-            "future_payment_plan"
-          ]
-        }
-      },
-      {
-        "turn_index": 52,
-        "role": "催收员",
-        "text": "我再挂2天。"
-      },
-      {
-        "turn_index": 53,
-        "role": "客户",
-        "text": "2号才能还，知道不？",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 54,
-        "role": "催收员",
-        "text": "好的，先生，如果您能够周转，就请您还入，如果的确没有办法周转，那么逾期不良的记录银行这边是正常上报，届时我们给您来电确认您的个人相关信息，就请您电话保持畅通。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 55,
-        "role": "客户",
-        "text": "好了，好了好了好了好，好了好了你直接帮我报。",
-        "state": {
-          "emotions": [
-            "irritation"
-          ],
-          "willingness": "resistant"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "good",
-      "days_delinquent": 30,
-      "total_debt": 17420,
-      "external_debt": 433679,
-      "has_negotiation_history": False,
-      "available_plans": [
-        "reduction",
-        "mina"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 21,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 49,
-      "gender": "女",
-      "education": "bachelor",
-      "industry": "公用事业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2322202560338590106",
-    "cust_no": "0103299432",
-    "call_date": "20260511",
-    "coll_user_id": "AA11469",
-    "mob_typ": "M1",
-    "talk_time": "106",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 未提及任何减免或分期方案 |\n| MINA方案   | 未推荐   | 未提及最低还款方案       |\n| 促成技巧   | 未运用   | 未使用对比、稀缺性等技巧 |\n```\n\n---\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103299432",
-      "年龄": "53",
-      "性别": "女",
-      "申请卡片时间": "2006-03-01",
-      "学历": "未填",
-      "行业": "高新技术制造业",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "43654",
-      "利息占欠款比例": "2%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "可正常使用卡片",
-      "24期缴款评等": "ZZZZZZZZZZZZZZZZZZZZZZZZ",
-      "外部欠款金额": "外部欠款总余额115995，其中，银行贷款欠款103304，消金贷款欠款12691",
-      "外部共债机构数": "外部共债机构数共16家，其中逾期的机构共1家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款47916元，有协商方案，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2322202560338590106",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "喂"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "喂，您好。这边招商银行信用卡用卡中心，您是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "对"
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "唉，您好，这边一直没有给您打通电话呀？您这边是出什么事情了吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "没什么事，就是生病了。",
-        "state": {
-          "facts": [
-            "communication_issue"
-          ]
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "先生，现在银行怀疑您是恶意拖欠银行债务啊，咱们还是有还款意愿的吧？",
-        "state": {
-          "action": "legal_threat"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "嗯，我明天会处理的。",
-        "state": {
-          "willingness": "strong"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "催收员",
-        "text": "明天会处理，那今天为什么处理不了呢？",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "客户",
-        "text": "下班了。",
-        "state": {
-          "facts": [
-            "contact_difficulty"
-          ]
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "催收员",
-        "text": "是这样的先生，因为您近半年都在逾期，银行这边肯定要永久性冻结您的卡片。以后信用卡也不能用了，只能还款，还完之后也只能注销。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "客户",
-        "text": "嗯，那行吧。"
-      },
-      {
-        "turn_index": 11,
-        "role": "催收员",
-        "text": "确定不用了是吧？那我这边就正式给您走后面的流程。另外，您现在的家庭地址还是爱迪生路13号吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "客户",
-        "text": "嗯，你有什么事吗？",
-        "state": {
-          "emotions": [
-            "anxiety"
-          ]
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "催收员",
-        "text": "这边需要核实您的地址信息，给您派发纸质版的催缴信函到您的家庭地址，避免出错。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 15,
-        "role": "催收员",
-        "text": "好。"
-      },
-      {
-        "turn_index": 16,
-        "role": "客户",
-        "text": "我明天早上再处理就行了，不要搞那么复杂。",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "willingness": "conditional"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "good",
-      "days_delinquent": 30,
-      "total_debt": 43654,
-      "external_debt": 115995,
-      "has_negotiation_history": False,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": False,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 16,
-      "interest_ratio": 0.02,
-      "installment_ratio": 0.0,
-      "age": 53,
-      "gender": "女",
-      "education": "unknown",
-      "industry": "高新技术制造业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2322802090338590101",
-    "cust_no": "0103401544",
-    "call_date": "20260512",
-    "coll_user_id": "SX17625",
-    "mob_typ": "M1",
-    "talk_time": "92",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | [未提及任何减免方案]  |\n| MINA方案   | 未推荐   | [未提及最低还款方案]  |\n| 促成技巧   | 未运用   | [未使用对比、稀缺性等技巧]\n```\n\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103401544",
-      "年龄": "41",
-      "性别": "女",
-      "申请卡片时间": "2006-03-01",
-      "学历": "硕士",
-      "行业": "服务类行业",
-      "社保缴纳情况": "社保断缴",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "43131",
-      "利息占欠款比例": "4%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "可正常使用卡片",
-      "24期缴款评等": "2222222222222222B2222222",
-      "外部欠款金额": "外部欠款总余额94611，其中，信用卡欠款25362，银行贷款欠款33132，消金贷款欠款16581，其他贷款欠款19536",
-      "外部共债机构数": "外部共债机构数共31家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款42627元，有协商方案，要么办理调减方案;003账号欠款504元，有协商方案，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "N2320437410494447569,N2321907320032853935,N2321908150090838068,N2321908920460372720,Y2318445030636230589,Y2319311870382415293,Y2320250820307826455,Y2321914030338593794,Y2322781680494449272,Y2322802090338590101",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂，您好，请问是景先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "喂，嗯。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "您好，这边是招商银行信用卡中心，家人给您来过电话的哈。您家人给我说，您要周五处理吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "对对对。"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "是明天吗？昨天不是给我说的是3天内处理吗？",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "我3天估计实话实说有点悬，所以说5天。周周五肯定会百分百处理。",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "这边尽快处理哈，因为我也不想给您太多压力。之前给您说过了，后面会面临停卡或者降额的风险。如果您目前在我行的欠款比较多，后续一旦找到停卡审核部门，可能会正式开启全款销售相关流程，到时候您的资金压力会进一步加大。而且如果您在其他银行有外债，这边一旦停卡，其他银行可能也会把您视为风险客户，停掉您的卡片或者降额。到时候您资金压力会更大，这边还是建议尽快处理一下。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "我就问你周五行不行嘛？你不要一直说一直说。",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "emotions": [
-            "irritation"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "想办法把它处理一下，3680块钱，明白吗？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "我你周五行不行？",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "您能听到我说话吗先生？"
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "我说周五行不行嘛？",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "嗯，那这边先不打扰您了。你尽快想办法吧。特别提醒您，在逾期账务审核期前，请你务必保持电话畅通，避免银行联系不到您可能外呼紧急联系人转告您回电，到时候可能会怀疑您本人故意逃避银行债务催缴。那这边先不打扰您了，祝您生活愉快，再见。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "我问你，周五可不可以？周五可不可以？",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "willingness": "conditional"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 43131,
-      "external_debt": 94611,
-      "has_negotiation_history": False,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": False,
-      "card_restricted": False,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 31,
-      "interest_ratio": 0.04,
-      "installment_ratio": 0.0,
-      "age": 41,
-      "gender": "女",
-      "education": "master",
-      "industry": "服务类行业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2322193910307821063",
-    "cust_no": "0103417862",
-    "call_date": "20260511",
-    "coll_user_id": "SX17039",
-    "mob_typ": "M1",
-    "talk_time": "50",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 无相关减免方案提及     |\n| MINA方案   | 未推荐   | 未提及最低还款方案     |\n| 促成技巧   | 未运用   | 无有效引导客户接受方案 |\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103417862",
-      "年龄": "49",
-      "性别": "女",
-      "申请卡片时间": "2006-03-01",
-      "学历": "未填",
-      "行业": "建筑业",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行有房贷，欠款281193",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "531",
-      "利息占欠款比例": "3%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "可正常使用卡片",
-      "24期缴款评等": "21110ZZB0ZZZZZZZZZZZZB0Z",
-      "外部欠款金额": "外部欠款总余额281193，其中，银行贷款欠款281193",
-      "外部共债机构数": "外部共债机构数共4家",
-      "历史协商情况": "有协商历史，其中，调减1次，合计调减金额100",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款531元，有协商方案，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": " ",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "唉，您好，我这边招商银行信用卡中心，请问这边是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "唉，哪位？"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "先生，您好。这边跟您来个电话，是关于您卡的尾号9657个人信用卡逾期的问题。银行这边给您发的短信您看到了吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "没看到噢。"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "嗯，好，您稍微看一下那个短信哈。是这样子的，您卡的尾号9657个人信用卡，它已经是严重逾期了。银行这边有给您发短信，但是您可能没注意到。还有，确实由于这个欠款金额较小，上期未还，银行这边可能怀疑是恶意拖欠的问题，逾期不良记录已经在被上报了。您电话不要挂断，先处理一个13块钱，我们这边帮您在线做撤案审核，保留您到2026年都最低还款的资格。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "怎么了？"
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "不需要，谢谢，我到时候我自己弄吧，好吧。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": True,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 531,
-      "external_debt": 281193,
-      "has_negotiation_history": True,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": False,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 4,
-      "interest_ratio": 0.03,
-      "installment_ratio": 0.0,
-      "age": 49,
-      "gender": "女",
-      "education": "unknown",
-      "industry": "建筑业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2317619700071385525",
-    "cust_no": "0103437887",
-    "call_date": "20260506",
-    "coll_user_id": "SX17193",
-    "mob_typ": "M1",
-    "talk_time": "86",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 无减免方案说明         |\n| MINA方案   | 未推荐   | 未提及最低还款方案     |\n| 促成技巧   | 未运用   | 无对比、稀缺性等技巧   |\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103437887",
-      "年龄": "53",
-      "性别": "女",
-      "申请卡片时间": "2006-04-01",
-      "学历": "大专",
-      "行业": "高新技术制造业",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "12184",
-      "利息占欠款比例": "4%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "222212111111111111111111",
-      "外部欠款金额": "外部欠款总余额406081，其中，信用卡欠款152523，银行贷款欠款28621，消金贷款欠款207713，其他贷款欠款2682",
-      "外部共债机构数": "外部共债机构数共31家，其中逾期的机构共9家",
-      "历史协商情况": "有协商历史，其中，调减1次，合计调减金额232",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款12396元，有协商方案，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2317619700071385525,Y2318470090382410210,Y2320357240313057273",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "喂"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "呃，喂，您好。招商银行信用卡中心，请问是张先生吗？不好意思打扰您。我这边来电是说您身份证尾号0031名下个人信用卡账户，有一个821块5毛9的逾期利息缴款。先生，您这个最低还款怎么还没还上？有什么问题吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "嗯，对，这两天有点困难。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ]
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "这两天有点困难，是因为什么原因？工资没发还是其他原因？",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "也不是没发，就是外面欠了款也没收回来。",
-        "state": {
-          "facts": [
-            "debt_inquiry"
-          ]
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "噢，就是外部账款有拖欠是吧？",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "对。"
-      },
-      {
-        "turn_index": 7,
-        "role": "催收员",
-        "text": "好，帮您记录，请稍等。您这边逾期比较长，个人逾期最低欠款有821块5毛9。您看如果最近能想办法周转，把这800多补掉，我这边可以帮您把违约产生的息费和违约金免掉。这个金额有200多，235块1毛4，好吧？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "客户",
-        "text": "嗯，行，那我想想办法。",
-        "state": {
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "催收员",
-        "text": "您赶紧想想办法。我们今天查账审核时间下午是中午10点左右，您看能不能赶在12点之前处理掉，然后我们直接就把违约金和息费全免了，好吧。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "客户",
-        "text": "12点之前估计来不及，现在已经……"
-      },
-      {
-        "turn_index": 11,
-        "role": "催收员",
-        "text": "嗯，那您只能努努力好吧，想想办法，800多嘛，嗯？",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "客户",
-        "text": "好好好，我想想办法。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 12184,
-      "external_debt": 406081,
-      "has_negotiation_history": True,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 31,
-      "interest_ratio": 0.04,
-      "installment_ratio": 0.0,
-      "age": 53,
-      "gender": "女",
-      "education": "college",
-      "industry": "高新技术制造业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2317805660338590411",
-    "cust_no": "0103479217",
-    "call_date": "20260506",
-    "coll_user_id": "SX16917",
-    "mob_typ": "M1",
-    "talk_time": "90",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | [未提及减免方案]       |\n| MINA方案   | 未推荐   | [未提及最低还款方案]   |\n| 促成技巧   | 未运用   | [未使用对比、稀缺性等技巧] |\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103479217",
-      "年龄": "55",
-      "性别": "女",
-      "申请卡片时间": "2006-04-01",
-      "学历": "大专",
-      "行业": "高新技术制造业",
-      "社保缴纳情况": "有社保，但为灵活就业参保，稳定性不高",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "12169",
-      "利息占欠款比例": "2%",
-      "分期金额占欠款比例": "17%",
-      "是否管制": "已管制",
-      "24期缴款评等": "2BB222BBB22BBBBBBBBBB2BB",
-      "外部欠款金额": "外部欠款总余额202666，其中，信用卡欠款146134，银行贷款欠款19020，消金贷款欠款24173，其他贷款欠款11887",
-      "外部共债机构数": "外部共债机构数共30家，其中逾期的机构共5家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款9646元，无可用的协商方案;003账号欠款2523元，无可用的协商方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2317805660338590411,Y2320288940428936723",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂，您好。招商银行信用卡中心，请问您是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "对。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "好的，先生。银行给您发的短信收到了吗？我们这边是接到本地移交过来的，您身份证尾号0410的逾期材料。目前您在招商银行的一个信用卡和一个E招贷都已经逾期了。信用卡账户最低还款还剩359，E招贷账户最低还款还剩196，这两个账户都需要您现在补齐。您之前基本上每个月都有按时处理，这个月是忘了还是遇到什么困难了？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "钱……凑不齐啊。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ]
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "唉，没听清。先生，您是工资没发？还是款项没到？还是失业了？",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "嗯……钱有点紧张。我这2天给弄上啊，钱有点紧张。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "唉，款项还没到是吧？好。"
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "对。"
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "唉，那鉴于这种情况，我看了一下，这边可以给您申请时间，但最晚不能超过今天下午5点，先生。您就周转一下嘛，起码在五点之前先处理一个账户。先把E招贷或者信用卡账户补齐一个，还剩一个359，您先处理一个，另外一个我们再给您申请点时间，好吗？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "嗯嗯。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 12169,
-      "external_debt": 202666,
-      "has_negotiation_history": False,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 30,
-      "interest_ratio": 0.02,
-      "installment_ratio": 0.17,
-      "age": 55,
-      "gender": "女",
-      "education": "college",
-      "industry": "高新技术制造业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2322766810312803172",
-    "cust_no": "0103672229",
-    "call_date": "20260512",
-    "coll_user_id": "AA11482",
-    "mob_typ": "M1",
-    "talk_time": "451",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | [提供]   | [“可以帮您申请到减免您近一期的这个循环利息跟违约金”]  |\n| MINA方案   | [未推荐] | [未提及最低还款方案]   |\n| 促成技巧   | [未运用] | [未使用对比、稀缺性等技巧]\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103672229",
-      "年龄": "56",
-      "性别": "男",
-      "申请卡片时间": "2006-05-01",
-      "学历": "大专",
-      "行业": "商业贸易",
-      "社保缴纳情况": "社保断缴",
-      "他行是否有房贷": "他行有房贷，欠款2460463",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "34758",
-      "利息占欠款比例": "2%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "ZZZZZZZZZZZZZZZZZZZZZZZZ",
-      "外部欠款金额": "外部欠款总余额2534481，其中，银行贷款欠款2534481",
-      "外部共债机构数": "外部共债机构数共3家",
-      "历史协商情况": "有协商历史，其中，办理5%MINA2次，调减3次，合计调减金额1899",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款34758元，有协商方案，要么还1880元后办理5%MINA，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "N2322107070132131160,Y2315151120028008240,Y2316717840352380295,Y2317583020132139131,Y2318445930649715297,Y2320179430232188737,Y2322096470405378425,Y2322254150494441090,Y2322766810312803172",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "唉，喂，您好，招商银行信用卡中心，请问是王女士吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "喂，是的。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "女士，是这样子的，目前您在招行这个银行卡呢，是出现了一个逾期的情况。那我银行给您发送了短信，请您这边务必关注一下。您这边是忘记处理了吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "你好，我知道，我知道这个事儿。我这在抓紧时间想办法处理一下啊。现在就是……那个……"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "您这边是具体遇到什么样的一个困难了吗？",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "噢，我现在是这样，现在就是说外面欠我的钱我也要不回来，我自己……是这样，没有钱，就是现在这个……那个……还不了。现在就是我现在也在协商，我也没法还。现在确实是，我也很着急，我想着想着……",
-        "state": {
-          "facts": [
-            "debt_inquiry",
-            "situational_hardship",
-            "negotiation_attempt"
-          ],
-          "emotions": [
-            "anxiety"
-          ],
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "就是您外部是有人欠您钱，是吧？"
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "对对，没错。"
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "嗯，这样的。您现在能周转到多少的一个金额呢？这边想问一下您。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "嗯……"
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "喂，您好？"
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "您好。"
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "您能听得清楚吗？"
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "唉，你好说呀，我没听见。"
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "唉，呃，您能听得清楚哈。因为我这边没太听清楚，就我说您这边是有外部有钱款未收回嘛，对吧？"
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "对对，没错没错。我也是打电话天天催他，我也是打电话天天在催。它就是说，今天推明天，明天推后天，一直拖给我，我现在也是着急得不得了。今年可能他的生意也不好做吧，可能估计是这么个情况。",
-        "state": {
-          "facts": [
-            "income_delay",
-            "collection_grievance",
-            "debt_inquiry"
-          ],
-          "emotions": [
-            "anxiety"
-          ]
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "催收员",
-        "text": "呃，是这样的哈，因为确实之前没有联系上您嘛，现在有一个方案可以提供到给您，就想问一下您这个循环利息和违约金，您这边能够承担吗？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 17,
-        "role": "客户",
-        "text": "银行利息，我跟你说啊，我还是正想和你们说一下情况，利息我也承担不了。现在最高能还本金，就是算个什么最账能力，就是想办法能还本金。我也看了，我上次还了以后，我一看那个又多了34000多，这利息是得多高啊这是。",
-        "state": {
-          "facts": [
-            "negotiation_attempt",
-            "interest_pressure",
-            "willing_to_pay"
-          ],
-          "emotions": [
-            "complaint"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "催收员",
-        "text": "呃，利息是万分之五，按月收复利。因为您这边出现了一个逾期，如果您说您这边承担不了，那我这边可以去帮您申请一个帮您申请到账面逾期的这个息费条件，但是您得尽快地去筹措您这个逾期最低的一个金额。我之前看到之前是给您提供过方案，但是好几次都是方案作废了，您这边都没有还足啊。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 19,
-        "role": "客户",
-        "text": "是啊，这不是出现了特殊情况嘛？对，对。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ]
-        }
-      },
-      {
-        "turn_index": 20,
-        "role": "催收员",
-        "text": "嗯，是这样的哈，方案提供出来是肯定是有时效性且有名额性的。这边，您这个逾期最低是17080.03。您在今天中午之前能够周转得到吗？",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 21,
-        "role": "客户",
-        "text": "这个……不行。嗯，我那个什么，就是说明天吧，明天这个周，周六之前，周五之前吧，我能想办法把它给还上。",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 22,
-        "role": "催收员",
-        "text": "呃，女士，这个没有办法，最迟中午，今天中午12点，需要您去周转到您这个逾期最低。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 23,
-        "role": "客户",
-        "text": "嗯……那我的利息呢？",
-        "state": {
-          "facts": [
-            "debt_inquiry"
-          ]
-        }
-      },
-      {
-        "turn_index": 24,
-        "role": "催收员",
-        "text": "您稍等嘛，我给您查一下，好吧。"
-      },
-      {
-        "turn_index": 25,
-        "role": "客户",
-        "text": "嗯，好。"
-      },
-      {
-        "turn_index": 26,
-        "role": "催收员",
-        "text": "您这个已出的循环利息跟违约金，您也可以在您的掌上生活APP上可以看到，是一个59097.81的一个金额。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 27,
-        "role": "客户",
-        "text": "多少？"
-      },
-      {
-        "turn_index": 28,
-        "role": "催收员",
-        "text": "597.81的一个金额。"
-      },
-      {
-        "turn_index": 29,
-        "role": "客户",
-        "text": "总共的就是30000几，三、34000块钱，不就是500多块钱的利息吗？",
-        "state": {
-          "facts": [
-            "interest_pressure",
-            "debt_inquiry"
-          ]
-        }
-      },
-      {
-        "turn_index": 30,
-        "role": "催收员",
-        "text": "唉呀，这个是您5月份已出的。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 31,
-        "role": "客户",
-        "text": "就是这利息这么高，根本承担不了了。它每天我都得想尽一切办法。",
-        "state": {
-          "facts": [
-            "willing_to_pay"
-          ],
-          "emotions": [
-            "distress"
-          ]
-        }
-      },
-      {
-        "turn_index": 32,
-        "role": "催收员",
-        "text": "所以这边您说您这边有外部的欠款没有收回，对吧？然后您之前还款也还的很好，那银行有方案就尽量地给您提供方案。这边是可以帮您申请到减免您近一期的这个循环利息跟违约金。是您这边得先去周转到您这个逾期最低17080.03的金额啊。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 33,
-        "role": "客户",
-        "text": "噢，我知道啊。那利息怎么着啊？",
-        "state": {
-          "facts": [
-            "debt_inquiry"
-          ]
-        }
-      },
-      {
-        "turn_index": 34,
-        "role": "催收员",
-        "text": "这边去帮您申请减免呀。您还入这个之后，这边才可以帮您操作方案啊。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 35,
-        "role": "客户",
-        "text": "噢，行行行，好嘞，那我知道了，我想办法。",
-        "state": {
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 36,
-        "role": "催收员",
-        "text": "中午12点，好吧，女士。如果中午12点这边没有还到的话……",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 37,
-        "role": "客户",
-        "text": "我下午，下午点之前吧，中午肯定不行。",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 38,
-        "role": "催收员",
-        "text": "中午12点，女士，没有办法。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 39,
-        "role": "客户",
-        "text": "现在这个点不可能，我就等于拿，我也拿不过来。",
-        "state": {
-          "facts": [
-            "repayment_inability"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 40,
-        "role": "催收员",
-        "text": "女士，没有办法，这个时间是统一规定的，不是针对于您一个人的，这个肯定是没有办法推迟的。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 41,
-        "role": "客户",
-        "text": "噢，那我知道了，好嘞，好嘞，那我想想办法。你该申请，把那个利息先给申请吧，好嘞。",
-        "state": {
-          "facts": [
-            "interest_pressure"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 42,
-        "role": "催收员",
-        "text": "我这边能去帮您申请到，但是您这边得提前，您得还入您这个17080.03，好吧，中午12点。那我这边先把一个免责告知先告诉给您，好吧。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 43,
-        "role": "客户",
-        "text": "好，好，好，我知道了，我知道了，好，OK，OK，好，好。"
-      },
-      {
-        "turn_index": 44,
-        "role": "催收员",
-        "text": "您先稍，您先听一下。好吧，有一个免责告知需要您听一下。呃，如果今天12点钟的时候审核失败的话，那银行具有法律效应的这个纸质信函呢，就会准备一个盖章，然后准备一个签发。然后第一点是，如果转入后端部门之后，那您和银行的这个合作关系将转变为债权债务关系。那银行呢，也会启动强制的一个清收流程。那第二个是银行，如果这边系统监测到……",
-        "state": {
-          "action": "legal_threat"
-        }
-      },
-      {
-        "turn_index": 45,
-        "role": "客户",
-        "text": "拜拜。"
-      },
-      {
-        "turn_index": 46,
-        "role": "催收员",
-        "text": "好，我听明白您的意思了，但是女士，我只是银行的工作人员，我得先把这个情况先告知到给您啊，以免您之后收到之后，您说银行这边没有提前告知到给您，对吧？"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": True,
-      "credit_rating": "good",
-      "days_delinquent": 30,
-      "total_debt": 34758,
-      "external_debt": 2534481,
-      "has_negotiation_history": True,
-      "available_plans": [
-        "reduction",
-        "mina"
-      ],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 3,
-      "interest_ratio": 0.02,
-      "installment_ratio": 0.0,
-      "age": 56,
-      "gender": "男",
-      "education": "college",
-      "industry": "商业贸易",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2321996150207448387",
-    "cust_no": "0103714058",
-    "call_date": "20260511",
-    "coll_user_id": "AA11434",
-    "mob_typ": "M1",
-    "talk_time": "32",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 无减免方案提及         |\n| MINA方案   | 未推荐   | 无最低还款方案提及     |\n| 促成技巧   | 未运用   | 无对比、稀缺性等技巧   |\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103714058",
-      "年龄": "46",
-      "性别": "女",
-      "申请卡片时间": "2006-05-01",
-      "学历": "未填",
-      "行业": "建筑业",
-      "社保缴纳情况": "社保断缴",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "14963",
-      "利息占欠款比例": "4%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "221111110210211111022111",
-      "外部欠款金额": "外部欠款总余额109780，其中，信用卡欠款16187，银行贷款欠款89791，其他贷款欠款3802",
-      "外部共债机构数": "外部共债机构数共9家，其中逾期的机构共7家",
-      "历史协商情况": "有协商历史，其中，办理5%MINA3次，调减1次，合计调减金额457",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款14678元，有协商方案，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2317593260631747405,Y2317770790207448303,Y2318455110536062857,Y2318656580367241837,Y2320238070479403911,Y2321910080307826060",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂，您好。招商银行信用卡中心，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "对。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "唉，先生您好，目前银行这边系统没有查到您的还款记录，想问一下您这边资金周转情况怎么样了？因为要准备收集您的应诉材料了。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "现在还没有。"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "嗯，还没周转到是吧？好的先生，那我帮您记录一下，另外您需要上传相关材料过来，然后做一个……"
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "好。"
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "我自己上传好了，不用找我。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 14963,
-      "external_debt": 109780,
-      "has_negotiation_history": True,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 9,
-      "interest_ratio": 0.04,
-      "installment_ratio": 0.0,
-      "age": 46,
-      "gender": "女",
-      "education": "unknown",
-      "industry": "建筑业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2321930350367249676",
-    "cust_no": "0103750111",
-    "call_date": "20260511",
-    "coll_user_id": "SX17331",
-    "mob_typ": "M1",
-    "talk_time": "71",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 无减免方案提及         |\n| MINA方案   | 未推荐   | 无最低还款方案提及     |\n| 促成技巧   | 未运用   | 无对比、稀缺性等技巧   |\n```\n\n---\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103750111",
-      "年龄": "47",
-      "性别": "男",
-      "申请卡片时间": "2006-05-01",
-      "学历": "未填",
-      "行业": "公用事业",
-      "社保缴纳情况": "有社保，但为灵活就业参保，稳定性不高",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "17455",
-      "利息占欠款比例": "2%",
-      "分期金额占欠款比例": "1%",
-      "是否管制": "已管制",
-      "24期缴款评等": "ZZZZZZZZZZZZZZZZZZZZZZZZ",
-      "外部欠款金额": "外部欠款总余额17172，其中，信用卡欠款5017，消金贷款欠款461，其他贷款欠款11694",
-      "外部共债机构数": "外部共债机构数共6家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款17455元，有协商方案，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "N2319747710575849688,Y2320164600351256974,Y2321930350367249676,Y2322195420555266748,Y2322198060622993734,Y2322198960307826484",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "你好，请留下你的姓名和来电原因，我会帮你确认此人是否方便接听。"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "招商银行信用卡中心。",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "谢请不要挂断电话。"
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "喂。"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "唉，喂，您好，请问是<PERSON>女士吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "对，是的。"
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "<PERSON>您好，这边是招商银行的。本次来电话主要是跟您沟通这张个人信用卡的问题。这边个人信用卡一直是没有处理，导致了逾期。逾期最低呢是1186.33。这边的话呢，是忘记处理了，还是说遇到什么困难了？<PERSON>女士。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "嗯，我前段时间接到了一个反诈中心的电话，然后为了保护我的财产安全，他们把我的所有卡冻结了15天，今天才能解卡解除。",
-        "state": {
-          "facts": [
-            "income_delay",
-            "account_restriction"
-          ]
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "今天解卡是吗？也就是说今天就能处理进来，对吧？<PERSON>女士。"
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "对，嗯，对。",
-        "state": {
-          "facts": [
-            "account_restriction"
-          ],
-          "willingness": "strong"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "行，那我这边就不耽误您了哈。您在我们今天下班之前把这个最低处理进来是可以的哈。<PERSON>女士。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "嗯，好的，我知道了，肯定的。",
-        "state": {
-          "willingness": "strong"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "嗯，那我这边就不耽误您了哈，<PERSON>，再见。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "好。"
-      }
-    ],
-    "reward": 1,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "good",
-      "days_delinquent": 30,
-      "total_debt": 17455,
-      "external_debt": 17172,
-      "has_negotiation_history": False,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 6,
-      "interest_ratio": 0.02,
-      "installment_ratio": 0.01,
-      "age": 47,
-      "gender": "男",
-      "education": "unknown",
-      "industry": "公用事业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_evidence": {
-      "trigger_text": "嗯，好的，我知道了，肯定的。",
-      "trigger_turn_index": 11
-    },
-    "reward_action_credit": {
-      "turn_index": 11,
-      "role": "客户",
-      "action": "agree_to_pay",
-      "text": "嗯，好的，我知道了，肯定的。",
-      "explanation": "Customer showed strong willingness after explaining a temporary account restriction (fact: income_delay, account_restriction). Collector validated the reason, confirmed immediate resolution, and set a clear deadline. This built trust and urgency, leading to customer's agree_to_pay."
-    }
-  },
-  {
-    "call_id": "2322254460585889026",
-    "cust_no": "0103775627",
-    "call_date": "20260511",
-    "coll_user_id": "SX16850",
-    "mob_typ": "M1",
-    "talk_time": "32",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 未提及任何减免方案     |\n| MINA方案   | 未推荐   | 未提及最低还款方案     |\n| 促成技巧   | 未运用   | 未使用对比、稀缺性等技巧 |\n```\n\n---\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103775627",
-      "年龄": "45",
-      "性别": "女",
-      "申请卡片时间": "2006-06-01",
-      "学历": "本科",
-      "行业": "公用事业",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "1165",
-      "利息占欠款比例": "5%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "222222220232322223232023",
-      "外部欠款金额": "外部欠款总余额13975，其中，信用卡欠款13975",
-      "外部共债机构数": "外部共债机构数共6家，其中逾期的机构共1家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款1165元，有协商方案，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": " ",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "喂"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "喂，您好，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "呃，是。"
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "嗯，先生您好，打扰您了。我们这边是招商银行信用卡中心上海总部。您这边有一张招行的个人信用卡，目前有逾期，最低还款额是83块7毛。这个逾期情况您知道吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "嗯，我知道，我知道，我尽快处理啊。",
-        "state": {
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "嗯，因为之前我们有给您发过短信，这个……您今天晚上能抽1分钟时间补一下吗？",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "嗯，我知道，我尽快处理。可以可以。",
-        "state": {
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "催收员",
-        "text": "那您抓紧时间，打扰您了。祝您生活愉快，再见。",
-        "state": {
-          "action": "closure"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 1165,
-      "external_debt": 13975,
-      "has_negotiation_history": False,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 6,
-      "interest_ratio": 0.05,
-      "installment_ratio": 0.0,
-      "age": 45,
-      "gender": "女",
-      "education": "bachelor",
-      "industry": "公用事业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2322850510351255318",
-    "cust_no": "0103785896",
-    "call_date": "20260512",
-    "coll_user_id": "SX17043",
-    "mob_typ": "M1",
-    "talk_time": "48",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 无                     |\n| MINA方案   | 未推荐   | 无                     |\n| 促成技巧   | 未运用   | 无                     |\n```\n\n---\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103785896",
-      "年龄": "45",
-      "性别": "女",
-      "申请卡片时间": "2006-06-01",
-      "学历": "本科",
-      "行业": "商业贸易",
-      "社保缴纳情况": "社保断缴",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行有房贷，欠款77970",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "39750",
-      "利息占欠款比例": "5%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "可正常使用卡片",
-      "24期缴款评等": "ZZZZZZZZZZZZZZZZZZZZZZZZ",
-      "外部欠款金额": "外部欠款总余额252473，其中，信用卡欠款14336，银行贷款欠款25997，消金贷款欠款210815，其他贷款欠款1325",
-      "外部共债机构数": "外部共债机构数共5家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款39755元，无可用的协商方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": " ",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "喂"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "喂，您好。招商银行信用卡中心，请问您是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "呃，是我。"
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "唉，好的，先生，是这样的，我们招商银行信用卡给您来电，是关于您在我们银行的一个款项逾期的问题。看您昨天也还了11000块钱进来，但是您美元账户那边是有欠款的，先生，是有一个42块二的一个资金没有处理到位。所以说您这边还差一个200多块钱需要您补录进来，先生。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "行，我知道了。一会儿一会儿处理吧，好吧，嗯。",
-        "state": {
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "差一个啊……好，嗯，好的，因为银行系统这边会在上午的10点进行统一的一个核查账哈。然后您也记一下，还差一个206块钱，先生。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "嗯，好，我知道。行，知道了啊，好。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": True,
-      "credit_rating": "good",
-      "days_delinquent": 30,
-      "total_debt": 39750,
-      "external_debt": 252473,
-      "has_negotiation_history": False,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": False,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 5,
-      "interest_ratio": 0.05,
-      "installment_ratio": 0.0,
-      "age": 45,
-      "gender": "女",
-      "education": "bachelor",
-      "industry": "商业贸易",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2321980500381276349",
-    "cust_no": "0103830960",
-    "call_date": "20260511",
-    "coll_user_id": "SX17053",
-    "mob_typ": "M1",
-    "talk_time": "92",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 未提及任何减免或分期方案 |\n| MINA方案   | 未推荐   | 未提及最低还款方案       |\n| 促成技巧   | 未运用   | 未使用对比、稀缺性等技巧 |\n```\n\n---\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103830960",
-      "年龄": "55",
-      "性别": "女",
-      "申请卡片时间": "2006-06-01",
-      "学历": "本科",
-      "行业": "酒店、餐饮、旅游",
-      "社保缴纳情况": "无社保",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "4310",
-      "利息占欠款比例": "2%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "2ZBBBBBBBB0ZZZBBBBB0BB11",
-      "外部欠款金额": "外部欠款总余额1850，其中，信用卡欠款1723，银行贷款欠款127",
-      "外部共债机构数": "外部共债机构数共10家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款4310元，有协商方案，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2321980500381276349",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "呃，喂，您好。招商银行信用卡中心，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "张先生已经去世了。",
-        "state": {
-          "facts": [
-            "family_crisis"
-          ]
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "嗯，那您和他是什么关系呢？女士？"
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "朋友，朋友。",
-        "state": {
-          "facts": [
-            "third_party_involvement"
-          ]
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "嗯，那大概是什么时候发生这个事情的呢？方便问您一下吗？"
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "4月底。",
-        "state": {
-          "facts": [
-            "contact_history"
-          ]
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "4月底是吗？嗯，大概是因为什么原因呢？"
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "一直就是癌症，三年了。",
-        "state": {
-          "facts": [
-            "health_crisis",
-            "situational_hardship"
-          ]
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "噢，好的，好的。呃，那我们这边的话呢，会先去做一个登记。然后是这样哈，因为您说他这边去世了嘛，那我们这边基于这个风险因素，可能会将他的卡片先做一个冻结。好吧，女士。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "嗯，行。"
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "提供什么证明？这都有死亡证明什么的，这种事情不能开玩笑。",
-        "state": {
-          "facts": [
-            "document_exchange"
-          ],
-          "emotions": [
-            "defensive"
-          ]
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "唉，您这边有那个……那边有相关证明是吧？呃，那我们稍后给这个号码发送一条短信，您看您这边方便上传一下那个证明吗？然后我们这边后续也去核实一下。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "啊，但是没有注销户口，就是现在有死亡证明，因为家里人现在都没在，在外边呢，说等等回来以后再看看后续还有什么事。",
-        "state": {
-          "facts": [
-            "contact_difficulty",
-            "debt_inquiry",
-            "document_exchange"
-          ]
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "嗯，嗯。"
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 16,
-        "role": "催收员",
-        "text": "嗯，行。呃，那您到时候这边就是我们先发送一条短信嘛，发到这个手机上面。呃，方便的话您这边可以上传一下那个证明材料就行。好吧，女士。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 17,
-        "role": "客户",
-        "text": "好的好的。"
-      },
-      {
-        "turn_index": 18,
-        "role": "客户",
-        "text": "好，再见。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 4310,
-      "external_debt": 1850,
-      "has_negotiation_history": False,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 10,
-      "interest_ratio": 0.02,
-      "installment_ratio": 0.0,
-      "age": 55,
-      "gender": "女",
-      "education": "bachelor",
-      "industry": "酒店、餐饮、旅游",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2322980170076193241",
-    "cust_no": "0103855242",
-    "call_date": "20260512",
-    "coll_user_id": "SX16927",
-    "mob_typ": "M1",
-    "talk_time": "94",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 未提及利息减免或本金减免 |\n| MINA方案   | 推荐     | “在线处理130就可以了”   |\n| 促成技巧   | 未运用   | 无对比、稀缺性等技巧   |\n```\n\n---\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103855242",
-      "年龄": "46",
-      "性别": "男",
-      "申请卡片时间": "2006-06-01",
-      "学历": "大专",
-      "行业": "传媒体育娱乐",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "2462",
-      "利息占欠款比例": "0%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "222222222222222222222221",
-      "外部欠款金额": "外部欠款总余额17201，其中，信用卡欠款8771，银行贷款欠款2948，消金贷款欠款5482",
-      "外部共债机构数": "外部共债机构数共12家",
-      "历史协商情况": "有协商历史，其中，调减17次，合计调减金额1715",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款2462元，有协商方案，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2299645600536062996,Y2322980170076193241",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂，您好。这边是招商银行信用卡中心的，麻烦问一下，您这边是黄丽女士吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "是您给我免下利息好吗？我马上还。",
-        "state": {
-          "emotions": [
-            "negotiation"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "女士，可以，呃，可以的。但是我要有一个具体的困难原因，是您这边工资没有发，或者投资失败，或者其他地方也有欠款，是哪一个？是不是前面提到的工资没有发？",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "是",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ]
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "唉，好好好，那我这边帮您申请一下。稍等一下。"
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "嗯好"
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "工资还没发",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ]
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "催收员",
-        "text": "您稍等一下"
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "工资没有发，然后再到这个息费，息费压力很大对不对？",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "是的"
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "好，那您这边电话不挂断，在线将您逾期最低130块给您报的总数周转进来，我也像前面工作人员给你操作的那样，下一期循环利息和违约金给您减免掉，就是不会产生。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "那个是多少呀？循环利息和违约金。"
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "您稍等一下，那我帮您试算一下嘛。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "催收员",
-        "text": "循环利息是38块1毛六，违约金是12块6毛五，总共是50块8毛一。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "客户",
-        "text": "嗯行"
-      },
-      {
-        "turn_index": 15,
-        "role": "催收员",
-        "text": "嗯，好，那您这边在线处理130就可以了。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "客户",
-        "text": "转三是吧"
-      },
-      {
-        "turn_index": 17,
-        "role": "催收员",
-        "text": "对对对，给您报的整数。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "客户",
-        "text": "好"
-      }
-    ],
-    "reward": 1,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 2462,
-      "external_debt": 17201,
-      "has_negotiation_history": True,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 12,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 46,
-      "gender": "男",
-      "education": "college",
-      "industry": "传媒体育娱乐",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_evidence": {
-      "trigger_text": "好",
-      "trigger_turn_index": 5
-    },
-    "reward_action_credit": {
-      "turn_index": 5,
-      "role": "客户",
-      "action": "agree_to_pay",
-      "text": "嗯好",
-      "explanation": "Customer showed conditional willingness (pay if interest waived) and revealed hardship (unpaid wages). Collector empathized, confirmed the reason, then proposed a concrete plan: pay minimum $130 now, get fees waived. This matched customer's condition, built trust, and led to agreement."
-    }
-  },
-  {
-    "call_id": "2321931470032850074",
-    "cust_no": "0103919899",
-    "call_date": "20260511",
-    "coll_user_id": "SX17331",
-    "mob_typ": "M1",
-    "talk_time": "51",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | [无相关话术]          |\n| MINA方案   | 未推荐   | [无相关话术]          |\n| 促成技巧   | 未运用   | [无有效引导客户承诺]\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103919899",
-      "年龄": "57",
-      "性别": "女",
-      "申请卡片时间": "2006-06-01",
-      "学历": "大专",
-      "行业": "制造业",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "12839",
-      "利息占欠款比例": "3%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "ZZZZZZZZZZZZZZZZZZZZZZZZ",
-      "外部欠款金额": "外部欠款总余额28001，其中，信用卡欠款28001",
-      "外部共债机构数": "外部共债机构数共13家，其中逾期的机构共1家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款12839元，无可用的协商方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2318446530352387636,Y2320180400597703490",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "喂"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "唉，喂，您好。请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "对"
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "张先生您好，这边是招商银行的。本次来电主要是跟您沟通一下这张个人信用卡的问题。这张卡目前是处于逾期状态，最低逾期金额是814.29元，这边还没有处理。张先生，是忘记处理了吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "唉……对，是的。800多少？我的是……这哈……",
-        "state": {
-          "emotions": [
-            "complaint"
-          ]
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "我不是……这2天生意不好做，然后我的卡号跟微信点人锁了。股东啊……嗯，我、我知道了我今天……嗯，我，我叫我把存进去。我叫我儿子转哈，好吗？",
-        "state": {
-          "facts": [
-            "future_payment_plan",
-            "situational_hardship",
-            "account_restriction"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "催收员",
-        "text": "可以可以。您就赶在我们下班之前充进来就可以哈。我们五点半会再给您来个电话。嗯。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "客户",
-        "text": "好的，好的好的。好的谢谢谢谢，好知道了。"
-      },
-      {
-        "turn_index": 9,
-        "role": "催收员",
-        "text": "那我这边不耽误您了。张先生，嗯，好，再见。",
-        "state": {
-          "action": "closure"
-        }
-      }
-    ],
-    "reward": 1,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "good",
-      "days_delinquent": 30,
-      "total_debt": 12839,
-      "external_debt": 28001,
-      "has_negotiation_history": False,
-      "available_plans": [],
-      "social_insurance_stable": True,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 13,
-      "interest_ratio": 0.03,
-      "installment_ratio": 0.0,
-      "age": 57,
-      "gender": "女",
-      "education": "college",
-      "industry": "制造业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_evidence": {
-      "trigger_text": "我叫我儿子转哈，好吗？",
-      "trigger_turn_index": 4
-    },
-    "reward_action_credit": {
-      "turn_index": 4,
-      "role": "客户",
-      "action": "promise_to_pay",
-      "text": "唉……对，是的。800多少？我的是……这哈……",
-      "explanation": "Customer showed willingness to pay but needed a plan (conditional). Collector acknowledged hardship, proposed a clear deadline (5:30 PM) and follow-up call, reducing uncertainty. This concrete action turned customer's vague intent into a firm promise_to_pay."
-    }
-  },
-  {
-    "call_id": "2317662270201974818",
-    "cust_no": "0103967931",
-    "call_date": "20260506",
-    "coll_user_id": "SX17629",
-    "mob_typ": "M1",
-    "talk_time": "632",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 未提及利息或违约金减免 |\n| MINA方案   | 未推荐   | 未提及最低还款方案     |\n| 促成技巧   | 未运用   | 未使用对比、稀缺性等技巧 |\n```\n\n---\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103967931",
-      "年龄": "41",
-      "性别": "女",
-      "申请卡片时间": "2006-06-01",
-      "学历": "未填",
-      "行业": "制造业",
-      "社保缴纳情况": "社保断缴",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "8934",
-      "利息占欠款比例": "2%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "211111021021121111111111",
-      "外部欠款金额": "外部欠款总余额24274，其中，信用卡欠款12185，消金贷款欠款10521，其他贷款欠款1568",
-      "外部共债机构数": "外部共债机构数共16家，其中逾期的机构共3家",
-      "历史协商情况": "有协商历史，其中，办理5%MINA1次，调减1次，合计调减金额248",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款8934元，有协商方案，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2317662270201974818",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂，您好，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "对。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "您好，这边是招商银行信用卡中心的，给您来电呢，主要是因为您的个人信用卡逾期问题。银行给您发的短信您有看到吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "您看到了。张先生，您这边逾期的最低应缴款是440块钱。由于您的金额比较小，而且您长期没有还，银行呢，怀疑您涉及故意拖欠，逾期不良记录已经正式上报。呃，您不要挂断电话，然后呢，在线处理一下440块钱。我这边呢，帮您在线撤案，保留您还最低款的一个资格。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "嗯……呃，现在是这样的。之前的时候，我打过几次电话，就是说我要提前还，然后……一直没有人来处理那个事情。",
-        "state": {
-          "facts": [
-            "payment_commitment",
-            "contact_difficulty"
-          ],
-          "emotions": [
-            "complaint"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "现在的话，我手上的资金有限，也不是很方便，我现在也还不上。然后最主要的是，今年过年的时候，1月份、12月份的时候，我提过要提前还款这个事情，为什么一直都没有来处理？",
-        "state": {
-          "facts": [
-            "situational_hardship",
-            "contact_difficulty"
-          ],
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "噢，我这边看到了，是有25年12月3号。您这边呢，就是说要一次性还清减免，然后后续的话呢，是有把您的一个……就是您是跟客服沟通过的嘛，然后这边呢也有专员跟您联系的。您是12月3号说的这个事情，然后我看一下……我查一下。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "催收员",
-        "text": "喂，您好。呃，最近一次的话呢，是过了大概24天吧，12月25号是有工作人员跟您联系的，但是您都没有接。12月25号给您打了两通电话。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 11,
-        "role": "催收员",
-        "text": "然后12月26号的话呢，您也是有在跟我们工作人员联系，然后就是沟通一下还款的。然后工作人员也是有跟您打电话的，但是您没有接，先生。然后一直到29号，呃，是跟您说了一个预约特殊优惠政策，给您预约了六期。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "客户",
-        "text": "是这样子，是这样子。呃，我之前是跟你们沟通过这个事情，然后就是说，我手机费的话，就是说减免的事情，减免多少。后续的话，工作人员没有再跟我去沟通这个事情，导致我没有一次性把这个还清。",
-        "state": {
-          "facts": [
-            "negotiation_attempt",
-            "contact_difficulty"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "催收员",
-        "text": "嗯嗯，对。"
-      },
-      {
-        "turn_index": 14,
-        "role": "客户",
-        "text": "包括你刚刚跟我说有工作人员给我打电话，是不是我没有接到，是吧？"
-      },
-      {
-        "turn_index": 15,
-        "role": "催收员",
-        "text": "嗯，对。"
-      },
-      {
-        "turn_index": 16,
-        "role": "客户",
-        "text": "呃，因为我也不能保证说我打过来的电话每一个都能够正常接到，但是这个事情我反馈了，包括我主动打电话给专员。",
-        "state": {
-          "facts": [
-            "contact_difficulty",
-            "communication_issue"
-          ]
-        }
-      },
-      {
-        "turn_index": 17,
-        "role": "催收员",
-        "text": "嗯，嗯，是因为3月29号嘛，您的那个……之前给您办理的那个特殊优惠方案，不是每个月让您还600多块钱就可以了嘛。然后3月20号……呃，可是您的逾期在您的缴款截止日前以及缴款截止日后，我们都有在跟您发短信以及打电话，从来都没沟通过。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "催收员",
-        "text": "嗯，先生，这样吧，就是考虑到您的这个情况的话呢，银行也是愿意帮助您的，不会不管您的。所以说，嗯，考虑到您的这个情况呢，您产生的还没有出来的利息违约金，我这边申请一下给您减免掉，也算是帮一下您嘛。麻烦您报一下身份证后四位。",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 19,
-        "role": "客户",
-        "text": "嗯……我现在确实困难，一次性拿不出来。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ],
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 20,
-        "role": "催收员",
-        "text": "呃，先生，就是我们银行呢，也是一直有在跟您不断的沟通和联系的。这个确实银行就是不会不管您的，这个您放心。",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 21,
-        "role": "催收员",
-        "text": "嗯，先生，非常理解您的心情，我们也想帮到您。可是您的最低款您可以先还了440块钱，先生。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 22,
-        "role": "客户",
-        "text": "那利息太高了，能不能重新分期？",
-        "state": {
-          "facts": [
-            "interest_pressure"
-          ],
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 23,
-        "role": "催收员",
-        "text": "先生，我这边是查到是有在跟您打电话的，只是说有些电话您没有接到。而且一天给您至少打了两通，每天都是至少打两通电话的。呃，不是每天两通，不不不，我口误了。就是您那个……呃，就是您申请……嗯，口误了，不好意思。就是呃，我刚才看了一下那个通话记录嘛，您之前在跟客服沟通过之后呢，第二天呢，是工作人员有跟您打电话的，打了两通，我看到是打了，就是第二天打了两通，然后您没有接。是这个意思。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 24,
-        "role": "催收员",
-        "text": "嗯，好的，好的，先生。那您的情况呢，我这边了解了。先生，嗯，呃，就是您后续呢，如果没有还款……噢，噢。但是我们主要还是要把话题放到您的逾期的最低款上面。因为我们银行也是给了您方案的嘛，您的情况也是能够理解的，对吧？把逾期解决了，后续您想要还全款？嗯。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 25,
-        "role": "催收员",
-        "text": "先生，前面也不是我在跟您联系的，哈，就是我们的工作人员一直都是有在轮换的。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 26,
-        "role": "催收员",
-        "text": "嗯，那这样，先生，您想后期还全款的话呢，您的这个诉求我了解到了。然后我下来了会帮你去申请一下，如果有结果了我就联系您，如果没有结果我就不联系您了。然后您这边呢，您准备一下您的逾期的一个还款，您周转到周后就还进来440块钱，张先生。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 27,
-        "role": "客户",
-        "text": "嗯，好的。"
-      },
-      {
-        "turn_index": 28,
-        "role": "催收员",
-        "text": "明白了，明白的。那您的情况我这边了解了。张先生，如果有合适的方案，我会再给您来电话的。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 29,
-        "role": "催收员",
-        "text": "好的，好的。您的情况，呃，这边了解了，张先生，嗯。"
-      }
-    ],
-    "reward": 1,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 8934,
-      "external_debt": 24274,
-      "has_negotiation_history": True,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 16,
-      "interest_ratio": 0.02,
-      "installment_ratio": 0.0,
-      "age": 41,
-      "gender": "女",
-      "education": "unknown",
-      "industry": "制造业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_evidence": {
-      "trigger_text": "嗯，好的。",
-      "trigger_turn_index": 5
-    },
-    "reward_action_credit": {
-      "turn_index": 5,
-      "role": "客户",
-      "action": "agree_to_pay",
-      "text": "嗯……呃，现在是这样的。之前的时候，我打过几次电话，就是说我要提前还，然后……一直没有人来处理那个事情。",
-      "explanation": "Customer showed conditional willingness (wanted to pay but cited contact issues and hardship). Collector validated his complaint, acknowledged his history, then offered empathy and a concrete plan (pay $440 now, get fee waiver). This shifted customer from resistant to negotiating, then to agree_to_pay by providing a clear, manageable next step."
-    }
-  },
-  {
-    "call_id": "2322104580207445086",
-    "cust_no": "0104120006",
-    "call_date": "20260511",
-    "coll_user_id": "SX17184",
-    "mob_typ": "M1",
-    "talk_time": "139",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 未提及减免或调减金额   |\n| MINA方案   | 未推荐   | 未提及最低还款方案     |\n| 促成技巧   | 未运用   | 未使用对比、稀缺性等技巧 |\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000104120006",
-      "年龄": "48",
-      "性别": "女",
-      "申请卡片时间": "2006-07-01",
-      "学历": "本科",
-      "行业": "服务类行业",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "8950",
-      "利息占欠款比例": "3%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "可正常使用卡片",
-      "24期缴款评等": "232111221221222112111121",
-      "外部欠款金额": "外部欠款总余额1290185，其中，信用卡欠款12472，银行贷款欠款1231370，消金贷款欠款21878，其他贷款欠款24465",
-      "外部共债机构数": "外部共债机构数共15家，其中逾期的机构共7家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款10077元，有协商方案，要么还504元后办理5%MINA，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2320277980367247548,Y2321181580076194847,Y2322104580207445086",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂，您好，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "喂。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "呃，先生，您好，这里是招商银行信用卡中心，就目前您的个人信用卡账户逾期最低款项还有一个954元，到目前为止还是没有处理到位。先生这边看您还款之后还是可以尝试刷卡使用一下。就是您避免此次逾期导致您的这张卡片无法正常使用。先生这边建议您可以补交一下您这个逾期最低款项954元吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "嗯……那你们可以帮我申请分期吗？我现在近期经济会有点压力。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ],
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "噢，就是您这边大概是遇到什么困难情况了，我这边帮您备注登记一下。",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "嗯，就是目前这个收入会有点问题啊。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ]
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "呃，您现在收入降低是吗？",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "嗯，不是因为网贷会比较多。",
-        "state": {
-          "facts": [
-            "debt_inquiry"
-          ]
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "噢，我这边帮您备注登记一下，就您这边目前是还款不了，就是目前银行跟您保留了这个还逾期最低的资格吗？先生。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "那你能去帮我申请这个……免息，然后大概做一个分期，可以吗？",
-        "state": {
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "呃，先生，就是根据您的这个情况，就是您这边想少还一点是吧？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "对，就是帮我申请免息，然后大概做个15期20期这样子。我应该只剩下8000多块钱没还了是不是？",
-        "state": {
-          "facts": [
-            "debt_inquiry"
-          ],
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "嗯，我这边会帮您备注登记一下，好吧。那您这边以后续的实际方案为主。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "你这个利息太高了。我总共才10000多的额度，每个月你扣我200多的利息，我觉得这个是有点太高了。我之前反映过的。",
-        "state": {
-          "facts": [
-            "interest_pressure",
-            "debt_inquiry"
-          ],
-          "emotions": [
-            "complaint"
-          ]
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "好，好，我这边会帮您备注登记，那您这边以后续实际方案为主。好吧，先生。会帮您反馈一下的。那这边就先不打扰您了，再见。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "行行行，谢谢啊。拜拜。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 8950,
-      "external_debt": 1290185,
-      "has_negotiation_history": False,
-      "available_plans": [
-        "reduction",
-        "mina"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": False,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 15,
-      "interest_ratio": 0.03,
-      "installment_ratio": 0.0,
-      "age": 48,
-      "gender": "女",
-      "education": "bachelor",
-      "industry": "服务类行业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2318731330622998424",
-    "cust_no": "0104176471",
-    "call_date": "20260507",
-    "coll_user_id": "SX17181",
-    "mob_typ": "M1",
-    "talk_time": "73",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 无相关话术             |\n| MINA方案   | 未推荐   | 无相关话术             |\n| 促成技巧   | 未运用   | 无相关话术             |\n```\n\n---\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000104176471",
-      "年龄": "47",
-      "性别": "女",
-      "申请卡片时间": "2006-07-01",
-      "学历": "高中及中专",
-      "行业": "政府机构、社会团体",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "3784",
-      "利息占欠款比例": "4%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "322221121222111111112111",
-      "外部欠款金额": "外部欠款总余额5330766，其中，信用卡欠款182180，银行贷款欠款5042434，消金贷款欠款106152",
-      "外部共债机构数": "外部共债机构数共15家，其中逾期的机构共10家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款3714元，有协商方案，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2297064660028004864,Y2298869680333271488,Y2298905710379737531,Y2316738220033001045,Y2316993420333275362,Y2318462540132135373,Y2318707150367249691,Y2318731330622998424,Y2319395040367246585,Y2319609560307825550,Y2320509780207445934",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "您好。请留下你的姓名和来电原因，我会帮你确认此人是否方便接听。"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "喂，您好。张先生，这里是招商银行信用卡中心，有您信用卡相关事宜需要沟通和交流。",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "谢谢，请不要挂断电话……嗯，抱歉，此人暂时无法接听。若要留言，请在提示音后回复。"
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "喂，您好。张先生，这里是招商银行信用卡中心，有您信用卡紧急事情需要与本人沟通和交流，请您尽快回电，联系方式详见短信，谢谢。",
-        "state": {
-          "action": "greeting"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 3784,
-      "external_debt": 5330766,
-      "has_negotiation_history": False,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 15,
-      "interest_ratio": 0.04,
-      "installment_ratio": 0.0,
-      "age": 47,
-      "gender": "女",
-      "education": "other",
-      "industry": "政府机构、社会团体",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2321297800428938546",
-    "cust_no": "0104898178",
-    "call_date": "20260510",
-    "coll_user_id": "SX17213",
-    "mob_typ": "M1",
-    "talk_time": "98",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 无相关话术             |\n| MINA方案   | 未推荐   | 无相关话术             |\n| 促成技巧   | 未运用   | 无有效引导客户接受方案 |\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000104898178",
-      "年龄": "42",
-      "性别": "女",
-      "申请卡片时间": "2006-10-01",
-      "学历": "大专",
-      "行业": "制造业",
-      "社保缴纳情况": "社保断缴",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "3543",
-      "利息占欠款比例": "2%",
-      "分期金额占欠款比例": "10%",
-      "是否管制": "已管制",
-      "24期缴款评等": "2221121B11121222BBBBBBBB",
-      "外部欠款金额": "外部欠款总余额1543，其中，其他贷款欠款1543",
-      "外部共债机构数": "外部共债机构数共1家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款1368元，无可用的协商方案;002账号欠款476元，无可用的协商方案;080账号欠款1798元，有协商方案，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2317699200323083910,Y2320201410071381449,Y2321297800428938546",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂，您好，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "是，你哪位？"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "先生您好，这边是招商银行信用卡中心的。您目前信用卡逾期最低还款额是904.14元，需要您处理一下。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "嗯，我知道，工资还没发呢。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ]
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "昨天上午您来电说工资还没发，今天会处理。现在已经是下午四点半了，工资还没到账吗？",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "对，还没到账呢。老板说周日才发。",
-        "state": {
-          "facts": [
-            "payment_commitment",
-            "situational_hardship"
-          ]
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "好的，那跟您说一下，如果您还想把握最后一个机会，务必在今天下午五点半之前把逾期款项还上。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "知道了。你们能不能不要一天打十几个电话？我会录音的，你们这是骚扰。",
-        "state": {
-          "emotions": [
-            "hostility"
-          ],
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "好的，这边帮您登记一下。另外，今天下午五点半系统会进行应查账，之后会审核您的车产、房产、工资等。如果审核到您本人有还款能力却不还款，后端部门不排除会强行扣款，这个需要提醒您注意。",
-        "state": {
-          "action": "legal_threat"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "扯什么淡呢？怎么可能？",
-        "state": {
-          "emotions": [
-            "hostility"
-          ],
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "这是提醒您，希望您能尽快处理。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "你们已经提醒够多次了。",
-        "state": {
-          "emotions": [
-            "complaint"
-          ],
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "那您抓紧时间吧。",
-        "state": {
-          "action": "pressure"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 3543,
-      "external_debt": 1543,
-      "has_negotiation_history": False,
-      "available_plans": [
-        "reduction"
-      ],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 1,
-      "interest_ratio": 0.02,
-      "installment_ratio": 0.1,
-      "age": 42,
-      "gender": "女",
-      "education": "college",
-      "industry": "制造业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2317802700405371586",
-    "cust_no": "0104995865",
-    "call_date": "20260506",
-    "coll_user_id": "SX17273",
-    "mob_typ": "M1",
-    "talk_time": "295",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 提供     | “可以申请到一个12期的方案，每月还1647.41元” |\n| MINA方案   | 未推荐   | 未提及最低还款方案或5%还款比例 |\n| 促成技巧   | 未运用   | 未使用对比、稀缺性等促成技巧\n```\n\n---\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000104995865",
-      "年龄": "48",
-      "性别": "女",
-      "申请卡片时间": "2006-10-01",
-      "学历": "大专",
-      "行业": "制造业",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行有房贷，欠款1077100",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "29707",
-      "利息占欠款比例": "0%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "3322320211B1BBBBBB1B2BBB",
-      "外部欠款金额": "外部欠款总余额1153325，其中，信用卡欠款75953，其他贷款欠款1077372",
-      "外部共债机构数": "外部共债机构数共14家，其中逾期的机构共1家",
-      "历史协商情况": "有协商历史，其中，调减1次，合计调减金额721",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款32107元，有协商方案，要么还1605元后办理5%MINA，要么办理调减方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "N2304686890618091974,Y2312393300415654754,Y2317802700405371586",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "喂"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "喂您好，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "是是，嗯。"
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "这边是招商银行信用卡中心的。前期有工作人员跟您沟通过还款情况，您当时处理了6700，但之前是严重逾期。目前您有两期账单已经出了，又逾期了一期，逾期金额是1384.58元。您看您这边在线办理一下。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "那个，我想协商解决一下，就是每月定期还的那种。",
-        "state": {
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "呃，是这样的，方案倒是有，但协商的方案比逾期最低额高一点点。目前每个月可以给您申请一个方案，就是每个月固定还一个金额。这个方案可以办到12期，长达一年。您每年5号还一个金额就可以了。期间会收取相关息费，但看到您前期沟通记录，确实困难，可以给您申请中间息费免收处理。比如说您今天还一下，是不是？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "看一下哈。您目前这个款项按理说需要在4月5号就处理了，就是5月5号处理目前逾期，也就是说您处理之后……",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "当时他们跟我说，是每个月还600多。",
-        "state": {
-          "facts": [
-            "contact_history"
-          ]
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "600多对，因为当时每期账单在改变，当时给您协商的方案，您当初是……",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "他当时跟我说是先还这个回来再协商的。",
-        "state": {
-          "facts": [
-            "contact_history"
-          ]
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "您稍等，我看一下。是4月30号给您说的，是吗？"
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "嗯。还有，当时我还那个钱，他说给我免两期利息和……给我免了吗？",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ]
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "给您看一下。免的息费，我这边看是给您免了。然后那个600多的方案，您稍等一下，我给您看一下。当初是跟您说，免减一期的息费，然后免一期的息费嘛。这边也是给您减了，免了。然后600多的方案，我这边要看一下。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "催收员",
-        "text": "先生，这个方案当初那个600多的方案好像……这边没有了。目前给您申请的上限方案，就是每个月还1600多。因为您当初还上款项之后，没有及时和当时的工作人员沟通。我也看到工作人员当时是跟您申请出来的，但可能是没有做到一个沟通。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "客户",
-        "text": "再给我申请一下吧，现在还的有点难度，行吗？你再说，来给我申请一下。",
-        "state": {
-          "emotions": [
-            "negotiation"
-          ],
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "催收员",
-        "text": "这个方案作废的话，这边没有办法再次去申请了，先生。而且目前您一直处于逾期情况，您也可以看到近半年的还款时间和金额，一直是处于这个……",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "客户",
-        "text": "您好？"
-      },
-      {
-        "turn_index": 17,
-        "role": "催收员",
-        "text": "很严重的逾期之后您再去还的款项，可能没有办法再次帮您申请。您看要不就是目前先给您申请到每个月还一个金额的方案，将近一年的期限，后续有方案的话，这边再给您优先提供。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "客户",
-        "text": "我现在有点难度，我考虑一下啊。唉，有事先挂了啊。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ],
-          "emotions": [
-            "anxiety"
-          ],
-          "willingness": "weak"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": True,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 29707,
-      "external_debt": 1153325,
-      "has_negotiation_history": True,
-      "available_plans": [
-        "reduction",
-        "mina"
-      ],
-      "social_insurance_stable": True,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 14,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 48,
-      "gender": "女",
-      "education": "college",
-      "industry": "制造业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2320514030316380505",
-    "cust_no": "0105497274",
-    "call_date": "20260509",
-    "coll_user_id": "AA11395",
-    "mob_typ": "M1",
-    "talk_time": "52",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |\n|------------|----------|------------------------|\n| 调减方案   | 未提供   | 无减免方案提及         |\n| MINA方案   | 未推荐   | 无最低还款方案提及     |\n| 促成技巧   | 未运用   | 无对比、稀缺性等技巧提及 |\n```\n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000105497274",
-      "年龄": "48",
-      "性别": "男",
-      "申请卡片时间": "2006-12-01",
-      "学历": "未填",
-      "行业": "服务类行业",
-      "社保缴纳情况": "有社保",
-      "他行是否有房贷": "他行有房贷，欠款343158",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "套现客户",
-      "持卡客户是否疑似代理中介投诉": "是",
-      "总欠款": "30750",
-      "利息占欠款比例": "3%",
-      "分期金额占欠款比例": "0%",
-      "是否管制": "已管制",
-      "24期缴款评等": "ZZZZZZZZZZZZZZZZZZZZZZZZ",
-      "外部欠款金额": "外部欠款总余额650378，其中，信用卡欠款272254，银行贷款欠款343158，消金贷款欠款34966",
-      "外部共债机构数": "外部共债机构数共11家，其中逾期的机构共6家",
-      "历史协商情况": "有协商历史，其中，调减1次，合计调减金额191",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款30750元，无可用的协商方案;003账号欠款0元，无可用的协商方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2304670900415655206,Y2309803610585880393,Y2310080100494443884",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂，您好，是董宝女士吗？呃，招商银行信用卡中心的，是董女士吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "呃，是这样的，来电话是这边有接到一份紧急通知函。关于您这个身份证尾号1028名下的一个个人信用卡出现了一个逾期的情况，然后我看到您是……呃，没有处理，是忘记处理了，还是说有什么其他特殊情况呀？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "您说……您说……看我的投诉内容。嗯，不要跟我在这里混淆，那个招联金融是招商银行APP里的，你不要脱离关系。",
-        "state": {
-          "facts": [
-            "collection_grievance"
-          ],
-          "emotions": [
-            "hostility"
-          ]
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "呃，我看过了，就是您这个是招联金融的，不是我们这个部门的呀。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "就是去投诉，什么时候解决，什么时候再给我打好吧。",
-        "state": {
-          "emotions": [
-            "hostility"
-          ],
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "问问，问问你们自己行内，好吧。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": True,
-      "credit_rating": "good",
-      "days_delinquent": 30,
-      "total_debt": 30750,
-      "external_debt": 650378,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": True,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 11,
-      "interest_ratio": 0.03,
-      "installment_ratio": 0.0,
-      "age": 48,
-      "gender": "男",
-      "education": "unknown",
-      "industry": "服务类行业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2322198010636231794",
-    "cust_no": "0105587475",
-    "call_date": "20260511",
-    "coll_user_id": "SX15390",
-    "mob_typ": "M1",
-    "talk_time": "1240",
-    "plan_evaluation": "| 类型       | 执行情况 | 关键证据               |  \n|------------|----------|------------------------|  \n| 调减方案   | 未提供   | 未明确说明减免金额或条件 |  \n| MINA方案   | 未推荐   | 未提及“还最低金额”或“两期账单调整为0” |  \n| 促成技巧   | 未运用   | 未使用对比、稀缺性、从众心理等技巧 |  \n```  \n\n```",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000105587475",
-      "年龄": "47",
-      "性别": "女",
-      "申请卡片时间": "2006-12-01",
-      "学历": "未填",
-      "行业": "商业贸易",
-      "社保缴纳情况": "有社保，但为灵活就业参保，稳定性不高",
-      "他行是否有房贷": "他行有房贷，欠款192242",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "137925",
-      "利息占欠款比例": "4%",
-      "分期金额占欠款比例": "29%",
-      "是否管制": "已管制",
-      "24期缴款评等": "ZZZZZZZZZZZZZZZZZZZZZZZZ",
-      "外部欠款金额": "外部欠款总余额545618，其中，信用卡欠款96059，银行贷款欠款234458，消金贷款欠款32564，其他贷款欠款152722",
-      "外部共债机构数": "外部共债机构数共38家，其中逾期的机构共12家",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款52210元，有协商方案，要么还2611元后办理5%MINA，要么办理调减方案;002账号欠款85715元，有协商方案，要么还4286元后办理5%MINA，要么办理调减方案;003账号欠款0元，无可用的协商方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "N2322196050597706709,Y2320184370333278666,Y2322066360232187677,Y2322067590460371728,Y2322198010636231794,Y2322238160597705620",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "好好"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "那个……手出……失败了。",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ]
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "唉，您好，请问是张先生吗？先生，来电是有重要的事情要通知到您。",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "张……"
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "您能听到我讲话吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "嗯，噢，签在了我现……"
-      },
-      {
-        "turn_index": 7,
-        "role": "催收员",
-        "text": "您是张先生对吧？嗯，之前打您电话没有打通哈，后续无论您能不能还款，都要接银行电话。因为联系不上您，系统可能会外呼到紧急联系人转告回电的，为了避免让家人朋友为您担心嘛。我简单跟您说一下情况可以吧？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "客户",
-        "text": "好的。"
-      },
-      {
-        "turn_index": 9,
-        "role": "催收员",
-        "text": "嗯，此次跟先生打电话的话，是因为前期有这个一线工作人员跟您联系过，但是您一直没有还款。逾期的，一线工作人员已经把您的违约报告单以及前期的通话录音全部收集完毕。我们是收到您身份证尾号1230明细的逾期材料。截止到目前为止，因为银行没有收到您的逾期款项嘛，已经是升级到招商银行信用卡中心总部风险管理室做终审了。现在已经是转到招商银行信用卡中心全部风险管理室。嗯，然后部门的话呢，签收全款了。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 11,
-        "role": "催收员",
-        "text": "那张先生，目前总欠款是一个135000块钱嘛。银行这边想让我来跟您做最后一次协商，看看能不能协商一下，在今天下午七点前把这个逾期的撤案金额——嗯，4000多块钱处理到位。还有另外一个账户是一个10000，另外一个账户是一个18000，加起来是一个20000块钱左右。然后我这边也能帮您做撤案哈。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "客户",
-        "text": "嗯，我处理不了。",
-        "state": {
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "催收员",
-        "text": "呃，是这样的，张先生，因为您不是之前逾期的次数很多了吗？我也知道您这边有困难，如果您遇到什么困难了，银行是可以给您提供一些还款方案的。但是您也知道，信用卡是每个月要还的，不能说您现在没发工资呀，或者没款项到呀，就不还款了。如果先生确实有困难，银行是可以给您提供一些还款方案的，这个是我们能帮的哈。",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 15,
-        "role": "催收员",
-        "text": "嗯，先生。"
-      },
-      {
-        "turn_index": 16,
-        "role": "客户",
-        "text": "我、我，我通过12037方联系打电话联系，就是想……电，我先给我方，你们并没有给我。"
-      },
-      {
-        "turn_index": 17,
-        "role": "催收员",
-        "text": "给到您协商方案了，您可以去核实的，我已经看到帮您去申请了。我们这边不是您，不是说您最低还不了吗？我们给您特殊申请了一个个性化的协商政策，正常是要签订保密协议的。您的信用卡账户要求您还一个2000多块钱，E招贷逾期卡账户是要求您还一个4000多块钱，解决您两期账单的问题。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "客户",
-        "text": "没有跟我这样说呀。"
-      },
-      {
-        "turn_index": 19,
-        "role": "催收员",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 20,
-        "role": "客户",
-        "text": "跟我说的是……到一个是……如需要……"
-      },
-      {
-        "turn_index": 21,
-        "role": "催收员",
-        "text": "我没太听懂，刚才有点卡，您可以再讲一下吗？还一个34000？噢，别误会先生，是不是工作人员没有跟您讲清楚呀？因为我看到他给您去申请了哈。给到您协商方案了，这个方案的话呢，是一个个性化的协商政策，正常是要签订保密协议的，大概一个账户是要求您还一个2000多，另外一个账户需要您还一个4000多哈。这个方案是解决您两期账单的问题。因为我看了……您说……嗯，那以我说的为准。先生，因为我这边对我说的每句话都会负责任的哈，通话有录音的。这个还掉这个金额之后，是解决您两期账单的问题哈，因为您正常两期账单应该是要还一个50000块钱的哈。本次还完这个金额之后，下次还款日时间是在12号，7月12号哈，中间大概给了您40天的时间去周转。并且的话呢，这期间只要您是按时还的，您的征信就还是正常的，银行不会算您逾期。那当下时代嘛，征信相当于第二张身份证，能尽量不进一步受损都是尤为重要的哈。并且方案调整成功后呢，银行也会停止清收流程，一式三份的律师函会停止发送，您账单逾期的情况也可以解决，也不会像有当下这样的催收电话短信给您发过去了哈，您可以好好工作，不用担心还款的问题了。您连续设置是这边的话，我看了一下哈，给您连续设置一年都是还这个金额，您不用担心下次还款金额过高还不了什么的。嗯，本次算一次嘛，后续这边只要您是按时还的，您的征信就还是正常的，银行不会算您逾期。这一年都是给您去做缓冲的，一年之后如果有困难，还是可以继续和银行协商的哈，您说张先生？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 22,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 23,
-        "role": "催收员",
-        "text": "嗯，因为……先生说……先生，是这样，您离手机近一点好吗？因为您那个声音可能离得有点远，我听的声音是模糊的哈，听不清。您离手机近一点，说慢一点，我能听得到。呃，先生，后面您的声音就小了，我真的没有听清，您离手机近一点好吗？然后您大一点声音。因为我这不是在跟您解决嘛，但是我这边的话呢，听不到。是不是您信……我能听清，但是您后面讲着讲着声音就有点变小了，我就有点听不清了。你现在说，可以听得到。这样吧，我也不能……噢，可以的，您现在我可以，那您说。要确认觉得……嗯，先生，我明白，我理解。就是这个您还不还，我不做干涉。因为此次来，因为您不是之前逾期的次数很多了嘛，您不是在招商银行一共是逾期了有三次嘛，已经是一年三次逾期了哈，是已经达到我行清收标准了。您不是这一次是反复逾期吗？您每次逾期，招商银行都会重新做一个审核。比如说您这一次逾期，那银行下个我就要清收全款了。因为您之前逾期的次数很多了，所以招商银行因为风险问题是没有办法一直要求您还最低的。因为您反复逾期状态，已经花费银行大量人力物力清收成本了。如果说银行走合理合法的流程，要求您还40000块钱。您先说。嗯，那先生，您这通话录音的……您说。对，这一次，先生，这一次是目前账单已出两期。嗯，不对，先生，您在招商银行一共是三次逾期了哈，并且您这一次是反复逾期。就是因为您这一次是反复逾期，比如说哈，您这一次逾期了，那银行这边的话呢，会做一个重新审核。您就是不，目前不是账单已出两期嘛。所以银行因为风险问题没有办法一直要求您还最低的。因为您反复逾期的状态，已经花费银行大量人力物力清收成本了。如果银行采取合理合法的流程，要求您还130000块钱的话，是最有效最节约成本的，因为您欠款130000块钱已经是打到银行强制执行的标的额了哈，属于国家巨大欠款金额。但是跟您沟通我们肯定看得出来，逾期不是您的本意，所以我代表招商银行的协商团队，最后一次来通知到您。这一次协商沟通，是关于您的总欠款130000块钱，是否能在2026年继续和银行合作，是否能在2026年继续申请好的方案。如果您明知道没有办法还掉总欠款130000块钱的话，那么请您把握好最后一次在行内和解的机会。这一次咱们在银行内部达成和解了，我会立马帮您拦截一式三份的信函。并且您之前逾期的情况银行既往不咎，剩余总欠款如果今年还是资金周转困难的话，协商团队会尽全力帮您，好的方案帮您渡过难关的，好吧。至少把一……嗯，对，嗯，嗯，嗯，嗯，我知道。给您讲……您是说信用卡是一个4000多，然后分期卡是一个10000多，对不对？这个确实是您的逾期最低，是的。您之前……没有产生问……还是……是三这边……嗯，先生，您是说没有工作人员没有给您提供这个方案吗？那我这边的话呢，先跟您回答一下您这个问题。好吧，先生，如果之前我看到工作人员去给您申请了，可能他当时没有跟您去讲，然后如果这边的话呢没有去跟您讲，那如果说没有跟您讲，我也跟您说声抱歉，张先生。因为目前这个是银行内部最优的方案了。嗯，请您相信，先生，我也知道您很困难，也是希望能和您达成一致的，毕竟我们的目标是一样的，好吧。吧，您说。是这样的吗？您说。嗯，那您……知道为什么？就是您本次随便跟我讲了一下，我就去把这个方案给到您了，您知道为什么您可以申请到这个银行内部的个性化协商政策嘛？您知道是为什么吗？对，先生，这个方案已经是银行内部最优的方案了。请您相信，先生，我跟您讲一下为什么您可以申请到这个方案。您说。分期对吗？噢，是有的。招商银行也有分期政策，先生，但是每家银行的风险管控和风险策略是不一样的。您看不止我一个人跟您讲过对不对？这个分期这边的话办不了，不只是我一个人给您讲过。是不是？要是能给您办，银行不早就给您办了吗？我很理解您这边的话，拿招商银行跟其他银行做对比的心情，我非常理解。我看了一下哈，嗯，如果说您在招商银行想办理分期，我也可以帮您办，但是我觉得并不太划算。嗯，目前总欠款不是一个130000块钱嘛，对不对？如果我看了，您要办理分期，您是最多分六期的，然后每期要还一个22000多块钱，每期大概会有一个500块钱的分期费用。不是，不是的，是这边的话六期，因为因为我通话是有录音的。对，这边的话呢，我们招商银行也有，但是您这边的话综合评分不足，您办不了，先生，因为你的已经办理过，这边因为你的这个分期卡嘛，本身这边的话呢，就是一笔分期，所以没有办法这二次给您办理分期。但是我不是现在在跟您解决问题嘛，您可以还了之后，等后续不逾期了，尝试致电客服申请分期哈。我跟您讲一下为什么这边的话呢，可以给您办理这个方案，就是因为我看到这个方案是您低风险客户专享的，就是因为您之前有良好的还款姿态嘛，一沟通就还款了，所以您随便跟我讲了一下，就把利息以后我经给就是把这个就是给到你这个特殊调整方案嘛。我看到工作人员还帮您把利息和违约金给您减免了，对不对？就是因为您是银行低风险客户专享的。但是我看到这次您名字旁边已经有这个还款观测客户标签了嘛。银行要对您的还款态度做审核。如果今天下午的这个七点钟还不掉的话，那这个方案后续能不再提供了？但是如果您本次还款成功了，我们可以把您放在招商银行的内部调整名单当中去，后续有困难，您可以来找银行协商，您哪怕每个月来找银行协商都是没有问题的。就像本次您随便跟银行一讲，银行不是帮了吗？对不对？就是因为我看到这个方案是……没有的先生。你下左右……呃，先生您别误会，您别误会先生。您看一下，就是因为您是银行这边的话呢，白金分期账户专享的，您看您是这边的话呢？是您当时进线我们的客服，对不对？是在4月份的时候您进线我们同事对不对？后续我们这边的话呢？您逾期了，我们后续工作人员跟您打了很多电话之后，就给到了您的还款方案。不是5月9号就给到了您的还款方案。嗯，因为先生，当时在4月份您就跟我们银行打电话的时候，我们也给到过您协商方案的。对，您变……对。因为这个最低是银行的审核底线，您想想，你欠银行130000块钱，银行只要求您还一个10000多块钱、20000块钱多嘛？对不对？而且我看到它还把……我理解您的心情嘛，我也明白。嗯，先生，我明白您有困难，但是最低是银行的审核底线嘛，是保卫银行资金安全的底线。嗯，然后我下午的这个就是……七点钟嘛，就是19点钟嘛，我要交材料，我要录入银行的系统，就是看您自己吧，我不做干涉。张……嗯，因为……嗯，不有……嗯，所以我这不是在跟您解决嘛。您在今天下午的这个银行，您目前我还是可以帮您争取到这个个性化的协商政策的。您还掉一个账户是2000多，另外一个账户是4000多，加起来有个6000多块钱嘛，您还掉之后，我是可以帮您把您申请这个个性化的协商政策的。因为如果您没有办法还，那您两期账单是要还一个50000多块钱的。因为您也知道嘛，信用卡的钱是属于国家的，招商银行的信用卡也是受到国家法律保护的，我行也是能100%收回这笔钱的哈。嗯，好，嗯。嗯，先生，您欠的是银行的钱，不是什么网贷第三方，您先说。不是什么网贷第三方，如果名下有相应的资产，银行不担心收不来这笔账，到最后您都得还款，还得承担逾期的影响。先生，名下有相应的车房贷吗？先生名下有相应的车房贷吗？有哪家银行办理的？淘宝吗？您现在打开淘宝，您看一下里面有个阿里法拍。是不是一直在……而且您还的……嗯，先生，您欠的是银行的钱，不是什么网贷第三方，先生，我行是100%能收回这笔钱的。嗯，因为你这边的话呢，就是因为你的个人拖欠行为增加了银行的清收成本，后续所有的影响都是需要您自行承担的。您目前的房子是您自己在住，还是您家人在住呀？嗯，那您这个房子的市场估值大概多少呢？打储蓄卡了？转接？那您目前的话呢？嗯，先生，目前的话呢，您家人知道您的外部负债逾期情况吗？知道对吗？他们不，他们不帮你吗？你要想……嗯。",
-        "state": {
-          "action": "pressure"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": True,
-      "credit_rating": "good",
-      "days_delinquent": 30,
-      "total_debt": 137925,
-      "external_debt": 545618,
-      "has_negotiation_history": False,
-      "available_plans": [
-        "reduction",
-        "mina"
-      ],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 38,
-      "interest_ratio": 0.04,
-      "installment_ratio": 0.29,
-      "age": 47,
-      "gender": "女",
-      "education": "unknown",
-      "industry": "商业贸易",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2337738920631743115",
-    "cust_no": "0103479217",
-    "call_date": "20260529",
-    "coll_user_id": "AA11400",
-    "mob_typ": "M1",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {
-      "统计日期": "2026-05-13",
-      "客户号": "0000000103479217",
-      "年龄": "55",
-      "性别": "女",
-      "申请卡片时间": "2006-04-01",
-      "学历": "大专",
-      "行业": "高新技术制造业",
-      "社保缴纳情况": "有社保，但为灵活就业参保，稳定性不高",
-      "他行是否有房贷": "他行无房贷",
-      "他行是否有车贷": "他行无车贷",
-      "我行是否有房贷": "我行无房贷",
-      "我行是否有车贷": "我行无车贷",
-      "是否为套现客户": "非套现客户",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "总欠款": "11959",
-      "利息占欠款比例": "",
-      "分期金额占欠款比例": "",
-      "是否管制": "已管制",
-      "24期缴款评等": "2BB222BBB22BBBBBBBBBB2BB",
-      "外部欠款金额": "",
-      "外部共债机构数": "",
-      "历史协商情况": "无协商历史",
-      "历史投诉情况": "客户历史没有重渠投诉",
-      "当前可使用的协商方案": "001账号欠款9646元，无可用的协商方案;003账号欠款2523元，无可用的协商方案",
-      "当前可使用的法务工具": "无可用的法务工具",
-      "近一个月callid": "Y2317805660338590411,Y2320288940428936723",
-      "是否完成总结": "0",
-      "是否谈判大脑客户": "N"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂，您好，呃，听得到声音吗？请问是张鑫先生吗？唉，您好，张先生，这边是招商银行信用卡中心风险管理部门哈，是这样子的，张先生，因为您有个E招贷账户，这边有逾期，最低有个146，您这边是不是忘记还了呀？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "喂你好"
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "对"
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "现在现在没钱了",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "噢，是什么情况吗？"
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "嗯，呃，失业了呗",
-        "state": {
-          "facts": [
-            "income_loss"
-          ]
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "失业了，失业大概多久了呢？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "嗯，一段时间了",
-        "state": {
-          "facts": [
-            "income_loss"
-          ]
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "有一段时间了哈。但是咱们这个E招贷的话，有个146块钱，根据到你的这个情况，呃，您如果说没有去处理的话，您两个账户它是风险联动的，即使说您个人信用卡这边没有发生逾期，那风险联动的话，到时候可能会导致您两个账户总欠款11958.28元是需要您一次性结清的，先生。",
-        "state": {
-          "action": "legal_threat"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "我欠100多的就解决这10000多了？",
-        "state": {
-          "emotions": [
-            "confusion"
-          ]
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "146"
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "呃，我知道那货款几几年结还得过几天。",
-        "state": {
-          "facts": [
-            "future_payment_plan",
-            "debt_inquiry"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "呃，您声音有点小声，您说什么？"
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "我说那点钱过几天我把它还了。",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "逾期这个过几天？"
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "嗯"
-      },
-      {
-        "turn_index": 16,
-        "role": "催收员",
-        "text": "那信用卡呢？是没办法担保要求您愿意还的。时间上肯定是没有办法说给您去做一个推迟。哈，先生，您现在的话不挂电话在线把这个146还进来，我这边马上给您去撤案，后续您仍可以按照最低还款缓解资金压力。您看是通过微信还是掌上生活还款呢？",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 17,
-        "role": "客户",
-        "text": "没有"
-      },
-      {
-        "turn_index": 18,
-        "role": "催收员",
-        "text": "如果说您确实是需要时间的话，请您在今明2天之内把您这个E招贷146还进来。如果说确实处理不了两个账户的一个全款11958.28，邀请您提前准备好，风险是联动的，到时候您处理的不光光是您的E招贷，两个账户都是需要您还款的。好吧。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 19,
-        "role": "客户",
-        "text": "明白我明白"
-      },
-      {
-        "turn_index": 20,
-        "role": "催收员",
-        "text": "嗯，好，那您这边抓紧时间，这边就先不打扰您了。",
-        "state": {
-          "action": "closure"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "moderate",
-      "days_delinquent": 30,
-      "total_debt": 11959,
-      "external_debt": 0,
-      "has_negotiation_history": False,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": False,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 55,
-      "gender": "女",
-      "education": "college",
-      "industry": "高新技术制造业",
-      "has_complaint_history": False,
-      "has_legal_tools": False,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2346432670631748499",
-    "cust_no": "0175662898",
-    "call_date": "20260608",
-    "coll_user_id": "AA9404",
-    "mob_typ": "M1",
-    "talk_time": "253",
-    "plan_evaluation": "",
-    "customer_info": {
-      "经营贷款余额": "1268000.0",
-      "其他贷款余额": "0.0",
-      "学历": "大专",
-      "商业房贷余额": "0.0",
-      "持卡客户是否疑似高风险代理投诉": "否",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "社保缴纳情况": "",
-      "总欠款": "9743.93",
-      "ct标签": "040,667,701",
-      "近7天还款操作": "N",
-      "名下历史车辆数": "",
-      "近7日接通次数": "3",
-      "客户风险标识等级": "1级",
-      "客户投诉评分": "9"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "好的"
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "喂"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "嗯，呃，您好，请问是戴金玉女士，是吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "对"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "您好。戴女士，招商银行信用卡中心您的个人逾期材料已经审核失败了，那后端部门将通过我们转交到您的逾期材料，后续银行也会通过强制清收流程追偿您在我行的全额欠款。那我们也不需要函件寄送了，以后对您的工作生活影响以及对您现在个人情况，银行也需要简单核实一下。您现在本人是在做生意还是在打工呢？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "呃，我们自己做工程的。",
-        "state": {
-          "facts": [
-            "income_loss"
-          ]
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "嗯，做工程还是在……"
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "现……"
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "您说。"
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "呃，我们现在是做工程，目前是因为工程被欠款，所以我这边才会欠款。",
-        "state": {
-          "facts": [
-            "income_loss",
-            "debt_inquiry"
-          ]
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "嗯，那您这个工程欠款拖欠了多久了呢？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "呃，就因为我们有两个项目，一个项目可能会拖比较久，那另外一个项目我已经在审核了，就是已经在拆分了，也就是这3个月它能出工程款。所以才会说我只要拖这3个月我就可以还。",
-        "state": {
-          "facts": [
-            "future_payment_plan",
-            "debt_inquiry"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "嗯，对，女士，信用卡账户的话，之前也跟您沟通过了，它确实是1月一还的。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "我知道我知道你的意思，也就是我能还，你一直给我打这个电话我也会还，但确实是我真的没有办法。哪怕你再一直给我打，我也没有办法，因为我现在真的是有心无力。我跟你讲很简单，就是我们款被拖了，然后我所有的东西我一直在付出，我目前就是要等工程款进来我才能付得出来。那工程款我们也已经在审核了，也就是这3个月的时间。",
-        "state": {
-          "facts": [
-            "future_payment_plan",
-            "debt_inquiry"
-          ],
-          "emotions": [
-            "distress"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "嗯，好吧。那在打断……"
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "没关系，你看我们需要多少利息，没事我付。因为我知道这个本身就是我们的问题，按标准我们肯定是要还，但是因为我确实目前有这个困难，不是说我们不还。",
-        "state": {
-          "facts": [
-            "interest_pressure"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "催收员",
-        "text": "好，您好。嗯，但现在您这个账……"
-      },
-      {
-        "turn_index": 17,
-        "role": "客户",
-        "text": "到时候利息多少没事，你照扣就行了。",
-        "state": {
-          "facts": [
-            "interest_pressure"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "催收员",
-        "text": "嗯，但银行现在的话，也是说利息宁愿给您减掉，不收您的，也是想及时收回这个款项。另外的话，因为您这个账务银行后续还会做相应的流程对接，是无法拦截的。因为函件我已经在起草盖章了，会在今天七点半钟时间去进行对接。您如果要在银行内部通过还款去拦截函件，避免相应的流程的话，您至少是要还到这个882元的。然后您说的这个情况银行也会去进行核实。那您就是自己工程款打款，也没有其他的一些收入来源了，是吗？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 19,
-        "role": "客户",
-        "text": "好，对，我都以工程款为主，因为目前是我们被拖欠，所以才会这么难受。",
-        "state": {
-          "facts": [
-            "debt_inquiry"
-          ]
-        }
-      },
-      {
-        "turn_index": 20,
-        "role": "催收员",
-        "text": "嗯，好行。那您这边说的这个情况我们已经给您去做登记了，然后我这边也帮您去向银行申请了，但是调整下来，最低的还款还是要您还一个882元，会在17点半同一时间进行查账。也是建议您进行筹款，我这边就不打扰您了哈，再见。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 21,
-        "role": "客户",
-        "text": "您好，我跟你讲，你今天跟我讲我真的还不了，你跟我再讲我也真的是还不了。我目前我就没有这么多钱可以还你，是真的没办法我才会去拖。我就跟你讲，只要我款到我立马还，而且利息没关系，你利息多少你到时候直接扣就行了。",
-        "state": {
-          "facts": [
-            "future_payment_plan",
-            "interest_pressure"
-          ],
-          "emotions": [
-            "negotiation"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 22,
-        "role": "催收员",
-        "text": "您说。好，嗯。"
-      },
-      {
-        "turn_index": 23,
-        "role": "客户",
-        "text": "我只要缓过这个时间就没有任何问题。我现在是刚好那边没到，这边又卡到了，所以才会这么难受。",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "emotions": [
-            "anxiety"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 24,
-        "role": "催收员",
-        "text": "嗯，呃，我们现在就是给您说时间方面问题吗？如果说确实……"
-      },
-      {
-        "turn_index": 25,
-        "role": "客户",
-        "text": "我知道我知道，您这边该怎么走怎么走，然后我这边只要款一到，我立马就还。因为现在我跟你讲白了，哪怕我现在真的没钱，你又逼我，我也没用。你一直跟我说让我先还这个东西，我实在没办法。有办法你不需要打这么多的电话，我早就还进去了。",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "emotions": [
-            "distress"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 26,
-        "role": "催收员",
-        "text": "嗯，那这个账户确实对您的最低要求了。您自己考虑一下吧，银行给到您的还款方案，后续进入到强制清收阶段，也是会要求您还全款的。好吧，再见。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 27,
-        "role": "客户",
-        "text": "好行行行，好。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 30,
-      "total_debt": 974393,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "college",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2346161060338593331",
-    "cust_no": "0133381406",
-    "call_date": "20260608",
-    "coll_user_id": "AA11275",
-    "mob_typ": "M1",
-    "talk_time": "166",
-    "plan_evaluation": "",
-    "customer_info": {
-      "经营贷款余额": "0.0",
-      "学历": "高中及中专",
-      "商业房贷余额": "0.0",
-      "其他贷款余额": "0.0",
-      "持卡客户是否疑似高风险代理投诉": "否",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "社保缴纳情况": "",
-      "总欠款": "9207.1",
-      "ct标签": "727,667,040",
-      "近7天还款操作": "N",
-      "名下历史车辆数": "",
-      "近7日接通次数": "7",
-      "客户风险标识等级": "4级",
-      "客户投诉评分": "14"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "嗯"
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "你好"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "唉，喂，你好，请问是赵福云先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "嗯，对。"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "这边是招商银行信用卡中心。呃，之前也是给您来过电话，就看到您处理了一个100块钱进来，对吧？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "嗯，对。"
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "对对，这边已经看到了，有查收到哈。那目前的话，嗯，这边也是在跟您去反馈这样一个方案。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "嗯……现在是我不跟你们说了吗？4号，对啊。"
-      },
-      {
-        "turn_index": 8,
-        "role": "客户",
-        "text": "嗯……多少呀？账务就外……多少呀？不是多少呀？"
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "情况登记，我知道。我是说你让我周转，我周转多少呀？"
-      },
-      {
-        "turn_index": 10,
-        "role": "客户",
-        "text": "好……票了筹进去我……是我要能筹到我我也……跟你们那个什么了。"
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "嗯。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 30,
-      "total_debt": 92071,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2346293890494445608",
-    "cust_no": "0212708173",
-    "call_date": "20260608",
-    "coll_user_id": "AA11275",
-    "mob_typ": "M1",
-    "talk_time": "102",
-    "plan_evaluation": "",
-    "customer_info": {
-      "经营贷款余额": "0.0",
-      "理财时点值": "0.4",
-      "其他贷款余额": "304780.0",
-      "学历": "本科",
-      "商业房贷余额": "0.0",
-      "持卡客户是否疑似高风险代理投诉": "否",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "社保缴纳情况": "",
-      "总欠款": "17913.57",
-      "ct标签": "701",
-      "近7天还款操作": "N",
-      "名下历史车辆数": "",
-      "近7日接通次数": "3",
-      "客户风险标识等级": "",
-      "客户投诉评分": "9"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂你好，请问是施万文女士吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "哪个啊？"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "这边是招商银行信用卡中心，请问是施万文女士吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "对啊。"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "嗯，这边的话上午也是有跟您来过电话，但是到目前为止，您的这个款项也还是没能解决处理。就您当前这边有再去凑一个现金吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "这边的话最快也要到明天了。",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "那您看能不能今天想办法处理一下呢？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "没事，你那边你该怎么做就怎么做吧。",
-        "state": {
-          "emotions": [
-            "despair"
-          ],
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "您这样说我们也很为难，我们也是希望您能尽快还上。",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "嗯好的。"
-      },
-      {
-        "turn_index": 10,
-        "role": "客户",
-        "text": "到位了以后我会一次性还款的，你放心好了啊。",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "催收员",
-        "text": "好的，那您大概明天什么时候能到账呢？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "客户",
-        "text": "嗯，好的，我理解的就是你们工作嘛。"
-      },
-      {
-        "turn_index": 13,
-        "role": "催收员",
-        "text": "谢谢您的理解，那明天我们再联系您。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "客户",
-        "text": "好的谢谢啊。"
-      }
-    ],
-    "reward": 1,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 30,
-      "total_debt": 1791357,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "bachelor",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_evidence": {
-      "trigger_text": "到位了以后我会一次性还款的，你放心好了啊。",
-      "trigger_turn_index": 1
-    },
-    "reward_action_credit": {
-      "turn_index": 1,
-      "role": "客户",
-      "action": "promise_to_pay",
-      "text": "哪个啊？",
-      "explanation": "Customer initially showed conditional willingness (pay tomorrow) but turned resistant with despair. Collector used empathy ('we also feel troubled'), which softened customer, who then reaffirmed a future payment plan. Collector then secured a specific time commitment, leading to a promise_to_pay."
-    }
-  },
-  {
-    "call_id": "2346434620597700954",
-    "cust_no": "0168891444",
-    "call_date": "20260608",
-    "coll_user_id": "AA10858",
-    "mob_typ": "M1",
-    "talk_time": "200",
-    "plan_evaluation": "",
-    "customer_info": {
-      "经营贷款余额": "0.0",
-      "理财时点值": "0.0",
-      "其他贷款余额": "0.0",
-      "学历": "大专",
-      "商业房贷余额": "546039.0",
-      "持卡客户是否疑似高风险代理投诉": "否",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "社保缴纳情况": "",
-      "总欠款": "10895.19",
-      "ct标签": "131",
-      "近7天还款操作": "N",
-      "名下历史车辆数": "",
-      "近7日接通次数": "3",
-      "客户风险标识等级": "",
-      "客户投诉评分": "10"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "您好，请问是彭中祥先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "对对。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "呃，先生您好，这边是招商银行的，上个周末有给您来过电话，目前这边还没有收到您的还款，因为过后您的案件就要流转了。我们白天联系您，您在忙，也没有接到，现在能在线办理吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "我4号、10号，10号两期的一起存。",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "先生，没办法等到10号，因为今天过后案件就流转了，一旦转到后端部门，可能就需要您按照总欠款一万多来还了。真的没办法再等了，不然我们不会说。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "那我现在想一下办法，不要逼我，我现在生病都没钱去检查了。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ],
-          "emotions": [
-            "distress",
-            "defensive"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "先生，我知道您肯定是有意愿的，不然您不会接我们电话。真的没有意愿的人连电话都不会接。",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "但是你们别老是这样逼啊，这样逼真的不好啊。",
-        "state": {
-          "emotions": [
-            "complaint",
-            "hostility"
-          ],
-          "willingness": "resistant"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "先生，您可以记工号10858，我不是骗您，因为今天过后您的案件就要流转了，不再由我们这边负责。我之前也给您说过，考虑到您本身遇到困难，您还了最低之后我可以帮您做息费减免，我这边也是想尽量帮到您。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "我……我想一下办法吧，我先想一下办法，一会儿处理。我确实没办法现在，我们12号才发工资啊。",
-        "state": {
-          "facts": [
-            "income_delay"
-          ],
-          "emotions": [
-            "anxiety"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "先生，我知道您在想办法。您当时说5号联系您，您说第二天会发，到现在都还没有发，是这个意思吗？",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "嗯，对。"
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "嗯，了解了。您这边确实也不是说我想逼您，说实话我也是想帮到您，因为您现在本身压力比较大，加上生病还有工资没发，反正我能帮您讲的话我就尽量帮。您也注意一下，好吧。",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "如果你们实在不相信，你们可以过来看我，我确实生病啊，再加上工资没发，你们可以过来看的呀。",
-        "state": {
-          "facts": [
-            "income_loss",
-            "health_crisis"
-          ],
-          "emotions": [
-            "defensive"
-          ]
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "先生，不是说我们不相信您，如果不想相信您或者想逼您，我们都不会给您提供息费减免了。像您现在生病，我们也不希望您有心理压力，也希望您早日康复。到时候您也好安心工作生活。那您这边，反正我也不是说逼您吧。",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "好，我再想下办法，反正最迟10号就可以处理，10号发工资，已经确定10号发。",
-        "state": {
-          "facts": [
-            "income_delay"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "催收员",
-        "text": "先生，我也给您说一下，因为我……"
-      },
-      {
-        "turn_index": 17,
-        "role": "客户",
-        "text": "我已经说了，第一我现在身体不舒服，第二我工作没发，不要老是在逼我。真的再逼我的话，要不你直接过来找我好吧。",
-        "state": {
-          "facts": [
-            "income_loss",
-            "health_crisis"
-          ],
-          "emotions": [
-            "hostility",
-            "defensive"
-          ]
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "催收员",
-        "text": "先生，我最后说一句话，好吗？最后一句话。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 19,
-        "role": "客户",
-        "text": "你说。"
-      },
-      {
-        "turn_index": 20,
-        "role": "催收员",
-        "text": "因为这边也不是骗您的，今天过后确实会流转，然后您息费减免我要人工去操作，这会我们也在做加班审核。那就辛苦您，稍后务必看一下有没有办法。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 21,
-        "role": "客户",
-        "text": "嗯，到时候该存多少我存多少进去。存多少就行了，因为当时存700多嘛，773，我存进去就行了。",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 22,
-        "role": "催收员",
-        "text": "嗯，那您……"
-      },
-      {
-        "turn_index": 23,
-        "role": "客户",
-        "text": "我确确实实，我现在说话都费力啊。",
-        "state": {
-          "facts": [
-            "health_crisis"
-          ],
-          "emotions": [
-            "distress"
-          ]
-        }
-      },
-      {
-        "turn_index": 24,
-        "role": "催收员",
-        "text": "那先生，您就不说了。我最后给您说一下，因为我这边现在也在加班审核，最晚会审核到大概八点的时间。那您这边就看吧，今天能不能赶在12点之前处理进来，好吧。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 25,
-        "role": "客户",
-        "text": "行好，我知道了我知道了。"
-      },
-      {
-        "turn_index": 26,
-        "role": "催收员",
-        "text": "我这边就先不过多打扰了，嗯，再见。",
-        "state": {
-          "action": "closure"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 30,
-      "total_debt": 1089519,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "college",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2346208340585880369",
-    "cust_no": "0200278969",
-    "call_date": "20260608",
-    "coll_user_id": "AA11134",
-    "mob_typ": "M1",
-    "talk_time": "202",
-    "plan_evaluation": "",
-    "customer_info": {
-      "经营贷款余额": "150000.0",
-      "理财时点值": "0.0",
-      "学历": "本科",
-      "商业房贷余额": "0.0",
-      "其他贷款余额": "0.0",
-      "持卡客户是否疑似高风险代理投诉": "否",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "社保缴纳情况": "",
-      "总欠款": "13113.89",
-      "ct标签": "733,701",
-      "近7天还款操作": "Y",
-      "名下历史车辆数": "",
-      "近7日接通次数": "4",
-      "客户风险标识等级": "1级",
-      "客户投诉评分": "8"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "唉，喂，您好，是王瑞琪女士吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "喂，您好。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "呃，是王瑞琪女士吗？您好。",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "嗯，嗯，是是。"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "噢，我这边是招商银行信用卡中心的。女士，上午关于您的账务问题，我这边也给您来了电话，但是确实到了今天中午12点还是没有做解决。那考虑到风险因素，后续银行转案审核失败的话，将会进行全款签收。那来电的话要提前和您本人核对您的账户这个账单地址。因为后续转案之后涉及到银行这边会具有法律效应的纸质信函，后续的话将可能通过中国邮政挂号信的方式进行寄出。您之前有预留到的家庭地址是在黑龙江哈尔滨市南岗区。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "这个……呃……嗯……",
-        "state": {
-          "emotions": [
-            "anxiety"
-          ]
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "呃，南岗区，道外区，红旗小区这边是吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "啊，对。"
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "好。噢，那您的那个户籍地址也是在黑龙江哈尔滨南岗区，也是红旗小区吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "嗯，对。"
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "18栋？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "嗯，明天中午这边就可以。",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "呃，您是说您这个资金要到账，最晚的话是明天中午才能处理，是吗？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "对对对。"
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "嗯，是这样的一个情况，女士，我可以帮您反馈一下。如果是说您这边能够到账及时处理，那如果在信函派发之前的话，这个流程我们这边可以给您撤销掉。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "你那边信号不好。"
-      },
-      {
-        "turn_index": 16,
-        "role": "催收员",
-        "text": "嗯，现在能听清楚吗，女士？"
-      },
-      {
-        "turn_index": 17,
-        "role": "客户",
-        "text": "能，你说。"
-      },
-      {
-        "turn_index": 18,
-        "role": "催收员",
-        "text": "噢，我的意思是说，这个情况我要帮您登记过去。如果是说确实您能够赶上银行这边信函派发之前，您处理进来这个1000块钱，那明天上午最晚的话，嗯，这边12点前可以吗？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 19,
-        "role": "客户",
-        "text": "噢，你说那边派发是什么时候？就是明天中午12点前我这边就行呗？",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 20,
-        "role": "催收员",
-        "text": "哦，这个是因为银行这边是做统一同步的，我们这边的话才开始提交名单。所以我是和您这边确定，如果说您能够赶得上我们函件派发的一个时间的话，我们这边就直接做撤销。至少的话要处理您的这个最低还款999块7毛钱。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 21,
-        "role": "客户",
-        "text": "嗯，行，明白了。"
-      },
-      {
-        "turn_index": 22,
-        "role": "催收员",
-        "text": "噢，嗯，对。您是明天上午12点之前您看能处理吗？还是什么时候？",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 23,
-        "role": "客户",
-        "text": "对，呃，最晚的明天晚上……银行12点之前。",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 24,
-        "role": "催收员",
-        "text": "哦，晚上12点之前确实不行，我们包括我们下班的一个时间的话都是在……嗯。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 25,
-        "role": "客户",
-        "text": "我说明天，今天下午3点之前行不行？",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 26,
-        "role": "催收员",
-        "text": "三点钟之前是吧？那这样吧，我这边的话会给您同步过去做一个反馈。如果是说能够等得到这个时间段，那银行的话就等您。如果是说等不到的话，您可能得要提前几个小时周转进来。因为我们这边的话才刚刚在提交名单，因为您刚好案件审核失败了嘛。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 27,
-        "role": "客户",
-        "text": "嗯，行。提前几个小时是啥时候啊？"
-      },
-      {
-        "turn_index": 28,
-        "role": "催收员",
-        "text": "噢，是这样哈，因为如果说您能等，最晚最晚的话，我们这边可以等到您的就是明天上午12点钟，是确定没有问题的。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 29,
-        "role": "客户",
-        "text": "行，就是明天上午12点之前都行呗。",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 30,
-        "role": "催收员",
-        "text": "嗯，对对对，明天上午12点之前确定是没有问题的。"
-      },
-      {
-        "turn_index": 31,
-        "role": "客户",
-        "text": "行，那我知道了，那我开会呢，我这边就是那边帮我，我说一下就行。谢谢啊，再见。"
-      },
-      {
-        "turn_index": 32,
-        "role": "催收员",
-        "text": "嗯，好的，没问题。唉，再见。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 33,
-        "role": "客户",
-        "text": "嗯。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 30,
-      "total_debt": 1311389,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "bachelor",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2346208540597700947",
-    "cust_no": "0175662898",
-    "call_date": "20260608",
-    "coll_user_id": "AA9404",
-    "mob_typ": "M1",
-    "talk_time": "249",
-    "plan_evaluation": "",
-    "customer_info": {
-      "经营贷款余额": "1268000.0",
-      "其他贷款余额": "0.0",
-      "学历": "大专",
-      "商业房贷余额": "0.0",
-      "持卡客户是否疑似高风险代理投诉": "否",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "社保缴纳情况": "",
-      "总欠款": "9743.93",
-      "ct标签": "040,667,701",
-      "近7天还款操作": "N",
-      "名下历史车辆数": "",
-      "近7日接通次数": "3",
-      "客户风险标识等级": "1级",
-      "客户投诉评分": "9"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "嗯"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "呃，您好，请问您是戴金玉女士，是吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "对"
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "呃，您好，戴女士，我们这边是招商银行信用卡中心的工作人员，工号94004。这边来电的话是有两个事宜要给您本人通知。第一个，您是7号出账单，30号还款吗？本月还是6月25号还。从下个月开始，银行业务升级，会将7号出账用户统一迁移到24号，您就变成7月24号账单，8月12号还款，名下所有联动账账单日会统一修改，半年之内不能再修改。因运营调整原周期后可能会关闭，无法改回延周期。如果有设置每个固定还款的话，请您到掌上生活修改一下您的扣款日期。另外一个的话就是关于您身份证尾号3529在我们招商银行办理的个人信用卡账户，目前已经是严重逾期了，风险因素过高，可能会面临强制清收违约，逾期材料也会对接后端法务部门正常走财产保全相关流程。考虑到对您的影响还是比较严重的，所以来电给您确认一下关于当下的一个账务问题，是否还打算在银行内部通过还款去解决呢？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "你说……呃，我只是说这3个月我目前资金周转比较困难，只是这几个月的时间过去，我就会按标准的该怎么还怎么还。因为本身我就是外面的欠款还没有回来，所以这2个月会比较困难一点点。",
-        "state": {
-          "facts": [
-            "situational_hardship",
-            "future_payment_plan"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "嗯，呃，女士，因为信用卡账户它确实是1月一还，既然您有困难，银行也不是说不帮您嘛。",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "我知道，我知道，我知道确实是本身这个是我们的问题。但是因为……就……确实是资金卡在那边我没办法还，我也不会去拖这个。如果可以的话，我肯定最低我也会还，确实是没有办法才拖的。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ],
-          "emotions": [
-            "distress"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "催收员",
-        "text": "嗯，那戴女士，现在银行这边也给您申请了一个特殊少还款政策，就是您现在先还到您的逾期账务882元，剩余的话可分期金额大约是在9100块左右，银行内部给您登记一个24期的账务分期，然后分期下来，每个月的话还款金额大约是在390块钱左右，利息也比较低，一个月大约就收您12块钱的一个分期利息，就不会像之前一样您没有还款或者是只还最低产生循环利息有1100多嘛，上一期账单产生循环利息147块8毛四，违约金44块6分，银行还给您减掉。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "客户",
-        "text": "嗯，好。"
-      },
-      {
-        "turn_index": 9,
-        "role": "催收员",
-        "text": "嗯，呃，女士，因为信用卡账务您跟银行也合作这么久的一个时间了，确实是需要1月一还，银行优先把方案政策提供给您的话，也是想在内内部去进行解决，那您看一下呢。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "客户",
-        "text": "嗯，我再考虑考虑吧。",
-        "state": {
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "催收员",
-        "text": "嗯嗯，好……嗯，女士。银行给您……呃……嗯，那女士，因为这个账务的话，它确实是1月一还，银行给您沟通的就是时间问题，然后如果说确实时间都过久的话，可能会因为风险因素过高，到时候您有相应流动资金被银行强制扣罚了，都是不予退还的。银行也非常理解您，现在困难嘛，因为您之前就算还最低你也在还，但当下账务款项逾期最低是需要您先还到882，然后后面的话……",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "客户",
-        "text": "嗯，我知道了。"
-      },
-      {
-        "turn_index": 13,
-        "role": "催收员",
-        "text": "呃，您好女士，能听到吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "客户",
-        "text": "能听到。"
-      },
-      {
-        "turn_index": 15,
-        "role": "催收员",
-        "text": "您好，戴女士，您是一直按照通话保持了，是吧？然后我们能听到就是关于您当下账务的话，银行……",
-        "state": {
-          "action": "greeting"
-        }
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 30,
-      "total_debt": 974393,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "college",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2346228190536063837",
-    "cust_no": "0167450997",
-    "call_date": "20260608",
-    "coll_user_id": "AA11275",
-    "mob_typ": "M1",
-    "talk_time": "164",
-    "plan_evaluation": "",
-    "customer_info": {
-      "经营贷款余额": "1274920.0",
-      "理财时点值": "0.0",
-      "其他贷款余额": "0.0",
-      "学历": "大专",
-      "商业房贷余额": "0.0",
-      "持卡客户是否疑似高风险代理投诉": "否",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "社保缴纳情况": "",
-      "总欠款": "12233.19",
-      "ct标签": "667,040",
-      "近7天还款操作": "N",
-      "名下历史车辆数": "",
-      "近7日接通次数": "5",
-      "客户风险标识等级": "",
-      "客户投诉评分": "13"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "嗯"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "唉，喂，您好，请问是张先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 2,
-        "role": "客户",
-        "text": "嗯，对，是的。"
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "唉，打扰您了。这边是招商银行信用卡中心，请问方便说话吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "我家里人电话，干嘛呀？",
-        "state": {
-          "emotions": [
-            "hostility"
-          ]
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "呃，是这样的，就是说，可能没联系到您，系统会有一个自动外呼的情况。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "我打12378投诉你们。",
-        "state": {
-          "emotions": [
-            "hostility"
-          ]
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "催收员",
-        "text": "先生，这边的话，也不是说看到您反馈到哪去才能解决这个问题，也是想来帮到您，不会说耽误这个处理进度。",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "客户",
-        "text": "我现在就打12378投诉你们。",
-        "state": {
-          "emotions": [
-            "hostility"
-          ]
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "催收员",
-        "text": "好。呃，就是说，您这边的话，是不方便哪一位家人联系转告？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "客户",
-        "text": "紧急联系人，你们为什么要拨打？",
-        "state": {
-          "emotions": [
-            "hostility"
-          ]
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "催收员",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 12,
-        "role": "客户",
-        "text": "两个紧急联系人都不方便拨打。",
-        "state": {
-          "facts": [
-            "contact_difficulty",
-            "account_restriction"
-          ]
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "催收员",
-        "text": "呃，陈平女士和陈永银这边吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "客户",
-        "text": "是的，都不方便拨打。",
-        "state": {
-          "facts": [
-            "contact_difficulty",
-            "account_restriction"
-          ]
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "催收员",
-        "text": "嗯，好的，那我这边做情况登记哈。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "客户",
-        "text": "再打，我现在正准备打12378投诉你们。",
-        "state": {
-          "facts": [
-            "collection_grievance"
-          ],
-          "emotions": [
-            "hostility"
-          ]
-        }
-      },
-      {
-        "turn_index": 17,
-        "role": "催收员",
-        "text": "好。呃，先生，刚刚也跟您讲，也是想来帮到您，您如果不方便，那我们这边做情况登记，就做一个进一步处理，也不会说再去联系这边。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "客户",
-        "text": "行行行，我想协商，做一个个性化分期。",
-        "state": {
-          "facts": [
-            "negotiation_attempt",
-            "installment_request"
-          ],
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 19,
-        "role": "催收员",
-        "text": "嗯，稍等一下啊。这边的话就是说，有这个资金紧张情况，对吧？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 20,
-        "role": "客户",
-        "text": "比较多。",
-        "state": {
-          "facts": [
-            "situational_hardship"
-          ]
-        }
-      },
-      {
-        "turn_index": 21,
-        "role": "催收员",
-        "text": "就是负债比较高。嗯，好，那这边呢，我可以去帮您尝试反馈看一下。那第二个事情，就是对您还款有好处的一个账单日权益周期，因为系统在做升级嘛，当前您这个5号的账单日后不能提供服务了，帮您把5号的账单日迁移到24号，也就是说修改后，从下个月账单日开始生效。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 22,
-        "role": "客户",
-        "text": "不需要修改。",
-        "state": {
-          "facts": [
-            "negotiation_attempt"
-          ]
-        }
-      },
-      {
-        "turn_index": 23,
-        "role": "催收员",
-        "text": "这个，因为现在是我们人工经营给您告知这个情况，后续可能会有系统统一迁移周期的，所以为避免后续可能面临这个问题，我们需要提前给您讲一下。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 24,
-        "role": "客户",
-        "text": "嗯，再见。你们打我紧急联系人电话了，是这个回事，我现在准备投诉你们。",
-        "state": {
-          "facts": [
-            "contact_difficulty",
-            "collection_grievance"
-          ],
-          "emotions": [
-            "hostility"
-          ]
-        }
-      },
-      {
-        "turn_index": 25,
-        "role": "催收员",
-        "text": "呃，先生，这个刚刚也跟你讲过，也非常理解你的心情，也是想来帮到你，银行这边也不会说看你反馈到哪去才来进行解决这个问题的。也更不希望一来一回耽误这个处理进度。那当前就是您反馈的这个情况……嗯。",
-        "state": {
-          "action": "empathy"
-        }
-      },
-      {
-        "turn_index": 26,
-        "role": "客户",
-        "text": "现在就需要帮我紧急联系人，不要再骚扰了。",
-        "state": {
-          "facts": [
-            "contact_difficulty",
-            "collection_grievance"
-          ],
-          "emotions": [
-            "hostility"
-          ]
-        }
-      },
-      {
-        "turn_index": 27,
-        "role": "催收员",
-        "text": "这个可以做登记，就做进一步处理。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 28,
-        "role": "客户",
-        "text": "什么？"
-      },
-      {
-        "turn_index": 29,
-        "role": "催收员",
-        "text": "嗯，这个后续的话就不会再说去联系。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 30,
-        "role": "客户",
-        "text": "行。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 30,
-      "total_debt": 1223319,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "college",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2346088440338592693",
-    "cust_no": "0184912105",
-    "call_date": "20260608",
-    "coll_user_id": "AA11438",
-    "mob_typ": "M1",
-    "talk_time": "185",
-    "plan_evaluation": "",
-    "customer_info": {
-      "经营贷款余额": "0.0",
-      "理财时点值": "0.0",
-      "学历": "高中及中专",
-      "商业房贷余额": "362559.0",
-      "其他贷款余额": "0.0",
-      "持卡客户是否疑似高风险代理投诉": "否",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "社保缴纳情况": "",
-      "总欠款": "449.14",
-      "ct标签": "733",
-      "近7天还款操作": "",
-      "名下历史车辆数": "",
-      "近7日接通次数": "2",
-      "客户风险标识等级": "",
-      "客户投诉评分": "9"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "客户",
-        "text": "嗯，嗯，好，对，嗯。"
-      },
-      {
-        "turn_index": 1,
-        "role": "催收员",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "呃，喂，您好。",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "催收员",
-        "text": "您好，这边是招商银行信用卡中心，您是韩硕先生吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 4,
-        "role": "客户",
-        "text": "是。"
-      },
-      {
-        "turn_index": 5,
-        "role": "催收员",
-        "text": "先生，我看您之前有跟我们这边来过电话，当时您反馈说工作人员跟您说可以办理账务分期，但您打电话的时候又办不了，是吧？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "客户",
-        "text": "对呀，什么意思？",
-        "state": {
-          "facts": [
-            "system_issue"
-          ],
-          "emotions": [
-            "confusion"
-          ]
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "催收员",
-        "text": "呃，我看了一下，您大概是多久去打的电话呢？当时有给您登记过，就是说这个需要您下午拨打客服电话，因为早上可能还在入账。所以现在如果您还没办理，您再打一下电话问一下。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "客户",
-        "text": "我今天再打一遍呗，是那意思不？",
-        "state": {
-          "facts": [
-            "communication_issue"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "催收员",
-        "text": "对，您再打一下。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "客户",
-        "text": "我今天打哪个啊？"
-      },
-      {
-        "turn_index": 11,
-        "role": "催收员",
-        "text": "就打您之前打的那个客服电话就行。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "客户",
-        "text": "我现在开车，你等我到了再打吧。",
-        "state": {
-          "facts": [
-            "contact_difficulty"
-          ]
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "催收员",
-        "text": "好的，那您方便的时候再打。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "客户",
-        "text": "我今天打，他给办全了呗，是那意思不？",
-        "state": {
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "催收员",
-        "text": "这个需要您跟客服确认，应该可以办的。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "客户",
-        "text": "就还不一定能不能给办呗，是那意思不？",
-        "state": {
-          "emotions": [
-            "distrust"
-          ],
-          "willingness": "conditional"
-        }
-      },
-      {
-        "turn_index": 17,
-        "role": "催收员",
-        "text": "您先打过去问一下，一般是可以的。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "客户",
-        "text": "之前让我还550，我还550那个是你吗？",
-        "state": {
-          "facts": [
-            "payment_commitment"
-          ]
-        }
-      },
-      {
-        "turn_index": 19,
-        "role": "催收员",
-        "text": "不是，那是其他同事跟您说的吧。"
-      },
-      {
-        "turn_index": 20,
-        "role": "客户",
-        "text": "啊啊，就之前你让我办这个事的，对不？"
-      },
-      {
-        "turn_index": 21,
-        "role": "催收员",
-        "text": "对，就是我这边提醒您办理分期的事。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 22,
-        "role": "客户",
-        "text": "行，我今天打电话吧。"
-      },
-      {
-        "turn_index": 23,
-        "role": "催收员",
-        "text": "好的，那您尽快打，再见。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 24,
-        "role": "客户",
-        "text": "嗯嗯嗯。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 30,
-      "total_debt": 44914,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2346237670405370383",
-    "cust_no": "0186708873",
-    "call_date": "20260608",
-    "coll_user_id": "AA11275",
-    "mob_typ": "M1",
-    "talk_time": "125",
-    "plan_evaluation": "",
-    "customer_info": {
-      "经营贷款余额": "0.0",
-      "理财时点值": "0.0",
-      "学历": "大专",
-      "商业房贷余额": "290109.0",
-      "其他贷款余额": "0.0",
-      "持卡客户是否疑似高风险代理投诉": "否",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "社保缴纳情况": "",
-      "总欠款": "14514.43",
-      "ct标签": "701,667,030",
-      "近7天还款操作": "N",
-      "名下历史车辆数": "",
-      "近7日接通次数": "7",
-      "客户风险标识等级": "",
-      "客户投诉评分": "12"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "唉，喂，你好，请问是卢建泽先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "喂，您好，请问有声音吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "呃，可以听见你的声音，您是哪位？"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "这边是招商银行信用卡中心。请问是卢建泽先生，对吧？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "是。"
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "姐这边之前也有跟您来过电话沟通过嘛，对吧，就是当前您这个招商银行信用卡账户、E招贷账户有这个逾期情况，然后呢，前面跟您沟通过，也是有帮您争取过这个方案。您是说要到6号或者是8号进行处理，但是现在的话已经是到了6月8号，您这个还是没有进行处理啊。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "对。"
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "呃，我当时承诺的日期，我当时说的日期是8号到10号，是吗？"
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "6号到8号。",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ]
-        }
-      },
-      {
-        "turn_index": 10,
-        "role": "客户",
-        "text": "我记着，我记着6号到8号我在医院呢。前天我前天刚出院。",
-        "state": {
-          "facts": [
-            "health_crisis"
-          ],
-          "emotions": [
-            "distress"
-          ]
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "催收员",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "噢，就是说，您目前这边的话是处理了多少了？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "我、我现在处理不了，因为我刚刚刚刚出院，才上班挣钱，我的钱基本上是4天一结嘛，差不多是。",
-        "state": {
-          "facts": [
-            "income_reduction",
-            "willing_to_pay",
-            "situational_hardship",
-            "health_crisis"
-          ],
-          "emotions": [
-            "distress"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "好。唉，好。嗯，就是说，您这边的话，呃，也没有其他渠道周转到吗？",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "对，我当时周转过，试过，因为、因为我现在我妈得了癌症住院嘛，然后我在医院陪护了很长时间，然后现在我在我朋友那块就、就周转过资金，所以说这次就没周转到。",
-        "state": {
-          "facts": [
-            "negotiation_attempt",
-            "repayment_inability",
-            "health_crisis"
-          ],
-          "emotions": [
-            "anxiety"
-          ],
-          "willingness": "weak"
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "催收员",
-        "text": "唉。嗯。嗯，那这个只是说是为您去筹措所需资金呢。但是呃，因为目前的话，可以去帮您再去帮您反馈申请那个方案，但是当前如果说您这边确实没有处理，那这个方案可能就没法给您做一个保留了。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 30,
-      "total_debt": 1451443,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "college",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
-    "call_id": "2346440030379732149",
-    "cust_no": "0210454523",
-    "call_date": "20260608",
-    "coll_user_id": "AA11275",
-    "mob_typ": "M1",
-    "talk_time": "233",
-    "plan_evaluation": "",
-    "customer_info": {
-      "经营贷款余额": "0.0",
-      "学历": "大专",
-      "商业房贷余额": "0.0",
-      "其他贷款余额": "0.0",
-      "持卡客户是否疑似高风险代理投诉": "否",
-      "持卡客户是否疑似代理中介投诉": "否",
-      "社保缴纳情况": "",
-      "总欠款": "9118.47",
-      "ct标签": "667",
-      "近7天还款操作": "Y",
-      "名下历史车辆数": "",
-      "近7日接通次数": "8",
-      "客户风险标识等级": "1级",
-      "客户投诉评分": "11"
-    },
-    "turns_annotated": [
-      {
-        "turn_index": 0,
-        "role": "催收员",
-        "text": "喂您好，请问是谢林伟先生吗？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 1,
-        "role": "客户",
-        "text": "喂你好。"
-      },
-      {
-        "turn_index": 2,
-        "role": "催收员",
-        "text": "唉，帮您打哈。这边是招商银行信用卡中心，请问是谢宁伟先生，对吧？",
-        "state": {
-          "action": "greeting"
-        }
-      },
-      {
-        "turn_index": 3,
-        "role": "客户",
-        "text": "嗯对。"
-      },
-      {
-        "turn_index": 4,
-        "role": "催收员",
-        "text": "呃，是这样一个情况哈，本次给您来电是关于您被列入到年度风险过高消费的一个创业审核名单。那现在系统的话将正式开启停卡及法停阶段，银行后续委托可能是上海尧政汇北京银科代理律师向您管辖当地提交依法强制吸收。那想问一下，您本次是否还有意愿和银行达成内部和解？",
-        "state": {
-          "action": "legal_threat"
-        }
-      },
-      {
-        "turn_index": 5,
-        "role": "客户",
-        "text": "好……是我没、我没听清，讲太快了。",
-        "state": {
-          "emotions": [
-            "confusion"
-          ]
-        }
-      },
-      {
-        "turn_index": 6,
-        "role": "催收员",
-        "text": "好。嗯，就是说，银行这边通过最简单的方式就是给您发送短信、打电话和微信都没有收回这个款项，那银行后续不排除可能是将通过打官司的方式来收回这个全款。就想问一下，您这边是否还有意愿和银行达成一个内部和解？",
-        "state": {
-          "action": "legal_threat"
-        }
-      },
-      {
-        "turn_index": 7,
-        "role": "客户",
-        "text": "嗯……和解？",
-        "state": {
-          "emotions": [
-            "confusion"
-          ]
-        }
-      },
-      {
-        "turn_index": 8,
-        "role": "催收员",
-        "text": "您目前就您这个事已经还好解决，只需要处理一个1314块就结完成了。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 9,
-        "role": "客户",
-        "text": "我知道我知道。"
-      },
-      {
-        "turn_index": 10,
-        "role": "催收员",
-        "text": "嗯，但是说您这个款项一直都没能进行解决处理啊，并且之前您这边也是跟银行反馈，说是能够在6号、7号左右完成处理。现在已经是8号，您这个还是没能解决，并且下午的6点55分呢。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "为什么你们的备注是这样的？我记得我通话录音里面讲得很清楚啊，是今天啊。",
-        "state": {
-          "facts": [
-            "future_payment_plan"
-          ],
-          "emotions": [
-            "irritation"
-          ]
-        }
-      },
-      {
-        "turn_index": 12,
-        "role": "催收员",
-        "text": "呃，那您当前的话是已经可以处理了吗？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 13,
-        "role": "客户",
-        "text": "对。你们这些就是打电话的一些客服的备注，这都填的是什么鬼啊。",
-        "state": {
-          "emotions": [
-            "irritation"
-          ],
-          "willingness": "strong"
-        }
-      },
-      {
-        "turn_index": 14,
-        "role": "催收员",
-        "text": "呃，就是您之前反馈的是说需要这2天进行这个款项处理，但是您截止至当前为止，您这个都还没能解决完成呀。",
-        "state": {
-          "action": "pressure"
-        }
-      },
-      {
-        "turn_index": 15,
-        "role": "客户",
-        "text": "我知道还没解决完成。我等一下转进去啊，因为我现在在骑车啊。",
-        "state": {
-          "willingness": "strong"
-        }
-      },
-      {
-        "turn_index": 16,
-        "role": "催收员",
-        "text": "嗯。呃，先生，说起车的话请注意安全。嗯，因为目前呢，这边还是可以去帮您做这个方案申请的。就是您这边之前也是反馈有这个增紧单情况嘛，对吧？嗯，这边可以提交您这个账单，上海就是5月份这边产生这样一个权益利息，给您去做一个调整，减免不收取的。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 17,
-        "role": "客户",
-        "text": "你问我骑车怎么给你转？嗯，对啊。",
-        "state": {
-          "emotions": [
-            "irritation"
-          ]
-        }
-      },
-      {
-        "turn_index": 18,
-        "role": "催收员",
-        "text": "嗯，但是也是需要您先处理进来才能去帮您做方案申请。",
-        "state": {
-          "action": "plan_proposal"
-        }
-      },
-      {
-        "turn_index": 19,
-        "role": "客户",
-        "text": "等一下啊。嗯，继续说。"
-      },
-      {
-        "turn_index": 20,
-        "role": "催收员",
-        "text": "呃，就是您是通过什么方式进行一个还款处理啊？",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 21,
-        "role": "客户",
-        "text": "银行卡转账啊。",
-        "state": {
-          "facts": [
-            "repayment_inability"
-          ]
-        }
-      },
-      {
-        "turn_index": 22,
-        "role": "催收员",
-        "text": "银行卡转账啊，然后您的招商银行信用卡尾号是6682的这张，那您就暂助，我就暂去帮您撤销后续一个流程，以及时帮您做这个方案申请。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 23,
-        "role": "客户",
-        "text": "是正常还。嗯，嗯好。"
-      },
-      {
-        "turn_index": 24,
-        "role": "催收员",
-        "text": "然后您这边处理完了之后告诉我一下，我这边再帮您查收。1元的还租账户。",
-        "state": {
-          "action": "information"
-        }
-      },
-      {
-        "turn_index": 25,
-        "role": "客户",
-        "text": "七点半再给我打个电话，等我怕我忘了。因为我现在在骑车，我现在不方便搞。",
-        "state": {
-          "facts": [
-            "installment_request"
-          ]
-        }
-      },
-      {
-        "turn_index": 26,
-        "role": "催收员",
-        "text": "好。嗯，好的，那我这边帮您做情况登记，做备注哈。"
-      },
-      {
-        "turn_index": 27,
-        "role": "客户",
-        "text": "喂，能听到吗？"
-      },
-      {
-        "turn_index": 28,
-        "role": "催收员",
-        "text": "就七点半之前再给您来个电话，对吧？",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 29,
-        "role": "客户",
-        "text": "嗯嗯嗯。七点半，七点半才到。"
-      },
-      {
-        "turn_index": 30,
-        "role": "催收员",
-        "text": "七点半才到。"
-      },
-      {
-        "turn_index": 31,
-        "role": "客户",
-        "text": "嗯。"
-      },
-      {
-        "turn_index": 32,
-        "role": "催收员",
-        "text": "呃，那这样吧，就是说，先帮您做一个这个情况登记，好吧。好，然后您这边或者说处理完之后也可以再给我们银行回个电话。",
-        "state": {
-          "action": "closure"
-        }
-      },
-      {
-        "turn_index": 33,
-        "role": "客户",
-        "text": "嗯嗯。嗯行行好好好。"
-      }
-    ],
-    "reward": 0,
-    "state_transitions": [],
-    "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 30,
-      "total_debt": 911847,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "college",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
-    },
-    "reward_action_credit": None
-  },
-  {
     "call_id": "2346089320444241687",
     "cust_no": "0000000167288405",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -10702,27 +274,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 142870,
+      "wealth_value": 0,
+      "current_balance": 3280796,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": True,
+      "risk_level": 1,
+      "complaint_score": 10,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "行行行，1761，行行，1761。好。行，我现在，我这着哥们儿，我、我知道我得找别人处理一下子",
@@ -10734,17 +303,30 @@ results = [
       "action": "accept_plan",
       "text": "行行行，1761，行行，1761。好。行，我现在，我这着哥们儿，我、我知道我得找别人处理一下子，因为我的银行卡都被冻结了，我想转转不了。咱们招商银行用别的银行卡还，包转是吧？",
       "explanation": "Customer showed willingness to pay but limited ability (500-600/month) and distress. Collector reframed: offered a large one-time discount (10,000 off) instead of long-term installment, then proposed a manageable 24-month plan at 1,761/month. Customer accepted because the plan matched his capacity and avoided worse credit impact."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"14287.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"32807.96\"},{\"tagName\":\"ct标签\",\"tagValue\":\",701,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"10\"}]",
+    "dialDate": "20260608090852",
+    "connectDate": "20260608090902",
+    "dialType": "1",
+    "ringTime": "6",
+    "collUserId": "AA11100",
+    "collId": "A0BW9",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0167288405001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "543",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15145780009",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346461230032858243",
     "cust_no": "0000000159253685",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -11019,39 +601,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2259826,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 11,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"22598.26\"},{\"tagName\":\"ct标签\",\"tagValue\":\",040,667,701,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260608192843",
+    "connectDate": "20260608192910",
+    "dialType": "1",
+    "ringTime": "23",
+    "collUserId": "AA11303",
+    "collId": "A0C3I",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0159253685001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "286",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18850928152",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346103620460371368",
     "cust_no": "0000000100654858",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -11396,27 +988,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 12000000,
+      "wealth_value": 0,
+      "current_balance": 2551148,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": True,
+      "risk_level": 1,
+      "complaint_score": 10,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 6,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好，明天下午1点还进去，好吧。",
@@ -11428,17 +1017,30 @@ results = [
       "action": "promise_to_pay",
       "text": "好，好，行。好的好的好，谢谢您啊。好，明天下午1点还进去，好吧。",
       "explanation": "Customer showed distress from frozen accounts but claimed future payment ability. Collector used empathy, then pressure (deadline, interest waiver) to create urgency. Customer resisted but repeatedly gave conditional promises. Collector balanced pressure with incentive (fee reduction) and accepted a firm commitment, securing promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"1200000.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"25511.48\"},{\"tagName\":\"ct标签\",\"tagValue\":\",701,722,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"6\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"10\"}]",
+    "dialDate": "20260608093242",
+    "connectDate": "20260608093250",
+    "dialType": "1",
+    "ringTime": "5",
+    "collUserId": "AA10858",
+    "collId": "A0BQB",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0100654858001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "302",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13886658668",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346105830028003806",
     "cust_no": "0000000176391370",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -11671,27 +1273,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "business_loan_balance": 0,
+      "mortgage_balance": 3946930,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2618574,
+      "has_business_loan": False,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 10,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 13,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "那等一下吧，等一下，我还里面去。",
@@ -11703,17 +1302,30 @@ results = [
       "action": "promise_to_pay",
       "text": "好，是，对啊。",
       "explanation": "Customer showed willingness to negotiate (asking to pay less) and conditional intent. Collector accepted minimum payment, reducing resistance. By asking specific timing and confirming amount ($500), collector built clarity and commitment. Customer’s final strong willingness emerged after debt inquiry was answered, leading to promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"394693.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"26185.74\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"13\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"10\"}]",
+    "dialDate": "20260608093623",
+    "connectDate": "20260608093629",
+    "dialType": "1",
+    "ringTime": "3",
+    "collUserId": "AA11100",
+    "collId": "A0BW9",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0176391370001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "299",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18838921317",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346167790313051807",
     "cust_no": "0000000155281659",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -11900,27 +1512,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "business_loan_balance": 0,
+      "mortgage_balance": 3028640,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 108337,
+      "has_business_loan": False,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 1,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 4,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "OK，好好好。",
@@ -11932,17 +1541,30 @@ results = [
       "action": "agree_to_pay",
       "text": "OK，好好好。",
       "explanation": "Customer showed conditional willingness (pay if interest waived). Collector empathized, then proposed a clear plan: pay $603, get July fees waived. This matched past experience, building trust. Customer then agreed strongly, and collector reinforced with step-by-step closure, leading to agree_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"302864.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"10833.7\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"4\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"1\"}]",
+    "dialDate": "20260608111939",
+    "connectDate": "20260608111948",
+    "dialType": "1",
+    "ringTime": "6",
+    "collUserId": "AA11438",
+    "collId": "A0CAS",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0155281659001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "83",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15773215667",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346370040337738282",
     "cust_no": "0000000162375013",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -12369,39 +1991,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 917425,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 1,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"9174.25\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"1\"}]",
+    "dialDate": "20260608165644",
+    "connectDate": "20260608165651",
+    "dialType": "1",
+    "ringTime": "5",
+    "collUserId": "AA11275",
+    "collId": "A0C2K",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0162375013001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "575",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18867792128",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346112390428936080",
     "cust_no": "0000000174605068",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -12562,27 +2194,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2339591,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 2,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "嗯，行，那你帮我办吧。我怕我忘了。",
@@ -12594,17 +2223,30 @@ results = [
       "action": "accept_plan",
       "text": "嗯，是。",
       "explanation": "Customer showed situational hardship and conditional willingness (asked about installment terms). Collector built trust by explaining the hardship-based plan, then offered a concrete installment option with fixed payments. When customer referenced national policy, collector aligned it with the offered plan, confirming legitimacy. This resolved uncertainty, leading to strong willingness and plan acceptance."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"23395.91\"},{\"tagName\":\"ct标签\",\"tagValue\":\",730,733,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"2\"}]",
+    "dialDate": "20260608094719",
+    "connectDate": "20260608094730",
+    "dialType": "1",
+    "ringTime": "9",
+    "collUserId": "AA9404",
+    "collId": "A0A90",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0174605068001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "636",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13734198372",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346199810307822252",
     "cust_no": "0000000160496075",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -12816,27 +2458,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 901999,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 14,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 3,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好，我下午处理吧。好。",
@@ -12848,17 +2487,30 @@ results = [
       "action": "promise_to_pay",
       "text": "提手发款哪位呀？",
       "explanation": "Customer showed strong initial willingness to pay but cited hardship. Collector offered a concrete plan: pay $1154 first, then 24-month installment at low interest, plus waived fees. This addressed customer's anxiety and desire for manageable payments. Customer agreed conditionally; collector added time pressure (2 PM deadline), prompting a firm promise to pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"9019.99\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,733,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"3\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260608121301",
+    "connectDate": "20260608121305",
+    "dialType": "1",
+    "ringTime": "2",
+    "collUserId": "AA9404",
+    "collId": "A0A90",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0160496075001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "200",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13225413827",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346416660033000438",
     "cust_no": "0000000106044671",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -13038,27 +2690,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 837381,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 14,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 4,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "我想过几天，或者月底之前，我把这个月的连上一块还上，好不好？",
@@ -13070,17 +2719,30 @@ results = [
       "action": "promise_to_pay",
       "text": "我明白，我不是说不去弄，我现在确实没有那个能力。我想过几天，或者月底之前，我把这个月的连上一块还上，好不好？",
       "explanation": "Customer admitted hardship but resisted immediate payment. Collector first empathized, then proposed a concrete benefit (fee reduction for 569 payment). When customer delayed, collector applied pressure by warning of full payment escalation. This shifted customer from weak willingness to a conditional promise (end of month), accepting the risk. Collector's balance of empathy and consequence drove the promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"8373.81\"},{\"tagName\":\"ct标签\",\"tagValue\":\",187,667,501,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"4\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260608181426",
+    "connectDate": "20260608181439",
+    "dialType": "1",
+    "ringTime": "8",
+    "collUserId": "AA11438",
+    "collId": "A0CAS",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0106044671001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "184",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15905321972",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346287750494442324",
     "cust_no": "0000000172179105",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -13222,27 +2884,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1091724,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 14,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 5,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": True,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好，那先这样啊。嗯。好，谢谢你，谢谢您。我听明白了，我现在去凑，我去凑好吧。",
@@ -13254,17 +2913,30 @@ results = [
       "action": "promise_to_pay",
       "text": "好，那先这样啊。嗯。好，谢谢你，谢谢您。我听明白了，我现在去凑，我去凑好吧。",
       "explanation": "Customer showed strong initial willingness and factual hardship (selling assets). Collector leveraged legal threat to create urgency, then offered a reduced settlement ($474) and deadline (4pm). Customer’s conditional willingness shifted to commitment when collector framed choice as avoiding full $10k lawsuit. Causal chain: threat + feasible plan + deadline → customer promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"是\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"10917.24\"},{\"tagName\":\"ct标签\",\"tagValue\":\",701,667,953,040,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"5\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260608143935",
+    "connectDate": "20260608143942",
+    "dialType": "1",
+    "ringTime": "3",
+    "collUserId": "AA11303",
+    "collId": "A0C3I",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0172179105001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "147",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15715702477",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346429020575847575",
     "cust_no": "0000000178154323",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -13732,27 +3404,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 2497950,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2881599,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 10,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好的",
@@ -13764,17 +3433,30 @@ results = [
       "action": "agree_to_pay",
       "text": "好的",
       "explanation": "Customer showed debt acknowledgment, payment commitment, and distress from family crisis. Collector built trust through empathy, then offered a tailored plan reducing payment to 633 with full interest waiver. When customer resisted due to hardship, collector used urgency (deadline, legal threat) and value proposition (saving 1000 in fees), leading to weak agreement. Persistence and clear benefit overcame resistance."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"249795.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"28815.99\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"10\"}]",
+    "dialDate": "20260608183502",
+    "connectDate": "20260608183525",
+    "dialType": "1",
+    "ringTime": "20",
+    "collUserId": "AA10613",
+    "collId": "A0BM8",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0178154323001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "584",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13988904080",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346160440032853502",
     "cust_no": "0000000168860035",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -13893,27 +3575,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2167384,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 2,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 13,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "下次我提前把钱备好啊",
@@ -13925,17 +3604,30 @@ results = [
       "action": "promise_to_pay",
       "text": "嗯，下次我提前把钱备好啊。",
       "explanation": "Customer showed anxiety and conditional willingness due to contact history and income reduction. Collector applied legal threat and pressure, prompting customer to commit to a specific time (2 PM). Collector accepted the conditional promise, then closed firmly, leading customer to strengthen willingness with 'next time I'll prepare early.'"
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"重渠投诉次数\",\"tagValue\":\"0\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"12378次数\",\"tagValue\":\"1\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"21673.84\"},{\"tagName\":\"ct标签\",\"tagValue\":\",954,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"13\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"2\"}]",
+    "dialDate": "20260608110724",
+    "connectDate": "20260608110736",
+    "dialType": "1",
+    "ringTime": "10",
+    "collUserId": "AA10780",
+    "collId": "A0BFQ",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0168860035001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "92",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "17377849228",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346988500555263687",
     "cust_no": "0000000152909734",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -14262,27 +3954,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 110000,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1204955,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 2,
+      "complaint_score": 7,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "1242对吧？嗯，好。",
@@ -14294,17 +3983,30 @@ results = [
       "action": "agree_to_pay",
       "text": "1242对吧？嗯，好。",
       "explanation": "Customer showed weak willingness due to hardship. Collector used empathy to build rapport, then offered a reduced payment plan (1242 vs full 15460) to lower barrier. Customer agreed after debt inquiry. Collector applied time pressure (10am deadline) and legal threat to secure commitment. Causal chain: empathy → reduced offer → conditional agreement → deadline pressure → agree_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"11000.0\"},{\"tagName\":\"学历\",\"tagValue\":\"初中及以下\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"12049.55\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"2级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"7\"}]",
+    "dialDate": "20260609100730",
+    "connectDate": "20260609100745",
+    "dialType": "1",
+    "ringTime": "12",
+    "collUserId": "AA11100",
+    "collId": "A0BW9",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0152909734001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "384",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18608185725",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346991570071380027",
     "cust_no": "0000000157174568",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -14458,27 +4160,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2547498,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 1,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "行行行，我钱没到，到了一定到了马上还上去。嗯。",
@@ -14490,17 +4189,30 @@ results = [
       "action": "promise_to_pay",
       "text": "行行行，我钱没到，到了一定到了马上还上去。嗯。",
       "explanation": "Customer initially showed strong willingness to pay but cited situational hardship (funds not yet received). Collector used empathy to validate hardship, then applied pressure by warning of full payment risk, which triggered hostility. Collector pivoted to a specific plan (1944 yuan), aligning with customer's conditional willingness. Customer then promised to pay upon fund arrival, achieving success."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"25474.98\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"1\"}]",
+    "dialDate": "20260609101237",
+    "connectDate": "20260609101300",
+    "dialType": "1",
+    "ringTime": "20",
+    "collUserId": "AA10290",
+    "collId": "A0B69",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0157174568001001",
+    "isRecorded": "",
+    "result": "1",
+    "talkTime": "115",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13905208621",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346995630132132382",
     "cust_no": "0000000159933514",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -14662,27 +4374,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2344948,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 1,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "行行行，我钱没到，到了一定马上还上去。",
@@ -14694,17 +4403,30 @@ results = [
       "action": "promise_to_pay",
       "text": "行行行，我钱没到，到了一定马上还上去。",
       "explanation": "Customer initially showed strong willingness to pay but cited situational hardship (unreceived funds). Collector used empathy to validate hardship, then applied pressure (risk of full payment) to create urgency. When customer reacted with hostility, collector pivoted to a concrete, smaller plan (1944 yuan) and set a firm deadline (12 PM). This combination of empathy, clear alternative, and time pressure converted conditional willingness into a promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"23449.48\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"1\"}]",
+    "dialDate": "20260609101924",
+    "connectDate": "20260609101932",
+    "dialType": "1",
+    "ringTime": "6",
+    "collUserId": "AA11438",
+    "collId": "A0CAS",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0159933514001001",
+    "isRecorded": "",
+    "result": "1",
+    "talkTime": "115",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13414927144",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347320560460377346",
     "cust_no": "0000000178849781",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -14940,27 +4662,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1104522,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 11,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 9,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "还是8月12号还？噢，那我发了以后到8月12号再还。",
@@ -14972,17 +4691,30 @@ results = [
       "action": "promise_to_pay",
       "text": "还是8月12号还？噢，那我发了以后到8月12号再还。",
       "explanation": "Customer showed confusion and repayment inability, but willingness to pay when possible. Collector simplified complex info, clarified extended due date (Aug 12), and addressed account restriction. This reduced customer anxiety, built understanding, and led to promise: 'I'll pay by Aug 12.'"
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"11045.22\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,667,730,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"9\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260609192056",
+    "connectDate": "20260609192117",
+    "dialType": "1",
+    "ringTime": "17",
+    "collUserId": "AA11268",
+    "collId": "A0C2D",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0178849781001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "281",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15964352818",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347050800028000212",
     "cust_no": "0000000139233780",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -15413,39 +5145,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2248096,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 8,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"22480.96\"},{\"tagName\":\"ct标签\",\"tagValue\":\",701,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"8\"}]",
+    "dialDate": "20260609115120",
+    "connectDate": "20260609115149",
+    "dialType": "1",
+    "ringTime": "26",
+    "collUserId": "AA11134",
+    "collId": "A0BXB",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0139233780001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "481",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15900388896",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347052390575842459",
     "cust_no": "0000000168260591",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -15694,39 +5436,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "business_loan_balance": 0,
+      "mortgage_balance": 1555170,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 905838,
+      "has_business_loan": False,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 4,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"155517.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"9058.38\"},{\"tagName\":\"ct标签\",\"tagValue\":\",701,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"4\"}]",
+    "dialDate": "20260609115359",
+    "connectDate": "20260609115416",
+    "dialType": "1",
+    "ringTime": "14",
+    "collUserId": "AA11275",
+    "collId": "A0C2K",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0168260591001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "207",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13581350048",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347061860337738947",
     "cust_no": "0000000148031935",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -16060,27 +5812,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "business_loan_balance": 0,
+      "mortgage_balance": 4680610,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 182239,
+      "has_business_loan": False,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 9,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "知道，我知道，你提交嘛，我今天还就行了嘛。",
@@ -16092,17 +5841,30 @@ results = [
       "action": "promise_to_pay",
       "text": "知道，我知道，你提交嘛，我今天还就行了嘛。",
       "explanation": "Customer showed anxiety and weak willingness initially, but revealed a key fact: wanting April fee reduction. Collector leveraged this by offering a conditional plan (pay 3160 for 2-month reduction), then used pressure (deadline, risk escalation) when customer resisted. Customer's distress and desire to avoid escalation led to conditional promise (pay today). Collector's firm deadline and clear consequence triggered final commitment."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"468061.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"18223.9\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"9\"}]",
+    "dialDate": "20260609120946",
+    "connectDate": "20260609120954",
+    "dialType": "1",
+    "ringTime": "6",
+    "collUserId": "AA11268",
+    "collId": "A0C2D",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0148031935001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "396",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13730869582",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347012600415653706",
     "cust_no": "0000000193441917",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -16545,27 +6307,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 6999000,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 297849,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 2,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 4,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "那我这2天先尽力凑一下，好吧。",
@@ -16577,17 +6336,30 @@ results = [
       "action": "promise_to_pay",
       "text": "那我这2天先尽力凑一下，好吧。",
       "explanation": "Customer showed initial denial and defensiveness, but collector validated his call record, reducing resistance. Collector offered same 48-term plan with fee waiver, addressing customer's debt_inquiry and anxiety. By setting a clear 11th deadline and explaining financial consequences of delay, collector created urgency. Customer's conditional willingness ('尽力凑') led to promise_to_pay, as collector's logic linked timely payment to avoiding larger debt."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"699900.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"29784.9\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,701,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"4\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"2\"}]",
+    "dialDate": "20260609104740",
+    "connectDate": "20260609104745",
+    "dialType": "1",
+    "ringTime": "3",
+    "collUserId": "AA10613",
+    "collId": "A0BM8",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0193441917001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "299",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15862361234",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346962790622996560",
     "cust_no": "0000000176391370",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -16953,27 +6725,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "business_loan_balance": 0,
+      "mortgage_balance": 3946930,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2618574,
+      "has_business_loan": False,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 10,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 13,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "行行",
@@ -16985,17 +6754,30 @@ results = [
       "action": "agree_to_pay",
       "text": "是",
       "explanation": "The customer showed willingness to pay but needed reassurance about future hardship. The collector offered a low immediate payment (1310) to remove default risk, then listened to the customer's request for future installments, agreeing to record it. This built trust. The collector's legal threat created urgency, while the flexible plan addressed the customer's anxiety about job loss, leading to agreement."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"394693.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"26185.74\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"13\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"10\"}]",
+    "dialDate": "20260609092439",
+    "connectDate": "20260609092448",
+    "dialType": "1",
+    "ringTime": "6",
+    "collUserId": "AA11100",
+    "collId": "A0BW9",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0176391370001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "323",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18838921317",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346963990207449395",
     "cust_no": "0000000156490271",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -17287,27 +7069,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "business_loan_balance": 1535510,
+      "mortgage_balance": 2680980,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 232513,
+      "has_business_loan": True,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 8,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "就下午1点之前吧，一点之前我肯定转进去。",
@@ -17319,17 +7098,30 @@ results = [
       "action": "promise_to_pay",
       "text": "就下午1点之前吧，一点之前我肯定转进去。",
       "explanation": "Customer showed willingness to pay but cited hardship and frustration over account restrictions. Collector used empathy to validate emotions, then offered a specific plan (pay 1670 now to stop legal action). This reduced resistance, leading customer to promise payment by 1 PM, securing a successful outcome."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"153551.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"268098.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"23251.3\"},{\"tagName\":\"ct标签\",\"tagValue\":\",701,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"8\"}]",
+    "dialDate": "20260609092639",
+    "connectDate": "20260609092643",
+    "dialType": "1",
+    "ringTime": "2",
+    "collUserId": "AA10780",
+    "collId": "A0BFQ",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0156490271001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "287",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15241117771",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347019840337732551",
     "cust_no": "0000000156490271",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -17361,39 +7153,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "business_loan_balance": 1535510,
+      "mortgage_balance": 2680980,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 232513,
+      "has_business_loan": True,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 8,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"153551.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"268098.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"23251.3\"},{\"tagName\":\"ct标签\",\"tagValue\":\",701,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"8\"}]",
+    "dialDate": "20260609105944",
+    "connectDate": "20260609105951",
+    "dialType": "1",
+    "ringTime": "4",
+    "collUserId": "AA10780",
+    "collId": "A0BFQ",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0156490271001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "66",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15241117771",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347150020093660349",
     "cust_no": "0000000164108419",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -17698,39 +7500,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1453292,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 7,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 11,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"14532.92\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,701,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"11\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"7\"}]",
+    "dialDate": "20260609143642",
+    "connectDate": "20260609143652",
+    "dialType": "1",
+    "ringTime": "9",
+    "collUserId": "AA11438",
+    "collId": "A0CAS",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0164108419001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "346",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15203870553",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347255590232181299",
     "cust_no": "0000000186571731",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -17968,39 +7780,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1167285,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 8,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 8,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"11672.85\"},{\"tagName\":\"ct标签\",\"tagValue\":\",701,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"8\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"8\"}]",
+    "dialDate": "20260609173239",
+    "connectDate": "20260609173250",
+    "dialType": "1",
+    "ringTime": "7",
+    "collUserId": "AA11268",
+    "collId": "A0C2D",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0186571731001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "363",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18134178370",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347067940405373090",
     "cust_no": "0000000191028627",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -18365,27 +8187,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 7990,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 10,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "你给我登记吧我一会就还，一会就换哈",
@@ -18397,17 +8216,30 @@ results = [
       "action": "promise_to_pay",
       "text": "嗯，唉。",
       "explanation": "Customer showed distress from partner's health crisis, then willingness to pay if card usable. Collector empathized, offered a concrete plan (pay $1390 by 2pm for fee waiver), and applied pressure (permanent restriction). This resolved customer's fear of card loss, leading to conditional promise to pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"7990\"},{\"tagName\":\"ct标签\",\"tagValue\":\",730,667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"10\"}]",
+    "dialDate": "20260609121954",
+    "connectDate": "20260609122005",
+    "dialType": "1",
+    "ringTime": "7",
+    "collUserId": "AA11268",
+    "collId": "A0C2D",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0191028627001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "938",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15966370562",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347280650379732059",
     "cust_no": "0000000198575114",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -18547,27 +8379,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 10000,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 281381,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 12,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "那行，那我明天尽量把这个最低2300多块钱还进去。",
@@ -18579,17 +8408,30 @@ results = [
       "action": "promise_to_pay",
       "text": "嗯，知道，知道。那行，那我明天尽量把这个最低2300多块钱还进去。",
       "explanation": "Customer showed debt inquiry and hardship (unemployment), but collector countered with evidence of high spending, undermining his negotiation. Collector then offered a concrete, conditional plan: waive future fees if he pays minimum by tomorrow. This shifted customer from negotiating to conditional willingness, then to a strong promise_to_pay, driven by the threat of permanent card freeze."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"1000.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"28138.1\"},{\"stagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260609181425",
+    "connectDate": "20260609181430",
+    "dialType": "1",
+    "ringTime": "4",
+    "collUserId": "AA11134",
+    "collId": "A0BXB",
+    "collArea": "2",
+    "collGroupId": "CK002",
+    "acNo": "0198575114001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "333",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15915981646",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346446190090830353",
     "cust_no": "0000000169456684",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -18930,27 +8772,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "business_loan_balance": 0,
+      "mortgage_balance": 9104420,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 706949,
+      "has_business_loan": False,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 2,
+      "complaint_score": 14,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 3,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好，好好，马上还进去。",
@@ -18962,17 +8801,30 @@ results = [
       "action": "promise_to_pay",
       "text": "好，好好，马上还进去。",
       "explanation": "Customer showed hardship and weak willingness. Collector used urgency (7:30 deadline) and empathy to shift customer to conditional willingness. By proposing a flexible partial payment plan and offering to extend deadline, collector built trust. Customer's fear of escalation and relief at manageable terms led to strong promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"910442.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"70694.9\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"3\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"2级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260608190339",
+    "connectDate": "20260608190349",
+    "dialType": "1",
+    "ringTime": "6",
+    "collUserId": "AA10677",
+    "collId": "A0BJD",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0169456684001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "345",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15208352767",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346479580381274990",
     "cust_no": "0000000160726006",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -19116,39 +8968,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 5027957,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 12,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 3,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"50279.57\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,040,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"3\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260608195918",
+    "connectDate": "20260608195927",
+    "dialType": "1",
+    "ringTime": "7",
+    "collUserId": "AA10648",
+    "collId": "A0AX2",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0160726006001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "89",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15769521991",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346316200028008996",
     "cust_no": "0000000106761681",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -19454,39 +9316,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1267093,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 11,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 5,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": True,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"是\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"12670.93\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,040,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"5\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260608152700",
+    "connectDate": "20260608152710",
+    "dialType": "1",
+    "ringTime": "8",
+    "collUserId": "AA10007",
+    "collId": "EV1",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0106761681001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "352",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18222416835",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346320800028001706",
     "cust_no": "0000000174307209",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -19944,27 +9816,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 4365255,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 12,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 3,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "我马上啊，我知道，我明白明白明白。好的好的，我马上挂电话，我看看我能借3000块，我先还进去了。",
@@ -19976,17 +9845,30 @@ results = [
       "action": "promise_to_pay",
       "text": "我马上啊，我知道，我明白明白明白。好的好的，我马上挂电话，我看看我能借3000块，我先还进去了。",
       "explanation": "The customer showed debt awareness and situational hardship but resisted until the collector escalated legal threats (stop card, lawsuit, asset freeze). The collector then probed income details, revealing a delayed wage payment. This shifted the customer from despair to conditional willingness ('I'll borrow money'). The collector's persistent pressure and specific threat of card stoppage at 4 PM triggered anxiety, leading to a promise to pay 2430 yuan."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"43652.55\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"3\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260608153440",
+    "connectDate": "20260608153450",
+    "dialType": "1",
+    "ringTime": "7",
+    "collUserId": "AA10004",
+    "collId": "A0ALE",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0174307209001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "351",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13826049933",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346191900536065134",
     "cust_no": "0000000164332251",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -20428,27 +10310,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 27690,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1304414,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 12,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 4,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "能不能申请说在我能力以内分期慢慢还？我不是想逃避这个责任，我一定不会逃避，我是一定会还的。",
@@ -20460,17 +10339,30 @@ results = [
       "action": "accept_plan",
       "text": "能不能申请说在我能力以内分期慢慢还？我不是想逃避这个责任，我一定不会逃避，我是一定会还的。",
       "explanation": "Customer showed distress and willingness to pay but inability, requesting long-term installment. Collector empathized, then offered a concrete plan: reduce E招贷 payment to 940, delay next bill, and waive fees. This matched customer's need for manageable payments, leading to acceptance."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"2769.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"初中及以下\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"13044.14\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"4\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260608115950",
+    "connectDate": "20260608115959",
+    "dialType": "1",
+    "ringTime": "6",
+    "collUserId": "AA10007",
+    "collId": "EV1",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0164332251001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "795",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13850702697",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346203980307827948",
     "cust_no": "0000000138585915",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -20948,27 +10840,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 281443,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 11,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "噢，行行，那那那你现在这个方……",
@@ -20980,17 +10869,30 @@ results = [
       "action": "agree_to_pay",
       "text": "噢，行行，那那那你现在这个方……",
       "explanation": "Customer admitted debt and hardship (unemployment, illness). Collector used empathy to build trust, then offered two clear plans. Customer showed conditional willingness, asking about card loss and payment timing. Collector clarified benefits (lower payment, extended deadline, fee waiver) and added time pressure (2 PM deadline). Customer chose stop-card plan, agreed to pay 2210.79, and committed to gather funds."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"2814.43\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260608121958",
+    "connectDate": "20260608122008",
+    "dialType": "1",
+    "ringTime": "7",
+    "collUserId": "AA9766",
+    "collId": "A0A7F",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0138585915003001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "643",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18952696011",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346276940201976825",
     "cust_no": "0000000105528907",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -21458,27 +11360,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 1376890,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2386803,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 11,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 7,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "我明天肯定就是把这个还进去",
@@ -21490,17 +11389,30 @@ results = [
       "action": "promise_to_pay",
       "text": "喂，嗯，对。",
       "explanation": "Customer showed willingness to pay but needed time (Wednesday). Collector used pressure (permanent freeze, full balance risk) and empathy (reduced payment to $1025/$1165). Customer's anxiety and desire to keep card led to conditional promise. Collector's ultimatum (today vs. full minimum) forced customer to commit to paying the reduced amounts, achieving promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"137689.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"23868.03\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,040,701,730,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"7\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260608142134",
+    "connectDate": "20260608142140",
+    "dialType": "1",
+    "ringTime": "3",
+    "collUserId": "AA10648",
+    "collId": "A0AX2",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0105528907001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "1075",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18523591677",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346405940636233349",
     "cust_no": "0000000132196971",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -22114,27 +12026,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 4701414,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 15,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "就是，呃，474.89，好的。",
@@ -22146,17 +12055,30 @@ results = [
       "action": "agree_to_pay",
       "text": "就是，呃，474.89，好的。",
       "explanation": "Customer showed hardship and willingness to pay via installment. Collector offered a tailored plan with low upfront (474.89), 36-month split, and waived fees, reducing monthly burden. Customer's conditional willingness turned to strong agreement after collector removed the 800 fee, applied urgency (7:30 deadline), and secured commitment. Causal chain: hardship → tailored offer → fee waiver → urgency → agree_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"12378次数\",\"tagValue\":\"0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"重渠投诉次数\",\"tagValue\":\"0\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"47014.14\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,040,733,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"15\"}]",
+    "dialDate": "20260608175634",
+    "connectDate": "20260608175650",
+    "dialType": "1",
+    "ringTime": "14",
+    "collUserId": "AA9766",
+    "collId": "A0A7F",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0132196971001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "679",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15989773562",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346291880090834164",
     "cust_no": "0000000106138475",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -22476,27 +12398,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 15779100,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2782514,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 14,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 3,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "嗯，那好吧，我尽量凑一下。15号左右还，可以吗？",
@@ -22508,17 +12427,30 @@ results = [
       "action": "agree_to_pay",
       "text": "嗯，那好吧，我尽量凑一下。15号左右还，可以吗？",
       "explanation": "Customer showed willingness to pay but inability due to business loss. Collector built trust by explaining bill change first, then used legal threat to create urgency. After customer explained hardship, collector offered empathy and a concrete plan: reduced payment of 2916, then 6 monthly installments. Customer negotiated but accepted when told it was the minimum. Causal chain: empathy + feasible plan → conditional willingness → agree_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"1577910.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"27825.14\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,131,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"3\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260608144628",
+    "connectDate": "20260608144634",
+    "dialType": "1",
+    "ringTime": "3",
+    "collUserId": "AA10677",
+    "collId": "A0BJD",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0106138475001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "1164",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13805923886",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346160470649713751",
     "cust_no": "0000000102954965",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -22807,27 +12739,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 1372030,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1956529,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 6,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 4,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "那就五点钟之前吧，五点钟之前。",
@@ -22839,17 +12768,30 @@ results = [
       "action": "agree_to_pay",
       "text": "那就五点钟之前吧，五点钟之前。",
       "explanation": "Customer showed conditional willingness due to hardship and fear of lawsuit. Collector acknowledged hardship (empathy), then offered a concrete path: pay partial principal now, negotiate interest later. This shifted customer from defensive to actionable, leading to agreement to pay by 5pm."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"137203.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"19565.29\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,311,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"4\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"6\"}]",
+    "dialDate": "20260608110727",
+    "connectDate": "20260608110730",
+    "dialType": "1",
+    "ringTime": "1",
+    "collUserId": "AA9325",
+    "collId": "A0A5H",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0102954965001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "781",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18626288540",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347312650201974802",
     "cust_no": "0000000144722463",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -23250,27 +13192,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 568750,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 7261147,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 14,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "那我相信你这句话。那我等会儿晚点就给他还上去。",
@@ -23282,17 +13221,30 @@ results = [
       "action": "promise_to_pay",
       "text": "那我相信你这句话。那我等会儿晚点就给他还上去。",
       "explanation": "Customer showed defensive confusion but willingness to negotiate. Collector reduced debt to a manageable $5755, offered card reactivation, and created urgency with an 8 PM deadline. This shifted customer from distrust to conditional trust, leading to a promise to pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"56875.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"72611.47\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260609190745",
+    "connectDate": "20260609190821",
+    "dialType": "1",
+    "ringTime": "33",
+    "collUserId": "AA10195",
+    "collId": "A0B09",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0144722463001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "467",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13670262637",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347006290518722802",
     "cust_no": "0000000165148690",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -23624,27 +13576,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 3781884,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 7,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "嗯，我在12点之前，我先凑钱去吧。12点之前我我还上。",
@@ -23656,17 +13605,30 @@ results = [
       "action": "promise_to_pay",
       "text": "嗯，我在12点之前，我先凑钱去吧。12点之前我我还上。",
       "explanation": "Customer showed distress and willingness to negotiate, requesting installment. Collector used empathy ('我理解您的困难') and provided clear information about debt and options. By patiently explaining terms and offering a plan (36-month installment), collector built trust. Customer moved from distress to conditional willingness ('我再考虑考虑') and finally to a strong promise_to_pay ('12点之前我还上')."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"37818.84\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,701,667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"7\"}]",
+    "dialDate": "20260609103709",
+    "connectDate": "20260609103720",
+    "dialType": "1",
+    "ringTime": "8",
+    "collUserId": "AA9820",
+    "collId": "UB7",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0165148690001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "909",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13577466858",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347150000636238648",
     "cust_no": "0000000175101007",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -23824,39 +13786,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 5499980,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 5103888,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 13,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 4,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"549998.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"51038.88\"},{\"tagName\":\"ct标签\",\"tagValue\":\",730,733,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"4\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"13\"}]",
+    "dialDate": "20260609143640",
+    "connectDate": "20260609143717",
+    "dialType": "1",
+    "ringTime": "35",
+    "collUserId": "AA9766",
+    "collId": "A0A7F",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0175101007001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "693",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18562737608",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347156280312801308",
     "cust_no": "0000000207409617",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -24041,27 +14013,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 5658396,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 14,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 4,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "嗯行行行，我跟同事借一下。",
@@ -24073,17 +14042,30 @@ results = [
       "action": "promise_to_pay",
       "text": "嗯行行行，我跟同事借一下。",
       "explanation": "Customer showed weak willingness and hardship, but collector applied escalating pressure (missed promise, deadline urgency) while offering a concrete benefit (waive penalty). This shifted customer from conditional to committed promise_to_pay, as collector's plan_proposal made action feel achievable and rewarding."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"56583.96\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"4\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260609144708",
+    "connectDate": "20260609144718",
+    "dialType": "1",
+    "ringTime": "9",
+    "collUserId": "AA8481",
+    "collId": "T22",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0207409617001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "102",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18282663168",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347261100312808868",
     "cust_no": "0000000151897324",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -24286,27 +14268,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 29500000,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1396399,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 1,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": True,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好的好的。",
@@ -24318,17 +14297,30 @@ results = [
       "action": "accept_plan",
       "text": "好的好的。",
       "explanation": "Customer admitted unstable income (situational hardship) and willingness to pay. Collector leveraged this by offering a tailored plan: reduce 11k debt to 699, waive fees, and provide flexible repayment. Legal threats created urgency, while the plan's flexibility (single payment or monthly) matched customer's capacity. Customer accepted due to reduced burden and clear next steps."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"2950000.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"是\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"13963.99\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"1\"}]",
+    "dialDate": "20260609174150",
+    "connectDate": "20260609174210",
+    "dialType": "1",
+    "ringTime": "18",
+    "collUserId": "AA10677",
+    "collId": "A0BJD",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0151897324001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "539",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13524087187",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347157630307828356",
     "cust_no": "0000000172059588",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -24560,27 +14552,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "business_loan_balance": 2664990,
+      "mortgage_balance": 13582940,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 6964415,
+      "has_business_loan": True,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 13,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 7,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好的好的，太感谢了。我确定能在11号六点前还上。",
@@ -24592,17 +14581,30 @@ results = [
       "action": "promise_to_pay",
       "text": "好的好的，太感谢了。我确定能在11号六点前还上。",
       "explanation": "Customer showed willingness to negotiate due to hardship. Collector built rapport via empathy, then used legal threat to create urgency. Offering a concrete plan (48-month installment) with a low first payment and fee reduction incentivized action. Customer's strong promise to pay by Thursday resulted from clear, conditional relief tied to compliance."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"266499.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"1358294.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"69644.15\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,040,701,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"7\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"13\"}]",
+    "dialDate": "20260609144923",
+    "connectDate": "20260609144934",
+    "dialType": "1",
+    "ringTime": "9",
+    "collUserId": "AA9325",
+    "collId": "A0A5H",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0172059588001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "1016",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15501696991",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347184930307822930",
     "cust_no": "0000000142400000",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -24754,27 +14756,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 489585,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 12,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "行行行，那就这样。",
@@ -24786,17 +14785,30 @@ results = [
       "action": "agree_to_pay",
       "text": "行行行，那就这样。",
       "explanation": "Customer showed willingness to negotiate due to family strain and income loss. Collector combined empathy (asking about job loss) with legal threat (high-risk report) and pressure (limiting time). This pushed customer from conditional offers to a concrete 2-day promise, leading to agree_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"48958.5\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,727,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260609153453",
+    "connectDate": "20260609153458",
+    "dialType": "1",
+    "ringTime": "2",
+    "collUserId": "AA10648",
+    "collId": "A0AX2",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0142400000001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "427",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15642123543",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347267370090830396",
     "cust_no": "0000000158441360",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -24966,27 +14978,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "business_loan_balance": 0,
+      "mortgage_balance": 2968910,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 4350112,
+      "has_business_loan": False,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 6,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "就是看今天的这个2000，这个2100多啊，就按这个方案就行了，对吧？",
@@ -24998,17 +15007,30 @@ results = [
       "action": "accept_plan",
       "text": "嗯，是的。",
       "explanation": "Customer showed anxiety and hostility from debt overwhelm, but conditional willingness to pay. Collector acknowledged emotions briefly, then consistently provided clear, structured plan details and addressed repayment logistics. This built certainty and trust, converting customer's conditional willingness into acceptance of the plan."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"296891.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"43501.12\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"6\"}]",
+    "dialDate": "20260609175217",
+    "connectDate": "20260609175225",
+    "dialType": "1",
+    "ringTime": "5",
+    "collUserId": "AA10557",
+    "collId": "A0BJY",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0158441360001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "175",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13603910308",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347268940649710664",
     "cust_no": "0000000112111154",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -25111,27 +15133,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 19214,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 11,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好，我今天12点前想办法还进去。",
@@ -25143,17 +15162,30 @@ results = [
       "action": "promise_to_pay",
       "text": "嗯，对，地址没问题。",
       "explanation": "Customer showed anxiety and conditional willingness after collector's pressure about account closure and legal action. Collector then offered a clear plan: pay the minimum today to restore card use. This shifted customer from fear to hope, leading to a promise to pay. The causal chain: pressure → anxiety → plan proposal → conditional willingness → promise."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"19214\"},{\"tagName\":\"ct标签\",\"tagValue\":\",187,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260609175454",
+    "connectDate": "20260609175506",
+    "dialType": "1",
+    "ringTime": "10",
+    "collUserId": "AA9820",
+    "collId": "UB7",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0112111154001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "199",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13136164742",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347191440636239788",
     "cust_no": "0000000168576657",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -25365,27 +15397,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1143174,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 12,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "我尽量尽量明天给你处理掉吧",
@@ -25397,17 +15426,30 @@ results = [
       "action": "promise_to_pay",
       "text": "方便方便。",
       "explanation": "Customer showed willingness to negotiate and cited situational hardship. Collector used empathy to build rapport, then applied pressure with legal threat and limited-time policy. Customer resisted but revealed willingness to pay by 11th. Collector narrowed deadline to tomorrow 5pm, securing a weak promise to pay by leveraging fear of escalation and loss of settlement offer."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"11431.74\"},{\"tagName\":\"ct标签\",\"tagValue\":\",040,667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260609154544",
+    "connectDate": "20260609154559",
+    "dialType": "1",
+    "ringTime": "12",
+    "collUserId": "AA9325",
+    "collId": "A0A5H",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0168576657001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "767",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13168858051",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347204030631742148",
     "cust_no": "0000000164154810",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -25611,27 +15653,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 61480,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 248705,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 14,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "590块钱那就是我知道了。知道了，你一会还进去，下班之前吧。",
@@ -25643,17 +15682,30 @@ results = [
       "action": "promise_to_pay",
       "text": "590块钱那就是我知道了。知道了，你一会还进去，下班之前吧。",
       "explanation": "Customer showed weak willingness and negotiation (asking for tomorrow), but collector maintained pressure by citing broken promises and legal threat. Collector offered a clear, reduced settlement (686 vs 40k), which aligned with customer's financial reality. Customer's complaint about time constraints revealed willingness to pay, just not immediately. Collector's firm stance on 'today' closed the deal, securing a promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"6148.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"2487.05\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,701,667,040,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260609160643",
+    "connectDate": "20260609160659",
+    "dialType": "1",
+    "ringTime": "13",
+    "collUserId": "AA10648",
+    "collId": "A0AX2",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0164154810003001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "376",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15206295299",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347129080337738250",
     "cust_no": "0000000111839782",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -25958,27 +16010,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 4636249,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 13,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 5,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好的，好的，好的，好的。谢谢你啊。嗯。",
@@ -25990,17 +16039,30 @@ results = [
       "action": "agree_to_pay",
       "text": "我昨天有事情，本来找那个朋友，那个朋友……呃，不是说去开车去了吗？没筹到。",
       "explanation": "Customer showed weak willingness ('想想办法吧') and facts of income loss and contact difficulty. Collector built rapport via empathy and address verification, then applied pressure by stating full payment deadline and card freeze. Offering a reduced minimum payment ($2382) gave a feasible path, shifting customer to strong willingness ('好的，好的') and agree_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"46362.49\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"5\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"13\"}]",
+    "dialDate": "20260609140148",
+    "connectDate": "20260609140210",
+    "dialType": "1",
+    "ringTime": "20",
+    "collUserId": "AA10195",
+    "collId": "A0B09",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0111839782001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "212",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15088480124",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347292150382410799",
     "cust_no": "0000000151758514",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -26225,39 +16287,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 1970000,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 5603618,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 12,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"197000.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"初中及以下\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"56036.18\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260609183335",
+    "connectDate": "20260609183343",
+    "dialType": "1",
+    "ringTime": "5",
+    "collUserId": "AA10195",
+    "collId": "A0B09",
+    "collArea": "2",
+    "collGroupId": "CK049",
+    "acNo": "0151758514001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "295",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13590017547",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346368160444248450",
     "cust_no": "0000000138194386",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -26655,27 +16727,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1564177,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 11,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "那可以。好，好。",
@@ -26687,17 +16756,30 @@ results = [
       "action": "agree_to_pay",
       "text": "呃，那就是以后……你说再呃……一年还一年是吧？还一年？那可以。好，好。嗯，嗯，嗯，嗯，好，嗯，好，没有了。嗯，是，好，嗯，嗯，嗯，我……我没听……没有点没听明白，你说。嗯，姓……嗯嗯，这个我知道。万7号7号之前……嗯，嗯好。嗯嗯，这个明白。是我还进去，是我还进去，我就不能再用，只能还不能用。一年，嗯，嗯嗯，嗯，嗯，利……嗯，行。噢，那……嗯，嗯，嗯，嗯，嗯，嗯，逾期了。对啊，嗯，没有问题弄我。明知道你们这个信期给我确实是无息的吗？无息还款的吗？我怎么出？嗯，我看看。40000，嗯。",
       "explanation": "Customer showed anxiety and hardship but willingness to negotiate. Collector built trust by acknowledging her situation, offering empathy, and proposing a concrete plan (766/month, fee waiver). When she resisted, he applied pressure (deadline) and clarified terms, leading to conditional agreement. Causal chain: empathy → feasible offer → pressure → acceptance."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"15641.77\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260608165336",
+    "connectDate": "20260608165342",
+    "dialType": "1",
+    "ringTime": "3",
+    "collUserId": "AA3887",
+    "collId": "D05",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0138194386001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "797",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13045495189",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346433790207449770",
     "cust_no": "0000000164345127",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -26999,39 +17081,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 3106556,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 13,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 5,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"外部投诉评分\",\"tagValue\":\"0\"},{\"tagName\":\"学历\",\"tagValue\":\"初中及以下\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"31065.56\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"5\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"13\"}]",
+    "dialDate": "20260608184259",
+    "connectDate": "20260608184306",
+    "dialType": "1",
+    "ringTime": "4",
+    "collUserId": "AA10661",
+    "collId": "G6P",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0164345127001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "285",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15162506685",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346294220132132276",
     "cust_no": "0000000211738017",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -27557,39 +17649,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 468563,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 10,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 7,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"4685.63\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"7\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"10\"}]",
+    "dialDate": "20260608145022",
+    "connectDate": "20260608145032",
+    "dialType": "1",
+    "ringTime": "5",
+    "collUserId": "AA7491",
+    "collId": "EW6",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0211738017050001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "580",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "17363326609",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346208860313054588",
     "cust_no": "0000000157584667",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -28057,39 +18159,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1878242,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 13,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"18782.42\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"13\"}]",
+    "dialDate": "20260608122806",
+    "connectDate": "20260608122823",
+    "dialType": "1",
+    "ringTime": "15",
+    "collUserId": "AA10982",
+    "collId": "A0BG0",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0157584667001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "624",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "17781276184",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346437330352382082",
     "cust_no": "0000000174711735",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -28259,27 +18371,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 86560,
+      "mortgage_balance": 0,
+      "other_loan_balance": 19210,
+      "wealth_value": 0,
+      "current_balance": 1171027,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": True,
+      "risk_level": 0,
+      "complaint_score": 12,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "把它还完吧，先不消费了。嗯……好的。呃，行，我现在先接受，我按照这个先还，然后遇到困难我再跟银行直接协调，行吗？",
@@ -28291,17 +18400,30 @@ results = [
       "action": "agree_to_pay",
       "text": "把它还完吧，先不消费了。嗯……好的。呃，行，我现在先接受，我按照这个先还，然后遇到困难我再跟银行直接协调，行吗？",
       "explanation": "Customer showed anxiety and hardship (income drop from 80k to thousands), but willingness to pay if possible. Collector built rapport via empathy, then offered a clear plan (internal settlement vs. lawsuit). Customer agreed to pay after feeling heard and receiving a feasible option, avoiding legal escalation."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"8656.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"1921.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"11710.27\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260608184853",
+    "connectDate": "20260608184903",
+    "dialType": "1",
+    "ringTime": "9",
+    "collUserId": "AA10135",
+    "collId": "A0AYR",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0174711735001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "472",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15841600555",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346441430351258613",
     "cust_no": "0000000215108886",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -28588,27 +18710,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 444846,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 9,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 4,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "这个星期我会想办法还进去的，还的话我就是把这2个月欠的逾期还掉。",
@@ -28620,17 +18739,30 @@ results = [
       "action": "promise_to_pay",
       "text": "这个星期我会想办法还进去的，还的话我就是把这2个月欠的逾期还掉。",
       "explanation": "Customer showed willingness but cited family strain and income loss. Collector shifted from threats to a specific plan (pay 2153 to prove intent), then used legal consequences to create urgency. Customer’s anxiety and despair turned into conditional promise when collector offered a manageable partial payment option, linking it to avoiding repossession."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"4448.46\"},{\"tagName\":\"ct标签\",\"tagValue\":\",040,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"4\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"9\"}]",
+    "dialDate": "20260608185544",
+    "connectDate": "20260608185556",
+    "dialType": "1",
+    "ringTime": "9",
+    "collUserId": "AA7449",
+    "collId": "E5E",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0215108886050001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "266",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13235458080",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346093670379730216",
     "cust_no": "0000000101139515",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -28929,27 +19061,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 2300000,
+      "mortgage_balance": 0,
+      "other_loan_balance": 18750000,
+      "wealth_value": 0,
+      "current_balance": 3897325,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": True,
+      "risk_level": 1,
+      "complaint_score": 12,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 6,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "我，我一会把这还掉，还掉之后呢？然后我是不转，是吧？",
@@ -28961,17 +19090,30 @@ results = [
       "action": "promise_to_pay",
       "text": "我，我一会把这还掉，还掉之后呢？然后我是不转，是吧？",
       "explanation": "Customer showed confusion and debt inquiry, but strong willingness to pay. Collector repeatedly clarified payment was for principal, not penalties, and offered a clear plan: pay 2718 to trigger fee waiver and future adjustments. This reduced customer's uncertainty, leading to promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"230000.0\"},{\"tagName\":\"外部投诉评分\",\"tagValue\":\"0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"1875000.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"38973.25\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,730,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"6\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260608091607",
+    "connectDate": "20260608091619",
+    "dialType": "1",
+    "ringTime": "8",
+    "collUserId": "AA7491",
+    "collId": "EW6",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0101139515001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "260",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13661448666",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346455820090832072",
     "cust_no": "0000000175786747",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -29434,27 +19576,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "business_loan_balance": 0,
+      "mortgage_balance": 6340190,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 407881,
+      "has_business_loan": False,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 11,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "嗯，微信吧。",
@@ -29466,17 +19605,30 @@ results = [
       "action": "agree_to_pay",
       "text": "修改吗？以前不是说不能改的吗？",
       "explanation": "Customer showed willingness to pay but cited income timing (10th) and asset sale plan. Collector adapted by aligning bill date to her payday, then offered a reduced payment plan ($2160) with deferred next payment, addressing her anxiety about lump-sum debt. This matched her conditional willingness, leading to agree_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"634019.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"40788.1\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,161,701,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260608191942",
+    "connectDate": "20260608191956",
+    "dialType": "1",
+    "ringTime": "10",
+    "collUserId": "AA10982",
+    "collId": "A0BG0",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0175786747001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "822",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18108166832",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346457770536066244",
     "cust_no": "0000000111590124",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -29590,27 +19742,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 117660,
+      "mortgage_balance": 0,
+      "other_loan_balance": 103610,
+      "wealth_value": 0,
+      "current_balance": 5191603,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": True,
+      "risk_level": 1,
+      "complaint_score": 14,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 4,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "我今天晚上肯定会处理，我现在就回去了。",
@@ -29622,17 +19771,30 @@ results = [
       "action": "promise_to_pay",
       "text": "我今天晚上肯定会处理，我现在就回去了。",
       "explanation": "Customer showed strong willingness and payment commitment early. Collector probed method (wife depositing), then gently reframed inaction as 'maybe wife forgot,' reducing defensiveness. Customer agreed and reiterated plan. Collector proposed specific action (call wife tonight), which customer confirmed, leading to promise_to_pay. Causal chain: willingness → gentle reframe → specific plan → commitment."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"11766.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"10361.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"51916.03\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"4\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260608192257",
+    "connectDate": "20260608192320",
+    "dialType": "1",
+    "ringTime": "21",
+    "collUserId": "AA9213",
+    "collId": "A0A2A",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0111590124001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "59",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13950007696",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346306260618092863",
     "cust_no": "0000000137596025",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -30024,27 +20186,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "business_loan_balance": 0,
+      "mortgage_balance": 4388890,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 5674894,
+      "has_business_loan": False,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 12,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 0,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "嗯好的好的",
@@ -30056,17 +20215,30 @@ results = [
       "action": "agree_to_pay",
       "text": "嗯，之前我已经打电话给你们协商了，就说……它说没有什么政策，反正就是现在，反正每个月我尽量还一点。",
       "explanation": "Customer showed hardship (business loss, low income) and conditional willingness (can only pay ~1000/month). Collector built trust by acknowledging past payments, then offered three tailored plans. Key causal chain: collector's empathy and flexible options (especially plan 3 with 1052 immediate payment and future renegotiation) matched customer's ability, turning weak willingness into strong agree_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"438889.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"56748.94\"},{\"tagName\":\"ct标签\",\"tagValue\":\",730,667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"0\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260608151026",
+    "connectDate": "20260608151040",
+    "dialType": "1",
+    "ringTime": "13",
+    "collUserId": "AA9213",
+    "collId": "A0A2A",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0137596025001001",
+    "isRecorded": "",
+    "result": "1",
+    "talkTime": "725",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15977677187",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346108570207446142",
     "cust_no": "0000000139491903",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -30168,27 +20340,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "business_loan_balance": 0,
+      "mortgage_balance": 6590520,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2925798,
+      "has_business_loan": False,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 11,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "嗯好嘞好嘞，好好。",
@@ -30200,17 +20369,30 @@ results = [
       "action": "accept_plan",
       "text": "嗯，你说。",
       "explanation": "Customer showed engagement and legal pressure, signaling willingness to resolve. Collector first applied pressure, then offered a clear two-part plan. Customer negotiated to confirm terms, and collector affirmed flexibility. This built trust, leading customer to accept the plan."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"659052.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"29257.98\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260608094057",
+    "connectDate": "20260608094135",
+    "dialType": "1",
+    "ringTime": "36",
+    "collUserId": "AA8543",
+    "collId": "VS1",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0139491903002001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "326",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15951131413",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346272220333272268",
     "cust_no": "0000000141163198",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -30471,27 +20653,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 3220162,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 12,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 7,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好，那行吧。",
@@ -30503,17 +20682,30 @@ results = [
       "action": "agree_to_pay",
       "text": "好，那行吧。",
       "explanation": "Customer showed hardship and weak willingness, but collector shifted from legal threat to flexible plan (1563/month, no interest, 6-month buffer). Collector addressed anxiety by offering immediate relief (skip 2 months, protect credit). Customer's conditional willingness turned to agreement when plan matched ability to pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"32201.62\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"7\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260608141342",
+    "connectDate": "20260608141410",
+    "dialType": "1",
+    "ringTime": "25",
+    "collUserId": "AA10086",
+    "collId": "A0AWF",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0141163198001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "499",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18993819954",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346369630382416299",
     "cust_no": "0000000120986061",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -30626,27 +20818,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 13381289,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 15,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 4,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "我现在能保证每个月……大概3000左右吧。",
@@ -30658,17 +20847,30 @@ results = [
       "action": "promise_to_pay",
       "text": "喂您好，是的。",
       "explanation": "Customer showed strong willingness to repay but cited hardship. Collector first informed of risks (legal action), then shifted to empathy and a concrete plan (registering for callback). This moved customer from conditional to committed promise_to_pay by offering a manageable next step, not demanding full payment."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"133812.89\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"4\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"15\"}]",
+    "dialDate": "20260608165603",
+    "connectDate": "20260608165623",
+    "dialType": "1",
+    "ringTime": "18",
+    "collUserId": "AA10986",
+    "collId": "A0BA9",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0120986061001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "498",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18966819989",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346169020555267890",
     "cust_no": "0000000138663569",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -31370,27 +21572,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 318390,
+      "mortgage_balance": 0,
+      "other_loan_balance": 172130,
+      "wealth_value": 0,
+      "current_balance": 5771405,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": True,
+      "risk_level": 4,
+      "complaint_score": 12,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "嗯嗯，行，那就先按刚才你说的这个，先还3000多吧，我去筹一下。",
@@ -31402,17 +21601,30 @@ results = [
       "action": "promise_to_pay",
       "text": "就是协商个性化分期嘛，因为说白了我不是说不还，关键是现在没有大额的资金来源。",
       "explanation": "Customer showed willingness to pay but inability to pay large sum. Collector offered two clear plans, empathized with hardship, and addressed anxiety about fees and harassment. The causal chain: collector's flexible 3140 plan with penalty waiver and stop-card option matched customer's limited ability, leading to promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"31839.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"17213.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"57714.05\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260608112142",
+    "connectDate": "20260608112201",
+    "dialType": "1",
+    "ringTime": "16",
+    "collUserId": "AA3887",
+    "collId": "D05",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0138663569001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "1180",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13011923110",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346113840093662643",
     "cust_no": "0000000118641866",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -32056,27 +22268,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 14287972,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 14,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好的好的，行行行，好嘞好嘞。",
@@ -32088,17 +22297,30 @@ results = [
       "action": "agree_to_pay",
       "text": "好的好的，行行行，好嘞好嘞。",
       "explanation": "Customer showed debt acknowledgment and conditional willingness. Collector built trust by listening, then offered a concrete plan: reduce immediate payment to 7865, waive 6537 in fees, and extend deadline to August. This addressed customer's repayment inability and interest pressure. Customer's strong willingness emerged after understanding the tangible benefit, leading to agree_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"142879.72\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260608094944",
+    "connectDate": "20260608094952",
+    "dialType": "1",
+    "ringTime": "6",
+    "collUserId": "AA3887",
+    "collId": "D05",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0118641866001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "646",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13591192958",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346375060352388794",
     "cust_no": "0000000160804799",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -32276,27 +22498,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "business_loan_balance": 0,
+      "mortgage_balance": 7371840,
+      "other_loan_balance": 0,
+      "wealth_value": 5,
+      "current_balance": 4357408,
+      "has_business_loan": False,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 1,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 5,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "行，那我先还上三四百行吗？留我留个吃饭钱。",
@@ -32308,17 +22527,30 @@ results = [
       "action": "agree_to_pay",
       "text": "行，那我先还上三四百行吗？留我留个吃饭钱。",
       "explanation": "The customer showed conditional willingness due to expected medical compensation but lacked immediate funds. The collector built rapport by probing hardships, then proposed a small partial payment (500 yuan) to activate a buffer policy, reducing pressure. When the customer negotiated down to 300-400, the collector accepted, creating a manageable step. This combination of empathy, flexible plan, and legal threat (full payment/lawsuit) triggered agreement."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.05\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"初中及以下\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"737184.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"43574.08\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"5\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"1\"}]",
+    "dialDate": "20260608170506",
+    "connectDate": "20260608170515",
+    "dialType": "1",
+    "ringTime": "6",
+    "collUserId": "AA8543",
+    "collId": "VS1",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0160804799001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "174",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18615443321",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346325740536060391",
     "cust_no": "0000000129587412",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -32444,39 +22676,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 5749880,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 11,
+      "current_balance": 6207632,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 10,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"574988.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.11\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"62076.32\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"10\"}]",
+    "dialDate": "20260608154254",
+    "connectDate": "20260608154310",
+    "dialType": "1",
+    "ringTime": "14",
+    "collUserId": "AA9537",
+    "collId": "A0AHI",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0129587412001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "556",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18629684256",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346180710575847759",
     "cust_no": "0000000138200160",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -32594,27 +22836,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "business_loan_balance": 0,
+      "mortgage_balance": 10345210,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 7326172,
+      "has_business_loan": False,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 3,
+      "complaint_score": 14,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 4,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": True,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "嗯，行行，那我一会再给你说吧，我先还上。",
@@ -32626,17 +22865,30 @@ results = [
       "action": "promise_to_pay",
       "text": "嗯，行行，那我一会再给你说吧，我先还上。",
       "explanation": "Customer showed strong willingness to pay but faced time pressure. Collector used deadline urgency (19 minutes) to reinforce commitment, then clarified account details to prevent errors. Customer's repayment_inability was overcome by collector's supportive closure, leading to promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"1034521.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"是\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"73261.72\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"4\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"3级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260608114111",
+    "connectDate": "20260608114118",
+    "dialType": "1",
+    "ringTime": "4",
+    "collUserId": "AA10986",
+    "collId": "A0BA9",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0138200160001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "77",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15010541129",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346382520307829139",
     "cust_no": "0000000159005923",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -32821,27 +23073,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 2227500,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 6072294,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 14,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 7,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "唉……嗯，行，我知道了，我想办法好吧。",
@@ -32853,17 +23102,30 @@ results = [
       "action": "promise_to_pay",
       "text": "唉……嗯，行，我知道了，我想办法好吧。",
       "explanation": "Customer showed hardship and inability to pay full amount, but weak willingness to pay something. Collector offered a reduced settlement (3037), then escalated pressure with clear legal threats (card freeze,扣款,诉讼). This shifted customer from conditional to active willingness, leading to a promise to pay by 7:30 PM."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"222750.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"60722.94\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"7\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260608171732",
+    "connectDate": "20260608171738",
+    "dialType": "1",
+    "ringTime": "3",
+    "collUserId": "AA8530",
+    "collId": "E2O",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0159005923001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "400",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18226658558",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346331290518720821",
     "cust_no": "0000000138572735",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -33107,27 +23369,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1926242,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 13,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "那我，我只要在今天转就可以了，是吗？好，好，六点之前我找人帮我转一下。",
@@ -33139,17 +23398,30 @@ results = [
       "action": "promise_to_pay",
       "text": "那你报一下那个……嗯……6225……然后呢……7687……19262125……然后……另一个……嗯……225……7524……1385……638……嗯……嗯……嗯……嗯……好，好，好。那我，我只要在今天转就可以了，是吗？好，好，六点之前我找人帮我转一下。那我发等一下，等一下，等一下，那我8月份的还，那我8月份假如说你8月14号跟我说8月14号我还是还2100多是吗？2000就2000多一点……噢好知道了……到了……好好好……你先就一年吧。因为我现在找工作的确比较难。那肯那……那肯定的，因为你也看你，咱说实说实在的，对吧？你说我也不是说……就是说借完钱不还了。你现在招商银行的钱我自从出，我自从出来上班之后，第一个工资卡就是招商银行的，我就一直用用到现在。对说，你看你，你公司银行也应该能查到，然后说出我自己也知道，对吧？你说我分期也好啊，借款也好，我的利息咱们用了10来年了，利息怎么说我也应该都翻倍了，对吧？我也没有说在纠结这个问题，咱们是用钱了，你说？我借钱，我还钱是很正常的，天经地义的一件事。对，是的是的……银行……好。",
       "explanation": "Customer showed willingness to pay but cited injury/job loss. Collector used empathy ('understand your difficulty') and offered a tailored plan (reduced payment, fee waiver). This addressed customer's inability to pay full amount, reducing anxiety. Customer accepted the feasible plan, leading to promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"19262.42\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"13\"}]",
+    "dialDate": "20260608155209",
+    "connectDate": "20260608155217",
+    "dialType": "1",
+    "ringTime": "5",
+    "collUserId": "AA7449",
+    "collId": "E5E",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0138572735001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "1185",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15546000800",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346186940379732586",
     "cust_no": "0000000167511598",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -33736,39 +24008,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 3218304,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 11,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": True,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"是\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"32183.04\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260608115134",
+    "connectDate": "20260608115153",
+    "dialType": "1",
+    "ringTime": "17",
+    "collUserId": "AA8530",
+    "collId": "E2O",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0167511598001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "1734",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13213363105",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346190100555269070",
     "cust_no": "0000000138526194",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -34051,39 +24333,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "business_loan_balance": 0,
+      "mortgage_balance": 4483500,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 4322064,
+      "has_business_loan": False,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 11,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"448350.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"43220.64\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,197,207,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260608115650",
+    "connectDate": "20260608115657",
+    "dialType": "1",
+    "ringTime": "3",
+    "collUserId": "AA10137",
+    "collId": "A0AYM",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0138526194001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "491",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18314527609",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346194520338590435",
     "cust_no": "0000000127277410",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -34300,27 +24592,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 252190,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2322478,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 3,
+      "complaint_score": 13,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 6,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": True,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好，好，2364是吧？那我今天下午把钱筹到，把它还进去。",
@@ -34332,17 +24621,30 @@ results = [
       "action": "promise_to_pay",
       "text": "好，好，2364是吧？那我今天下午把钱筹到，把它还进去。",
       "explanation": "Customer showed anxiety and distress about future payments, but collector addressed this by offering future renegotiation and explaining that paying now stops calls, reduces debt, and enables fee waivers. This causal chain—clear plan, relief from pressure, and tangible benefit—shifted customer from weak willingness to strong promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"25219.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"是\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"23224.78\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,667,161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"6\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"3级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"13\"}]",
+    "dialDate": "20260608120412",
+    "connectDate": "20260608120436",
+    "dialType": "1",
+    "ringTime": "22",
+    "collUserId": "AA9213",
+    "collId": "A0A2A",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0127277410001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "218",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18672302730",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346394340071385395",
     "cust_no": "0000000141163198",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -34529,27 +24831,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 3220162,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 12,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 7,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "唉，唉，行行行。",
@@ -34561,17 +24860,30 @@ results = [
       "action": "agree_to_pay",
       "text": "对。",
       "explanation": "Customer showed willingness to pay but cited hardship. Collector reframed plan to reduce pressure (stop at August, no fixed amount), then used urgency (same-day stop-interest) and social pressure (borrow from family). Customer's weak willingness shifted to agree_to_pay when faced with losing the benefit."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"32201.62\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"7\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260608173714",
+    "connectDate": "20260608173741",
+    "dialType": "1",
+    "ringTime": "24",
+    "collUserId": "AA10086",
+    "collId": "A0AWF",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0141163198001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "177",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18993819954",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346195760312801083",
     "cust_no": "0000000102040460",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -34753,27 +25065,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "business_loan_balance": 50000000,
+      "mortgage_balance": 52708330,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 4214472,
+      "has_business_loan": True,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 13,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 3,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好的，我明白了。下午，下午，我操作这个好吧。嗯。",
@@ -34785,17 +25094,30 @@ results = [
       "action": "promise_to_pay",
       "text": "好的，我明白了。下午，下午，我操作这个好吧。嗯。",
       "explanation": "Customer showed willingness but weak ability (only 1k cash). Collector used empathy to build trust, then offered a concrete plan: pay 2186 today to freeze account and get fee waiver, with balance due tomorrow. This reduced immediate burden, matched customer's cash limit, and created clear action steps. Customer agreed to pay 2186 today, achieving promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"5000000.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"5270833.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"42144.72\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,077,667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"3\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"13\"}]",
+    "dialDate": "20260608120616",
+    "connectDate": "20260608120627",
+    "dialType": "1",
+    "ringTime": "8",
+    "collUserId": "AA7449",
+    "collId": "E5E",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0102040460001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "279",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18616852621",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346136220338598482",
     "cust_no": "0000000161748115",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -34919,27 +25241,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 3000000,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 5493639,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 14,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "嗯嗯嗯，好的，好的，行，嗯，再见。",
@@ -34951,17 +25270,30 @@ results = [
       "action": "agree_to_pay",
       "text": "嗯嗯嗯，好的，好的，行，嗯，再见。",
       "explanation": "Customer showed weak willingness and hardship but revealed she had $2000. Collector used this fact to propose a concrete plan: pay $2000 now, rest by noon, with promise to write a report. This gave customer a clear, achievable step and urgency, turning her conditional agreement into action."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"300000.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"54936.39\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260608102702",
+    "connectDate": "20260608102711",
+    "dialType": "1",
+    "ringTime": "6",
+    "collUserId": "AA10982",
+    "collId": "A0BG0",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0161748115001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "60",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15164531977",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346272870631740890",
     "cust_no": "0000000170157437",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -35258,39 +25590,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1430309,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 12,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"14303.09\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,667,161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260608141447",
+    "connectDate": "20260608141501",
+    "dialType": "1",
+    "ringTime": "12",
+    "collUserId": "AA9814",
+    "collId": "T2W",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0170157437001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "810",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18672335080",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346347270381278366",
     "cust_no": "0000000197753847",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -36115,39 +26457,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 155170,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 3875035,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 12,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"15517.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"外部投诉评分\",\"tagValue\":\"0\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"38750.35\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,701,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260608161847",
+    "connectDate": "20260608161924",
+    "dialType": "1",
+    "ringTime": "34",
+    "collUserId": "AA10661",
+    "collId": "G6P",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0197753847001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "1043",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13037576972",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346275990555261220",
     "cust_no": "0000000149546002",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -36303,27 +26655,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2275803,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 11,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 4,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "嗯，好的。",
@@ -36335,17 +26684,30 @@ results = [
       "action": "agree_to_pay",
       "text": "我看一下啊……好，我看一下。",
       "explanation": "Customer showed confusion and checked account facts, indicating willingness to comply if issues resolved. Collector clarified system updates, changed billing date, and set a clear future payment plan (1240 monthly). This reduced uncertainty and built trust, leading customer to agree with '嗯，好的' and accept payment terms."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"外部投诉评分\",\"tagValue\":\"0\"},{\"tagName\":\"重渠投诉次数\",\"tagValue\":\"0\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"12378次数\",\"tagValue\":\"0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"22758.03\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"4\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260608141959",
+    "connectDate": "20260608142007",
+    "dialType": "1",
+    "ringTime": "6",
+    "collUserId": "AA10661",
+    "collId": "G6P",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0149546002001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "135",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13850677581",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346281550076199370",
     "cust_no": "0000000119017350",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -36622,27 +26984,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 33380,
+      "wealth_value": 0,
+      "current_balance": 3089873,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": True,
+      "risk_level": 4,
+      "complaint_score": 12,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 3,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": True,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "我周转了我肯定是还，我跟你说的是九点之前",
@@ -36654,17 +27013,30 @@ results = [
       "action": "promise_to_pay",
       "text": "对，我要是还上的话，能知道卡能不能用。",
       "explanation": "Customer showed conditional willingness (repay if card usable) and irritation over fees. Collector offered card reactivation plan, then firmly refused fee waivers, citing tax records. This pressure shifted customer from negotiation to acceptance: he committed to pay by 9pm to get card unlocked. Collector’s consistent stance on fees and clear reactivation path caused the promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"3338.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"外部投诉评分\",\"tagValue\":\"0\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"是\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"30898.73\"},{\"tagName\":\"ct标签\",\"tagValue\":\",311,730,160,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"3\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260608142915",
+    "connectDate": "20260608142920",
+    "dialType": "1",
+    "ringTime": "3",
+    "collUserId": "AA9213",
+    "collId": "A0A2A",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0119017350001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "332",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13904516596",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346414200207442062",
     "cust_no": "0000000140570096",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -36841,39 +27213,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 5816071,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 12,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"58160.71\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,040,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260608181020",
+    "connectDate": "20260608181048",
+    "dialType": "1",
+    "ringTime": "24",
+    "collUserId": "AA8543",
+    "collId": "VS1",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0140570096001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "145",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18291916168",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346414270405373847",
     "cust_no": "0000000197626063",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -37030,27 +27412,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 3292263,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 15,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "行我一会儿我还一下。",
@@ -37062,17 +27441,30 @@ results = [
       "action": "promise_to_pay",
       "text": "嗯好",
       "explanation": "Customer showed confusion and anxiety about debt amount and interest, but willingness to pay if terms were clear. Collector clarified billing details, offered a 12-month installment plan, and explained no extra interest. This resolved customer's distrust and financial pressure, leading to a promise to pay monthly."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"32922.63\"},{\"tagName\":\"ct标签\",\"tagValue\":\",701,161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"15\"}]",
+    "dialDate": "20260608181027",
+    "connectDate": "20260608181035",
+    "dialType": "1",
+    "ringTime": "5",
+    "collUserId": "AA10086",
+    "collId": "A0AWF",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0197626063001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "868",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18810019970",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346286070333276241",
     "cust_no": "0000000178698260",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -38031,39 +28423,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 200242,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 14,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": True,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"是\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"20024.2\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260608143647",
+    "connectDate": "20260608143653",
+    "dialType": "1",
+    "ringTime": "4",
+    "collUserId": "AA10135",
+    "collId": "A0AYR",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0178698260001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "1307",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13088005120",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346360380132138156",
     "cust_no": "0000000115593493",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -38326,39 +28728,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 2600000,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 2688434,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 13,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"260000.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"26884.34\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"13\"}]",
+    "dialDate": "20260608164038",
+    "connectDate": "20260608164046",
+    "dialType": "1",
+    "ringTime": "6",
+    "collUserId": "AA9814",
+    "collId": "T2W",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0115593493001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "396",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13663858712",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346287230494444366",
     "cust_no": "0000000170701071",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -39743,39 +30155,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "business_loan_balance": 4500000,
+      "mortgage_balance": 5754350,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 6746999,
+      "has_business_loan": True,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 13,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 4,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"450000.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"575435.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"67469.99\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"4\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"13\"}]",
+    "dialDate": "20260608143843",
+    "connectDate": "20260608143858",
+    "dialType": "1",
+    "ringTime": "11",
+    "collUserId": "AA3887",
+    "collId": "D05",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0170701071001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "1243",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15094781123",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346151900622997028",
     "cust_no": "0000000105766975",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -40215,27 +30637,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 4337000,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 100328,
+      "current_balance": 1533597,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 15,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好。",
@@ -40247,17 +30666,30 @@ results = [
       "action": "agree_to_pay",
       "text": "可以。",
       "explanation": "Customer admitted unemployment (hardship) and willingness to pay but needed lower amounts. Collector used empathy, offered tailored plan (reduce payments, waive fees), and created urgency (limited-time offer). Customer agreed to pay 811 and 2262 after clear, step-by-step proposal and pressure to act immediately."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"433700.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"1003.28\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"15335.97\"},{\"tagName\":\"ct标签\",\"tagValue\":\",187,161,667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"15\"}]",
+    "dialDate": "20260608105310",
+    "connectDate": "20260608105330",
+    "dialType": "1",
+    "ringTime": "18",
+    "collUserId": "AA10986",
+    "collId": "A0BA9",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0105766975001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "1320",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13801138176",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346421350337739281",
     "cust_no": "0000000112365254",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -40666,27 +31098,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 7930609,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 13,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 3,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "我明天中午十二点之前还上，行不行？",
@@ -40698,17 +31127,30 @@ results = [
       "action": "promise_to_pay",
       "text": "嗯",
       "explanation": "Customer showed willingness to pay but inability to pay large sum. Collector offered two clear plans, then used pressure (legal threat, time inflexibility) to push toward second plan. Customer resisted, then accepted after collector granted a one-day extension, leading to promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"79306.09\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,667,040,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"3\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"13\"}]",
+    "dialDate": "20260608182215",
+    "connectDate": "20260608182226",
+    "dialType": "1",
+    "ringTime": "8",
+    "collUserId": "AA10137",
+    "collId": "A0AYM",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0112365254001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "969",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18931975578",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346424690536060300",
     "cust_no": "0000000150616178",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -41418,27 +31860,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 3782436,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 12,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "我回，我在路上面，我回去处理嘛哈。",
@@ -41450,17 +31889,30 @@ results = [
       "action": "promise_to_pay",
       "text": "对。儿子哪。我回，我在路上面，我回去处理嘛哈。",
       "explanation": "Customer showed weak willingness and repayment inability, but distrust and interest pressure. Collector built rapport by acknowledging fraud, then offered a specific, interest-free monthly plan (772 yuan). This addressed customer's core concern (interest/penalties). Clear terms and flexibility (pay more anytime) shifted customer from resistant to conditional, then to a firm promise_to_pay (800 yuan). Legal threat and closure pressure sealed commitment."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"37824.36\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260608182749",
+    "connectDate": "20260608182757",
+    "dialType": "1",
+    "ringTime": "5",
+    "collUserId": "AA8543",
+    "collId": "VS1",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0150616178001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "441",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13996191652",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346155810428934354",
     "cust_no": "0000000134623356",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -41869,27 +32321,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 1664265,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 10,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "等我一下，我现在还进去。",
@@ -41901,17 +32350,30 @@ results = [
       "action": "promise_to_pay",
       "text": "等我一下，我现在还进去。",
       "explanation": "Customer showed hardship and willingness to negotiate. Collector built rapport via empathy, then offered flexible plans (e.g., reduced payment, interest waiver). Customer’s anxiety about fees led collector to propose zero-interest option, triggering strong willingness. Collector secured a small initial payment (903) as commitment, which customer fulfilled, achieving promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"16642.65\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"10\"}]",
+    "dialDate": "20260608105941",
+    "connectDate": "20260608105950",
+    "dialType": "1",
+    "ringTime": "6",
+    "collUserId": "AA10137",
+    "collId": "A0AYM",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0134623356001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "757",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15889894622",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346158270575849486",
     "cust_no": "0000000172516257",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -42329,39 +32791,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 95,
+      "current_balance": 1032383,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 15,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 6,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.95\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"10323.83\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,040,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"6\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"15\"}]",
+    "dialDate": "20260608110347",
+    "connectDate": "20260608110405",
+    "dialType": "1",
+    "ringTime": "16",
+    "collUserId": "AA7449",
+    "collId": "E5E",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0172516257001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "434",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18607201536",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347300480132138367",
     "cust_no": "0000000170055961",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -42829,27 +33301,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 7202291,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 14,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 3,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "明天可以吗？明天可以吗？嗯，噢，我明白。麻烦你了，麻烦你了。那招行我看一下，我微信还有几百块钱，用微信转过去吧。我这边有还卡。",
@@ -42861,17 +33330,30 @@ results = [
       "action": "promise_to_pay",
       "text": "好，噢，好吧，我知道了。明天可以吗？明天可以吗？嗯，噢，我明白。麻烦你了，麻烦你了。那招行我看一下，我微信还有几百块钱，用微信转过去吧。我这边有还卡。",
       "explanation": "Customer showed conditional willingness after collector addressed his fears: legal action, full repayment, and future flexibility. Collector built trust by explaining the 2100 reduction, offering a phased payment plan (602 now, 3000 later), and empathizing with his hardship. This shifted customer from resistance to a promise_to_pay by making the debt manageable and reducing immediate pressure."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"72022.91\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"3\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260609184728",
+    "connectDate": "20260609184759",
+    "dialType": "1",
+    "ringTime": "29",
+    "collUserId": "AA10986",
+    "collId": "A0BA9",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0170055961001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "1128",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18579922582",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347044490352381606",
     "cust_no": "0000000151943114",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -43363,27 +33845,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 2500000,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 128172,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 12,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好",
@@ -43395,17 +33874,30 @@ results = [
       "action": "agree_to_pay",
       "text": "好，你说。",
       "explanation": "Customer showed willingness to pay but cited hardship. Collector shifted from legal threats to empathy, validating customer's situation and praising past good credit. Then offered a tailored, low monthly payment plan with fee waivers and a 2-month buffer, reducing immediate pressure. Customer's conditional willingness turned into agreement when the plan felt manageable and fair."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"250000.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"12817.2\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260609114049",
+    "connectDate": "20260609114103",
+    "dialType": "1",
+    "ringTime": "11",
+    "collUserId": "AA9814",
+    "collId": "T2W",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0151943114001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "1064",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13631356553",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346994680479405878",
     "cust_no": "0000000172868480",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -43582,27 +34074,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 920720,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 4738481,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 14,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 7,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": True,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "呃，马上处理，也就是十来分钟就处理好了，因为我现在来到银行了。",
@@ -43614,17 +34103,30 @@ results = [
       "action": "promise_to_pay",
       "text": "喂，唉，你好，我现在我把这个钱存到40005145，是吧？",
       "explanation": "Customer showed strong willingness and distress from hardship. Collector built rapport, confirmed details, then offered a tailored plan (card retention, fee reduction) that addressed customer's need for relief. This conditional offer triggered engagement and a promise to pay immediately, as customer saw a clear benefit."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"92072.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"是\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"47384.81\"},{\"tagName\":\"ct标签\",\"tagValue\":\",131,667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"7\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260609101748",
+    "connectDate": "20260609101800",
+    "dialType": "1",
+    "ringTime": "9",
+    "collUserId": "AA9213",
+    "collId": "A0A2A",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0172868480001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "98",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "17753296888",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346997260076198820",
     "cust_no": "0000000157066463",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -44066,39 +34568,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 99,
+      "current_balance": 95800,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 13,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 3,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.99\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"95800\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"3\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"13\"}]",
+    "dialDate": "20260609102206",
+    "connectDate": "20260609102213",
+    "dialType": "1",
+    "ringTime": "4",
+    "collUserId": "AA10982",
+    "collId": "A0BG0",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0157066463001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "424",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18202911134",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346999720618092058",
     "cust_no": "0000000144181089",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -44291,27 +34803,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 9006680,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 5240581,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 13,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "那我确认一下，6620我现在就还进去，然后2500明天中午前还。",
@@ -44323,17 +34832,30 @@ results = [
       "action": "promise_to_pay",
       "text": "呃，我看了你们发的那个短信，是说今天还信用卡的2500加E招贷的600多吗？",
       "explanation": "Customer showed conditional willingness and situational hardship. Collector shifted from pressure to flexible plan proposal, accepting partial payment (E招贷) and a short delay for the rest. This met customer's capacity, reduced defensiveness, and secured a clear promise_to_pay with specific timing."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"900668.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"52405.81\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"13\"}]",
+    "dialDate": "20260609102612",
+    "connectDate": "20260609102624",
+    "dialType": "1",
+    "ringTime": "9",
+    "collUserId": "AA10776",
+    "collId": "A0BI2",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0144181089001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "898",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13568868192",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347056430338591435",
     "cust_no": "0000000129978926",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -44596,27 +35118,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "business_loan_balance": 7734830,
+      "mortgage_balance": 7587010,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 17021126,
+      "has_business_loan": True,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 13,
+      "education": "college",
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 13,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": True,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "我今天先把这个8000多这个事情解决了。",
@@ -44628,17 +35147,30 @@ results = [
       "action": "promise_to_pay",
       "text": "我今天先把这个8000多这个事情解决了。",
       "explanation": "Customer initially showed strong willingness to pay, promising by 6pm. Collector reinforced this with a plan (fee waiver, installment). When customer hesitated over card freeze, collector clarified limits but kept focus on payment. Customer then recommitted to paying the 8690, leading to promise_to_pay. Collector’s empathy and clear options maintained momentum."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"773483.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"大专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"758701.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"是\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"170211.26\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,207,040,077,701,197,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"13\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"13\"}]",
+    "dialDate": "20260609120043",
+    "connectDate": "20260609120050",
+    "dialType": "1",
+    "ringTime": "4",
+    "collUserId": "AA9537",
+    "collId": "A0AHI",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0129978926001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "237",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13413188999",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347060270460373229",
     "cust_no": "0000000160595633",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -44853,27 +35385,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 3632856,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 4,
+      "complaint_score": 11,
+      "education": "bachelor",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 3,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "我说不到两点，你说到一会我就给还，放心，今天肯定100%没问题。",
@@ -44885,17 +35414,30 @@ results = [
       "action": "promise_to_pay",
       "text": "我说不到两点，你说到一会我就给还，放心，今天肯定100%没问题。",
       "explanation": "Customer showed strong willingness and commitment to pay by 5pm. Collector reinforced this by confirming a specific time, then applied pressure: warned of escalation if unpaid. This created urgency, prompting customer to reaffirm promise. Causal chain: customer's initial willingness → collector's time-bound plan + pressure → customer's firm promise_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"36328.56\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"3\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"4级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260609120707",
+    "connectDate": "20260609120719",
+    "dialType": "1",
+    "ringTime": "8",
+    "collUserId": "AA10776",
+    "collId": "A0BI2",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0160595633001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "127",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "17535995888",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2346957480367240394",
     "cust_no": "0000000223957103",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -45010,39 +35552,49 @@ results = [
     "reward": 0,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 354371,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
-      "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 11,
+      "education": "unknown",
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
-    "reward_action_credit": None
+    "reward_action_credit": None,
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"未填\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"3543.71\"},{\"tagName\":\"ct标签\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260609091548",
+    "connectDate": "20260609091617",
+    "dialType": "1",
+    "ringTime": "26",
+    "collUserId": "AA10661",
+    "collId": "G6P",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0223957103050001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "63",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13476488456",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347243200649710428",
     "cust_no": "0000000150243199",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -45393,27 +35945,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 2000000,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 3945324,
+      "has_business_loan": True,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 3,
+      "complaint_score": 9,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 1,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "行，那我现在弄，我还忙着呢。",
@@ -45425,17 +35974,30 @@ results = [
       "action": "agree_to_pay",
       "text": "行，那我现在弄，我还忙着呢。",
       "explanation": "Customer showed distress and weak willingness due to hardship. Collector empathized, then proposed a reduced payment plan (1973 vs 22362), addressing anxiety by clarifying it wasn't a new installment. Customer's distrust was countered with clear info on interest waiver. The causal chain: empathy built trust, tailored plan lowered barrier, repeated reassurance overcame resistance, leading to agree_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"200000.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"39453.24\"},{\"tagName\":\"ct标签\",\"tagValue\":\",161,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"3级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"9\"}]",
+    "dialDate": "20260609171200",
+    "connectDate": "20260609171221",
+    "dialType": "1",
+    "ringTime": "17",
+    "collUserId": "AA10982",
+    "collId": "A0BG0",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0150243199001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "800",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18290736958",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347142930649712901",
     "cust_no": "0000000164118939",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -45598,27 +36160,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 4281428,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 11,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 3,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好。",
@@ -45630,17 +36189,30 @@ results = [
       "action": "accept_plan",
       "text": "好。",
       "explanation": "Customer showed hardship and weak willingness, then initiated negotiation (停息分期). Collector responded with empathy, then offered a concrete plan: pay overdue 3733, waive 800 fees, and split remaining 39000 over 3 years at ~1135/month. This matched customer's need, leading to acceptance."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"42814.28\"},{\"tagName\":\"ct标签\",\"tagValue\":\",733,667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"3\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"11\"}]",
+    "dialDate": "20260609142453",
+    "connectDate": "20260609142507",
+    "dialType": "1",
+    "ringTime": "12",
+    "collUserId": "AA3887",
+    "collId": "D05",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0164118939001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "160",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "17606940110",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347171670028009290",
     "cust_no": "0000000165821402",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -45809,27 +36381,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
-      "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "business_loan_balance": 0,
+      "mortgage_balance": 1471400,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 5081032,
+      "has_business_loan": False,
+      "has_mortgage": True,
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 14,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": False,
+      "recent_contact_count": 7,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "招行，招行，马上给你还，行了，不要说了。",
@@ -45841,17 +36410,30 @@ results = [
       "action": "promise_to_pay",
       "text": "分钟，我马上给他打电话。好嘞好嘞。招行，招行，马上给你还，行了，不要说了。",
       "explanation": "Customer initially confused but willing to pay. Collector countered false payment claim, then offered a valuable plan (saving 1000+). Customer showed interest but hesitated. Collector applied pressure (limited time, deadline) and clarified third-party repayment was acceptable. This resolved customer's confusion, leading to strong willingness and a promise to pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"147140.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"50810.32\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"N\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"7\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"14\"}]",
+    "dialDate": "20260609151247",
+    "connectDate": "20260609151254",
+    "dialType": "1",
+    "ringTime": "5",
+    "collUserId": "AA10986",
+    "collId": "A0BA9",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0165821402001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "76",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "13623438117",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347149380337731255",
     "cust_no": "0000000162225195",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -46052,27 +36634,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 3082264,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 0,
+      "complaint_score": 8,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 2,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "好。",
@@ -46084,17 +36663,30 @@ results = [
       "action": "agree_to_pay",
       "text": "好。",
       "explanation": "Customer showed strong willingness to pay immediately, but lacked specific timing. Collector clarified intent, proposed a concrete plan (2 days), and added gentle pressure by noting high risk. Customer agreed to a clear commitment (11th deadline), leading to agree_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"初中及以下\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"30822.64\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"2\"},{\"tagName\":\"客户风险标识等级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"8\"}]",
+    "dialDate": "20260609143538",
+    "connectDate": "20260609143545",
+    "dialType": "1",
+    "ringTime": "5",
+    "collUserId": "AA10776",
+    "collId": "A0BI2",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0162225195001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "175",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "18240455669",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   },
   {
     "call_id": "2347254920338596847",
     "cust_no": "0000000165103812",
-    "call_date": "",
-    "coll_user_id": "",
-    "mob_typ": "",
-    "talk_time": "",
-    "plan_evaluation": "",
-    "customer_info": {},
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -46965,27 +37557,24 @@ results = [
     "reward": 1,
     "state_transitions": [],
     "context": {
-      "has_auto_loan": False,
+      "business_loan_balance": 0,
+      "mortgage_balance": 0,
+      "other_loan_balance": 0,
+      "wealth_value": 0,
+      "current_balance": 5156369,
+      "has_business_loan": False,
       "has_mortgage": False,
-      "credit_rating": "bad",
-      "days_delinquent": 0,
-      "total_debt": 0,
-      "external_debt": 0,
-      "has_negotiation_history": True,
-      "available_plans": [],
-      "social_insurance_stable": False,
-      "card_restricted": True,
-      "is_cash_out_customer": True,
-      "external_debt_institutions": 0,
-      "interest_ratio": 0.0,
-      "installment_ratio": 0.0,
-      "age": 0,
-      "gender": "",
+      "has_other_loan": False,
+      "risk_level": 1,
+      "complaint_score": 12,
       "education": "other",
-      "industry": "",
-      "has_complaint_history": False,
-      "has_legal_tools": True,
-      "is_negotiation_brain_customer": False
+      "days_delinquent": 30,
+      "recent_repayment": True,
+      "recent_contact_count": 4,
+      "is_high_risk_proxy_complaint": False,
+      "is_proxy_intermediary_complaint": False,
+      "has_social_insurance": False,
+      "vehicle_count": 0
     },
     "reward_evidence": {
       "trigger_text": "嗯，可以可以。行，可以，你先弄吧。",
@@ -46997,6 +37586,25 @@ results = [
       "action": "agree_to_pay",
       "text": "对啊。",
       "explanation": "Customer showed hardship and anxiety, but willingness to pay if terms fit. Collector built trust by offering flexible plans (2579 now, 2-month pause), addressing fears (interest, card use), and applying gentle pressure (today vs. tomorrow). Causal chain: empathy → tailored proposal → customer commitment → agree_to_pay."
-    }
+    },
+    "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"高中及中专\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"51563.69\"},{\"tagName\":\"ct标签\",\"tagValue\":\",667,040,\"},{\"tagName\":\"（掌生APP操作）近7天-还款操作\",\"tagValue\":\"Y\"},{\"tagName\":\"持卡用户名下历史车辆数\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"4\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"12\"}]",
+    "dialDate": "20260609173132",
+    "connectDate": "20260609173149",
+    "dialType": "1",
+    "ringTime": "14",
+    "collUserId": "AA10086",
+    "collId": "A0AWF",
+    "collArea": "2",
+    "collGroupId": "CK220",
+    "acNo": "0165103812001001",
+    "isRecorded": "0",
+    "result": "1",
+    "talkTime": "731",
+    "channel": "X",
+    "corpCode": " ",
+    "calledNo": "15596865036",
+    "mobTyp": "M1",
+    "phoneRoute": " ",
+    "agentTalkTime": " "
   }
 ]
