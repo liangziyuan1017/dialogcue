@@ -134,10 +134,11 @@ def _phase1e_reward(new_aligned):
 
 def _phase2_tree(new_rewarded):
     _log.info("Phase 2: Incremental tree build")
-    from f004_decision_tree.build_decision_tree import merge_dialogs, write_dialog_records_incremental, _load_merge_cache
+    from f004_decision_tree.build_decision_tree import merge_dialogs, write_dialog_records_incremental, _load_merge_cache, _save_merge_cache
     tree_path = BASE_DIR / "f004_decision_tree" / "data" / "decision_tree.json"
     merge_cache = _load_merge_cache()
     tree = merge_dialogs(str(tree_path), new_rewarded, merge_decisions=merge_cache)
+    _save_merge_cache(merge_cache)
     write_dialog_records_incremental(new_rewarded)
     node_count = _count_tree_nodes(tree)
     _log.info("Tree: %d nodes", node_count)
