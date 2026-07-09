@@ -47,8 +47,12 @@ Build a two-phase system:
 | F011 | Config Externalization | cross-cutting | complete | [F011](docs/features/F011-config-externalization.md) |
 | F012 | Runtime Robustness Hardening | cross-cutting | in-progress | [F012](docs/features/F012-runtime-robustness-hardening.md) |
 | F013 | asyncpg Migration | cross-cutting | merged | [F013](docs/features/F013-asyncpg-migration.md) |
+| F014 | External API Exposure | 2 | review | [F014](docs/features/F014-external-api-exposure.md) |
+| F015 | Incremental Record Append | 1 (offline) | review | [F015](docs/features/F015-incremental-record-append.md) |
 
 > F011/F012/F013 are cross-cutting infrastructure hardening: F011 externalizes all tunable params to `config.md`; F012 adds structured logging, retry, and config hardening; F013 replaces the psycopg2 threadpool with native asyncpg on the runtime DB path. They thread through F007–F009 rather than sitting on the F000→F009 build chain.
+>
+> F015 is the incremental ingest path: a single orchestrator (`src/add_records.py`) appends new records at every stage without full rebuild, leaving existing records intact (ADR-035/036/037).
 
 ### Dependency Graph
 
@@ -64,7 +68,9 @@ F000 ──► F001 ──► F003 ──► F004 ──► F005 ──► F006
                                             F008
                                               │
                                               ▼
-                                            F009
+                                            F009 ──► F014
+
+F015 (incremental append) ──► reuses F000..F005 + F007 in append-only mode
 ```
 
 ### Data Flow
@@ -98,6 +104,20 @@ PostgreSQL: nodes │ sentences (embedding vector(1024), tsvector) │ taxonomy_
 POST /recommend  →  state extraction  →  relabel  →  node lookup  →  bitmask score  →  vector rank  →  top-1 script
                                           ↑__________________|
                                             *_relabeled grows (ADR-026)
+```
+
+**Incremental path (F015)** — `src/add_records.py`, append-only, no full rebuild:
+
+```
+data/data_input/new_data.jsonl  (user places new records here)
+         │
+         ▼  Phase 0  check_new_records  (call_id uniqueness + format gate)
+         ▼  Phase 1a–1e  clean → merge → label_new_records → align/relabel → reward  (append to existing outputs)
+         ▼  Phase 2  merge_dialogs  (load tree + merge cache, add new branches only; save cache — ADR-036)
+         ▼  Phase 3+4  score tree + targeted DB upsert  (new nodes/sentences only; embed only new; recompute affected scores)
+         ▼  orphan cleanup  (delete DB sentences for new call_ids absent from tree — ADR-037)
+         ▼  taxonomy upsert  (dedup + MD5 unique index + frequency update)
+         ▼  post-success hook  (append new_data.jsonl → matched_data.jsonl)
 ```
 
 ### Architecture Decisions Summary
@@ -1567,15 +1587,16 @@ maintenance — not retrieval latency.
 | Sentence storage | JSON in-memory pools | PG `sentences` table with `node_id` index | Filter + rank in SQL |
 | Vector search | char-ngram TF-IDF | pgvector HNSW index | O(log N) approximate KNN |
 | Full-text search | None | PG tsvector + GIN index | BM25-ish keyword search |
-| Build time | ~30s (with LLM merge) | Batch LLM + incremental rebuild | Only rebuild affected subtrees on new data |
+| Build time | ~30s (with LLM merge) | Batch LLM + incremental rebuild | **F015 implemented**: `src/add_records.py` appends new records at every stage without full rebuild (ADR-035) |
 | Child lookup | Linear scan of `children[]` | Hash map `branch_key → child` per node | O(1) child resolution |
 | Context filter | Python loop | PG bitwise scoring: `popcount(bg_bitmask_int & ?) / popcount(bg_bitmask_int)` | Index + SQL scoring |
 | Retrieval | JSON load + tree walk | Hash lookup + PG SELECT + pgvector | O(1) + O(pool_size) |
 
 **Migration steps**: (1) JSON → PostgreSQL with `path_signature` column;
-(2) hash index for child lookup; (3) incremental rebuild of affected subtrees;
-(4) batch LLM merge with merge cache; (5) pgvector HNSW tuning
-(`ef_construction`, `m`).
+(2) hash index for child lookup; (3) incremental rebuild of affected subtrees
+— **implemented as F015** (`src/add_records.py`, ADR-035/036/037); (4) batch LLM
+merge with merge cache — **merge cache persistence implemented** (ADR-036);
+(5) pgvector HNSW tuning (`ef_construction`, `m`).
 
 **Managed hosting**: Supabase (PostgreSQL + pgvector + realtime), Neon
 (serverless Postgres with branching), or self-hosted
@@ -1622,3 +1643,8 @@ Authoritative decision records. Each is one line here; see
 | [ADR-030](docs/decisions/ADR-030-node-role-tagging.md) | Node role tagging | Every node gets `role ∈ {opening, ending, decision, action}` at creation. Prevents `_split_by_action` from corrupting root and end nodes. |
 | [ADR-031](docs/decisions/ADR-031-node-hwr-blending.md) | Node HWR blending | Compute node-level HWR from all `source_call_ids` in pool; blend with sentence-level: `win_rate = weight*sentence_hwr + (1-weight)*node_hwr` where `weight = n/(n+2)`. |
 | [ADR-033](docs/decisions/ADR-033-custInfo-migration.md) | custInfo migration | Migrate from `customer_info` dict (21 fields) to `custInfo` JSON array (18 fields). New bitmask fields, bg_background from context_lookup, digit-count transforms. |
+| [ADR-035](docs/decisions/ADR-035-incremental-record-append-orchestrator.md) | Incremental record append orchestrator | Single orchestrator (`src/add_records.py`) appends new records at every stage without full rebuild; pre-check gate; targeted DB upsert; taxonomy dedup + MD5 unique index; post-success append hook. |
+| [ADR-036](docs/decisions/ADR-036-merge-decisions-cache-persistence.md) | Merge decisions cache persistence | Save `merge_decisions.json` after incremental tree build so LLM merge choices for new records are reproducible across runs. |
+| [ADR-037](docs/decisions/ADR-037-orphan-sentence-cleanup.md) | Orphan sentence cleanup | After DB upsert, delete sentences for new `call_id`s present in DB but absent from the final tree (orphans from partial/crashed runs). |
+
+> **Note**: ADR-034 (descend into children on empty pool) and LL-007 were removed in the F015 branch — the F006 empty-pool fix was reverted; `_find_matching_nodes_subset` again uses `aggregate_pools` as the sole validity check.

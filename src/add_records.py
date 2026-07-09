@@ -262,6 +262,9 @@ def _append_to_matched_data(new_input):
                 line += "\n"
             f.write(line)
     _log.info("Appended %d records to %s", len(new_lines), matched_path)
+    with open(new_input, "w", encoding="utf-8") as f:
+        f.write("")
+    _log.info("Cleared %s after successful append", new_input)
 
 
 def main():
