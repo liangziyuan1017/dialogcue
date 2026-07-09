@@ -55,4 +55,5 @@ Manual and LLM-relabeled emotion/fact taxonomies used by state extraction (F008)
 | `emotions_descriptions.py`, `facts_descriptions.py` | Label description for prompt context. |
 | `facts_pipeline.csv` | Facts extracted via the pipeline run. |
 | `llm_relabel_emotions.py`, `llm_relabel_facts.py` | Scripts that produce the relabeled CSVs. |
+| `llm_relabel.py` | LLM pipeline to classify debt-collection tags into semantic categories. |
 | `explore_distribution.ipynb` | Distribution exploration notebook. |

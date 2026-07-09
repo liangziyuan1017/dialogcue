@@ -7,6 +7,7 @@
 | F003 | Reward Labeling | complete | agent | feature doc | [F003](features/F003-reward-labeling.md) |
 | F004 | Decision Tree Construction | merged | agent | feature doc | [F004](features/F004-decision-tree-construction.md) |
 | F004-dedup | Sentence Pool Deduplication | complete | agent | F004 | [F004-dedup](features/F004-sentence-pool-dedup.md) |
+| F004b | Decision Tree Invariant Checker | merged | agent | feature doc | [F004b](features/F004b-decision-tree-checker.md) |
 | F005 | Context Tagging & Quality Scoring | merged | agent | feature doc | [F005](features/F005-context-tagging-quality-scoring.md) |
 | F006 | Retrieval & Ranking Engine | complete | agent | feature doc | [F006](features/F006-retrieval-ranking-engine.md) |
 | F007 | Infrastructure Layer | review | agent | [impl-steps](features/F007-F009-implementation-steps.md) | [F007](features/F007-infra-layer.md) |
@@ -17,7 +18,7 @@
 | F011 | Config Externalization | complete | agent | feature doc | [F011](features/F011-config-externalization.md) |
 | F012 | Runtime Robustness Hardening | complete | agent | feature doc | [F012](features/F012-runtime-robustness-hardening.md) |
 | F013 | asyncpg Migration | merged | agent | [ADR-027](decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md) | [F013](features/F013-asyncpg-migration.md) |
-| F014 | External API Exposure | review | agent | [spec](external_api.md) | [F014](features/F014-external-api-exposure.md) |
+| F014 | External API Exposure | review | agent | feature doc | [F014](features/F014-external-api-exposure.md) |
 
 > **F002 removed** (ADR-009): LLM State Extraction eliminated. F001's manual annotations (493/805 turns) provide sufficient state coverage. Downstream features handle unlabeled turns gracefully.
 
@@ -37,7 +38,14 @@ F000 ──► F001 ──► F003 ──► F004 ──► F005 ──► F006
                                             F008
                                               │
                                               ▼
-                                            F009
+                                            F009 ──► F010
+                                              │
+                                              ▼
+                                            F014
+
+F011 ──► F012 ──► F013 ──► F009
+F004 ──► F004b
+F005 ──► F004b
 ```
 
 ---

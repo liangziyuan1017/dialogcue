@@ -65,12 +65,12 @@ You will need this key for all LLM-powered stages (data cleaning, keyword discov
 
 ### Step 4: Install Python Dependencies
 
-Requires **Python >=3.14, <3.15**.
+Requires **Python >=3.11**.
 
 ```bash
 # From project root
 pip install -e .                # core: fastapi, uvicorn, openai, psycopg2-binary, pgvector, numpy, pyyaml, etc.
-pip install -e ".[dev]"         # dev: pytest, aiofiles, cryptography
+pip install -e ".[dev]"         # dev: pytest, pytest-asyncio, aiofiles, cryptography, ruff, mypy, hypothesis
 ```
 
 ### Step 5: Create `.env` File
@@ -101,7 +101,7 @@ EOF
 
 ```bash
 # Check Python
-python3 --version               # should be 3.14.x
+python3 --version               # should be 3.11+
 
 # Check PostgreSQL
 psql icbc -c "SELECT extname FROM pg_extension WHERE extname IN ('vector','pg_trgm')"
@@ -238,7 +238,12 @@ python3 src/launch_ui.py --no-open
 
 The API server exposes:
 - `POST /recommend` — single-turn recommendation
-- Socket.IO events: `start_session`, `customer_turn`, `collector_turn`, `end_session`
+- `POST /api/v1/session/start` — bind customer profile, map cust_tags to context bitmask (F014)
+- `POST /api/v1/recommend` — real-time recommendation via shared `_run_turn()` (F014)
+- `DELETE /api/v1/session/end` — close session (F014)
+- `GET /health` / `GET /readyz` — health/readiness probes
+- `POST /admin/reload-taxonomy` — hot-reload state keywords without restart
+- Socket.IO events: `start_session`, `resume_session`, `customer_turn`, `collector_turn`, `end_session`
 
 Press `Ctrl+C` to shut down all servers.
 
@@ -256,7 +261,7 @@ The checker validates two known record formats:
 
 | Format | Records | Required keys | `customer_info` |
 |--------|---------|---------------|-----------------|
-| **Canonical** | Already processed | `call_id`, `dialog`, `call_date`, `cust_no`, `coll_user_id`, `mob_typ`, `talk_time`, `plan_evaluation`, `customer_info` | Dict with 11 always-present Chinese keys (总欠款, 学历, etc.) + 4 optional |
+| **Canonical** | Already processed | `call_id`, `dialog`, `call_date`, `cust_no`, `coll_user_id`, `mob_typ`, `talk_time`, `plan_evaluation`, `customer_info` | Dict with 11 always-present Chinese keys (学历, 目前余额, etc.) + 7 optional |
 | **Raw API** | From upstream system | `call_id`, `dialog`, `cust_no` | `custInfo` — JSON string of `[{tagName, ...}]` pairs |
 
 Checks performed:
@@ -438,16 +443,17 @@ python3 src/build_tree_and_db.py
 | `f004_decision_tree/` | F004 | `build_decision_tree.py`, `merge_collector.py`, `tree_transforms.py`, `check_tree.py` | `decision_tree.json`, `merge_decisions.json` |
 | `f005_context_scoring/` | F005 | `score_tree.py`, `scoring_metrics.py` | `decision_tree_scored.json` |
 | `f006_retrieval_engine/` | F006 | `retrieval_engine.py`, `retrieval_ranking.py` | — (runtime: PostgreSQL) |
-| `f007_infrastructure/` | F007 | `db.py`, `embeddings.py`, `llm_client.py`, `retry.py`, `config.py` | — |
+| `f007_infrastructure/` | F007 | `db.py`, `async_db.py`, `embeddings.py`, `llm_client.py`, `retry.py`, `config.py`, `logging.py`, `json_logging.py`, `backfill_embeddings.py`, `scheduler_state.py` | — |
 | `f008_state_extraction/` | F008 | `state_extraction.py` | — |
-| `f009_api_server/` | F009 | `server.py` | — |
+| `f009_api_server/` | F009 | `server.py`, `rate_limit.py`, `session_store.py`, `tag_mapping.py` | — |
+| `f010_api_mock_ui/` | F010 | `debug.py`, `ui/` | — |
 
 **Cross-module data flow:**
 
 ```
 f000/output_labeled.py ──→ f001/align_schema.py ──→ f001/relabel_state.py ──→ f003/reward_label.py (dedup by call_id) ──→ f004/build_decision_tree.py
 f004/decision_tree.json ──→ f005/score_tree.py ──→ f006/retrieval_engine.py
-f005/decision_tree_scored.json ──→ f009/server.py
+f005/decision_tree_scored.json ──→ f009/server.py ──→ f010/ui/
 f000/state_keywords.json ──→ f009/server.py
 ```
 
