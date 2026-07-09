@@ -1,7 +1,7 @@
 ---
 id: F015
 name: Incremental Record Append
-status: planned
+status: review
 owner: agent
 related_features: [F000, F001, F003, F004, F005, F007]
 topics: [incremental, tree, database, embeddings, taxonomy]

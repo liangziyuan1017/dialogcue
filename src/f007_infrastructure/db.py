@@ -111,6 +111,94 @@ class SentenceDB:
             cur.execute("CREATE INDEX IF NOT EXISTS idx_taxonomy_group ON taxonomy_keywords(group_name, category)")
             cur.close()
 
+    def create_taxonomy_unique_index(self):
+        with self.connection() as conn:
+            cur = conn.cursor()
+            cur.execute("""
+                ALTER TABLE taxonomy_keywords
+                ADD COLUMN IF NOT EXISTS natural_key_hash TEXT
+                GENERATED ALWAYS AS (md5(group_name || '|' || category || '|' || keyword)) STORED
+            """)
+            cur.execute("""
+                CREATE UNIQUE INDEX IF NOT EXISTS uq_taxonomy_keyword
+                ON taxonomy_keywords (natural_key_hash)
+            """)
+            cur.close()
+
+    def dedup_taxonomy_keywords(self):
+        with self.connection() as conn:
+            cur = conn.cursor()
+            cur.execute("""
+                DELETE FROM taxonomy_keywords a USING taxonomy_keywords b
+                WHERE a.group_name = b.group_name
+                  AND a.category = b.category
+                  AND a.keyword = b.keyword
+                  AND a.id > b.id
+            """)
+            deleted = cur.rowcount
+            cur.close()
+            _log.info("dedup_taxonomy_keywords: removed %d duplicate rows", deleted)
+            return deleted
+
+    def upsert_taxonomy_keywords(self, rows: list[dict]):
+        if not rows:
+            return
+        with self.connection() as conn:
+            cur = conn.cursor()
+            for kr in rows:
+                cur.execute(
+                    """
+                    INSERT INTO taxonomy_keywords (group_name, category, keyword, frequency)
+                    VALUES (%s, %s, %s, %s)
+                    ON CONFLICT (natural_key_hash) DO UPDATE SET frequency = EXCLUDED.frequency
+                    """,
+                    (kr["group_name"], kr["category"], kr["keyword"], kr.get("frequency", 0)),
+                )
+            cur.close()
+
+    def get_existing_path_signatures(self) -> set[str]:
+        with self.connection() as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT path_signature FROM nodes")
+            sigs = {r[0] for r in cur.fetchall()}
+            cur.close()
+            return sigs
+
+    def get_existing_script_ids(self) -> set[str]:
+        with self.connection() as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT script_id FROM sentences")
+            ids = {r[0] for r in cur.fetchall()}
+            cur.close()
+            return ids
+
+    def update_sentence_scores(self, rows: list[dict]):
+        if not rows:
+            return
+        with self.connection() as conn:
+            cur = conn.cursor()
+            for s in rows:
+                cur.execute(
+                    """
+                    UPDATE sentences SET
+                        win_rate = %s,
+                        sas = %s,
+                        bg_bitmask_int = %s,
+                        bg_background = %s,
+                        conversation_context = %s
+                    WHERE script_id = %s
+                    """,
+                    (
+                        s.get("win_rate", 0),
+                        s.get("sas", 0),
+                        s.get("bg_bitmask_int", 0),
+                        json.dumps(s.get("bg_background")) if s.get("bg_background") else None,
+                        s.get("conversation_context"),
+                        s["script_id"],
+                    ),
+                )
+            cur.close()
+
     def upsert_nodes(self, nodes: list[dict]):
         if not nodes:
             return

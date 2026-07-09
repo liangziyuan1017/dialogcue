@@ -1,4 +1,5 @@
 import copy
+import importlib.util
 import json
 import os
 
@@ -18,12 +19,20 @@ from f007_infrastructure.config import get as _cfg
 from f007_infrastructure.llm_client import call_deepseek_json
 
 
-def discover_keywords(records, output_path: str = None, labeled_output_path: str = None) -> dict:
-    labeled_records = copy.deepcopy(records)
+def _load_labeled_records():
+    path = os.path.join(os.path.dirname(__file__), "data", "output_labeled.py")
+    if not os.path.exists(path):
+        return []
+    spec = importlib.util.spec_from_file_location("output_labeled", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod.results
 
+
+def _label_turns(records):
     customer_turns = []
     collector_turns = []
-    for record in labeled_records:
+    for record in records:
         dialog = record["response"]["dialog"]
         for i, turn in enumerate(dialog):
             if turn["role"] == "客户":
@@ -83,6 +92,94 @@ def discover_keywords(records, output_path: str = None, labeled_output_path: str
                     collector_raw.append(result)
         except Exception:
             pass
+
+    return customer_raw, collector_raw
+
+
+def _recompute_taxonomy(all_labeled_records):
+    customer_raw = []
+    collector_raw = []
+    for record in all_labeled_records:
+        dialog = record.get("response", {}).get("dialog", [])
+        for turn in dialog:
+            state = turn.get("state") or {}
+            if turn.get("role") == "客户":
+                entry = {"_turn_text": turn.get("text", "")}
+                facts = state.get("facts", [])
+                if facts:
+                    entry["facts"] = [{"keyword": f, "group": f} for f in facts]
+                emotions = state.get("emotions", [])
+                if emotions:
+                    entry["emotions"] = [{"keyword": e, "group": e} for e in emotions]
+                willingness = state.get("willingness")
+                if willingness:
+                    entry["willingness"] = willingness
+                customer_raw.append(entry)
+            elif turn.get("role") == "催收员":
+                action = state.get("action")
+                if action:
+                    collector_raw.append({"action_group": action, "_turn_text": turn.get("text", "")})
+
+    facts = _group_items(customer_raw, "facts")
+    emotions = _group_items(customer_raw, "emotions")
+    facts = _add_suggested(facts, SUGGESTED_FACTS)
+    emotions = _add_suggested(emotions, SUGGESTED_EMOTIONS)
+    actions = _group_actions(collector_raw)
+    actions = _add_suggested(actions, SUGGESTED_ACTIONS)
+
+    willingness_signals = []
+    for r in customer_raw:
+        sig = r.get("willingness")
+        if sig:
+            willingness_signals.append(sig)
+    unique_signals = list(dict.fromkeys(willingness_signals))
+
+    willingness_levels = []
+    if unique_signals:
+        cluster_prompt = _build_cluster_prompt(unique_signals)
+        try:
+            cluster_result = call_deepseek_json(cluster_prompt)
+            willingness_levels = cluster_result.get("levels", [])
+        except Exception:
+            pass
+
+    return {
+        "facts": facts,
+        "emotions": emotions,
+        "willingness_levels": willingness_levels,
+        "collector_actions": actions,
+    }
+
+
+def label_new_records(new_records, output_path=None, labeled_output_path=None):
+    labeled_new = copy.deepcopy(new_records)
+    _label_turns(labeled_new)
+
+    existing_labeled = _load_labeled_records()
+    existing_ids = {r.get("call_id") for r in existing_labeled}
+    for record in labeled_new:
+        if record.get("call_id") not in existing_ids:
+            existing_labeled.append(record)
+            existing_ids.add(record.get("call_id"))
+
+    if labeled_output_path is None:
+        labeled_output_path = os.path.join(os.path.dirname(__file__), "data", "output_labeled.py")
+    with open(labeled_output_path, "w", encoding="utf-8") as f:
+        f.write("results = ")
+        f.write(json.dumps(existing_labeled, ensure_ascii=False, indent=2))
+
+    taxonomy = _recompute_taxonomy(existing_labeled)
+    if output_path is None:
+        output_path = os.path.join(os.path.dirname(__file__), "data", "state_keywords.json")
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(taxonomy, f, ensure_ascii=False, indent=2)
+
+    return taxonomy
+
+
+def discover_keywords(records, output_path: str = None, labeled_output_path: str = None) -> dict:
+    labeled_records = copy.deepcopy(records)
+    customer_raw, collector_raw = _label_turns(labeled_records)
 
     facts = _group_items(customer_raw, "facts")
     emotions = _group_items(customer_raw, "emotions")
