@@ -245,13 +245,7 @@ def write_scored_tree(output_path=None, db=None):
                             "frequency": group.get("frequency", 0),
                         })
             if kw_rows:
-                cur = db._conn.cursor()
-                for kr in kw_rows:
-                    cur.execute(
-                        "INSERT INTO taxonomy_keywords (group_name, category, keyword, frequency) VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING",
-                        (kr["group_name"], kr["category"], kr["keyword"], kr["frequency"]),
-                    )
-                cur.close()
+                db.upsert_taxonomy_keywords(kw_rows)
 
     for s in all_sentences:
         s.pop("_context_vec", None)

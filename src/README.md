@@ -317,106 +317,75 @@ python3 src/launch_ui.py
 
 ## Processing New Data on Top of Existing
 
-When new call records arrive and you want to incorporate them without re-running the entire pipeline from scratch.
+Use `src/run_append.py` — the incremental append automation (F015). It appends new records at every stage without a full rebuild, leaving existing records intact. On success it appends to `matched_data.jsonl` and clears `new_data.jsonl`.
 
-### Scenario A: New records only (no changes to existing data)
+**Requires:** PostgreSQL + pgvector + Ollama bge-m3 running, `PG_DSN` set.
 
-1. **Back up your existing merged output** (it will be overwritten):
+### Mode selection
 
-   ```bash
-   cp data/data_output/output_merged.py data/data_output/output_merged_existing.py
-   ```
+`run_append.py` auto-detects the mode (override with `--mode`):
 
-2. **Place the new data file** in `data/data_input/`:
+| Mode | Trigger | Input | What runs |
+|------|---------|-------|-----------|
+| `full` | `data/data_input/new_data.jsonl` non-empty | `new_data.jsonl` | pre-check → clean → merge → label → align → reward → tree → DB → append hook |
+| `skip-cleaning` | `new_data.jsonl` empty | `src/f003_reward_labeling/data/new_rewarded.py` | tree build → score → DB upsert only (cleaning skipped) |
 
-   ```bash
-   cp /path/to/new_data.jsonl data/data_input/new_data.jsonl
-   ```
+### Full run (new raw records)
 
-3. **Validate the new data**:
+1. **Place new records** in `data/data_input/new_data.jsonl` (one JSON record per line).
+2. **Validate** (optional but recommended):
 
    ```bash
    python3 src/check_data_format.py data/data_input/new_data.jsonl --strict
    ```
 
-4. **Run LLM cleaning on the new file only** (Stage 1):
+3. **Run**:
 
    ```bash
-   python3 src/whole_pipeline.py data/data_input/new_data.jsonl
+   python3 src/run_append.py                    # auto-detects full (new_data.jsonl non-empty)
    ```
 
-   This overwrites `data/data_output/output_merged.py` with only the new records. It also overwrites the downstream outputs (`output_aligned.py`, `output_rewarded.py`) — that's expected; they'll be regenerated in step 6.
+   On success: new records are appended to `matched_data.jsonl`, `new_data.jsonl` is cleared, tree + DB updated incrementally.
 
-5. **Merge new records with existing merged output**:
+### Skip-cleaning run (already-rewarded records)
 
-   ```bash
-   python3 -c "
-   import importlib.util, json
-   def load(path):
-       spec = importlib.util.spec_from_file_location('m', path)
-       mod = importlib.util.module_from_spec(spec)
-       spec.loader.exec_module(mod)
-       return mod.results
-   existing = load('data/data_output/output_merged_existing.py')
-   new = load('data/data_output/output_merged.py')
-   combined = existing + new
-   with open('data/data_output/output_merged.py', 'w') as f:
-       f.write('results = ')
-       text = json.dumps(combined, ensure_ascii=False, indent=2)
-       text = text.replace(': null', ': None').replace(': true', ': True').replace(': false', ': False')
-       f.write(text)
-       f.write('\n')
-   print(f'Combined: {len(combined)} records ({len(existing)} existing + {len(new)} new)')
-   "
-   ```
-
-6. **Re-run stages 2–6** on the combined data:
-
-   ```bash
-   python3 src/whole_pipeline.py --skip-llm     # stages 2-3
-   python3 src/build_tree_and_db.py             # stages 4-6
-   ```
-
-7. **Restart the UIs** to pick up the new data:
-
-   ```bash
-   python3 src/launch_ui.py
-   ```
-
-### Scenario B: Incremental — skip cleaning, re-process from aligned output
-
-If the new records have already been cleaned and merged (e.g. from a prior run), and you just need to rebuild the tree and database:
+If the new records have already been cleaned/aligned/rewarded, place them in `src/f003_reward_labeling/data/new_rewarded.py` (a `.py` file with `results = [...]`, same schema as `output_rewarded.py`), then:
 
 ```bash
-# Re-run analysis + relabel + reward on existing merged output (stages 2-3)
-python3 src/whole_pipeline.py --skip-llm
-
-# Rebuild tree, score, and repopulate database (stages 4-6)
-python3 src/build_tree_and_db.py
-
-# Restart UIs (stage 7)
-python3 src/launch_ui.py
+python3 src/run_append.py --mode skip-cleaning
 ```
 
-### Scenario C: Tree/database only — no new records, just re-score or re-index
+Records whose `call_id` already exists in `output_rewarded.py` are skipped. The `matched_data.jsonl` append hook is skipped in this mode (a warning is printed — no raw input records to append).
 
-If you changed `config.md` (ranking weights, HNSW params, etc.) but the data hasn't changed:
+### Options
 
 ```bash
-# Rebuild tree + score + repopulate database (stages 4-6, reads existing output_rewarded.py / output_aligned.py)
-python3 src/build_tree_and_db.py
+python3 src/run_append.py --mode auto|full|skip-cleaning
+python3 src/run_append.py --new-input data/data_input/new_data.jsonl
+python3 src/run_append.py --rewarded-input src/f003_reward_labeling/data/new_rewarded.py
+python3 src/run_append.py --dsn "dbname=icbc user=postgres"
+```
 
-# Restart UIs (stage 7)
+### Errors
+
+Any per-phase failure prints `WARNING: <phase> failed: <error>` to stderr and halts — existing data is left untouched (the append hook only runs after all phases succeed).
+
+### Restart UIs
+
+The API server loads the scored tree on startup, so restart it after any append:
+
+```bash
 python3 src/launch_ui.py
 ```
 
 ### Important notes
 
-- **Database upserts are idempotent** for nodes and sentences (`ON CONFLICT ... DO UPDATE`). Taxonomy keywords use `ON CONFLICT DO NOTHING`, so re-running won't update frequency values if they change — truncate first: `psql icbc -c "TRUNCATE taxonomy_keywords"`.
-- **Merge decisions are cached** — `src/f004_decision_tree/data/merge_decisions.json` is read and written on each tree build. If you want to force re-merging, delete this file before running.
-- **Embeddings are recomputed every time** — Stage 6 calls Ollama for all sentences. For large trees, this is the slowest step. There is no embedding cache.
-- **The API server loads the scored tree on startup** — you must restart it after any data change. The `--reload` flag in uvicorn watches for code changes, not data file changes.
-- **Relabel maps are required** — `data/data_labels/*.csv` must exist for stages 2–3 (f003 reward labeling and f008 state extraction). These are hand-curated and checked into the repo.
+- **`new_data.jsonl` is cleared on success** — keep a copy elsewhere if you need an audit trail.
+- **Database upserts are idempotent** for nodes and sentences (`ON CONFLICT ... DO UPDATE`). Taxonomy keywords use a MD5 natural-key unique index with `ON CONFLICT DO UPDATE SET frequency` (ADR-035).
+- **Merge decisions are cached** — `src/f004_decision_tree/data/merge_decisions.json` is read and saved on each incremental tree build (ADR-036). Delete it to force re-merging.
+- **Embeddings are computed only for new sentences** — the DB acts as an embedding cache; existing sentences are not re-embedded.
+- **Orphan cleanup** — after upsert, sentences for new `call_id`s that exist in the DB but not the final tree are deleted (ADR-037, crash recovery).
+- **Relabel maps are required** for the full path — `data/data_labels/*.csv` must exist.
 
 ---
 
@@ -436,7 +405,7 @@ python3 src/build_tree_and_db.py
 
 | Module | Feature | Key Code | Data Artifacts |
 |--------|---------|----------|----------------|
-| Orchestrator | — | `whole_pipeline.py`, `build_tree_and_db.py`, `launch_ui.py`, `check_data_format.py` | — |
+| Orchestrator | — | `whole_pipeline.py`, `build_tree_and_db.py`, `run_append.py`, `add_records.py`, `launch_ui.py`, `check_data_format.py` | — |
 | `f000_keyword_discovery/` | F000 | `discover_keywords.py`, `load_data.py` | `state_keywords.json`, `output_labeled.py` |
 | `f001_schema_alignment/` | F001 | `align_schema.py`, `relabel_state.py` | `output_aligned.py` |
 | `f003_reward_labeling/` | F003 | `analyze_collector_turns.py`, `reward_label.py`, `relabel_state.py` | `output_rewarded.py` (deduplicated by `call_id`), `collector_analysis.json`, `customer_analysis.json` |

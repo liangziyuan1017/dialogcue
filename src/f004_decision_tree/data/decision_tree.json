@@ -3207,6 +3207,49 @@
       "customer_willingness": "negotiating",
       "collector_action": "plan_proposal",
       "fact_context": []
+    },
+    {
+      "script_text": "喂你好，请问是施万文女士吗？ 这边是招商银行信用卡中心，请问是施万文女士吗？",
+      "script_id": "2346293890494445608_t0",
+      "source_call_ids": [
+        "2346293890494445608"
+      ],
+      "customer_willingness": null,
+      "gesture_type": "opening",
+      "collector_action": "greeting",
+      "fact_context": []
+    },
+    {
+      "script_text": "嗯，这边的话上午也是有跟您来过电话，但是到目前为止，您的这个款项也还是没能解决处理。就您当前这边有再去凑一个现金吗？",
+      "script_id": "2346293890494445608_t4",
+      "source_call_ids": [
+        "2346293890494445608"
+      ],
+      "customer_willingness": null,
+      "collector_action": "information",
+      "fact_context": []
+    },
+    {
+      "script_text": "喂，您好。请问一下，这边是黄晨辰女士，是吗？",
+      "script_id": "2346432690555263376_t0",
+      "source_call_ids": [
+        "2346432690555263376"
+      ],
+      "customer_willingness": null,
+      "gesture_type": "opening",
+      "collector_action": "greeting",
+      "fact_context": []
+    },
+    {
+      "script_text": "呃，女士，您好，我们是招商银行信用卡中心，是海总部风险管理室的，工号A10069，姓肖。您这边也可以记一下。呃，女士，这个手机您不是不常用吧？因为我们看前面打您电话，这个接通率其实并不是特别高。",
+      "script_id": "2346432690555263376_t2",
+      "source_call_ids": [
+        "2346432690555263376"
+      ],
+      "customer_willingness": null,
+      "gesture_type": "opening",
+      "collector_action": "greeting",
+      "fact_context": []
     }
   ],
   "children": [
@@ -27135,6 +27178,18 @@
               "fact_context": [
                 "payment_commitment"
               ]
+            },
+            {
+              "script_text": "那您看能不能今天想办法处理一下呢？",
+              "script_id": "2346293890494445608_t6",
+              "source_call_ids": [
+                "2346293890494445608"
+              ],
+              "customer_willingness": "conditional",
+              "collector_action": "pressure",
+              "fact_context": [
+                "payment_commitment"
+              ]
             }
           ],
           "children": [],
@@ -27656,6 +27711,86 @@
             }
           ],
           "node_id": "n_4d67858e860f",
+          "role": "decision",
+          "inherited_facts": [
+            "payment_commitment"
+          ],
+          "inherited_emotions": []
+        },
+        {
+          "state_id": "e:defensive_resigned",
+          "branch_key": {
+            "emotions": [
+              "defensive_resigned"
+            ]
+          },
+          "sentence_pool": [],
+          "children": [
+            {
+              "state_id": "a:pressure",
+              "branch_key": {
+                "action": "pressure"
+              },
+              "sentence_pool": [
+                {
+                  "script_text": "女士，我们也是希望您能尽快还上，避免产生更多利息和影响信用。",
+                  "script_id": "2346293890494445608_t8",
+                  "source_call_ids": [
+                    "2346293890494445608"
+                  ],
+                  "customer_willingness": "resistant",
+                  "collector_action": "pressure",
+                  "fact_context": [
+                    "payment_commitment"
+                  ]
+                }
+              ],
+              "children": [],
+              "role": "action",
+              "inherited_facts": [
+                "payment_commitment"
+              ],
+              "inherited_emotions": [
+                "defensive_resigned"
+              ],
+              "node_id": "n_eb3186669c6d"
+            },
+            {
+              "state_id": "a:closure",
+              "branch_key": {
+                "action": "closure"
+              },
+              "sentence_pool": [
+                {
+                  "script_text": "好的，那您尽快，我们这边也会持续跟进。 谢谢您的理解。",
+                  "script_id": "2346293890494445608_t10_merged",
+                  "source_call_ids": [
+                    "2346293890494445608"
+                  ],
+                  "customer_willingness": "conditional",
+                  "merged_from": [
+                    "2346293890494445608_t10",
+                    "2346293890494445608_t12"
+                  ],
+                  "collector_action": "closure",
+                  "gesture_type": "ending",
+                  "fact_context": [
+                    "payment_commitment"
+                  ]
+                }
+              ],
+              "children": [],
+              "role": "action",
+              "inherited_facts": [
+                "payment_commitment"
+              ],
+              "inherited_emotions": [
+                "defensive_resigned"
+              ],
+              "node_id": "n_0e8311933578"
+            }
+          ],
+          "node_id": "n_041fed209ea4",
           "role": "decision",
           "inherited_facts": [
             "payment_commitment"
@@ -54634,6 +54769,243 @@
         }
       ],
       "node_id": "n_6986527b95d5",
+      "role": "decision",
+      "inherited_facts": [],
+      "inherited_emotions": []
+    },
+    {
+      "state_id": "f:reason_unreachable",
+      "branch_key": {
+        "facts": [
+          "reason_unreachable"
+        ]
+      },
+      "sentence_pool": [],
+      "children": [
+        {
+          "state_id": "a:information",
+          "branch_key": {
+            "action": "information"
+          },
+          "sentence_pool": [
+            {
+              "script_text": "要不这样子吧，021的您看到没回没关系，但是这个400是我们的高号号码，如果说有看到的话，您就给我们回拨一下，或者说后面我们这边到时候换个时间再给您多打几次电话，好吧。",
+              "script_id": "2346432690555263376_t4",
+              "source_call_ids": [
+                "2346432690555263376"
+              ],
+              "customer_willingness": null,
+              "collector_action": "information",
+              "fact_context": [
+                "reason_unreachable"
+              ]
+            },
+            {
+              "script_text": "行，然后银行给您来电，其实应该也知道，主要还是因为信用卡问题，逾期问题。我看了一下，现在不是已经出2个月相应账单嘛，但是上个月资金到目前为止没有收到。导致您本人现在也已经被银行标志为第二季度风险过高的客户名单当中了。您这边是什么情况呀？",
+              "script_id": "2346432690555263376_t6",
+              "source_call_ids": [
+                "2346432690555263376"
+              ],
+              "customer_willingness": null,
+              "collector_action": "information",
+              "fact_context": [
+                "reason_unreachable"
+              ]
+            }
+          ],
+          "children": [],
+          "role": "action",
+          "inherited_facts": [
+            "reason_unreachable"
+          ],
+          "inherited_emotions": [],
+          "node_id": "n_3007e56bc1ac"
+        },
+        {
+          "state_id": "f:repayment_inability",
+          "branch_key": {
+            "facts": [
+              "repayment_inability"
+            ]
+          },
+          "sentence_pool": [],
+          "children": [
+            {
+              "state_id": "a:empathy",
+              "branch_key": {
+                "action": "empathy"
+              },
+              "sentence_pool": [
+                {
+                  "script_text": "是收入降低了吗？还是负债率过高还是怎么样呀？",
+                  "script_id": "2346432690555263376_t8",
+                  "source_call_ids": [
+                    "2346432690555263376"
+                  ],
+                  "customer_willingness": null,
+                  "collector_action": "empathy",
+                  "fact_context": [
+                    "reason_unreachable",
+                    "repayment_inability"
+                  ]
+                },
+                {
+                  "script_text": "投资失败了是吧？这个款项现在是没追回来吗？还是说怎么样？",
+                  "script_id": "2346432690555263376_t10",
+                  "source_call_ids": [
+                    "2346432690555263376"
+                  ],
+                  "customer_willingness": null,
+                  "collector_action": "empathy",
+                  "fact_context": [
+                    "reason_unreachable",
+                    "repayment_inability"
+                  ]
+                }
+              ],
+              "children": [],
+              "role": "action",
+              "inherited_facts": [
+                "reason_unreachable",
+                "repayment_inability"
+              ],
+              "inherited_emotions": [],
+              "node_id": "n_9774f52816f4"
+            },
+            {
+              "state_id": "a:information",
+              "branch_key": {
+                "action": "information"
+              },
+              "sentence_pool": [
+                {
+                  "script_text": "然后现在由于银行系统做了一个升级改造，4号到9号其实我们都不再提供服务了。所以为了避免造成女士您服务受限，需要把还款时间修改一下。我看了一下会改到19号出账单，次月的7号还。什么意思呢？就是这个月您还是6月23号还款不变，但是您下一次还款时间我们直接可以去帮您登记一下，到8月的7号，这样银行中间不就能多给到您一段时间做相应的资金过渡嘛，好吧。但是您半年之内是不能再做相应修改了，原账周后续就关闭了，没有办法改回去。设置了预约还款，记得通过掌上生活修改一下每个月的扣款时间。有未结清的分期订单修改账单周期，可能会导致当前同11笔订单套两期本金分期利息抛账情况以账单为准，名下联动账户账单日会一起修改的，好吧。",
+                  "script_id": "2346432690555263376_t14",
+                  "source_call_ids": [
+                    "2346432690555263376"
+                  ],
+                  "customer_willingness": null,
+                  "collector_action": "information",
+                  "fact_context": [
+                    "reason_unreachable",
+                    "repayment_inability"
+                  ]
+                },
+                {
+                  "script_text": "第一个还款日变更，第二个就是您还款问题。我先确认一下，信用卡后面您还要做相应的消费使用吗？",
+                  "script_id": "2346432690555263376_t16",
+                  "source_call_ids": [
+                    "2346432690555263376"
+                  ],
+                  "customer_willingness": null,
+                  "collector_action": "information",
+                  "fact_context": [
+                    "reason_unreachable",
+                    "repayment_inability"
+                  ]
+                }
+              ],
+              "children": [],
+              "role": "action",
+              "inherited_facts": [
+                "reason_unreachable",
+                "repayment_inability"
+              ],
+              "inherited_emotions": [],
+              "node_id": "n_7b67e0d81e2a"
+            },
+            {
+              "state_id": "a:plan_proposal",
+              "branch_key": {
+                "action": "plan_proposal"
+              },
+              "sentence_pool": [
+                {
+                  "script_text": "是这样子，我们跟女士您讲，如果说您真是有困难，我们可以跟您协商，少还一点，慢慢还做分期什么的，这个是没有问题的。但是信用卡这边毕竟不像车贷、房贷，我们没有任何资产抵押，所以银行这边是做不了延期和暂停还款的，这一点我们先跟您讲清楚。好吧，然后目前评估下来，银行也有相应的方案可以给到您，但是在此之前，有一个业务点，我们需要跟黄女士您先变更一下。因为我们看了一下，之前您都是5号出账单，然后23号是您最晚的还款时间，对不对？",
+                  "script_id": "2346432690555263376_t12",
+                  "source_call_ids": [
+                    "2346432690555263376"
+                  ],
+                  "customer_willingness": null,
+                  "collector_action": "plan_proposal",
+                  "fact_context": [
+                    "reason_unreachable",
+                    "repayment_inability"
+                  ]
+                }
+              ],
+              "children": [],
+              "role": "action",
+              "inherited_facts": [
+                "reason_unreachable",
+                "repayment_inability"
+              ],
+              "inherited_emotions": [],
+              "node_id": "n_e3c13ba07af7"
+            },
+            {
+              "state_id": "f:account_restriction",
+              "branch_key": {
+                "facts": [
+                  "account_restriction"
+                ]
+              },
+              "sentence_pool": [],
+              "children": [
+                {
+                  "state_id": "a:pressure",
+                  "branch_key": {
+                    "action": "pressure"
+                  },
+                  "sentence_pool": [
+                    {
+                      "script_text": "好的，那后续的话，关于这个逾期欠款，您这边打算怎么处理呢？ 好的，那您考虑一下，我们后续再联系您。",
+                      "script_id": "2346432690555263376_t18_merged",
+                      "source_call_ids": [
+                        "2346432690555263376"
+                      ],
+                      "customer_willingness": null,
+                      "merged_from": [
+                        "2346432690555263376_t18",
+                        "2346432690555263376_t20"
+                      ],
+                      "collector_action": "pressure",
+                      "fact_context": [
+                        "account_restriction",
+                        "reason_unreachable",
+                        "repayment_inability"
+                      ]
+                    }
+                  ],
+                  "children": [],
+                  "role": "action",
+                  "inherited_facts": [
+                    "account_restriction",
+                    "reason_unreachable",
+                    "repayment_inability"
+                  ],
+                  "inherited_emotions": [],
+                  "node_id": "n_715a80434ba4"
+                }
+              ],
+              "node_id": "n_cd05b7a99267",
+              "role": "decision",
+              "inherited_facts": [
+                "reason_unreachable",
+                "repayment_inability"
+              ],
+              "inherited_emotions": []
+            }
+          ],
+          "node_id": "n_b7a9ae793d09",
+          "role": "decision",
+          "inherited_facts": [
+            "reason_unreachable"
+          ],
+          "inherited_emotions": []
+        }
+      ],
+      "node_id": "n_2d466a412dfb",
       "role": "decision",
       "inherited_facts": [],
       "inherited_emotions": []

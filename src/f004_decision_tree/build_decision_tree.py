@@ -399,7 +399,7 @@ def merge_dialogs(tree_path, new_records, merge_decisions=None):
     for record in new_records:
         add_dialog_to_tree(tree, record, registry, merge_decisions=merge_decisions)
     _propagate_facts(tree, [], [])
-    _propagate_sentences(tree)
+    _deduplicate_nodes(tree)
     _prune_empty_subtrees(tree)
     _consolidate_endpoints(tree)
     _sort_keywords(tree)
@@ -566,6 +566,38 @@ def write_dialog_records(records, output_path=None):
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(dialog_records, f, indent=2, ensure_ascii=False)
     return len(dialog_records)
+
+def write_dialog_records_incremental(new_records, output_path=None):
+    if output_path is None:
+        output_path = os.path.join(os.path.dirname(__file__), "data", "dialog_records.json")
+    existing = []
+    if os.path.exists(output_path):
+        with open(output_path, encoding="utf-8") as f:
+            existing = json.load(f)
+    existing_ids = {r.get("call_id") for r in existing}
+    for record in new_records:
+        call_id = record.get("call_id")
+        if call_id in existing_ids:
+            continue
+        turns = []
+        for turn in record.get("turns_annotated", []):
+            state = turn.get("state") or {}
+            entry = {
+                "turn_index": turn.get("turn_index"),
+                "role": turn.get("role"),
+                "text": turn.get("text", ""),
+            }
+            if state:
+                entry["action"] = state.get("action")
+                entry["facts"] = state.get("facts", [])
+                entry["emotions"] = state.get("emotions", [])
+                entry["willingness"] = state.get("willingness")
+            turns.append(entry)
+        existing.append({"call_id": call_id, "turns": turns})
+        existing_ids.add(call_id)
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(existing, f, indent=2, ensure_ascii=False)
+    return len(existing)
 
 def _count_nodes(node, visited=None):
     if visited is None:
