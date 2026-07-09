@@ -85,7 +85,7 @@ output_aligned.py  (overwritten with relabeled tags)                            
 output_rewarded.py  (reward + reward_action_credit + reward_evidence)                 │
         │                                                                            │
         ▼  F004  (additive per-dialog insertion → action split at insert → consolidate endpoints)  │
-decision_tree.json  (309 nodes, 782 sentences, DAG)                                   │
+decision_tree.json  (1384 nodes, 1701 sentences, DAG)                                  │
         │                                                                            │
         ▼  F005  (bitmask tagging + HWR + SAS + conversation_context)                 │
         ▼  F007b (bge-m3 embedding of conversation_context)                           │
@@ -642,7 +642,7 @@ node_index = {
   (("request_installment",), ("information",), ()):                  [6],     # f:request_installment → a:information
   (("request_installment",), ("disappointment",), ()):               [7],     # f:request_installment → e:disappointment
   (("request_installment",), ("plan_proposal",), ("disappointment",)): [8],  # ... → a:plan_proposal (inherited: disappointment)
-  # ...301 unique keys → 309 nodes total
+  # ...1377 unique keys → 1384 nodes total
 }
 # Maps (facts_tuple, bk_tuple, emotions_tuple) → [node_ids] for O(1) lookup + pool aggregation
 # inherited_emotions is required: 31 key collisions without it (same facts+bk, different emotional context)
