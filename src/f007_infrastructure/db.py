@@ -199,6 +199,20 @@ class SentenceDB:
                 )
             cur.close()
 
+    def delete_sentences(self, script_ids: list[str]):
+        if not script_ids:
+            return
+        with self.connection() as conn:
+            cur = conn.cursor()
+            cur.execute(
+                "DELETE FROM sentences WHERE script_id = ANY(%s)",
+                (list(script_ids),),
+            )
+            deleted = cur.rowcount
+            cur.close()
+            _log.info("delete_sentences: removed %d orphaned rows", deleted)
+            return deleted
+
     def upsert_nodes(self, nodes: list[dict]):
         if not nodes:
             return

@@ -219,6 +219,16 @@ def _phase3_4_score_db(tree, new_ids, dsn):
     if affected_existing:
         db.update_sentence_scores(affected_existing)
 
+    tree_script_ids = {s.get("script_id", "") for s in all_sentences
+                       if any(cid in new_ids for cid in s.get("source_call_ids", []))}
+    db_script_ids = {sid for sid in existing_script_ids
+                     if any(cid in sid for cid in new_ids)}
+    db_script_ids |= {s.get("script_id", "") for s, _ in new_sentences}
+    orphans = db_script_ids - tree_script_ids
+    if orphans:
+        db.delete_sentences(list(orphans))
+    _log.info("Orphan cleanup: %d removed", len(orphans))
+
     from f005_context_scoring.score_tree import _load_state_keywords
     keywords = _load_state_keywords()
     if keywords:
