@@ -130,7 +130,7 @@ def _check_output(tree, scored_tree) -> list[CheckResult]
 | SE11 | (covered by SE9) | |
 | SE12 | every leaf has non-empty sentence_pool | walk leaves |
 | SE13 | no duplicate script_text in any single pool | dedup check per pool |
-| SE14 | merged turns ≤ 150 chars | check script_text length |
+| SE14 | merged turns ≤ 100 chars | check script_text length |
 | SE15–SE16 | (runtime — skip) | |
 
 ### 4.4 NEW: Per-Dialog Invariants (user's specific requests)

@@ -28,10 +28,7 @@ def _make_base_tree():
                 "state_id": "normal_end",
                 "role": "ending",
                 "branch_key": {"end_type": "normal"},
-                "sentence_pool": [
-                    {"script_id": "e1", "script_text": "bye", "source_call_ids": ["c1"],
-                     "customer_willingness": None, "fact_context": "", "gesture_type": "ending"},
-                ],
+                "sentence_pool": [],
                 "children": [],
             },
             {
@@ -145,3 +142,146 @@ class TestCorruptTree:
         r = check_tree(tree, records=None, scored=False)
         d4 = next(c for c in r.checks if c.id == "D4")
         assert d4.status in ("fail", "warn")
+
+
+class TestTermination:
+    def test_good_tree_exactly_two_end_nodes(self):
+        tree = _make_base_tree()
+        r = check_tree(tree, records=None, scored=False)
+        t1 = next(c for c in r.checks if c.id == "T1")
+        assert t1.status == "pass"
+
+    def test_good_tree_end_nodes_empty_pool(self):
+        tree = _make_base_tree()
+        r = check_tree(tree, records=None, scored=False)
+        t2 = next(c for c in r.checks if c.id == "T2")
+        assert t2.status == "pass"
+
+    def test_good_tree_end_nodes_are_root_children(self):
+        tree = _make_base_tree()
+        r = check_tree(tree, records=None, scored=False)
+        t3 = next(c for c in r.checks if c.id == "T3")
+        assert t3.status == "pass"
+
+    def test_good_tree_no_empty_subtrees(self):
+        tree = _make_base_tree()
+        r = check_tree(tree, records=None, scored=False)
+        t4 = next(c for c in r.checks if c.id == "T4")
+        assert t4.status == "pass"
+
+    def test_good_tree_no_end_children_outside_root(self):
+        tree = _make_base_tree()
+        r = check_tree(tree, records=None, scored=False)
+        t5 = next(c for c in r.checks if c.id == "T5")
+        assert t5.status == "pass"
+
+    def test_extra_end_node_fails_t1(self):
+        tree = _make_base_tree()
+        tree["children"].append({
+            "state_id": "abrupt_end",
+            "role": "ending",
+            "branch_key": {"end_type": "abrupt"},
+            "sentence_pool": [],
+            "children": [],
+        })
+        r = check_tree(tree, records=None, scored=False)
+        t1 = next(c for c in r.checks if c.id == "T1")
+        assert t1.status == "fail"
+
+    def test_end_node_with_sentences_fails_t2(self):
+        tree = _make_base_tree()
+        for c in tree["children"]:
+            if c.get("state_id") == "normal_end":
+                c["sentence_pool"] = [
+                    {"script_id": "x", "script_text": "test", "source_call_ids": [],
+                     "customer_willingness": None, "gesture_type": "ending"}
+                ]
+        r = check_tree(tree, records=None, scored=False)
+        t2 = next(c for c in r.checks if c.id == "T2")
+        assert t2.status == "fail"
+
+    def test_nested_end_node_fails_t3(self):
+        tree = _make_base_tree()
+        tree["children"].append({
+            "state_id": "f:nested",
+            "role": "decision",
+            "node_id": "n_nested",
+            "inherited_facts": [],
+            "inherited_emotions": [],
+            "branch_key": {"facts": ["nested_fact"]},
+            "sentence_pool": [],
+            "children": [
+                {
+                    "state_id": "abrupt_end",
+                    "role": "ending",
+                    "branch_key": {"end_type": "abrupt"},
+                    "sentence_pool": [],
+                    "children": [],
+                },
+            ],
+        })
+        r = check_tree(tree, records=None, scored=False)
+        t3 = next(c for c in r.checks if c.id == "T3")
+        assert t3.status == "fail"
+
+    def test_empty_fact_chain_fails_t4(self):
+        tree = _make_base_tree()
+        tree["children"].append({
+            "state_id": "f:empty_chain",
+            "role": "decision",
+            "node_id": "n_empty1",
+            "inherited_facts": [],
+            "inherited_emotions": [],
+            "branch_key": {"facts": ["empty_fact"]},
+            "sentence_pool": [],
+            "children": [
+                {
+                    "state_id": "e:empty_emotion",
+                    "role": "decision",
+                    "node_id": "n_empty2",
+                    "inherited_facts": ["empty_fact"],
+                    "inherited_emotions": [],
+                    "branch_key": {"emotions": ["empty_emo"]},
+                    "sentence_pool": [],
+                    "children": [],
+                },
+            ],
+        })
+        r = check_tree(tree, records=None, scored=False)
+        t4 = next(c for c in r.checks if c.id == "T4")
+        assert t4.status == "fail"
+
+    def test_end_child_in_non_root_fails_t5(self):
+        tree = _make_base_tree()
+        tree["children"].append({
+            "state_id": "f:parent",
+            "role": "decision",
+            "node_id": "n_parent",
+            "inherited_facts": [],
+            "inherited_emotions": [],
+            "branch_key": {"facts": ["parent_fact"]},
+            "sentence_pool": [],
+            "children": [
+                {
+                    "state_id": "abrupt_end",
+                    "role": "ending",
+                    "branch_key": {"end_type": "abrupt"},
+                    "sentence_pool": [],
+                    "children": [],
+                },
+            ],
+        })
+        r = check_tree(tree, records=None, scored=False)
+        t5 = next(c for c in r.checks if c.id == "T5")
+        assert t5.status == "fail"
+
+    def test_real_tree_termination_passes(self):
+        path = os.path.join(_DATA_DIR, "decision_tree.json")
+        if not os.path.exists(path):
+            pytest.skip("decision_tree.json not found")
+        with open(path) as f:
+            tree = json.load(f)
+        r = check_tree(tree, records=None, scored=False)
+        for tid in ("T1", "T2", "T3", "T4", "T5"):
+            check = next(c for c in r.checks if c.id == tid)
+            assert check.status == "pass", f"{tid} failed: {check.message}"

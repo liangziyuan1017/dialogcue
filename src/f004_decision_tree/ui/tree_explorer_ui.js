@@ -293,7 +293,7 @@ function showNodeInfo(node){
       scores+=`<span class="score-row"><span>SAS</span><span class="sbar"><span class="sbar-fill" style="width:${saPct}%;background:${sa>=0.7?'#22c55e':sa<0.4?'#ef4444':'#f59e0b'}"></span></span><span>${saPct}%</span></span>`;
     }
     if(s.bg_bitmask_int!==undefined){
-      scores+=`<span class="score-row"><span>CTX</span><span>0b${s.bg_bitmask_int.toString(2).padStart(5,'0')}</span></span>`;
+      scores+=`<span class="score-row"><span>CTX</span><span>0b${s.bg_bitmask_int.toString(2).padStart(10,'0')}</span></span>`;
     }
     h+=`<div class="ni-script">${tags}<span class="stxt">${esc(s.script_text)}</span>${scores}<div class="smeta">${esc(s.script_id)}</div></div>`;
   });

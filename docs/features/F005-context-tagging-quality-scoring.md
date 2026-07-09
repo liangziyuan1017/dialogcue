@@ -22,22 +22,22 @@ The retrieval engine (F006) needs two capabilities that the current decision tre
 
 Tag each sentence in the decision tree with `bg_constraints` derived from the source conversation's `context` fields (from F001's `output_aligned.py`). Encode as a bitmask for O(1) filtering at retrieval time.
 
-The 10 bitmask fields (from ADR-006's 21 context fields — boolean/categorical fields suitable for binary encoding):
+The 10 bitmask fields (from ADR-006's 18 custInfo-derived context fields — boolean-derivable fields suitable for binary encoding):
 
 | Bit | Field | Source |
 |-----|-------|--------|
-| 0 | `has_auto_loan` | context.has_auto_loan |
+| 0 | `has_business_loan` | context.has_business_loan |
 | 1 | `has_mortgage` | context.has_mortgage |
-| 2 | `has_negotiation_history` | context.has_negotiation_history |
-| 3 | `social_insurance_stable` | context.social_insurance_stable |
-| 4 | `credit_rating_good` | context.credit_rating == "good" |
-| 5 | `card_restricted` | context.card_restricted |
-| 6 | `is_cash_out_customer` | context.is_cash_out_customer |
-| 7 | `has_complaint_history` | context.has_complaint_history |
-| 8 | `has_legal_tools` | context.has_legal_tools |
-| 9 | `is_negotiation_brain_customer` | context.is_negotiation_brain_customer |
+| 2 | `has_other_loan` | context.has_other_loan |
+| 3 | `recent_repayment` | context.recent_repayment |
+| 4 | `is_high_risk_proxy_complaint` | context.is_high_risk_proxy_complaint |
+| 5 | `is_proxy_intermediary_complaint` | context.is_proxy_intermediary_complaint |
+| 6 | `has_social_insurance` | context.has_social_insurance |
+| 7 | `has_risk_flag` | context.risk_level > 0 |
+| 8 | `has_complaint` | context.complaint_score > 0 |
+| 9 | `has_vehicle` | context.vehicle_count > 0 |
 
-Numeric fields (total_debt, external_debt, days_delinquent) and list fields (available_plans) are not bitmask-encoded — they are available as `bg_constraints` dict for range/list filtering if needed later.
+Numeric/categorical fields not bitmask-encoded — stored in `bg_background` dict (see below) for `bg_boost` range/categorical matching. Balance fields are stored as **digit counts** (e.g. `142870` → `6`, `0` → `0`) to normalize magnitude for similarity comparison.
 
 ### Quality Scoring
 
@@ -80,8 +80,25 @@ Augmented decision tree written to `/src/decision_tree_scored.json`. Structure i
 - [ ] Embeddings (1024-dim bge-m3) persisted to PostgreSQL only; `decision_tree_scored.json` has no `embedding` field; `conversation_context` present
 - [ ] `uplift_score` = 0 and `csi` = 0 with `deferred: true` on every sentence
 - [ ] Bitmask AND filtering: sentence with bitmask S is compatible with context bitmask C iff (S & C) == S
-- [ ] All 31 conversations represented in scored tree
+- [ ] All 103 conversations represented in scored tree
 - [ ] Output file: `/src/decision_tree_scored.json`
+
+### `bg_background` fields (for `bg_boost` matching)
+
+Balance fields are stored as **digit counts** (`len(str(abs(value)))` for value > 0, else `0`) to normalize magnitude.
+
+| Field | Source | Transform |
+|-------|--------|-----------|
+| `business_loan_digits` | context.business_loan_balance | digit count (0→0, 142870→6) |
+| `mortgage_balance_digits` | context.mortgage_balance | digit count |
+| `other_loan_digits` | context.other_loan_balance | digit count |
+| `wealth_digits` | context.wealth_value | digit count |
+| `current_balance_digits` | context.current_balance | digit count |
+| `education` | context.education | categorical (passthrough) |
+| `days_delinquent` | context.days_delinquent | int (passthrough) |
+| `recent_contact_count` | context.recent_contact_count | int (passthrough) |
+| `risk_level` | context.risk_level | int (passthrough) |
+| `complaint_score` | context.complaint_score | int (passthrough) |
 
 ## Dependencies
 
@@ -92,7 +109,7 @@ Augmented decision tree written to `/src/decision_tree_scored.json`. Structure i
 ## Links
 
 - [plan_feature_base.md](../../plan_feature_base.md) — F005 spec
-- [ADR-006](../../decisions/ADR-006-context-constraint-mapping.md) — Context constraint mapping (21 fields → 10 bitmask)
+- [ADR-006](../../decisions/ADR-006-context-constraint-mapping.md) — Context constraint mapping (18 fields → 10 bitmask; pre-migration 21 fields)
 
 ## Implementation Plan
 
@@ -100,7 +117,7 @@ See [implementation-plan.md](implementation-plan.md)
 
 ## Design Decisions
 
-- **10 bitmask fields from 21 context fields**: Boolean-derivable fields are bitmask-encoded (has_auto_loan, has_mortgage, has_negotiation_history, social_insurance_stable, credit_rating_good, card_restricted, is_cash_out_customer, has_complaint_history, has_legal_tools, is_negotiation_brain_customer). Numeric fields (total_debt, external_debt, days_delinquent) and list fields (available_plans) remain in bg_constraints dict for potential range/list filtering in F006.
+- **10 bitmask fields from 18 custInfo-derived context fields**: Boolean-derivable fields are bitmask-encoded (has_business_loan, has_mortgage, has_other_loan, recent_repayment, is_high_risk_proxy_complaint, is_proxy_intermediary_complaint, has_social_insurance, has_risk_flag [risk_level>0], has_complaint [complaint_score>0], has_vehicle [vehicle_count>0]). Remaining numeric/categorical fields go into `bg_background` for `bg_boost` matching, with balance fields stored as digit counts (e.g. `142870` → `6`).
 - **Intersection merge for multi-source sentences**: 28 sentences have multiple source_call_ids. Their bg_constraints use bitwise AND (intersection) of all source conversation constraints — only constraints present in ALL source conversations are set. This is conservative: intersection=0 means the sentence was used in diverse contexts and is broadly applicable.
 - **Bitmask compatibility check**: `(sentence_bitmask & query_bitmask) == sentence_bitmask` — every constraint the sentence requires must be present in the query context. A sentence with bitmask 0 is universally compatible.
 - **HWR with node-level aggregation**: Sentence-level HWR is unreliable for sentences appearing in only 1-2 calls. Instead, compute node HWR from all `source_call_ids` across the node's entire sentence pool, then blend: `win_rate = weight * sentence_hwr + (1 - weight) * node_hwr` where `weight = n / (n + 2)` (shrinks toward node baseline for low-n sentences). Node HWR stored as `win_rate_node` for transparency. Laplace smoothing `(wins + 1) / (total + 2)` prevents 0/0.

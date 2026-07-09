@@ -41,6 +41,12 @@ Nodes = collector action points. Branches = customer (facts, emotions). Willingn
 
 ### Current Tree Statistics (2026-06-23)
 
+> **Updated 2026-07-08 (custInfo migration + additive rebuild)**: the tree was
+> rebuilt from 103 valid `call_id`s (pruned from 148). Current counts:
+> **1384 nodes, 1701 sentences, 585 merge_decisions keys**. The detailed
+> breakdown below (309 nodes / 31 call_ids) is pre-migration and retained for
+> history; recompute `check_tree` for an updated per-role/per-depth breakdown.
+
 | Metric | Value |
 |--------|-------|
 | Total nodes | 309 |
@@ -151,7 +157,7 @@ See [implementation-plan.md](F004-implementation-plan.md)
 - **Label prefixes stripped**: Node labels strip `a:`, `e:`, `f:` prefixes — the shape already distinguishes node types.
 - **View mode renderer**: Dedicated `buildViewGraph` for dialog path view. Walks dialog sequence in order, assigns each node a consecutive row (Y = row × 320). Back edges (return to earlier state) render as dashed slate lines with source offset rightward to avoid crossing. Uses `preset` layout with `cy.fit(undefined, 80)` for comfortable zoom level.
 - **No-cache HTTP server**: `serve_tree.py` uses `NoCacheHandler` (Cache-Control: no-store) and `ReusableTCPServer` (allow_reuse_address) for fresh data on every reload.
-- **LLM-guided collector turn merging**: Before segment extraction, `_apply_merges()` preprocesses dialogs to merge fragmented collector turns. Two-phase strategy: (1) `_find_merge_candidates()` identifies merge groups using Rule A (consecutive collector), Rule B (ack-only interruption: no facts/emotions, ≤15 words), and Rule C (label-1 turns treated as absent); (2) `_llm_should_merge()` partitions each group into merge subgroups. Same-action consecutive turns auto-merge without LLM. `_ensure_same_action_merged` post-processes LLM results to enforce this. Hard constraint: `MAX_MERGED_WORDS=150` — each merged output ≤150 Chinese characters, enforced by `_enforce_word_limit()` greedy splitting. Cache in `merge_decisions.json` avoids re-calling LLM.
+- **LLM-guided collector turn merging**: Before segment extraction, `_apply_merges()` preprocesses dialogs to merge fragmented collector turns. Two-phase strategy: (1) `_find_merge_candidates()` identifies merge groups using Rule A (consecutive collector), Rule B (ack-only interruption: no facts/emotions, ≤15 words), and Rule C (label-1 turns treated as absent); (2) `_llm_should_merge()` partitions each group into merge subgroups. Same-action consecutive turns auto-merge without LLM. `_ensure_same_action_merged` post-processes LLM results to enforce this. Hard constraint: `MAX_MERGED_WORDS=100` — each merged output ≤100 Chinese characters, enforced by `_enforce_word_limit()` greedy splitting. Cache in `merge_decisions.json` avoids re-calling LLM.
 - **Node identity deduplication (ADR-021)**: Nodes are identified by `(inherited_facts, inherited_emotions, branch_key)`. Two nodes with the same identity are the same semantic state. A global `node_registry` in `build_tree()` prevents creating duplicate nodes. Cycle prevention via `_is_ancestor` check. Post-transform `_deduplicate_nodes` catches any remaining sibling duplicates.
 - **DAG tree structure**: The tree is a DAG — nodes with the same identity can appear under multiple parents. All recursive walkers use `_visited` sets for cycle protection. The UI uses `node_id` (SHA-256 hash of identity) as the Cytoscape node ID, rendering shared nodes once with multiple incoming edges.
 - **Redundant emotion collapse (ADR-022)**: `_collapse_redundant_facts` extended to also collapse emotion nodes whose emotions are already in the accumulated parent emotions (e.g., `anger → anger` → collapse to `anger`). Symmetric with fact collapse. Uses `accumulated_emotions` tracking.

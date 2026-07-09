@@ -55,12 +55,6 @@ def build_context_lookup(records=None):
     return {r["call_id"]: r["context"] for r in records}
 
 
-def build_customer_info_lookup(records=None):
-    if records is None:
-        records = _load_output_aligned()
-    return {r["call_id"]: r.get("customer_info", {}) for r in records}
-
-
 def build_reward_lookup(records=None):
     if records is None:
         records = _load_output_rewarded()
@@ -113,7 +107,7 @@ def build_conversation_context_lookup(tree, turns_lookup=None):
     return context_map
 
 
-def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup=None, embed_fn=None):
+def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, conv_ctx_lookup=None, embed_fn=None):
     if not sentence_pool:
         return sentence_pool
     node_hwr = compute_node_hwr(sentence_pool, reward_lookup)
@@ -124,7 +118,7 @@ def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_
         bg_bitmask = encode_bitmask(bg)
         s["bg_bitmask"] = bg_bitmask
         s["bg_bitmask_int"] = encode_bitmask_int(bg_bitmask)
-        s["bg_background"] = compute_bg_background(call_ids, customer_info_lookup)
+        s["bg_background"] = compute_bg_background(call_ids, context_lookup)
         sentence_hwr = compute_hwr(call_ids, reward_lookup)
         n = len(call_ids)
         weight = n / (n + 2)
@@ -146,7 +140,7 @@ def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, customer_
     return sentence_pool
 
 
-def score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup=None, embed_fn=None):
+def score_tree(tree, context_lookup, reward_lookup, conv_ctx_lookup=None, embed_fn=None):
     def _walk(node, parent_path=""):
         state_id = node.get("state_id", "")
         path_sig = f"{parent_path}/{state_id}" if parent_path else state_id
@@ -155,7 +149,6 @@ def score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_c
             node.get("sentence_pool", []),
             context_lookup,
             reward_lookup,
-            customer_info_lookup,
             conv_ctx_lookup,
             embed_fn=embed_fn,
         )
@@ -206,10 +199,9 @@ def write_scored_tree(output_path=None, db=None):
     tree = _load_decision_tree()
     context_lookup = build_context_lookup()
     reward_lookup = build_reward_lookup()
-    customer_info_lookup = build_customer_info_lookup()
     turns_lookup = build_turns_lookup()
     conv_ctx_lookup = build_conversation_context_lookup(tree, turns_lookup)
-    scored = score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup, embed_fn=embed_texts if db is not None else None)
+    scored = score_tree(tree, context_lookup, reward_lookup, conv_ctx_lookup, embed_fn=embed_texts if db is not None else None)
 
     all_sentences = _collect_tree_sentences(scored)
     for s in all_sentences:

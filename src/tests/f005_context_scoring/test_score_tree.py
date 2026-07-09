@@ -3,7 +3,6 @@ import pytest
 from f005_context_scoring.score_tree import (
     _score_sentence_pool,
     build_context_lookup,
-    build_customer_info_lookup,
     build_reward_lookup,
 )
 from f005_context_scoring.scoring_metrics import (
@@ -32,64 +31,45 @@ def reward_lookup():
     return build_reward_lookup()
 
 
-@pytest.fixture
-def customer_info_lookup():
-    return build_customer_info_lookup()
-
-
 class TestContextLookup:
-    def test_returns_31_records(self, context_lookup):
-        assert len(context_lookup) == 31
+    def test_returns_103_records(self, context_lookup):
+        assert len(context_lookup) == 103
 
     def test_all_have_context_fields(self, context_lookup):
         for _cid, ctx in context_lookup.items():
-            assert "has_auto_loan" in ctx
+            assert "has_business_loan" in ctx
             assert "has_mortgage" in ctx
-            assert "credit_rating" in ctx
-            assert "days_delinquent" in ctx
-            assert "total_debt" in ctx
-            assert "external_debt" in ctx
-            assert "has_negotiation_history" in ctx
-            assert "available_plans" in ctx
-            assert "social_insurance_stable" in ctx
-            assert "card_restricted" in ctx
-            assert "is_cash_out_customer" in ctx
-            assert "external_debt_institutions" in ctx
-            assert "interest_ratio" in ctx
-            assert "installment_ratio" in ctx
-            assert "age" in ctx
-            assert "gender" in ctx
+            assert "has_other_loan" in ctx
+            assert "recent_repayment" in ctx
+            assert "is_high_risk_proxy_complaint" in ctx
+            assert "is_proxy_intermediary_complaint" in ctx
+            assert "has_social_insurance" in ctx
+            assert "risk_level" in ctx
+            assert "complaint_score" in ctx
+            assert "vehicle_count" in ctx
+            assert "business_loan_balance" in ctx
+            assert "mortgage_balance" in ctx
+            assert "other_loan_balance" in ctx
+            assert "wealth_value" in ctx
+            assert "current_balance" in ctx
             assert "education" in ctx
-            assert "industry" in ctx
-            assert "has_complaint_history" in ctx
-            assert "has_legal_tools" in ctx
-            assert "is_negotiation_brain_customer" in ctx
+            assert "days_delinquent" in ctx
+            assert "recent_contact_count" in ctx
 
     def test_known_call_id_present(self, context_lookup):
-        assert "2317941550352385028" in context_lookup
-
-
-class TestCustomerInfoLookup:
-    def test_returns_31_records(self, customer_info_lookup):
-        assert len(customer_info_lookup) == 31
-
-    def test_has_chinese_fields(self, customer_info_lookup):
-        ci = customer_info_lookup["2317941550352385028"]
-        assert "年龄" in ci
-        assert "学历" in ci
-        assert "行业" in ci
+        assert "2346089320444241687" in context_lookup
 
 
 class TestRewardLookup:
-    def test_returns_31_records(self, reward_lookup):
-        assert len(reward_lookup) == 31
+    def test_returns_103_records(self, reward_lookup):
+        assert len(reward_lookup) == 103
 
     def test_all_rewards_are_0_or_1(self, reward_lookup):
         for _cid, r in reward_lookup.items():
             assert r in (0, 1)
 
-    def test_6_rewards_are_1(self, reward_lookup):
-        assert sum(1 for r in reward_lookup.values() if r == 1) == 6
+    def test_77_rewards_are_1(self, reward_lookup):
+        assert sum(1 for r in reward_lookup.values() if r == 1) == 77
 
 
 class TestBitmaskEncoding:
@@ -106,13 +86,14 @@ class TestBitmaskEncoding:
 
     def test_single_bit_0(self):
         bg = {f: False for f in BITMASK_FIELDS}
-        bg["has_auto_loan"] = True
+        bg["has_business_loan"] = True
         result = encode_bitmask(bg)
-        assert result["has_auto_loan"] == 1
+        assert result["has_business_loan"] == 1
         assert result["has_mortgage"] == 0
 
     def test_bitmask_int_from_dict(self):
-        bg_bitmask = {"has_auto_loan": 1, "has_mortgage": 0, "has_negotiation_history": 0, "social_insurance_stable": 0, "credit_rating_good": 0}
+        bg_bitmask = {f: 0 for f in BITMASK_FIELDS}
+        bg_bitmask["has_business_loan"] = 1
         assert encode_bitmask_int(bg_bitmask) == 1
 
     def test_bitmask_int_all_ones(self):
@@ -125,36 +106,38 @@ class TestBitmaskEncoding:
 
     def test_extract_bg_constraints_from_context(self):
         ctx = {
-            "has_auto_loan": True,
+            "has_business_loan": True,
             "has_mortgage": False,
-            "credit_rating": "good",
-            "has_negotiation_history": True,
-            "social_insurance_stable": False,
-            "card_restricted": True,
-            "is_cash_out_customer": False,
-            "has_complaint_history": False,
-            "has_legal_tools": True,
-            "is_negotiation_brain_customer": False,
+            "has_other_loan": True,
+            "recent_repayment": True,
+            "is_high_risk_proxy_complaint": False,
+            "is_proxy_intermediary_complaint": True,
+            "has_social_insurance": False,
+            "risk_level": 2,
+            "complaint_score": 10,
+            "vehicle_count": 1,
         }
         bg = _extract_bg_constraints(ctx)
-        assert bg["has_auto_loan"] is True
+        assert bg["has_business_loan"] is True
         assert bg["has_mortgage"] is False
-        assert bg["credit_rating_good"] is True
-        assert bg["has_negotiation_history"] is True
-        assert bg["social_insurance_stable"] is False
-        assert bg["card_restricted"] is True
-        assert bg["is_cash_out_customer"] is False
-        assert bg["has_complaint_history"] is False
-        assert bg["has_legal_tools"] is True
-        assert bg["is_negotiation_brain_customer"] is False
+        assert bg["has_other_loan"] is True
+        assert bg["recent_repayment"] is True
+        assert bg["is_high_risk_proxy_complaint"] is False
+        assert bg["is_proxy_intermediary_complaint"] is True
+        assert bg["has_social_insurance"] is False
+        assert bg["has_risk_flag"] is True
+        assert bg["has_complaint"] is True
+        assert bg["has_vehicle"] is True
 
-    def test_credit_rating_not_good(self):
-        ctx = {"credit_rating": "moderate"}
+    def test_derived_flags_zero(self):
+        ctx = {"risk_level": 0, "complaint_score": 0, "vehicle_count": 0}
         bg = _extract_bg_constraints(ctx)
-        assert bg["credit_rating_good"] is False
+        assert bg["has_risk_flag"] is False
+        assert bg["has_complaint"] is False
+        assert bg["has_vehicle"] is False
 
     def test_compute_bg_constraints_single_source(self, context_lookup):
-        cid = "2317941550352385028"
+        cid = "2346089320444241687"
         bg = compute_bg_constraints([cid], context_lookup)
         assert all(f in bg for f in BITMASK_FIELDS)
 
@@ -164,15 +147,19 @@ class TestBitmaskEncoding:
 
     def test_compute_bg_constraints_intersection(self):
         lookup = {
-            "a": {"has_auto_loan": True, "has_mortgage": True, "credit_rating": "good",
-                  "has_negotiation_history": False, "social_insurance_stable": False},
-            "b": {"has_auto_loan": True, "has_mortgage": False, "credit_rating": "good",
-                  "has_negotiation_history": False, "social_insurance_stable": False},
+            "a": {"has_business_loan": True, "has_mortgage": True, "has_other_loan": False,
+                  "recent_repayment": False, "is_high_risk_proxy_complaint": False,
+                  "is_proxy_intermediary_complaint": False, "has_social_insurance": False,
+                  "risk_level": 1, "complaint_score": 0, "vehicle_count": 0},
+            "b": {"has_business_loan": True, "has_mortgage": False, "has_other_loan": False,
+                  "recent_repayment": False, "is_high_risk_proxy_complaint": False,
+                  "is_proxy_intermediary_complaint": False, "has_social_insurance": False,
+                  "risk_level": 0, "complaint_score": 0, "vehicle_count": 0},
         }
         bg = compute_bg_constraints(["a", "b"], lookup)
-        assert bg["has_auto_loan"] is True
+        assert bg["has_business_loan"] is True
         assert bg["has_mortgage"] is False
-        assert bg["credit_rating_good"] is True
+        assert bg["has_risk_flag"] is False
 
     def test_bitmask_int_range(self, context_lookup):
         max_mask = (1 << len(BITMASK_FIELDS)) - 1
@@ -183,27 +170,46 @@ class TestBitmaskEncoding:
 
 
 class TestBgBackground:
-    def test_extract_from_customer_info(self, customer_info_lookup):
-        ci = customer_info_lookup["2317941550352385028"]
-        bg = _extract_bg_background(ci)
-        assert "age" in bg
-        assert "gender" in bg
+    def test_extract_from_context(self, context_lookup):
+        ctx = context_lookup["2346089320444241687"]
+        bg = _extract_bg_background(ctx)
+        assert "business_loan_digits" in bg
+        assert "mortgage_balance_digits" in bg
+        assert "other_loan_digits" in bg
+        assert "wealth_digits" in bg
+        assert "current_balance_digits" in bg
         assert "education" in bg
-        assert "industry" in bg
+        assert "days_delinquent" in bg
+        assert "recent_contact_count" in bg
+        assert "risk_level" in bg
+        assert "complaint_score" in bg
 
-    def test_compute_single_source(self, customer_info_lookup):
-        bg = compute_bg_background(["2317941550352385028"], customer_info_lookup)
-        assert "age" in bg
-        assert isinstance(bg["age"], str)
+    def test_digit_count_transform(self):
+        ctx = {"other_loan_balance": 142870, "current_balance": 3280796,
+               "business_loan_balance": 0, "mortgage_balance": 0, "wealth_value": 0}
+        bg = _extract_bg_background(ctx)
+        assert bg["other_loan_digits"] == 6
+        assert bg["current_balance_digits"] == 7
+        assert bg["business_loan_digits"] == 0
+        assert bg["mortgage_balance_digits"] == 0
+        assert bg["wealth_digits"] == 0
+
+    def test_compute_single_source(self, context_lookup):
+        bg = compute_bg_background(["2346089320444241687"], context_lookup)
+        assert isinstance(bg["other_loan_digits"], int)
+        assert isinstance(bg["education"], str)
 
     def test_compute_empty(self):
         bg = compute_bg_background([], {})
-        for eng, _ in BG_BACKGROUND_FIELDS:
-            assert eng in bg
-            assert bg[eng] == ""
+        for field, _, transform in BG_BACKGROUND_FIELDS:
+            assert field in bg
+            if transform == "passthrough":
+                assert bg[field] == ""
+            else:
+                assert bg[field] == 0
 
-    def test_all_7_fields_present(self, customer_info_lookup):
-        bg = compute_bg_background(["2317941550352385028"], customer_info_lookup)
+    def test_all_fields_present(self, context_lookup):
+        bg = compute_bg_background(["2346089320444241687"], context_lookup)
         assert len(bg) == len(BG_BACKGROUND_FIELDS)
 
 
@@ -290,8 +296,7 @@ class TestEmbeddingInScorePool:
         ]
         fake_vecs = [[0.1] * EMBEDDING_DIM, [0.2] * EMBEDDING_DIM]
         _score_sentence_pool(
-            pool, {}, {}, {},
-            conv_ctx_lookup={},
+            pool, {}, {}, conv_ctx_lookup={},
             embed_fn=lambda texts: fake_vecs[:len(texts)],
         )
         assert "_context_vec" in pool[0]
@@ -303,7 +308,7 @@ class TestEmbeddingInScorePool:
         pool = [
             {"script_text": "你好", "script_id": "s1", "source_call_ids": []},
         ]
-        _score_sentence_pool(pool, {}, {}, {}, conv_ctx_lookup={})
+        _score_sentence_pool(pool, {}, {}, conv_ctx_lookup={})
         assert "_context_vec" not in pool[0]
 
 
@@ -316,7 +321,6 @@ class TestWriteScoredTreeWithDB:
         with patch("f005_context_scoring.score_tree._load_decision_tree") as mock_tree, \
              patch("f005_context_scoring.score_tree.build_context_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.build_reward_lookup", return_value={}), \
-             patch("f005_context_scoring.score_tree.build_customer_info_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.build_turns_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.build_conversation_context_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.embed_texts", return_value=[]), \
@@ -344,7 +348,6 @@ class TestWriteScoredTreeWithDB:
         with patch("f005_context_scoring.score_tree._load_decision_tree") as mock_tree, \
              patch("f005_context_scoring.score_tree.build_context_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.build_reward_lookup", return_value={}), \
-             patch("f005_context_scoring.score_tree.build_customer_info_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.build_turns_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.build_conversation_context_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.embed_texts", return_value=[[0.1]*EMBEDDING_DIM]), \

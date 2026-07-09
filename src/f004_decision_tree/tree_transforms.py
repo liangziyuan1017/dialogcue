@@ -71,7 +71,7 @@ def _remove_stray_abrupt_ends(node, root_abrupt_end, _visited=None):
     _visited.add(nid)
     new_children = []
     for child in node.get("children", []):
-        if child.get("state_id") == "abrupt_end" and node.get("state_id") != "initial_contact":
+        if child.get("state_id") == "abrupt_end" and child is not root_abrupt_end:
             continue
         new_children.append(child)
     node["children"] = new_children
@@ -107,42 +107,16 @@ def _consolidate_endpoints(root):
     abrupt_end = {
         "state_id": "abrupt_end",
         "branch_key": {"end_type": "abrupt"},
-        "sentence_pool": [
-            {
-                "script_text": "[对话未正常结束]",
-                "script_id": "abrupt_end_marker",
-                "source_call_ids": [],
-                "customer_willingness": None,
-                "gesture_type": "ending",
-            }
-        ],
+        "sentence_pool": [],
         "children": [],
         "gesture_type": "ending",
         "role": "ending",
     }
 
-    ending_sentences = []
-    _collect_ending_sentences(root, ending_sentences)
-    for s in ending_sentences:
-        normal_end["sentence_pool"].append(s)
-    normal_end["sentence_pool"] = _dedup_pool(normal_end["sentence_pool"])
-    if not normal_end["sentence_pool"]:
-        normal_end["sentence_pool"].append({
-            "script_text": "[正常结束]",
-            "script_id": "normal_end_marker",
-            "source_call_ids": [],
-            "customer_willingness": None,
-            "gesture_type": "ending",
-        })
-
     _strip_terminal_nodes(root)
-    _strip_ending_from_non_end(root)
 
     root["children"].append(normal_end)
     root["children"].append(abrupt_end)
-
-    _link_leaves_to_abrupt_end(root, abrupt_end)
-    _remove_stray_abrupt_ends(root, abrupt_end)
 
 
 def _collect_ending_sentences(node, results, _visited=None):
@@ -184,6 +158,26 @@ def _ensure_abrupt_end(node, call_id, turns):
         if child.get("state_id") == "abrupt_end":
             return
     node.setdefault("children", []).append(_make_abrupt_end_node())
+
+
+def _prune_empty_subtrees(node, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return True
+    _visited.add(nid)
+    if node.get("state_id") in ("normal_end", "abrupt_end"):
+        return False
+    if node.get("role") == "action":
+        return False
+    surviving = []
+    for child in node.get("children", []):
+        is_empty = _prune_empty_subtrees(child, _visited)
+        if not is_empty:
+            surviving.append(child)
+    node["children"] = surviving
+    return not node.get("sentence_pool") and not surviving
 
 
 def _split_composite_nodes(node, _visited=None):

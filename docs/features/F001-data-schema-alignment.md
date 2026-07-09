@@ -11,9 +11,19 @@ merged: 2026-06-10 63e5a0c
 
 # F001: Data Schema Alignment
 
+> **custInfo migration (2026-07-08)** — The context mapping table below is
+> **pre-migration**. The source schema changed from a `customer_info` Chinese
+> dict + snake_case metadata to a `custInfo` JSON tag-string + canonical
+> camelCase fields (`dialDate`, `collUserId`, `mobTyp`, …). `build_context`
+> was rewritten to map real `custInfo` tags → 18 English `context` fields
+> (replacing the 21-field set, several of which referenced nonexistent tags).
+> The authoritative current mapping is
+> [`align_schema_diff.md`](../../src/f001_schema_alignment/align_schema_diff.md).
+> 148 raw records pruned to 103 valid `call_id`s (`ids.md`).
+
 ## Why
 
-Raw records in `/data/output_manual.py` use the original collection system schema. Downstream features (F003–F006) require a SOP-aligned schema with `turns_annotated`, `reward`, `state_transitions`, and `context` fields derived from `customer_info`.
+Raw records in `/data/output_manual.py` use the original collection system schema. Downstream features (F003–F006) require a SOP-aligned schema with `turns_annotated`, `reward`, `state_transitions`, and `context` fields derived from `custInfo`.
 
 ## What
 

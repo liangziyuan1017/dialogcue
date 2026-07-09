@@ -14,9 +14,19 @@ EMBEDDING_DIM = int(os.environ.get("EMBEDDING_DIM", str(_cfg("embedding.dimensio
 
 
 def _get_embed_client():
+    import httpx
     from openai import OpenAI
     if EMBEDDING_BASE_URL:
-        return OpenAI(api_key=EMBEDDING_API_KEY, base_url=EMBEDDING_BASE_URL)
+        return OpenAI(
+            api_key=EMBEDDING_API_KEY,
+            base_url=EMBEDDING_BASE_URL,
+            timeout=60.0,
+            http_client=httpx.Client(
+                trust_env=False,
+                timeout=httpx.Timeout(60.0, connect=10.0),
+                limits=httpx.Limits(max_connections=1, max_keepalive_connections=0),
+            ),
+        )
     return _get_client()
 
 
@@ -39,16 +49,20 @@ def embed_texts(texts: list[str]) -> list[list[float]]:
     results: list[list[float]] = []
     for i in range(0, len(texts), batch_size):
         batch = texts[i : i + batch_size]
-        try:
-            resp = retry_call(
-                client.embeddings.create,
-                model=EMBEDDING_MODEL,
-                input=batch,
-                retryable=RETRYABLE_LLM_ERRORS,
-            )
-            batch_vecs = [d.embedding for d in sorted(resp.data, key=lambda d: d.index)]
-        except RETRYABLE_LLM_ERRORS as e:
-            _log.warning("embedding batch %d failed after retries: %s; zero-filling", i // batch_size, e)
-            batch_vecs = [[0.0] * EMBEDDING_DIM for _ in batch]
+        batch_idx = i // batch_size
+        print(f"    embed batch {batch_idx}/{(len(texts)+batch_size-1)//batch_size} ({len(batch)} texts)", flush=True)
+        while True:
+            try:
+                resp = retry_call(
+                    client.embeddings.create,
+                    model=EMBEDDING_MODEL,
+                    input=batch,
+                    timeout=60.0,
+                    retryable=RETRYABLE_LLM_ERRORS,
+                )
+                batch_vecs = [d.embedding for d in sorted(resp.data, key=lambda d: d.index)]
+                break
+            except RETRYABLE_LLM_ERRORS as e:
+                _log.warning("embedding batch %d failed after retries: %s; retrying", batch_idx, e)
         results.extend(batch_vecs)
     return results

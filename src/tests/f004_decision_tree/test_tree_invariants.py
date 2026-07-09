@@ -107,22 +107,20 @@ class TestF004OpeningGestures:
 
 
 class TestF004EndingConsolidation:
-    def test_normal_end_has_ending_sentences(self, tree):
+    def test_normal_end_has_empty_pool(self, tree):
         ne = _find_node(tree, "normal_end")
         assert ne is not None
-        ending_in_ne = [s for s in ne["sentence_pool"] if s.get("gesture_type") == "ending"]
-        assert len(ending_in_ne) > 0, "normal_end should hold ending sentences"
+        assert not ne.get("sentence_pool"), "normal_end should have empty sentence_pool"
 
-    def test_no_ending_sentences_outside_end_nodes(self, tree):
+    def test_ending_sentences_in_action_nodes(self, tree):
+        ending_count = 0
         for node in _all_nodes(tree):
             if node.get("state_id") in ("normal_end", "abrupt_end"):
                 continue
             for s in node.get("sentence_pool", []):
-                if s.get("script_text") in ("[对话未正常结束]", "[正常结束]"):
-                    continue
-                assert s.get("gesture_type") != "ending", (
-                    f"Ending leaked into {node.get('state_id')}: {s.get('script_text')}"
-                )
+                if s.get("gesture_type") == "ending":
+                    ending_count += 1
+        assert ending_count > 0, "ending sentences should be in action nodes"
 
 
 class TestF004EndNodeStructure:

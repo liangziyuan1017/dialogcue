@@ -112,7 +112,7 @@ POST /recommend  →  state extraction  →  relabel  →  node lookup  →  bit
 | Ranking | Unified weighted fusion | ADR-024 |
 | State extraction | LLM-first (DeepSeek), keyword fallback | ADR-009 |
 | Taxonomy | Data-discovered, not prescribed | ADR-001..005 |
-| Context constraints | 21-field mapping → 10-bit bitmask | ADR-006, ADR-020 |
+| Context constraints | 18-field mapping → 10-bit bitmask | ADR-006, ADR-020 |
 | API | FastAPI + Socket.IO | — |
 | DB concurrency | asyncpg (runtime) + psycopg2 (build-time) | ADR-027 |
 | Vector scoring | SQL-side pgvector `<=>` (no raw embedding transfer to Python) | ADR-028 |
@@ -129,8 +129,8 @@ with the decision tree, scored sentences, and pre-computed embeddings.
 #### What this does
 
 Ingests the raw source corpus: debt-collection call records in JSONL, each
-containing the raw dialog string, call metadata, and a `customer_info` block of
-~27 Chinese-string profile fields. No transformation happens here — this is the
+containing the raw dialog string, call metadata, and a `custInfo` JSON array of
+tagName/tagValue profile pairs. No transformation happens here — this is the
 input contract for the entire pipeline.
 
 #### Design considerations & decisions
@@ -138,8 +138,8 @@ input contract for the entire pipeline.
 - The corpus is small (prototype scale) — taxonomy
   discovery and frequency stats are accepted as unstable at this scale; the
   system is designed to broaden with data (ADR-003 suggests domain keywords).
-- Raw `customer_info` fields are Chinese strings, unusable for O(1) filtering.
-  F001 (ADR-006) maps them to 21 typed English fields later.
+- Raw `custInfo` fields are Chinese tagName/tagValue pairs, unusable for O(1) filtering.
+  F001 (ADR-006) maps them to 18 typed English fields later.
 
 **Source**: `/data/data_input/matched_data.jsonl` — raw call records in JSONL format.
 
@@ -155,36 +155,7 @@ Each record has these exact fields:
   "mob_typ": "M1",
   "talk_time": "613",
   "plan_evaluation": "| 类型 | 执行情况 | 关键证据 | ...",
-  "customer_info": {
-    "统计日期": "2026-05-13",
-    "客户号": "0000000100252354",
-    "年龄": "49",
-    "性别": "女",
-    "申请卡片时间": "2003-10-01",
-    "学历": "未填",
-    "行业": "专业性事务所",
-    "社保缴纳情况": "有社保，但为灵活就业参保，稳定性不高",
-    "他行是否有房贷": "他行有房贷，欠款121991",
-    "他行是否有车贷": "他行无车贷",
-    "我行是否有房贷": "我行无房贷",
-    "我行是否有车贷": "我行无车贷",
-    "是否为套现客户": "非套现客户",
-    "持卡客户是否疑似代理中介投诉": "否",
-    "总欠款": "62209",
-    "利息占欠款比例": "4%",
-    "分期金额占欠款比例": "0%",
-    "是否管制": "可正常使用卡片",
-    "24期缴款评等": "ZZZZZZZZZZZZZZBBB0",
-    "外部欠款金额": "外部欠款总余额436762...",
-    "外部共债机构数": "外部共债机构数共9家，其中逾期的机构共1家",
-    "历史协商情况": "无协商历史",
-    "历史投诉情况": "客户历史没有重渠投诉",
-    "当前可使用的协商方案": "001账号欠款61967元，有协商方案，要么办理调减方案;...",
-    "当前可使用的法务工具": "无可用的法务工具",
-    "近一个月callid": "Y2317585420622995027,...",
-    "是否完成总结": "0",
-    "是否谈判大脑客户": "N"
-  }
+  "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"394693.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"14287.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"32807.96\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"10\"}]"
 }
 ```
 
@@ -297,14 +268,14 @@ Maps the raw records from the collection-system schema to a SOP-aligned schema w
 
 #### Design considerations & decisions
 
-- **ADR-006**: Map 27 raw Chinese `customer_info` fields → 21 typed English `context` fields (boolean bitmask fields + numeric/categorical fields). Expanded 9→21 fields on 2026-06-22.
+- **ADR-006**: Map `custInfo` JSON array (tagName/tagValue pairs) → 18 typed English `context` fields (boolean bitmask fields + numeric/categorical fields). Migrated from `customer_info` dict to `custInfo` JSON on 2026-07-09.
 - **ADR-007**: Carry F000 state labels into `turns_annotated` — aligned schema is a superset, not lossy; preserves data lineage.
 - **ADR-008**: Output format is a `.py` file with `results = [...]` for consistency with the existing pipeline (loaded via `importlib`); JSON would break downstream loading.
 - **Review Note (resolved)**: Include F000 state labels in `turns_annotated`.
 
 **Input**: `/data/matched_data.jsonl` + `state_keywords.json` + `output_labeled.py`
 
-**Process**: Parse raw `dialog` string into structured turns. **Carry F000 state labels from `output_labeled.py` into `turns_annotated`** (ADR-007: aligned schema is a superset of prior outputs, not a lossy transformation). Derive `context` constraint dict from `customer_info` Chinese fields (ADR-006: 21 fields mapped).
+**Process**: Parse raw `dialog` string into structured turns. **Carry F000 state labels from `output_labeled.py` into `turns_annotated`** (ADR-007: aligned schema is a superset of prior outputs, not a lossy transformation). Derive `context` constraint dict from `custInfo` JSON array (ADR-006: 18 fields mapped).
 
 **Output**: `/src/f001_schema_alignment/data/output_aligned.py`
 
@@ -318,7 +289,7 @@ results = [
     "mob_typ": "M1",
     "talk_time": "613",
     "plan_evaluation": "| 类型 | 执行情况 | ...",
-    "customer_info": { ... },  # preserved verbatim from source
+    "custInfo": "[...]",  # preserved verbatim from source (JSON array of tagName/tagValue pairs)
     "turns_annotated": [
       {
         "turn_index": 0,
@@ -360,31 +331,31 @@ results = [
     "reward": null,             # filled by F003
     "state_transitions": [],    # filled later
     "context": {
-      "has_auto_loan": false,
+      "has_business_loan": false,
       "has_mortgage": true,
-      "credit_rating": "good",
+      "has_other_loan": true,
+      "has_social_insurance": false,
+      "is_high_risk_proxy_complaint": false,
+      "is_proxy_intermediary_complaint": false,
+      "recent_repayment": false,
+      "business_loan_balance": 0,
+      "mortgage_balance": 3946930,
+      "other_loan_balance": 142870,
+      "wealth_value": 0,
+      "current_balance": 3280796,
       "days_delinquent": 30,
-      "total_debt": 62209,
-      "external_debt": 436762,
-      "has_negotiation_history": false,
-      "available_plans": ["reduction"],
-      "social_insurance_stable": false,
-      "card_restricted": false,
-      "is_cash_out_customer": false,
-      "external_debt_institutions": 9,
-      "interest_ratio": 0.04,
-      "installment_ratio": 0.0,
-      "age": 49,
-      "gender": "女",
-      "education": "unknown",
-      "industry": "专业性事务所"
+      "recent_contact_count": 1,
+      "risk_level": 1,
+      "complaint_score": 10,
+      "vehicle_count": 0,
+      "education": "bachelor"
     }
   },
   ...  # all labeled records
 ]
 ```
 
-**Key**: `turns_annotated[].state` labels are carried from F000's `output_labeled.py` per ADR-007 (493/805 turns labeled; unlabeled turns are filler like "嗯", "对", "好"). `context` is derived from `customer_info` Chinese fields → 21 English fields per ADR-006.
+**Key**: `turns_annotated[].state` labels are carried from F000's `output_labeled.py` per ADR-007. `context` is derived from `custInfo` JSON array → 18 English fields per ADR-006.
 
 ### Step 1.4: F003 — Reward Labeling
 
@@ -549,7 +520,7 @@ Tags each tree sentence with a 10-bit `bg_bitmask` (customer profile constraints
 
 #### Design considerations & decisions
 
-- **ADR-020**: 10-bit bitmask for soft scoring; intersection merge for multi-source sentences (conservative — only constraints in ALL source conversations are set); Laplace-smoothed HWR; char-bigram TF-IDF SAS (numpy only, no external API). Expanded 5→10 bits on 2026-06-22. Soft scoring replaced hard filter on 2026-06-29.
+- **ADR-020**: 10-bit bitmask for soft scoring; intersection merge for multi-source sentences (conservative — only constraints in ALL source conversations are set); Laplace-smoothed HWR; char-bigram TF-IDF SAS (numpy only, no external API). Fields updated for custInfo migration on 2026-07-09. Soft scoring replaced hard filter on 2026-06-29.
 - **ADR-024**: bge-m3 via Ollama replaces char-ngram TF-IDF for semantic similarity — captures meaning ("没钱" ≈ "经济困难"); local/no-cost/offline; pgvector hybrid; unified ranking replaces dual-strategy.
 - **HWR with node-level aggregation**: sentence-level HWR unreliable for sentences in only 1-2 calls; blend `weight * sentence_hwr + (1-weight) * node_hwr` where `weight = n/(n+2)`.
 - **UC and CSI deferred**: `uplift_score = 0`, `csi = 0` with `deferred: true` — require causal analysis unavailable at prototype scale.
@@ -559,7 +530,7 @@ Tags each tree sentence with a 10-bit `bg_bitmask` (customer profile constraints
 
 **Process** (per sentence in every node's `sentence_pool`):
 
-1. **Bitmask encoding**: Extract `bg_constraints` from source conversation's `customer_info` → encode as 10-bit integer `bg_bitmask_int`
+1. **Bitmask encoding**: Extract `bg_constraints` from source conversation's `context` → encode as 10-bit integer `bg_bitmask_int`
 2. **HWR/win_rate**: Compute historical win rate: `(wins + 1) / (total + 2)` where wins = count of R=1 in `source_call_ids`
 3. **SAS**: Compute Script Analogy Score via char bigram TF-IDF cosine similarity within pool (no external API — ADR-020)
 4. **Conversation context extraction**: Extract the ~100 words preceding this script in the source conversation → `conversation_context` string
@@ -578,43 +549,41 @@ Each sentence in the scored tree has these exact fields:
   "customer_willingness": null,
   "fact_context": ["prior_contact_attempt"],
   "bg_constraints": {
-    "has_auto_loan": false,
+    "has_business_loan": false,
     "has_mortgage": false,
-    "has_negotiation_history": false,
-    "social_insurance_stable": false,
-    "credit_rating_good": false,
-    "card_restricted": false,
-    "is_cash_out_customer": false,
-    "has_complaint_history": false,
-    "has_legal_tools": false,
-    "is_negotiation_brain_customer": false
+    "has_other_loan": false,
+    "recent_repayment": false,
+    "is_high_risk_proxy_complaint": false,
+    "is_proxy_intermediary_complaint": false,
+    "has_social_insurance": false,
+    "has_risk_flag": false,
+    "has_complaint": false,
+    "has_vehicle": false
   },
   "bg_bitmask": {
-    "has_auto_loan": 0,
+    "has_business_loan": 0,
     "has_mortgage": 0,
-    "has_negotiation_history": 0,
-    "social_insurance_stable": 0,
-    "credit_rating_good": 0,
-    "card_restricted": 0,
-    "is_cash_out_customer": 0,
-    "has_complaint_history": 0,
-    "has_legal_tools": 0,
-    "is_negotiation_brain_customer": 0
+    "has_other_loan": 0,
+    "recent_repayment": 0,
+    "is_high_risk_proxy_complaint": 0,
+    "is_proxy_intermediary_complaint": 0,
+    "has_social_insurance": 0,
+    "has_risk_flag": 0,
+    "has_complaint": 0,
+    "has_vehicle": 0
   },
   "bg_bitmask_int": 0,
   "bg_background": {
-    "age": "48",
-    "gender": "男",
-    "education": "未填",
-    "industry": "医疗卫生",
-    "is_cash_out": "非套现客户",
-    "is_restricted": "可正常使用卡片",
-    "complaint_history": "客户历史没有重渠投诉",
-    "external_debt_institutions": "无外部共债机构",
-    "interest_ratio": "0%",
-    "installment_ratio": "0%",
-    "legal_tools": "无可用的法务工具",
-    "negotiation_brain": "N"
+    "business_loan_digits": 0,
+    "mortgage_balance_digits": 0,
+    "other_loan_digits": 0,
+    "wealth_digits": 0,
+    "current_balance_digits": 5,
+    "education": "unknown",
+    "days_delinquent": 30,
+    "recent_contact_count": 1,
+    "risk_level": 1,
+    "complaint_score": 10
   },
   "win_rate": 0.333,
   "sas": 0.0,
@@ -714,24 +683,24 @@ POST /recommend
     "willingness": null
   },
   "context": {
-    "has_auto_loan": false,
+    "has_business_loan": false,
     "has_mortgage": true,
-    "credit_rating": "good",
+    "has_other_loan": true,
+    "has_social_insurance": false,
+    "is_high_risk_proxy_complaint": false,
+    "is_proxy_intermediary_complaint": false,
+    "recent_repayment": false,
+    "business_loan_balance": 0,
+    "mortgage_balance": 3946930,
+    "other_loan_balance": 142870,
+    "wealth_value": 0,
+    "current_balance": 3280796,
     "days_delinquent": 30,
-    "total_debt": 62209,
-    "external_debt": 436762,
-    "has_negotiation_history": false,
-    "available_plans": ["reduction"],
-    "social_insurance_stable": false,
-    "card_restricted": false,
-    "is_cash_out_customer": false,
-    "external_debt_institutions": 9,
-    "interest_ratio": 0.04,
-    "installment_ratio": 0.0,
-    "age": 49,
-    "gender": "女",
-    "education": "unknown",
-    "industry": "专业性事务所"
+    "recent_contact_count": 1,
+    "risk_level": 1,
+    "complaint_score": 10,
+    "vehicle_count": 0,
+    "education": "bachelor"
   }
 }
 ```
@@ -740,7 +709,7 @@ POST /recommend
 - `customer_utterance`: The customer's most recent turn text
 - `conversation_context`: Aggregated text of the past ~100 words of dialog (both customer and collector turns)
 - `conversation_state`: **Path-structured** state `{branch_key, inherited_facts, inherited_emotions, willingness}` mirroring the tree's node identity (ADR-021). Caller passes back the `conversation_state` from the previous API response. `branch_key` is the most recent branching decision; `inherited_facts`/`inherited_emotions` accumulate from ancestors. Note: F002 (LLM State Extraction) was eliminated per ADR-009; online extraction (Step 2.1) is the only LLM call in the hot path (plus at most one relabel call per ADR-026).
-- `context`: Customer profile from `customer_info`, transformed to the `context` dict format (ADR-006: 21 fields mapped from Chinese `customer_info`)
+- `context`: Customer profile from `custInfo`, transformed to the `context` dict format (ADR-006: 18 fields mapped from `custInfo` JSON array)
 
 ---
 
@@ -961,21 +930,22 @@ Fetches candidate sentences from PostgreSQL by `node_id`, then scores each by bi
 
 ```
 Bit positions (from scoring_metrics.py BITMASK_FIELDS):
-  bit 0: has_auto_loan
+  bit 0: has_business_loan
   bit 1: has_mortgage
-  bit 2: has_negotiation_history
-  bit 3: social_insurance_stable
-  bit 4: credit_rating_good
-  bit 5: card_restricted
-  bit 6: is_cash_out_customer
-  bit 7: has_complaint_history
-  bit 8: has_legal_tools
-  bit 9: is_negotiation_brain_customer
+  bit 2: has_other_loan
+  bit 3: recent_repayment
+  bit 4: is_high_risk_proxy_complaint
+  bit 5: is_proxy_intermediary_complaint
+  bit 6: has_social_insurance
+  bit 7: has_risk_flag          (risk_level > 0)
+  bit 8: has_complaint          (complaint_score > 0)
+  bit 9: has_vehicle            (vehicle_count > 0)
 
 For our sample customer:
   has_mortgage=true → bit 1 set
-  all others false
-  query_bitmask = 0b0000000010 = 2
+  has_risk_flag=true (risk_level=1) → bit 7 set
+  has_complaint=true (complaint_score=10) → bit 8 set
+  query_bitmask = 0b1000000010 = 514
 ```
 
 **Bitmask scoring logic**: `compute_bitmask_score(sentence_bitmask, query_bitmask)`
@@ -991,7 +961,7 @@ return matched_bits / required_bits
 Examples:
 - Sentence `bg_bitmask_int=0` (no constraints) → score 1.0
 - Sentence `bg_bitmask_int=2` (requires `has_mortgage`), query has bit 1 → 1/1 = 1.0
-- Sentence `bg_bitmask_int=18` (requires `has_mortgage` + `credit_rating_good`), query has bit 1 only → 1/2 = 0.50
+- Sentence `bg_bitmask_int=130` (requires `has_mortgage` + `has_risk_flag`), query has bit 1 only → 1/2 = 0.50
 - Sentence `bg_bitmask_int=1023` (requires 10 bits), query has 3 of them → 3/10 = 0.30
 
 **Confidence penalty**: If top result has `bitmask_score < 1.0`, confidence is reduced by `(1.0 - bitmask_score) × bitmask_mismatch_penalty` (default 0.1).
@@ -1194,24 +1164,24 @@ POST /recommend
     "willingness": null
   },
   "context": {
-    "has_auto_loan": false,
+    "has_business_loan": false,
     "has_mortgage": true,
-    "credit_rating": "good",
+    "has_other_loan": true,
+    "has_social_insurance": false,
+    "is_high_risk_proxy_complaint": false,
+    "is_proxy_intermediary_complaint": false,
+    "recent_repayment": false,
+    "business_loan_balance": 0,
+    "mortgage_balance": 3946930,
+    "other_loan_balance": 142870,
+    "wealth_value": 0,
+    "current_balance": 3280796,
     "days_delinquent": 30,
-    "total_debt": 62209,
-    "external_debt": 436762,
-    "has_negotiation_history": false,
-    "available_plans": ["reduction"],
-    "social_insurance_stable": false,
-    "card_restricted": false,
-    "is_cash_out_customer": false,
-    "external_debt_institutions": 9,
-    "interest_ratio": 0.04,
-    "installment_ratio": 0.0,
-    "age": 49,
-    "gender": "女",
-    "education": "unknown",
-    "industry": "专业性事务所"
+    "recent_contact_count": 1,
+    "risk_level": 1,
+    "complaint_score": 10,
+    "vehicle_count": 0,
+    "education": "bachelor"
   }
 }
 ```
@@ -1625,7 +1595,7 @@ Authoritative decision records. Each is one line here; see
 | [ADR-003](docs/decisions/ADR-003-suggested-domain-keywords.md) | Suggested domain keywords | Include domain-common keywords not in the observed records (`source: "suggested"`, freq 0) for forward-compatibility. |
 | [ADR-004](docs/decisions/ADR-004-collector-action-discovery.md) | Collector action discovery | Discover collector action types from data too — fixed 7-type enum didn't match observed behavior. |
 | [ADR-005](docs/decisions/ADR-005-data-driven-willingness-levels.md) | Data-driven willingness levels | Willingness level count determined by natural clustering (yielded 5 levels), not preset. |
-| [ADR-006](docs/decisions/ADR-006-context-constraint-mapping.md) | Context constraint mapping | Map 27 raw Chinese `customer_info` fields → 21 typed English `context` fields. Expanded 9→21 on 2026-06-22. |
+| [ADR-006](docs/decisions/ADR-006-context-constraint-mapping.md) | Context constraint mapping | Map `custInfo` JSON array → 18 typed English `context` fields. Migrated from `customer_info` dict on 2026-07-09. |
 | [ADR-007](docs/decisions/ADR-007-carry-state-labels.md) | Carry state labels | F001 carries F000 state labels into `turns_annotated` — aligned schema is a superset, not lossy. |
 | [ADR-008](docs/decisions/ADR-008-output-format-py-file.md) | Output format .py file | Output `.py` with `results = [...]` for `importlib` loading consistency; JSON would break downstream. |
 | [ADR-009](docs/decisions/ADR-009-eliminate-f002-llm-state-extraction.md) | Eliminate F002 | Remove offline LLM state extraction — F001's 493/805 annotations (LLM-labelled by F000, carried into F001 per ADR-007) suffice; online extraction is the only hot-path LLM call. |
@@ -1639,7 +1609,7 @@ Authoritative decision records. Each is one line here; see
 | [ADR-017](docs/decisions/ADR-017-action-node-splitting.md) | Action node splitting | **Superseded by ADR-029.** Force-split pools into `a:xxx` children for fact/emotion parents. |
 | [ADR-018](docs/decisions/ADR-018-redundant-fact-collapse.md) | Redundant fact collapse | **Superseded by ADR-029.** Remove `f:X → f:X` redundant nodes; propagate `inherited_facts`. |
 | [ADR-019](docs/decisions/ADR-019-state-none-handling.md) | state=None handling | Capture 58 no-action collector turns in parent pool without synthetic `other` label. |
-| [ADR-020](docs/decisions/ADR-020-f005-bitmask-scoring-design.md) | F005 bitmask + scoring | 10-bit bitmask for soft scoring (matched_bits/required_bits); intersection merge; Laplace-smoothed HWR; char-bigram TF-IDF SAS (numpy only). Expanded 5→10 bits on 2026-06-22. Soft scoring replaced hard filter on 2026-06-29. |
+| [ADR-020](docs/decisions/ADR-020-f005-bitmask-scoring-design.md) | F005 bitmask + scoring | 10-bit bitmask for soft scoring (matched_bits/required_bits); intersection merge; Laplace-smoothed HWR; char-bigram TF-IDF SAS (numpy only). Fields updated for custInfo migration on 2026-07-09. Soft scoring replaced hard filter on 2026-06-29. |
 | [ADR-021](docs/decisions/ADR-021-node-identity-dedup.md) | Node identity dedup | Identity = `(inherited_facts, inherited_emotions, branch_key)`; DAG with cycle protection. |
 | [ADR-022](docs/decisions/ADR-022-redundant-emotion-collapse.md) | Redundant emotion collapse | **Superseded by ADR-029.** Extend ADR-018 to collapse `anger → anger` nested emotion paths. |
 | [ADR-023](docs/decisions/ADR-023-sentence-pool-dedup.md) | Sentence pool dedup | **Superseded by ADR-029.** `_dedup_pool` by `script_text` after every `.extend()` in transforms. |
@@ -1651,3 +1621,4 @@ Authoritative decision records. Each is one line here; see
 | [ADR-029](docs/decisions/ADR-029-additive-tree-building.md) | Additive tree building | Replace global post-transform chain with per-dialog insertion (`add_dialog_to_tree`). Action split, ending consolidation, redundant-fact skip happen at insert time. Enables incremental merge via `merge_dialogs`. Supersedes ADR-015/017/018/022/023. |
 | [ADR-030](docs/decisions/ADR-030-node-role-tagging.md) | Node role tagging | Every node gets `role ∈ {opening, ending, decision, action}` at creation. Prevents `_split_by_action` from corrupting root and end nodes. |
 | [ADR-031](docs/decisions/ADR-031-node-hwr-blending.md) | Node HWR blending | Compute node-level HWR from all `source_call_ids` in pool; blend with sentence-level: `win_rate = weight*sentence_hwr + (1-weight)*node_hwr` where `weight = n/(n+2)`. |
+| [ADR-033](docs/decisions/ADR-033-custInfo-migration.md) | custInfo migration | Migrate from `customer_info` dict (21 fields) to `custInfo` JSON array (18 fields). New bitmask fields, bg_background from context_lookup, digit-count transforms. |

@@ -46,9 +46,9 @@ For each merge group, ask DeepSeek how to **partition** the collector turns into
 
 LLM prompt asks for a **grouping**: a partition of the turns into subgroups. Turns in the same subgroup are merged; single-element subgroups are kept intact.
 
-**Hard constraint: each merged output ≤ 150 words.** If a subgroup's combined text exceeds 150 words, the code automatically splits it greedily (accumulate until limit, then start a new subgroup). The 150-word limit is chosen for real-time recommendation serving: ~30s of speech, scannable in 2-3 seconds, and accommodates the natural length of single turns in the data (up to ~119 words).
+**Hard constraint: each merged output ≤ 100 words.** If a subgroup's combined text exceeds 100 words, the code automatically splits it greedily (accumulate until limit, then start a new subgroup). The 100-word limit is chosen for real-time recommendation serving: ~30s of speech, scannable in 2-3 seconds, and accommodates the natural length of single turns in the data (up to ~119 words).
 
-Example: 4 sentences of 45, 50, 90, 30 words → LLM proposes `[[0,1],[2],[3]]` → merge 45+50=95 (≤150), keep 90 and 30 intact.
+Example: 4 sentences of 45, 50, 90, 30 words → LLM proposes `[[0,1],[2],[3]]` → merge 45+50=95 (≤100), keep 90 and 30 intact.
 
 **Why LLM for Phase 2**: Rule-based heuristics can identify candidates but cannot reliably distinguish:
 - "t10: plan proposal + t12: plan proposal continuing same plan" → MERGE
@@ -98,9 +98,9 @@ When turns are merged:
 - Modify: `src/f004_decision_tree/build_decision_tree.py`
 - Modify: `src/test_merge_collector.py`
 
-**Step 1: Write failing test** — test `_llm_should_merge(group, context)` returns groups `[[0,1],[2]]` with mocked LLM response; test word-count enforcement splits groups exceeding 150 words; test same-action auto-merge; test `_ensure_same_action_merged` post-processing
+**Step 1: Write failing test** — test `_llm_should_merge(group, context)` returns groups `[[0,1],[2]]` with mocked LLM response; test word-count enforcement splits groups exceeding 100 words; test same-action auto-merge; test `_ensure_same_action_merged` post-processing
 **Step 2: Run test to verify it fails**
-**Step 3: Implement** — `_llm_should_merge()` builds prompt, calls DeepSeek via `llm_client.py`, parses groups response; same-action groups auto-merge without LLM; `_ensure_same_action_merged` post-processes LLM results; enforces `MAX_MERGED_WORDS=150` by greedily splitting oversized groups
+**Step 3: Implement** — `_llm_should_merge()` builds prompt, calls DeepSeek via `llm_client.py`, parses groups response; same-action groups auto-merge without LLM; `_ensure_same_action_merged` post-processes LLM results; enforces `MAX_MERGED_WORDS=100` by greedily splitting oversized groups
 **Step 4: Run test to verify it passes**
 **Step 5: Commit**
 
@@ -158,7 +158,7 @@ When turns are merged:
 ```
 将这些催收员连续话语分组。同一组的会合并为一个句子，不同组保留独立。
 
-约束：每个合并组的总字数不能超过150字。
+约束：每个合并组的总字数不能超过100字。
 
 催收员话语:
   [0] (45字) 催收员: {turn_0_text}
@@ -168,7 +168,7 @@ When turns are merged:
   [3] (30字) 催收员: {turn_3_text}
 
 分组规则 (偏向不合并，只有明确是同一话题才合并):
-- 同一方案解释的连续话语 → 合并（如果总字数≤150）
+- 同一方案解释的连续话语 → 合并（如果总字数≤100）
 - 客户只是简短应答(嗯/好)后催收员继续同一方案 → 合并
 - 不同论点/话题 → 分开
 - 客户提出新观点/异议 → 分开
@@ -185,8 +185,8 @@ groups是索引列表，每个子列表是一个合并组。单独的话语用�
 |--------|--------|-------|
 | Total sentences | 1334 | 868 |
 | Tree nodes | 333 | 315 |
-| Merged >150 words | N/A | 0 |
-| Original >150 words | 1 | 1 |
+| Merged >100 words | N/A | 0 |
+| Original >100 words | 1 | 1 |
 | Fragmented plan proposals | ~30 | ~0 |
 | HWR accuracy | diluted across fragments | per complete utterance |
 | SAS reliability | low for short fragments | higher for complete utterances |
@@ -195,5 +195,5 @@ groups是索引列表，每个子列表是一个合并组。单独的话语用�
 
 | Constant | Value | Purpose |
 |----------|-------|---------|
-| `MAX_MERGED_WORDS` | 150 | Max Chinese chars per merged output |
+| `MAX_MERGED_WORDS` | 100 | Max Chinese chars per merged output |
 | `ACK_MAX_WORDS` | 15 | Max customer turn words to treat as ack interruption |

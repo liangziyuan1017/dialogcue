@@ -132,13 +132,12 @@ def test_endings_consolidated_in_normal_end_after_write():
     os.unlink(out)
     ne = _find_node(tree, "normal_end")
     assert ne is not None
-    ending_in_normal = [s for s in ne["sentence_pool"] if s.get("gesture_type") == "ending"]
-    assert len(ending_in_normal) >= 2, f"normal_end should hold ending sentences, found {len(ending_in_normal)}"
+    assert not ne.get("sentence_pool"), "normal_end should have empty sentence_pool"
+    ending_in_actions = 0
     for node in _all_nodes(tree):
         if node.get("state_id") in ("normal_end", "abrupt_end"):
             continue
         for s in node.get("sentence_pool", []):
-            if s.get("script_text") not in ("[对话未正常结束]", "[正常结束]"):
-                assert s.get("gesture_type") != "ending", (
-                    f"Ending sentence leaked into {node.get('state_id')}: {s.get('script_text')}"
-                )
+            if s.get("gesture_type") == "ending":
+                ending_in_actions += 1
+    assert ending_in_actions >= 2, f"ending sentences should be in action nodes, found {ending_in_actions}"

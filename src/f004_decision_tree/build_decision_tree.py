@@ -32,6 +32,7 @@ from f004_decision_tree.tree_transforms import (  # noqa: F401  (re-exported for
     _merge_sibling_facts,
     _propagate_facts,
     _propagate_sentences,
+    _prune_empty_subtrees,
     _search_node,
     _sort_keywords,
     _split_by_action,
@@ -321,7 +322,7 @@ def add_dialog_to_tree(tree, record, registry, merge_decisions=None):
                     )
                     accumulated_emotions = sorted(set(accumulated_emotions) | {emotion})
             if normal_end is not None:
-                _merge_sentences(normal_end["sentence_pool"], seg["sentences"])
+                _place_sentences_in_node(current_node, seg["sentences"], registry)
             continue
 
         if not branch_key:
@@ -399,6 +400,7 @@ def merge_dialogs(tree_path, new_records, merge_decisions=None):
         add_dialog_to_tree(tree, record, registry, merge_decisions=merge_decisions)
     _propagate_facts(tree, [], [])
     _propagate_sentences(tree)
+    _prune_empty_subtrees(tree)
     _consolidate_endpoints(tree)
     _sort_keywords(tree)
     with open(tree_path, "w", encoding="utf-8") as f:
@@ -413,6 +415,7 @@ def build_tree(records, merge_decisions=None):
         add_dialog_to_tree(tree, record, registry, merge_decisions=merge_decisions)
     _propagate_facts(tree, [], [])
     _propagate_sentences(tree)
+    _prune_empty_subtrees(tree)
     _consolidate_endpoints(tree)
     _sort_keywords(tree)
     return tree
@@ -531,6 +534,7 @@ def write_decision_tree(records=None, output_path=None):
     _save_merge_cache(merge_cache)
     _propagate_facts(tree, [], [])
     _deduplicate_nodes(tree)
+    _prune_empty_subtrees(tree)
     _consolidate_endpoints(tree)
     _sort_keywords(tree)
 

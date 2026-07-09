@@ -104,6 +104,8 @@ def _check_sorted(node):
 def _check_leaf_pools(node):
     children = node.get("children", [])
     if not children:
+        if node.get("state_id") in ("normal_end", "abrupt_end"):
+            return
         assert "sentence_pool" in node
         assert len(node["sentence_pool"]) > 0
     for child in children:

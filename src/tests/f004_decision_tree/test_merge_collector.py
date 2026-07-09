@@ -153,7 +153,9 @@ class TestIsAckInterruption:
         groups = _find_merge_candidates(r["turns_annotated"])
         has_35_37 = any(35 in g["collector_indices"] and 37 in g["collector_indices"] for g in groups)
         has_37_39 = any(37 in g["collector_indices"] and 39 in g["collector_indices"] for g in groups)
-        assert has_35_37 or has_37_39
+        assert not has_35_37 and not has_37_39
+        has_39_41 = any(39 in g["collector_indices"] and 41 in g["collector_indices"] for g in groups)
+        assert has_39_41
 
 
 class TestBuildMergePrompt:

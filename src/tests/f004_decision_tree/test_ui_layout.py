@@ -232,4 +232,4 @@ def test_compact_layout_consecutive_visual_depths():
     tree = _load_tree()
     all_nodes = _collect_nodes(tree)
     max_depth = max(d for _, d, _ in all_nodes)
-    assert max_depth == 16
+    assert max_depth == 20

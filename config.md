@@ -10,13 +10,15 @@ ranking_weights:
   bitmask_score: 0.20
 
 bg_boost:
-  industry_match: 0.05
   education_match: 0.02
-  debt_interest_match: 0.03
-  age_proximity_match: 0.02
-  age_proximity_threshold: 10
   risk_level_match: 0.03
-  recent_repayment_signal: 0.02
+  complaint_proximity_match: 0.02
+  complaint_proximity_threshold: 5
+  delinquent_proximity_match: 0.02
+  delinquent_proximity_threshold: 30
+  recent_contact_signal: 0.02
+  digits_proximity_match: 0.01
+  digits_proximity_threshold: 1
 
 pool_cap: 50
 
@@ -92,7 +94,7 @@ sas:
 
 # ── Decision Tree ──
 decision_tree:
-  max_merged_words: 150
+  max_merged_words: 100
   ack_max_words: 15
   find_node_max_levels: 4
 

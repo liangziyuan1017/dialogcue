@@ -71,7 +71,8 @@ def _collect_leaf_and_ids(node, leaf_empty, found_ids):
     children = node.get("children", [])
     if not children:
         if not node.get("sentence_pool"):
-            leaf_empty.append(node.get("state_id"))
+            if node.get("state_id") not in ("normal_end", "abrupt_end"):
+                leaf_empty.append(node.get("state_id"))
     for child in children:
         _collect_leaf_and_ids(child, leaf_empty, found_ids)
 

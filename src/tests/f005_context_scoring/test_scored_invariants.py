@@ -36,16 +36,16 @@ def all_sentences(scored_tree):
 
 
 EXPECTED_BITMASK_FIELDS = {
-    "has_auto_loan",
+    "has_business_loan",
     "has_mortgage",
-    "has_negotiation_history",
-    "social_insurance_stable",
-    "credit_rating_good",
-    "card_restricted",
-    "is_cash_out_customer",
-    "has_complaint_history",
-    "has_legal_tools",
-    "is_negotiation_brain_customer",
+    "has_other_loan",
+    "recent_repayment",
+    "is_high_risk_proxy_complaint",
+    "is_proxy_intermediary_complaint",
+    "has_social_insurance",
+    "has_risk_flag",
+    "has_complaint",
+    "has_vehicle",
 }
 
 

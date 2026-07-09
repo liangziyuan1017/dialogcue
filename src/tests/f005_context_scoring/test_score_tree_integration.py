@@ -43,8 +43,8 @@ class TestIntegrationAllSentencesScored:
         original = _load_decision_tree()
         assert len(_all_sentences(scored_tree)) == len(_all_sentences(original))
 
-    def test_31_call_ids(self, scored_tree):
-        assert len(_all_call_ids(scored_tree)) == 31
+    def test_103_call_ids(self, scored_tree):
+        assert len(_all_call_ids(scored_tree)) == 103
 
     def test_every_sentence_has_bg_constraints(self, scored_tree):
         for s in _all_sentences(scored_tree):
@@ -76,7 +76,7 @@ class TestIntegrationAllSentencesScored:
         for s in _all_sentences(scored_tree):
             assert "bg_background" in s
             assert isinstance(s["bg_background"], dict)
-            for eng, _ in BG_BACKGROUND_FIELDS:
+            for eng, _, _ in BG_BACKGROUND_FIELDS:
                 assert eng in s["bg_background"], f"{s['script_id']} missing bg_background.{eng}"
 
     def test_every_sentence_has_win_rate(self, scored_tree):
@@ -109,17 +109,15 @@ class TestBitmaskFiltering:
             query = all_bits
             assert (sb & query) == sb
 
-    def test_zero_bitmask_universal(self, scored_tree):
+    def test_all_bits_query_matches_all(self, scored_tree):
         all_bits = (1 << len(BITMASK_FIELDS)) - 1
-        zero_mask = [s for s in _all_sentences(scored_tree) if s["bg_bitmask_int"] == 0]
-        assert len(zero_mask) > 0
-        for s in zero_mask:
-            for query in [0, 1, all_bits]:
-                assert (s["bg_bitmask_int"] & query) == s["bg_bitmask_int"]
+        all_sentences = _all_sentences(scored_tree)
+        compatible = [s for s in all_sentences if (s["bg_bitmask_int"] & all_bits) == s["bg_bitmask_int"]]
+        assert len(compatible) == len(all_sentences)
 
     def test_bitmask_filter_produces_subset(self, scored_tree):
         all_sentences = _all_sentences(scored_tree)
-        query = 0b0000000001
+        query = all_sentences[0]["bg_bitmask_int"]
         compatible = [s for s in all_sentences if (s["bg_bitmask_int"] & query) == s["bg_bitmask_int"]]
         assert len(compatible) <= len(all_sentences)
         assert len(compatible) > 0

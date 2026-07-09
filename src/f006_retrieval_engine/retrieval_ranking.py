@@ -49,30 +49,34 @@ def compute_bg_boost(sentence_bg, query_bg):
     boost = 0.0
     if isinstance(sentence_bg, str):
         sentence_bg = {}
-    s_industry = _first_val(sentence_bg.get("industry", ""))
-    q_industry = query_bg.get("industry", "")
-    if s_industry and q_industry and s_industry == q_industry:
-        boost += _cfg("bg_boost.industry_match", 0.05)
     s_edu = _first_val(sentence_bg.get("education", ""))
     q_edu = query_bg.get("education", "")
     if s_edu and q_edu and s_edu == q_edu:
         boost += _cfg("bg_boost.education_match", 0.02)
-    q_debt = _safe_int(query_bg.get("total_debt", 0))
-    s_interest = _safe_int(sentence_bg.get("interest_ratio", 0))
-    s_installment = _safe_int(sentence_bg.get("installment_ratio", 0))
-    if q_debt > 0 and (s_interest > 0 or s_installment > 0):
-        boost += _cfg("bg_boost.debt_interest_match", 0.03)
-    s_age = _safe_int(sentence_bg.get("age", 0))
-    q_age = _safe_int(query_bg.get("age", 0))
-    age_threshold = _cfg("bg_boost.age_proximity_threshold", 10)
-    if s_age > 0 and q_age > 0 and abs(s_age - q_age) <= age_threshold:
-        boost += _cfg("bg_boost.age_proximity_match", 0.02)
-    s_risk = _first_val(sentence_bg.get("risk_level", ""))
-    q_risk = query_bg.get("risk_level", "")
-    if s_risk and q_risk and s_risk == q_risk:
+    s_risk = _safe_int(sentence_bg.get("risk_level", 0))
+    q_risk = _safe_int(query_bg.get("risk_level", 0))
+    if s_risk > 0 and q_risk > 0 and s_risk == q_risk:
         boost += _cfg("bg_boost.risk_level_match", 0.03)
-    if query_bg.get("recent_7d_repayment", False):
-        boost += _cfg("bg_boost.recent_repayment_signal", 0.02)
+    s_complaint = _safe_int(sentence_bg.get("complaint_score", 0))
+    q_complaint = _safe_int(query_bg.get("complaint_score", 0))
+    complaint_threshold = _cfg("bg_boost.complaint_proximity_threshold", 5)
+    if s_complaint > 0 and q_complaint > 0 and abs(s_complaint - q_complaint) <= complaint_threshold:
+        boost += _cfg("bg_boost.complaint_proximity_match", 0.02)
+    s_delinquent = _safe_int(sentence_bg.get("days_delinquent", 0))
+    q_delinquent = _safe_int(query_bg.get("days_delinquent", 0))
+    delinquent_threshold = _cfg("bg_boost.delinquent_proximity_threshold", 30)
+    if s_delinquent > 0 and q_delinquent > 0 and abs(s_delinquent - q_delinquent) <= delinquent_threshold:
+        boost += _cfg("bg_boost.delinquent_proximity_match", 0.02)
+    q_recent_contact = _safe_int(query_bg.get("recent_contact_count", 0))
+    if q_recent_contact > 0:
+        boost += _cfg("bg_boost.recent_contact_signal", 0.02)
+    for digits_field in ("current_balance_digits", "wealth_digits", "business_loan_digits",
+                         "mortgage_balance_digits", "other_loan_digits"):
+        s_d = _safe_int(sentence_bg.get(digits_field, 0))
+        q_d = _safe_int(query_bg.get(digits_field, 0))
+        digits_threshold = _cfg("bg_boost.digits_proximity_threshold", 1)
+        if s_d > 0 and q_d > 0 and abs(s_d - q_d) <= digits_threshold:
+            boost += _cfg("bg_boost.digits_proximity_match", 0.01)
     return boost
 
 

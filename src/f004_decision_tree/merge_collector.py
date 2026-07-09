@@ -5,7 +5,7 @@ from f007_infrastructure.config import get as _cfg
 CLOSING_ACTIONS = {"closure", "goodbye"}
 
 
-MAX_MERGED_WORDS = _cfg("decision_tree.max_merged_words", 150)
+MAX_MERGED_WORDS = _cfg("decision_tree.max_merged_words", 100)
 
 
 def _word_count(text):

@@ -3,47 +3,53 @@ import numpy as np
 from f007_infrastructure.config import get as _cfg
 
 BITMASK_FIELDS = [
-    "has_auto_loan",
+    "has_business_loan",
     "has_mortgage",
-    "has_negotiation_history",
-    "social_insurance_stable",
-    "credit_rating_good",
-    "card_restricted",
-    "is_cash_out_customer",
-    "has_complaint_history",
-    "has_legal_tools",
-    "is_negotiation_brain_customer",
+    "has_other_loan",
+    "recent_repayment",
+    "is_high_risk_proxy_complaint",
+    "is_proxy_intermediary_complaint",
+    "has_social_insurance",
+    "has_risk_flag",
+    "has_complaint",
+    "has_vehicle",
 ]
 
 
 BG_BACKGROUND_FIELDS = [
-    ("age", "年龄"),
-    ("gender", "性别"),
-    ("education", "学历"),
-    ("industry", "行业"),
-    ("is_cash_out", "是否为套现客户"),
-    ("is_restricted", "是否管制"),
-    ("complaint_history", "历史投诉情况"),
-    ("external_debt_institutions", "外部共债机构数"),
-    ("interest_ratio", "利息占欠款比例"),
-    ("installment_ratio", "分期金额占欠款比例"),
-    ("legal_tools", "当前可使用的法务工具"),
-    ("negotiation_brain", "是否谈判大脑客户"),
+    ("business_loan_digits", "business_loan_balance", "digit"),
+    ("mortgage_balance_digits", "mortgage_balance", "digit"),
+    ("other_loan_digits", "other_loan_balance", "digit"),
+    ("wealth_digits", "wealth_value", "digit"),
+    ("current_balance_digits", "current_balance", "digit"),
+    ("education", "education", "passthrough"),
+    ("days_delinquent", "days_delinquent", "int"),
+    ("recent_contact_count", "recent_contact_count", "int"),
+    ("risk_level", "risk_level", "int"),
+    ("complaint_score", "complaint_score", "int"),
 ]
+
+
+def _digit_count(value):
+    try:
+        v = int(value)
+    except (ValueError, TypeError):
+        return 0
+    return len(str(abs(v))) if v > 0 else 0
 
 
 def _extract_bg_constraints(context):
     return {
-        "has_auto_loan": bool(context.get("has_auto_loan", False)),
+        "has_business_loan": bool(context.get("has_business_loan", False)),
         "has_mortgage": bool(context.get("has_mortgage", False)),
-        "has_negotiation_history": bool(context.get("has_negotiation_history", False)),
-        "social_insurance_stable": bool(context.get("social_insurance_stable", False)),
-        "credit_rating_good": context.get("credit_rating") == "good",
-        "card_restricted": bool(context.get("card_restricted", False)),
-        "is_cash_out_customer": bool(context.get("is_cash_out_customer", False)),
-        "has_complaint_history": bool(context.get("has_complaint_history", False)),
-        "has_legal_tools": bool(context.get("has_legal_tools", False)),
-        "is_negotiation_brain_customer": bool(context.get("is_negotiation_brain_customer", False)),
+        "has_other_loan": bool(context.get("has_other_loan", False)),
+        "recent_repayment": bool(context.get("recent_repayment", False)),
+        "is_high_risk_proxy_complaint": bool(context.get("is_high_risk_proxy_complaint", False)),
+        "is_proxy_intermediary_complaint": bool(context.get("is_proxy_intermediary_complaint", False)),
+        "has_social_insurance": bool(context.get("has_social_insurance", False)),
+        "has_risk_flag": int(context.get("risk_level", 0) or 0) > 0,
+        "has_complaint": int(context.get("complaint_score", 0) or 0) > 0,
+        "has_vehicle": int(context.get("vehicle_count", 0) or 0) > 0,
     }
 
 
@@ -75,27 +81,49 @@ def compute_bg_constraints(call_ids, context_lookup):
     return result
 
 
-def _extract_bg_background(customer_info):
+def _extract_bg_background(context):
     result = {}
-    for eng_key, cn_key in BG_BACKGROUND_FIELDS:
-        result[eng_key] = customer_info.get(cn_key, "")
+    for field, source_key, transform in BG_BACKGROUND_FIELDS:
+        raw = context.get(source_key)
+        if transform == "digit":
+            result[field] = _digit_count(raw)
+        elif transform == "int":
+            try:
+                result[field] = int(raw) if raw is not None else 0
+            except (ValueError, TypeError):
+                result[field] = 0
+        else:
+            result[field] = raw if raw is not None else ""
     return result
 
 
-def compute_bg_background(call_ids, customer_info_lookup):
+def _bg_background_default():
+    return {field: (0 if t in ("digit", "int") else "") for field, _, t in BG_BACKGROUND_FIELDS}
+
+
+def compute_bg_background(call_ids, context_lookup):
     if not call_ids:
-        return {eng: "" for eng, _ in BG_BACKGROUND_FIELDS}
+        return _bg_background_default()
     per_source = []
     for cid in call_ids:
-        ci = customer_info_lookup.get(cid)
-        if ci is not None:
-            per_source.append(_extract_bg_background(ci))
+        ctx = context_lookup.get(cid)
+        if ctx is not None:
+            per_source.append(_extract_bg_background(ctx))
     if not per_source:
-        return {eng: "" for eng, _ in BG_BACKGROUND_FIELDS}
+        return _bg_background_default()
     result = {}
-    for eng_key, _ in BG_BACKGROUND_FIELDS:
-        values = [src[eng_key] for src in per_source if src[eng_key] != ""]
-        result[eng_key] = values[0] if len(set(values)) == 1 else ", ".join(sorted(set(values)))
+    for field, _, transform in BG_BACKGROUND_FIELDS:
+        values = [src[field] for src in per_source]
+        if transform == "passthrough":
+            uniq = [v for v in values if v != ""]
+            if not uniq:
+                result[field] = ""
+            elif len(set(uniq)) == 1:
+                result[field] = uniq[0]
+            else:
+                result[field] = ", ".join(sorted(str(v) for v in set(uniq)))
+        else:
+            result[field] = max(values)
     return result
 
 
