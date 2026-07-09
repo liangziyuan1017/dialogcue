@@ -8,7 +8,6 @@ __pycache__/
 .agent-memory/
 .agent-memory-lock
 .opencode/
-docs/
 global_rules/
 global_skills/
 modules/
