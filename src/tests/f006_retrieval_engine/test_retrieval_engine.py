@@ -130,6 +130,35 @@ class TestSubsetMatchFallback:
             assert isinstance(nodes, list)
 
 
+class TestDescendIntoChildrenForPool:
+    def test_anxiety_node_returned_not_root(self, tree, index, label_set_index):
+        nodes, conf, fb = _find_matching_nodes_subset(
+            ["anxiety"], [], [], index, label_set_index
+        )
+        assert len(nodes) > 0
+        for n in nodes:
+            assert n.get("state_id", "") != "initial_contact"
+        assert "root_fallback" not in fb
+
+    def test_personal_info_node_returned_not_root(self, tree, index, label_set_index):
+        nodes, conf, fb = _find_matching_nodes_subset(
+            ["personal_info"], [], [], index, label_set_index
+        )
+        assert len(nodes) > 0
+        for n in nodes:
+            assert n.get("state_id", "") != "initial_contact"
+        assert "root_fallback" not in fb
+
+    def test_income_loss_node_returned_not_root(self, tree, index, label_set_index):
+        nodes, conf, fb = _find_matching_nodes_subset(
+            ["income_loss"], [], [], index, label_set_index
+        )
+        assert len(nodes) > 0
+        for n in nodes:
+            assert n.get("state_id", "") != "initial_contact"
+        assert "root_fallback" not in fb
+
+
 class TestFallbacksStillWork:
     async def test_empty_key_fallback(self, tree, index, label_set_index):
         result = await recommend(

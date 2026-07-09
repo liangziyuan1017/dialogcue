@@ -79,6 +79,11 @@ def aggregate_pools(nodes):
     return pool
 
 
+def _has_reachable_sentences(nodes):
+    pool, _, _ = descend_for_sentences(nodes)
+    return bool(pool)
+
+
 def _find_matching_nodes_subset(all_facts, all_emotions, all_actions, index, label_set_index, pool_cap=None):
     if pool_cap is None:
         pool_cap = _pool_cap()
@@ -90,7 +95,7 @@ def _find_matching_nodes_subset(all_facts, all_emotions, all_actions, index, lab
 
     if query_items and query_items in label_set_index:
         nodes = label_set_index[query_items]
-        if aggregate_pools(nodes):
+        if _has_reachable_sentences(nodes):
             return nodes, 1.0, []
 
     drop_order = []
@@ -133,8 +138,9 @@ def _find_matching_nodes_subset(all_facts, all_emotions, all_actions, index, lab
                     unique.append(n)
 
             pool = aggregate_pools(unique)
-            if pool:
-                if len(pool) <= pool_cap:
+            if not pool:
+                pool, _, _ = descend_for_sentences(unique)
+            if pool and len(pool) <= pool_cap:
                     n_dropped = n_drop_e + n_drop_f
                     conf = max(0.0, 1.0 - n_dropped * _cfg("confidence.subset_drop_penalty", 0.1))
                     fb = ["subset_drop_emotion"] * n_drop_e + ["subset_drop_fact"] * n_drop_f
@@ -145,7 +151,7 @@ def _find_matching_nodes_subset(all_facts, all_emotions, all_actions, index, lab
             break
 
     root_nodes = label_set_index.get(frozenset(), [])
-    if root_nodes and aggregate_pools(root_nodes):
+    if root_nodes and _has_reachable_sentences(root_nodes):
         fb = ["root_fallback"]
         if truncated:
             fb.append("subset_search_truncated")
