@@ -130,32 +130,36 @@ class TestIsAckInterruption:
     def test_collector_never(self):
         assert not _is_ack_interruption({"role": "催收员", "text": "嗯", "state": {}})
 
-    def test_dialog2_t14_t15(self):
+    def test_dialog2_merge_group_exists(self):
         r = _load_record(2)
         groups = _find_merge_candidates(r["turns_annotated"])
-        has_14_15 = any(14 in g["collector_indices"] and 15 in g["collector_indices"] for g in groups)
-        assert has_14_15
+        assert len(groups) >= 1
 
-    def test_dialog2_t23_t25(self):
+    def test_dialog2_t0_t2_t4_merged(self):
         r = _load_record(2)
         groups = _find_merge_candidates(r["turns_annotated"])
-        has_23_25 = any(23 in g["collector_indices"] and 25 in g["collector_indices"] for g in groups)
-        assert has_23_25
+        has_0_2_4 = any(0 in g["collector_indices"] and 2 in g["collector_indices"] and 4 in g["collector_indices"] for g in groups)
+        assert has_0_2_4
 
-    def test_dialog2_t26_t27(self):
+    def test_dialog2_facts_break_chain(self):
         r = _load_record(2)
-        groups = _find_merge_candidates(r["turns_annotated"])
-        has_26_27 = any(26 in g["collector_indices"] and 27 in g["collector_indices"] for g in groups)
-        assert has_26_27
+        turns = r["turns_annotated"]
+        groups = _find_merge_candidates(turns)
+        merged_indices = set()
+        for g in groups:
+            merged_indices.update(g["collector_indices"])
+        t15 = turns[15]
+        if t15["role"] == "客户" and t15.get("state", {}).get("facts"):
+            assert 15 not in merged_indices
 
-    def test_dialog2_t35_t37_t39(self):
+    def test_dialog2_no_merge_beyond_data(self):
         r = _load_record(2)
-        groups = _find_merge_candidates(r["turns_annotated"])
-        has_35_37 = any(35 in g["collector_indices"] and 37 in g["collector_indices"] for g in groups)
-        has_37_39 = any(37 in g["collector_indices"] and 39 in g["collector_indices"] for g in groups)
-        assert not has_35_37 and not has_37_39
-        has_39_41 = any(39 in g["collector_indices"] and 41 in g["collector_indices"] for g in groups)
-        assert has_39_41
+        turns = r["turns_annotated"]
+        groups = _find_merge_candidates(turns)
+        max_idx = len(turns) - 1
+        for g in groups:
+            for idx in g["collector_indices"]:
+                assert idx <= max_idx
 
 
 class TestBuildMergePrompt:

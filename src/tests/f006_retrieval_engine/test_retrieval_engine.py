@@ -38,7 +38,7 @@ class TestRecommendOutputSchema:
 
     async def test_has_vec_score_and_final_score(self, tree, index, label_set_index):
         result = await recommend(
-            query_bitmask=1023, conversation_context="客户说没有钱",
+            query_bitmask=511, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
         )
         assert result is not None
@@ -48,7 +48,7 @@ class TestRecommendOutputSchema:
 
     async def test_has_ranking_weights(self, tree, index, label_set_index):
         result = await recommend(
-            query_bitmask=1023, conversation_context="客户说没有钱",
+            query_bitmask=511, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
         )
         assert result is not None
@@ -64,7 +64,7 @@ class TestRecommendWithDB:
         ])
         mock_db.get_vectors = AsyncMock(return_value={"s1": [0.1] * EMBEDDING_DIM})
         result = await recommend(
-            query_bitmask=1023, conversation_context="客户说没有钱",
+            query_bitmask=511, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
             db=mock_db, query_vec=[0.1] * EMBEDDING_DIM,
         )
@@ -74,9 +74,9 @@ class TestRecommendWithDB:
 class TestPathStructuredState:
     async def test_accepts_path_state(self, tree, index, label_set_index):
         result = await recommend(
-            query_bitmask=1023, conversation_context="客户说没有钱",
+            query_bitmask=511, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
-            conversation_state={"branch_key": {"facts": ["financial_hardship"]}, "inherited_facts": [], "inherited_emotions": [], "willingness": None},
+            conversation_state={"branch_key": {"facts": ["situational_hardship"]}, "inherited_facts": [], "inherited_emotions": [], "willingness": None},
         )
         assert result is not None
         assert "conversation_state" in result
@@ -84,7 +84,7 @@ class TestPathStructuredState:
 
     async def test_default_conversation_state(self, tree, index, label_set_index):
         result = await recommend(
-            query_bitmask=1023, conversation_context="客户说没有钱",
+            query_bitmask=511, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
         )
         assert result is not None
@@ -92,9 +92,9 @@ class TestPathStructuredState:
 
     async def test_backward_compat_flat_state(self, tree, index, label_set_index):
         result = await recommend(
-            query_bitmask=1023, conversation_context="客户说没有钱",
+            query_bitmask=511, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
-            conversation_state={"facts": ["financial_hardship"], "emotions": [], "actions": [], "willingness": None},
+            conversation_state={"facts": ["situational_hardship"], "emotions": [], "actions": [], "willingness": None},
         )
         assert result is not None
 
@@ -102,7 +102,7 @@ class TestPathStructuredState:
 class TestSubsetMatchFallback:
     def test_exact_match_confidence_1(self, tree, index, label_set_index):
         nodes, conf, fb = _find_matching_nodes_subset(
-            ["financial_hardship"], [], [], index, label_set_index
+            ["repayment_inability"], [], [], index, label_set_index
         )
         if nodes:
             assert conf == 1.0
@@ -117,14 +117,14 @@ class TestSubsetMatchFallback:
 
     def test_drop_emotions_before_facts(self, tree, index, label_set_index):
         nodes, conf, fb = _find_matching_nodes_subset(
-            ["financial_hardship"], ["nonexistent_emo"], [], index, label_set_index
+            ["repayment_inability"], ["nonexistent_emo"], [], index, label_set_index
         )
         if nodes:
             assert any("emotion" in f for f in fb) or conf == 1.0
 
     def test_pools_multiple_nodes(self, tree, index, label_set_index):
         nodes, conf, fb = _find_matching_nodes_subset(
-            ["financial_hardship", "request_installment"], [], [], index, label_set_index
+            ["situational_hardship", "payment_commitment"], [], [], index, label_set_index
         )
         if nodes:
             assert isinstance(nodes, list)
@@ -133,7 +133,7 @@ class TestSubsetMatchFallback:
 class TestFallbacksStillWork:
     async def test_empty_key_fallback(self, tree, index, label_set_index):
         result = await recommend(
-            query_bitmask=1023, conversation_context="客户说没有钱",
+            query_bitmask=511, conversation_context="客户说没有钱",
             query_bg={}, tree=tree, index=index, label_set_index=label_set_index,
             conversation_state={"branch_key": {"facts": ["nonexistent_xyz"]}, "inherited_facts": [], "inherited_emotions": [], "willingness": None},
         )

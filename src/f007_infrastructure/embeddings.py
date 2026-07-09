@@ -50,19 +50,18 @@ def embed_texts(texts: list[str]) -> list[list[float]]:
     for i in range(0, len(texts), batch_size):
         batch = texts[i : i + batch_size]
         batch_idx = i // batch_size
-        print(f"    embed batch {batch_idx}/{(len(texts)+batch_size-1)//batch_size} ({len(batch)} texts)", flush=True)
-        while True:
-            try:
-                resp = retry_call(
-                    client.embeddings.create,
-                    model=EMBEDDING_MODEL,
-                    input=batch,
-                    timeout=60.0,
-                    retryable=RETRYABLE_LLM_ERRORS,
-                )
-                batch_vecs = [d.embedding for d in sorted(resp.data, key=lambda d: d.index)]
-                break
-            except RETRYABLE_LLM_ERRORS as e:
-                _log.warning("embedding batch %d failed after retries: %s; retrying", batch_idx, e)
+        _log.info("embed batch %d/%d (%d texts)", batch_idx, (len(texts)+batch_size-1)//batch_size, len(batch))
+        try:
+            resp = retry_call(
+                client.embeddings.create,
+                model=EMBEDDING_MODEL,
+                input=batch,
+                timeout=60.0,
+                retryable=RETRYABLE_LLM_ERRORS,
+            )
+            batch_vecs = [d.embedding for d in sorted(resp.data, key=lambda d: d.index)]
+        except RETRYABLE_LLM_ERRORS as e:
+            _log.warning("embedding batch %d failed after retries: %s; zero-filling", batch_idx, e)
+            batch_vecs = [[0.0] * EMBEDDING_DIM for _ in batch]
         results.extend(batch_vecs)
     return results

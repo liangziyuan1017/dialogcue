@@ -1,4 +1,5 @@
 from .common import ok, fail, warn, skip, walk, walk_sentences, is_end
+from f007_infrastructure.config import get as _cfg
 
 
 def check_sentences(tree, r):
@@ -93,14 +94,15 @@ def check_sentences(tree, r):
     else:
         warn(r, "SE13", cat, "hard", f"{len(bad)} nodes with duplicate script_text in pool", bad[:10])
 
+    max_len = _cfg("decision_tree.max_merged_words", 100)
     bad = []
     for n, s in walk_sentences(tree):
-        if len(s.get("script_text", "")) > 150:
+        if len(s.get("script_text", "")) > max_len:
             bad.append(s.get("script_id", "?"))
     if not bad:
         ok(r, "SE14", cat, "hard")
     else:
-        warn(r, "SE14", cat, "hard", f"{len(bad)} sentences > 150 chars", bad[:10])
+        warn(r, "SE14", cat, "hard", f"{len(bad)} sentences > {max_len} chars", bad[:10])
 
     skip(r, "SE15", cat, "hard", "runtime concern")
     skip(r, "SE16", cat, "hard", "runtime concern")

@@ -68,20 +68,20 @@ class TestVecSimilarity:
 
 
 class TestBgBoost:
-    def test_industry_match(self):
-        boost = compute_bg_boost({"industry": "专业性事务所"}, {"industry": "专业性事务所"})
-        assert boost >= 0.05
+    def test_education_match(self):
+        boost = compute_bg_boost({"education": "本科"}, {"education": "本科"})
+        assert boost >= 0.02
 
     def test_no_match(self):
-        boost = compute_bg_boost({"industry": "A"}, {"industry": "B"})
+        boost = compute_bg_boost({"education": "A"}, {"education": "B"})
         assert boost == 0.0
 
     def test_all_matches(self):
         boost = compute_bg_boost(
-            {"industry": "A", "education": "college", "total_debt": 100, "age": 40, "interest_ratio": 5},
-            {"industry": "A", "education": "college", "total_debt": 120, "age": 45},
+            {"education": "本科", "risk_level": 1, "complaint_score": 10, "days_delinquent": 30},
+            {"education": "本科", "risk_level": 1, "complaint_score": 12, "days_delinquent": 35},
         )
-        assert boost >= 0.05 + 0.02 + 0.03 + 0.02
+        assert boost >= 0.02 + 0.03 + 0.02 + 0.02
 
 
 class TestRankSentences:

@@ -10,6 +10,7 @@ CLI_ENTRYPOINTS = {
     "check_data_format.py",
     "serve_tree.py",
     "run_api.py",
+    "check_tree.py",
 }
 
 

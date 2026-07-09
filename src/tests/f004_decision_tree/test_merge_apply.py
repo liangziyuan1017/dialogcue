@@ -67,9 +67,9 @@ class TestLLMShouldMerge:
 
     def test_word_count_enforcement_splits_group(self, monkeypatch):
         import f007_infrastructure.llm_client as llm_client
-        long_a = "字" * 80
-        long_b = "字" * 80
-        long_c = "字" * 90
+        long_a = "字" * 40
+        long_b = "字" * 40
+        long_c = "字" * 30
         long_d = "字" * 30
         monkeypatch.setattr(llm_client, "call_deepseek_json", lambda p: {"groups": [[0, 1, 2, 3]], "reason": "all same"})
         turns = [
@@ -80,7 +80,7 @@ class TestLLMShouldMerge:
         ]
         group = {"collector_indices": [0, 1, 2, 3], "interruption_indices": []}
         result = _llm_should_merge(turns, group)
-        assert result == [[0], [1], [2, 3]]
+        assert result == [[0, 1], [2, 3]]
 
     def test_word_count_single_exceeds_limit_kept_alone(self, monkeypatch):
         import f007_infrastructure.llm_client as llm_client

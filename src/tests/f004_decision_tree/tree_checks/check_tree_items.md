@@ -272,11 +272,11 @@ guards against, and how it is verified.
   or deduplication failure.
 - **How checked:** For each node, verify all `script_text` values are unique.
 
-### SE14 — No sentences > 150 chars *(warn)*
+### SE14 — No sentences > 100 chars *(warn)*
 - **Root cause:** Overly long sentences may not have been properly split during
   merge, or the merge word limit was not enforced.
 - **How checked:** Walk all sentences; flag those with
-  `len(script_text) > 150`.
+  `len(script_text) > 100`.
 
 ### SE15 — *skip* (runtime concern)
 ### SE16 — *skip* (runtime concern)
@@ -403,7 +403,7 @@ guards against, and how it is verified.
 ## Scoring (SC1–SC28)
 
 ### SC1 — `bg_constraints` has correct keys
-- **Root cause:** The background constraints dict must have exactly the 5
+- **Root cause:** The background constraints dict must have exactly the 10
   bitmask keys. Wrong keys indicate a schema change in the scoring pipeline.
 - **How checked:** For each scored sentence, verify
   `set(bg_constraints.keys()) == BITMASK_KEYS`.
@@ -411,10 +411,10 @@ guards against, and how it is verified.
 ### SC2 — `bg_bitmask` has correct keys
 - **How checked:** Same as SC1 but for `bg_bitmask`.
 
-### SC3 — `bg_bitmask_int` in [0, 31]
-- **Root cause:** The bitmask integer encodes 5 boolean flags, so it must be
-  in [0, 31].
-- **How checked:** Verify `0 <= bg_bitmask_int <= 31`.
+### SC3 — `bg_bitmask_int` in [0, 1023]
+- **Root cause:** The bitmask integer encodes 10 boolean flags, so it must be
+  in [0, 1023].
+- **How checked:** Verify `0 <= bg_bitmask_int <= 1023`.
 
 ### SC4 — `bg_bitmask_int` matches encoding
 - **Root cause:** The integer must be the bitwise encoding of `bg_bitmask`.
@@ -447,8 +447,12 @@ guards against, and how it is verified.
 
 ### SC23 — `conversation_context` present
 ### SC24 — *skip* (DB-only)
-### SC25 — `bg_background` is a dict
+### SC25 — `bg_background` is a dict with 10 fields
+- **Root cause:** `bg_background` must contain digit-count, int, and passthrough fields derived from context_lookup (not customer_info_lookup). Missing or extra keys indicate a schema change.
+- **How checked:** Walk all scored sentences; verify `bg_background` is a dict with the expected keys (business_loan_digits, mortgage_balance_digits, other_loan_digits, wealth_digits, current_balance_digits, education, days_delinquent, recent_contact_count, risk_level, complaint_score).
+
 ### SC26 — No numeric fields in bitmask
+- **Root cause:** Numeric fields (balances, counts, scores) belong in `bg_background`, not `bg_constraints`. Their presence in bg_constraints would break bitmask encoding.
 ### SC27 — *skip* (covered by SC4+SC5)
 ### SC28 — *skip* (runtime concern)
 
