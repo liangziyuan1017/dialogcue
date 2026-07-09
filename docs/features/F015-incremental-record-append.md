@@ -90,6 +90,6 @@ After DB upsert, delete sentences for new `call_id`s that exist in DB but not in
 
 `merge_dialogs` loaded but never saved the merge cache. Added `_save_merge_cache` call so LLM merge decisions for new records persist to `merge_decisions.json` for reproducibility.
 
-### Revert note
+### Note on ADR-034
 
-This branch reverts the F006 empty-pool descend fix (`_has_reachable_sentences` in `retrieval_engine.py`). ADR-034, `docs/decisions/diff.md`, and LL-007 were removed accordingly. `_find_matching_nodes_subset` again uses `aggregate_pools` as the sole validity check.
+This branch was based on main before the ADR-034 empty-pool descend fix landed. After merge, ADR-034 (`_has_reachable_sentences` in `retrieval_engine.py`), `diff.md`, and LL-007 remain in place — the descend fix is preserved.
