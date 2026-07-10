@@ -19,6 +19,7 @@
 | F012 | Runtime Robustness Hardening | complete | agent | feature doc | [F012](features/F012-runtime-robustness-hardening.md) |
 | F013 | asyncpg Migration | merged | agent | [ADR-027](decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md) | [F013](features/F013-asyncpg-migration.md) |
 | F014 | External API Exposure | review | agent | feature doc | [F014](features/F014-external-api-exposure.md) |
+| F015 | Incremental Record Append | review | agent | feature doc | [F015](features/F015-incremental-record-append.md) |
 
 > **F002 removed** (ADR-009): LLM State Extraction eliminated. F001's manual annotations (493/805 turns) provide sufficient state coverage. Downstream features handle unlabeled turns gracefully.
 
@@ -46,6 +47,9 @@ F000 ──► F001 ──► F003 ──► F004 ──► F005 ──► F006
 F011 ──► F012 ──► F013 ──► F009
 F004 ──► F004b
 F005 ──► F004b
+
+F015 ──► F004  (incremental append reuses tree build + DB upsert)
+F015 ──► F007  (DB upsert, embedding cache, taxonomy dedup)
 ```
 
 ---

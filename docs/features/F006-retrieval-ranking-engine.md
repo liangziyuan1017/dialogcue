@@ -3,7 +3,7 @@ id: F006
 name: Retrieval & Ranking Engine
 status: complete
 owner: agent
-source: plan_feature_base.md
+source: superseded (original spec plan_feature_base.md no longer in repo)
 created: 2026-06-22
 updated: 2026-06-22
 merged: 2026-06-22
@@ -199,7 +199,7 @@ def recommend(inherited_facts, branch_key_values, inherited_emotions, query_bitm
 
 ## Links
 
-- [plan_feature_base.md](../../plan_feature_base.md) — F006 spec
+- ~~plan_feature_base.md~~ — original spec (no longer in repo; this doc is the authoritative source)
 
 ## Implementation Plan
 
@@ -224,6 +224,6 @@ See [implementation-plan.md](implementation-plan.md)
 
 | File | Purpose |
 |------|---------|
-| `src/f006_retrieval_engine/retrieval_engine.py` | Fact-set index, fallback cascade, dual-strategy rank, recommend() |
-| `src/test_retrieval_engine.py` | Unit tests for retrieval functions |
-| `src/test_retrieval_engine_integration.py` | Integration tests on real scored tree |
+| `src/f006_retrieval_engine/retrieval_engine.py` | Fact-set index, fallback cascade, recommend() |
+| `src/tests/f006_retrieval_engine/test_retrieval_engine.py` | Unit tests for retrieval functions |
+| `src/tests/f006_retrieval_engine/test_retrieval_ranking.py` | Unit tests for ranking functions |

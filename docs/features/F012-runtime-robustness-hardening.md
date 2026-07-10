@@ -27,12 +27,12 @@ compute, and ops blind spots. The single shared synchronous DB connection driven
 async FastAPI/SocketIO handlers is the top production outage risk. Several config keys
 are dead (`llm.max_tokens`, `decision_tree.find_node_max_levels`), `retry.py` is unused,
 and the whole codebase uses `print()` with no request correlation. Full findings + plan
-live in `ROBUSTNESS_FIX_PLAN.md`.
+live in `old_files/ROBUSTNESS_FIX_PLAN.md`.
 
 ## What
 
 Six phases, sequenced by dependency. Detailed task/verify per item in
-`ROBUSTNESS_FIX_PLAN.md`; this section is the phase-level summary.
+`old_files/ROBUSTNESS_FIX_PLAN.md`; this section is the phase-level summary.
 
 ### Phase A: Foundations
 
@@ -231,7 +231,7 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 
 | 类型 | 路径 | 说明 |
 |------|------|------|
-| **Plan** | `ROBUSTNESS_FIX_PLAN.md` | Full task/verify detail per issue (issues #1–#27) |
+| **Plan** | `old_files/ROBUSTNESS_FIX_PLAN.md` | Full task/verify detail per issue (issues #1–#27) |
 | **Plan** | `docs/features/F012-implementation-plan.md` | TDD step-level plan (Phase A full, B–F outlined) |
 | **Feature** | `docs/features/F007-infra-layer.md` | Infra layer being hardened |
 | **Feature** | `docs/features/F009-api-server.md` | API server being hardened |

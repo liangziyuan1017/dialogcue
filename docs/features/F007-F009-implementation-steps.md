@@ -412,3 +412,11 @@ python3 -c "from f005_context_scoring.score_tree import write_scored_tree; write
 - [F009-api-server.md](F009-api-server.md) — Steps 8-9
 - [full_processing.md](../../full_processing.md) — Phase 2 pipeline + schema detail
 - [ADR-024](../decisions/ADR-024-embedding-architecture.md) — bge-m3 embedding architecture
+
+---
+
+## Update Log
+
+**2026-07-10 — Ranking weights updated (5-signal):** Steps 5–6 and the rerank step show the original 4-signal formula `0.40*win_rate + 0.30*vec_score + 0.15*sas + 0.15*bg_boost`. The current codebase uses a 5-signal formula: `0.35*win_rate + 0.25*vec_score + 0.10*sas + 0.10*bg_boost + 0.20*bitmask_score`. Weights are in `config.md` under `ranking_weights`.
+
+**2026-07-10 — `full_processing.md` no longer in repo:** The link above to `../../full_processing.md` is broken — the file was removed. Phase 2 pipeline + schema detail is now documented in `SCBGE_GUIDELINE.md` Phase 2.

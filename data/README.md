@@ -16,7 +16,8 @@ data/
 
 | File | Description |
 |------|-------------|
-| `matched_data.jsonl` | Source — raw ASR-transcribed Mandarin debt-collection call records (one JSON object per line). The raw count grows as new data is added; run `wc -l data/data_input/matched_data.jsonl` for the current count. Fields: `call_id`, `dialog`, `call_date`, `cust_no`, `coll_user_id`, `mob_typ`, `talk_time`, `plan_evaluation`, `customer_info`. |
+| `matched_data.jsonl` | Source — raw ASR-transcribed Mandarin debt-collection call records (one JSON object per line). The raw count grows as new data is added; run `wc -l data/data_input/matched_data.jsonl` for the current count. 23 fields per record: `id`, `call_id`, `dialDate`, `connectDate`, `dialType`, `ringTime`, `collUserId`, `collId`, `collArea`, `collGroupId`, `cust_no`, `acNo`, `isRecorded`, `result`, `talkTime`, `channel`, `corpCode`, `calledNo`, `mobTyp`, `phoneRoute`, `agentTalkTime`, `dialog`, `custInfo`. `dialog` is a single string with turns separated by `；`/`;`. `custInfo` is a JSON-stringified array of `{tagName, tagValue}` pairs. |
+| `new_data.jsonl` | Incremental input for `src/run_append.py` (F015). Place new raw records here (same schema as `matched_data.jsonl`). On successful append, records are appended to `matched_data.jsonl` and this file is cleared. |
 
 ## data_output/
 
@@ -51,7 +52,7 @@ Manual and LLM-relabeled emotion/fact taxonomies used by state extraction (F008)
 | File | Description |
 |------|-------------|
 | `emotions.csv`, `facts.csv` | Original emotion/fact label sets. `facts.csv` has a header row (`tag,example,count,old_label`). |
-| `emotions_relabeled.csv`, `facts_relabeled.csv` | LLM-relabeled variants. `emotions_relabeled.csv` expands the 25 original emotions to ~205 fine-grained labels (intentional — each coarse emotion maps to multiple specific labels for F008 extraction granularity); all original tags are preserved. `facts_relabeled.csv` is 1:1 with `facts.csv`. |
+| `emotions_relabeled.csv`, `facts_relabeled.csv` | LLM-relabeled variants. `emotions_relabeled.csv` expands the 25 original emotions to ~251 fine-grained labels (intentional — each coarse emotion maps to multiple specific labels for F008 extraction granularity); all original tags are preserved. `facts_relabeled.csv` expands beyond the 4,935 original fact tags to 6,214 relabeled rows (not 1:1 — the relabeling augments the tag set with additional fine-grained categories). |
 | `emotions_descriptions.py`, `facts_descriptions.py` | Label description for prompt context. |
 | `facts_pipeline.csv` | Facts extracted via the pipeline run. |
 | `llm_relabel_emotions.py`, `llm_relabel_facts.py` | Scripts that produce the relabeled CSVs. |

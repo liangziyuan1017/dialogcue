@@ -72,3 +72,9 @@ mypy src/ → Success: no issues found in 81 source files ✅
 2. `run_in_threadpool` was applied to `extract_state` in `/recommend`; `recommend` itself ran sync in the event loop. **F013 (merged) superseded this**: `recommend` and `extract_state` are now async via `asyncpg`; `run_in_threadpool` removed from runtime.
 3. `RETRYABLE_LLM_ERRORS` covers `APITimeoutError`, `APIConnectionError`, `RateLimitError`, `InternalServerError`. `BadRequestError`/`AuthenticationError` are not retried (permanent).
 4. `embed_texts` zero-fills failed batches after exhausting retries; partial-failure policy is "retry batch, then zero-fill + warn" (not "fail entire call").
+
+---
+
+## Update Log
+
+**2026-07-10 — `ROBUSTNESS_FIX_PLAN.md` moved:** The `Plan` reference above points to `ROBUSTNESS_FIX_PLAN.md` at project root. The file has been moved to `old_files/ROBUSTNESS_FIX_PLAN.md`.

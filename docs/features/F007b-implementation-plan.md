@@ -82,3 +82,9 @@
 **Step 3: Implement** — Remove import of `compute_context_similarity`. Add imports of `compute_vec_similarity`, `RANKING_WEIGHTS`, `SentenceDB`, `embed_single`. Add `conversation_state` parameter to `recommend()`. Replace `aggregate_pools(nodes)` with `db.get_sentences_by_node(node_id)` when db provided. Update output dict.
 **Step 4: Run test to verify it passes**
 **Step 5: Commit**
+
+---
+
+## Update Log
+
+**2026-07-10 — Ranking weights updated (5-signal):** The 4-signal formula `0.40*win_rate + 0.30*vec_score + 0.15*sas + 0.15*bg_boost` shown in Tasks 3–4 was the original design. The current codebase uses a 5-signal formula: `0.35*win_rate + 0.25*vec_score + 0.10*sas + 0.10*bg_boost + 0.20*bitmask_score`. Weights are in `config.md` under `ranking_weights`.

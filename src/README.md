@@ -405,14 +405,14 @@ python3 src/build_tree_and_db.py
 
 | Module | Feature | Key Code | Data Artifacts |
 |--------|---------|----------|----------------|
-| Orchestrator | — | `whole_pipeline.py`, `build_tree_and_db.py`, `run_append.py`, `add_records.py`, `launch_ui.py`, `check_data_format.py` | — |
-| `f000_keyword_discovery/` | F000 | `discover_keywords.py`, `load_data.py` | `state_keywords.json`, `output_labeled.py` |
+| Orchestrator | — | `whole_pipeline.py`, `build_tree_and_db.py`, `run_append.py`, `add_records.py`, `launch_ui.py`, `run_api.py`, `check_data_format.py`, `check_new_records.py` | — |
+| `f000_keyword_discovery/` | F000 | `discover_keywords.py`, `keyword_prompts.py`, `load_data.py` | `state_keywords.json`, `output_labeled.py` |
 | `f001_schema_alignment/` | F001 | `align_schema.py`, `relabel_state.py` | `output_aligned.py` |
-| `f003_reward_labeling/` | F003 | `analyze_collector_turns.py`, `reward_label.py`, `relabel_state.py` | `output_rewarded.py` (deduplicated by `call_id`), `collector_analysis.json`, `customer_analysis.json` |
-| `f004_decision_tree/` | F004 | `build_decision_tree.py`, `merge_collector.py`, `tree_transforms.py`, `check_tree.py` | `decision_tree.json`, `merge_decisions.json` |
-| `f005_context_scoring/` | F005 | `score_tree.py`, `scoring_metrics.py` | `decision_tree_scored.json` |
+| `f003_reward_labeling/` | F003 | `analyze_collector_turns.py`, `analyze_customer_turns.py`, `define_willingness_levels.py`, `reward_label.py` | `output_rewarded.py` (deduplicated by `call_id`), `collector_analysis.json`, `customer_analysis.json` |
+| `f004_decision_tree/` | F004 | `build_decision_tree.py`, `merge_collector.py`, `tree_transforms.py`, `check_tree.py`, `serve_tree.py` | `decision_tree.json`, `merge_decisions.json`, `dialog_records.json` |
+| `f005_context_scoring/` | F005 | `score_tree.py`, `scoring_metrics.py`, `build_and_score_tree.py` | `decision_tree_scored.json` |
 | `f006_retrieval_engine/` | F006 | `retrieval_engine.py`, `retrieval_ranking.py` | — (runtime: PostgreSQL) |
-| `f007_infrastructure/` | F007 | `db.py`, `async_db.py`, `embeddings.py`, `llm_client.py`, `retry.py`, `config.py`, `logging.py`, `json_logging.py`, `backfill_embeddings.py`, `scheduler_state.py` | — |
+| `f007_infrastructure/` | F007 | `db.py`, `async_db.py`, `embeddings.py`, `llm_client.py`, `retry.py`, `config.py`, `logging.py`, `json_logging.py`, `backfill_embeddings.py`, `scheduler_state.py`, `migrations/runner.py` | — |
 | `f008_state_extraction/` | F008 | `state_extraction.py` | — |
 | `f009_api_server/` | F009 | `server.py`, `rate_limit.py`, `session_store.py`, `tag_mapping.py` | — |
 | `f010_api_mock_ui/` | F010 | `debug.py`, `ui/` | — |

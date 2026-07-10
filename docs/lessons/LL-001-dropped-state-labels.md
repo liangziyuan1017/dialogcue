@@ -12,7 +12,7 @@ root_cause: "Implementation only referenced output_manual.py; no check for inter
 trigger_conditions: "When feature Fn depends on F(n-1) and F(n-1) produced intermediate output with annotations, but spec only references raw data source"
 fix: "Modified build_turns_annotated() to load output_labeled.py and carry state dict into each turn"
 guard: "Before implementing Fn with depends_on F(n-1), audit src/ for intermediate outputs from F(n-1) to carry forward; test: test_state_labels_from_output_labeled_carried_into_turns_annotated"
-source_anchor: ["F001 review feedback", "src/f001_schema_alignment/output_labeled.py", "docs/features/F001-data-schema-alignment.md"]
+source_anchor: ["F001 review feedback", "src/f000_keyword_discovery/data/output_labeled.py", "docs/features/F001-data-schema-alignment.md"]
 ---
 
 # Schema Alignment Dropped Prior Feature State Labels
@@ -40,7 +40,7 @@ Before implementing any feature Fn that `depends_on: F(n-1)`, check if F(n-1) ha
 ## Source Anchors
 
 - F001 review feedback: "include the state labels generated during f000 as well, check output_labeled.py"
-- `src/f001_schema_alignment/output_labeled.py` — 493/805 turns with state labels
+- `src/f000_keyword_discovery/data/output_labeled.py` — 493/805 turns with state labels
 - `docs/features/F001-data-schema-alignment.md` — Review Notes section
 
 ## Prevention Notes

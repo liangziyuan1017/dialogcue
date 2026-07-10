@@ -74,3 +74,9 @@ AC-A1 grep guard → 1 passed ✅
 2. Mypy is scoped to new modules (`logging.py`, `config.py`); full-repo mypy is deferred (most modules lack type hints — would require a broad typing effort).
 3. `print` remains in 5 CLI entrypoints (`whole_pipeline.py`, `build_tree_and_db.py`, `launch_ui.py`, `check_data_format.py`, `serve_tree.py`) by design (AC-A1 exclusion).
 4. `RANKING_WEIGHTS` module-level constant kept as a backward-compat snapshot; live read via `get_ranking_weights()` at the hot path. `server.py`/`debug.py` response dicts still reference the snapshot — Phase B/C can switch them to live read.
+
+---
+
+## Update Log
+
+**2026-07-10 — `ROBUSTNESS_FIX_PLAN.md` moved:** The `原始需求` reference above points to `ROBUSTNESS_FIX_PLAN.md` at project root. The file has been moved to `old_files/ROBUSTNESS_FIX_PLAN.md`. The 27 defects are summarized in `F012-runtime-robustness-hardening.md`.

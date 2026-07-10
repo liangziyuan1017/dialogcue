@@ -42,3 +42,9 @@ Spec: `docs/features/F006-retrieval-ranking-engine.md`
 ### 验证命令输出
 test → all pass ✅
 integration → pass ✅
+
+---
+
+## Update Log
+
+**2026-07-10 — Ranking weights updated (5-signal):** Row 7 above shows the original 4-signal formula `0.40*win_rate + 0.30*vec_score + 0.15*sas + 0.15*bg_boost`. The current codebase uses a 5-signal formula: `0.35*win_rate + 0.25*vec_score + 0.10*sas + 0.10*bg_boost + 0.20*bitmask_score`. Weights are in `config.md` under `ranking_weights`.

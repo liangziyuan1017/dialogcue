@@ -16,13 +16,13 @@ branch: feat/f010-infra-layer
 
 ## Why
 
-The original system used in-memory JSON files and char-ngram TF-IDF for retrieval. The spec (`full_processing.md`, [F009 API contract](F009-api-server.md)) requires PostgreSQL + pgvector for hybrid vector + bitmask + FTS search, and a REST + Socket.IO API for integration with the call platform. F007 provides the shared infrastructure that F007b, F008, and F009 build on.
+The original system used in-memory JSON files and char-ngram TF-IDF for retrieval. The spec (see `SCBGE_GUIDELINE.md`, [F009 API contract](F009-api-server.md)) requires PostgreSQL + pgvector for hybrid vector + bitmask + FTS search, and a REST + Socket.IO API for integration with the call platform. F007 provides the shared infrastructure that F007b, F008, and F009 build on.
 
 ## What
 
 ### PostgreSQL + pgvector Database Client
 
-`sentence_db` module with `SentenceDB` class:
+`db.py` module with `SentenceDB` class:
 
 - **Schema**: `nodes` table (tree structure), `sentences` table (script text + embedding + metadata), `taxonomy_keywords` table (keyword → node mapping for FTS)
 - **pgvector**: `sentences.embedding vector(1024)` column for cosine similarity search
@@ -86,15 +86,15 @@ See [implementation-plan.md](F007-implementation-plan.md)
 | `src/f007_infrastructure/embeddings.py` | Embedding client (bge-m3 via Ollama) |
 | `src/f007_infrastructure/llm_client.py` | DeepSeek LLM client |
 | `src/f007_infrastructure/retry.py` | Retry utility with exponential backoff |
-| `src/tests/infra/test_db.py` | Unit tests for SentenceDB |
-| `src/tests/infra/test_db_integration.py` | Integration tests (require PostgreSQL) |
-| `src/tests/infra/test_embeddings.py` | Unit tests for embedding client |
+| `src/tests/f007_infrastructure/test_db.py` | Unit tests for SentenceDB |
+| `src/tests/f007_infrastructure/test_db_integration.py` | Integration tests (require PostgreSQL) |
+| `src/tests/f007_infrastructure/test_embeddings.py` | Unit tests for embedding client |
 
 ## Scaling Path
 
-Migration path from 31 → 100,000+ nodes. Retrieval is O(1) hash lookup regardless of tree size; scaling challenges are storage, build-time, and index maintenance — not retrieval latency.
+Migration path from 108 → 100,000+ nodes. Retrieval is O(1) hash lookup regardless of tree size; scaling challenges are storage, build-time, and index maintenance — not retrieval latency.
 
-| Dimension | Current (31 records) | Target (50K+ records) | Solution |
+| Dimension | Current (108 records) | Target (50K+ records) | Solution |
 |-----------|---------------------|----------------------|----------|
 | Nodes | 309 | 100,000+ | Tree grows with record diversity, not linearly with records |
 | Node storage | JSON file | PG `nodes` table with `path_signature` B-tree index | O(log N) lookup |

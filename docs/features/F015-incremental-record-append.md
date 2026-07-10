@@ -8,15 +8,15 @@ topics: [incremental, tree, database, embeddings, taxonomy]
 doc_kind: spec
 created: 2026-07-09
 updated: 2026-07-09
-spec: new_record_plan.md
+spec: old_files/new_record_plan.md
 adrs: [ADR-035, ADR-036, ADR-037]
 ---
 
 # F015: Incremental Record Append
 
-> **Status**: planned | **Owner**: agent | **Priority**: P0
+> **Status**: review | **Owner**: agent | **Priority**: P0
 >
-> **Spec**: `new_record_plan.md` — seamless incremental append of new records to the decision tree and PostgreSQL database without full rebuild.
+> **Spec**: `old_files/new_record_plan.md` — seamless incremental append of new records to the decision tree and PostgreSQL database without full rebuild.
 
 ## Why
 
@@ -37,7 +37,7 @@ A single orchestrator (`src/add_records.py`) that:
 ## Input
 
 - New records file: `data/data_input/new_data.jsonl` (user always places new data here)
-- Existing canonical data: `data/data_input/matched_data.jsonl` (103 records)
+- Existing canonical data: `data/data_input/matched_data.jsonl` (108 records; 105 unique `call_id`s in `output_rewarded.py` after dedup)
 
 ## Output
 

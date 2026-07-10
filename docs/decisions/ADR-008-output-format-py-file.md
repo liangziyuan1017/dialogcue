@@ -14,11 +14,11 @@ schema_version: 1
 
 ## What
 
-Write aligned output to `src/f001_schema_alignment/output_aligned.py` as `results = [...]` — a Python file with a top-level list variable, matching the format of `data/output_manual.py` and `src/f001_schema_alignment/output_labeled.py`.
+Write aligned output to `src/f001_schema_alignment/data/output_aligned.py` as `results = [...]` — a Python file with a top-level list variable, matching the format of `src/f000_keyword_discovery/data/output_labeled.py`.
 
 ## Why
 
-Consistency with existing data pipeline. All intermediate outputs (`output_manual.py`, `output_labeled.py`, `output_states.py`, `output_rewarded.py`) use this format. Downstream scripts load them via `importlib`. Switching to JSON would break the loading pattern and require changes across F002–F006.
+Consistency with existing data pipeline. All intermediate outputs (`output_labeled.py`, `output_aligned.py`, `output_rewarded.py`) use this format. Downstream scripts load them via `importlib`. Switching to JSON would break the loading pattern and require changes across F003–F006.
 
 ## Tradeoff
 
@@ -26,4 +26,4 @@ Consistency with existing data pipeline. All intermediate outputs (`output_manua
 |-------------|-----------------|
 | JSON output | Breaks `importlib` loading pattern used by all downstream features |
 | CSV output | Loses nested structure (dialog, context dict); no type fidelity |
-| PostgreSQL (F007 target) | Correct for 10K scale, but premature for 31-record prototype |
+| PostgreSQL (F007 target) | Correct for 10K scale, but premature for 108-record prototype |

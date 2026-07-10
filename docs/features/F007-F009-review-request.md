@@ -78,3 +78,11 @@ python3 -m pytest src/tests/f005_context_scoring/ src/tests/f006_retrieval_engin
 - Features: F007 (infra), F007b (vector retrieval), F008 (state extraction), F009 (API server)
 - Quality gate: `docs/features/F007b-quality-gate-report.md`
 - ADRs: `docs/decisions/` (ADR-006 context mapping, ADR-020 SAS, ADR-024 embeddings)
+
+---
+
+## Update Log
+
+**2026-07-10 — Ranking weights updated (5-signal):** The review request mentions the original 4-signal formula `0.40*win_rate + 0.30*vec_score + 0.15*sas + 0.15*bg_boost`. The current codebase uses a 5-signal formula: `0.35*win_rate + 0.25*vec_score + 0.10*sas + 0.10*bg_boost + 0.20*bitmask_score`. Weights are in `config.md` under `ranking_weights`.
+
+**2026-07-10 — `full_processing.md` no longer in repo:** References to `full_processing.md` above are broken — the file was removed. Phase 2 pipeline detail is now in `SCBGE_GUIDELINE.md` Phase 2.

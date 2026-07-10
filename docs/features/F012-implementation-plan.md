@@ -160,3 +160,9 @@
 | A7 tooling | ✅ | ruff/mypy | No lint/type safety |
 
 All on the A→B line. No spikes.
+
+---
+
+## Update Log
+
+**2026-07-10 — `ROBUSTNESS_FIX_PLAN.md` moved:** The plan reference above points to `ROBUSTNESS_FIX_PLAN.md` at project root. The file has been moved to `old_files/ROBUSTNESS_FIX_PLAN.md`. The 27 defects and their fixes are summarized in the feature doc `F012-runtime-robustness-hardening.md`.

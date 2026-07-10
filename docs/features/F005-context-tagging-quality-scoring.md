@@ -3,7 +3,7 @@ id: F005
 name: Context Tagging & Quality Scoring
 status: merged
 owner: agent
-source: plan_feature_base.md
+source: superseded (original spec plan_feature_base.md no longer in repo)
 created: 2026-06-18
 updated: 2026-07-07
 merged: 2026-06-22
@@ -108,7 +108,7 @@ Balance fields are stored as **digit counts** (`len(str(abs(value)))` for value 
 
 ## Links
 
-- [plan_feature_base.md](../../plan_feature_base.md) — F005 spec
+- ~~plan_feature_base.md~~ — original spec (no longer in repo; this doc is the authoritative source)
 - [ADR-006](../../decisions/ADR-006-context-constraint-mapping.md) — Context constraint mapping (18 fields → 10 bitmask; pre-migration 21 fields)
 
 ## Implementation Plan

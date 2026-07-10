@@ -181,3 +181,9 @@ All ranking weights, boost values, confidence penalties, and pool cap are now co
 | descend penalty | `confidence.descend_penalty` | 0.05 |
 | context missing penalty | `confidence.context_missing_penalty` | 0.1 |
 | bitmask relax penalty | `confidence.bitmask_relax_penalty` | 0.05 |
+
+---
+
+## Update Log
+
+**2026-07-10 — Ranking weights updated (5-signal):** The 4-signal formula `0.40*win_rate + 0.30*vec_score + 0.15*sas + 0.15*bg_boost` shown in Step 9 and the Config Externalization table above was the original design. The current codebase uses a 5-signal formula with `bitmask_score` added: `0.35*win_rate + 0.25*vec_score + 0.10*sas + 0.10*bg_boost + 0.20*bitmask_score`. Weights are configurable in `config.md` under `ranking_weights`. Current defaults: `win_rate=0.35, vec_score=0.25, sas=0.10, bg_boost=0.10, bitmask_score=0.20`.

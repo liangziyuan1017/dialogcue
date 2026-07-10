@@ -31,8 +31,8 @@ Create FastAPI server with `POST /recommend` endpoint and Socket.IO session mana
 
 - NEW: `src/f009_api_server/__init__.py`
 - NEW: `src/f009_api_server/server.py`
-- NEW: `src/tests/api/test_recommend.py`
-- NEW: `src/tests/api/test_socket.py`
+- NEW: `src/tests/f009_api_server/test_recommend.py`
+- NEW: `src/tests/f009_api_server/test_socket.py`
 
 ---
 
@@ -143,7 +143,7 @@ Single-turn recommendation. Caller manages `conversation_state` accumulation man
 
 ## Processing Pipeline
 
-Each `POST /recommend` call executes these steps in sequence (see `full_processing.md` Phase 2 for full detail):
+Each `POST /recommend` call executes these steps in sequence (see SCBGE_GUIDELINE.md Phase 2 for full detail):
 
 ### Step 1: State Extraction (LLM-first)
 
@@ -192,7 +192,7 @@ Embed `conversation_context` via bge-m3 embedding model (Ollama) → 1024-dim ve
 ### Step 7: Rerank (Weighted Fusion)
 
 ```
-final_score = 0.40 × win_rate + 0.30 × vec_score + 0.15 × sas + 0.15 × bg_boost
+final_score = 0.35 × win_rate + 0.25 × vec_score + 0.10 × sas + 0.10 × bg_boost + 0.20 × bitmask_score
 ```
 
 **Latency**: <1ms
@@ -311,7 +311,7 @@ Send a customer utterance during an active session. Server runs the full pipelin
     "emotions": ["pleading"],
     "actions": []
   },
-  "ranking_weights": {"win_rate": 0.40, "vec_score": 0.30, "sas": 0.15, "bg_boost": 0.15},
+  "ranking_weights": {"win_rate": 0.35, "vec_score": 0.25, "sas": 0.10, "bg_boost": 0.10, "bitmask_score": 0.20},
   "fallbacks": [],
   "latency_ms": 1050
 }
@@ -407,7 +407,7 @@ Emitted by server when a recommendation is ready. Useful if state extraction is 
     "emotions": ["pleading"],
     "actions": []
   },
-  "ranking_weights": {"win_rate": 0.40, "vec_score": 0.30, "sas": 0.15, "bg_boost": 0.15},
+  "ranking_weights": {"win_rate": 0.35, "vec_score": 0.25, "sas": 0.10, "bg_boost": 0.10, "bitmask_score": 0.20},
   "fallbacks": [],
   "latency_ms": 1050
 }
@@ -514,18 +514,19 @@ Customer profile. Same schema as `output_aligned.py` `context` field, derived fr
 
 ## Ranking
 
-Weighted fusion of four signals:
+Weighted fusion of five signals:
 
 ```
-final_score = 0.40 × win_rate + 0.30 × vec_score + 0.15 × sas + 0.15 × bg_boost
+final_score = 0.35 × win_rate + 0.25 × vec_score + 0.10 × sas + 0.10 × bg_boost + 0.20 × bitmask_score
 ```
 
 | Signal | Weight | Source | Range |
 |---|---|---|---|
-| `win_rate` | 0.40 | HWR from `reward` labels in `output_rewarded.py` | [0, 1] |
-| `vec_score` | 0.30 | pgvector cosine similarity on `conversation_context` embeddings | [0, 1] |
-| `sas` | 0.15 | Char bigram TF-IDF cosine within sentence pool | [0, 1] |
-| `bg_boost` | 0.15 | Profile match heuristic (industry, education, age, debt) | [0, 0.12] |
+| `win_rate` | 0.35 | HWR from `reward` labels in `output_rewarded.py` | [0, 1] |
+| `vec_score` | 0.25 | pgvector cosine similarity on `conversation_context` embeddings | [0, 1] |
+| `sas` | 0.10 | Char bigram TF-IDF cosine within sentence pool | [0, 1] |
+| `bg_boost` | 0.10 | Profile match heuristic (education, risk level, complaint, delinquency) | [0, 0.12] |
+| `bitmask_score` | 0.20 | Context bitmask match (customer profile → sentence constraints) | [0, 1] |
 
 ---
 
@@ -577,7 +578,7 @@ On startup, the server:
 
 ## Links
 
-- [full_processing.md](../../full_processing.md) — Phase 2 pipeline detail
+- ~~full_processing.md~~ — Phase 2 pipeline detail (no longer in repo; see `SCBGE_GUIDELINE.md` Phase 2)
 - [F007-F009-implementation-steps.md](F007-F009-implementation-steps.md) — Steps 8-9 implementation
 - [implementation-plan.md](F009-implementation-plan.md)
 
