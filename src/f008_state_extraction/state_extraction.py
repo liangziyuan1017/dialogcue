@@ -400,13 +400,6 @@ def merge_state(existing_state: dict, new_extraction: dict) -> dict:
                 if e not in inh_emotions:
                     inh_emotions.append(e)
 
-        for f in new_facts:
-            if f not in inh_facts:
-                inh_facts.append(f)
-        for e in new_emotions:
-            if e not in inh_emotions:
-                inh_emotions.append(e)
-
         if new_facts:
             winner = new_facts[-1]
             bk = {"facts": [winner]}

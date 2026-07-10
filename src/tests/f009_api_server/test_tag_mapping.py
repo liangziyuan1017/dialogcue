@@ -1,14 +1,14 @@
 from f009_api_server.tag_mapping import map_cust_tags_to_context
 
 
-def test_auto_loan_positive():
+def test_business_loan_positive():
     result = map_cust_tags_to_context([{"tag": "经营贷款余额", "value": "5000.0"}])
-    assert result["has_auto_loan"] is True
+    assert result["has_business_loan"] is True
 
 
-def test_auto_loan_zero():
+def test_business_loan_zero():
     result = map_cust_tags_to_context([{"tag": "经营贷款余额", "value": "0.0"}])
-    assert result["has_auto_loan"] is False
+    assert result["has_business_loan"] is False
 
 
 def test_mortgage_positive():
@@ -16,47 +16,69 @@ def test_mortgage_positive():
     assert result["has_mortgage"] is True
 
 
+def test_other_loan_positive():
+    result = map_cust_tags_to_context([{"tag": "其他贷款余额", "value": "50000"}])
+    assert result["has_other_loan"] is True
+
+
 def test_social_insurance_yes():
     result = map_cust_tags_to_context([{"tag": "持卡人当前是否缴纳社保", "value": "是"}])
-    assert result["social_insurance_stable"] is True
+    assert result["has_social_insurance"] is True
 
 
 def test_social_insurance_no():
     result = map_cust_tags_to_context([{"tag": "持卡人当前是否缴纳社保", "value": "否"}])
-    assert result["social_insurance_stable"] is False
+    assert result["has_social_insurance"] is False
 
 
-def test_credit_rating_good():
-    result = map_cust_tags_to_context([{"tag": "客户风险标识等级", "value": "1级"}])
-    assert result["credit_rating_good"] is True
-
-
-def test_credit_rating_bad():
+def test_risk_flag_positive():
     result = map_cust_tags_to_context([{"tag": "客户风险标识等级", "value": "3级"}])
-    assert result["credit_rating_good"] is False
+    assert result["has_risk_flag"] is True
 
 
-def test_complaint_high_risk():
+def test_risk_flag_zero():
+    result = map_cust_tags_to_context([{"tag": "客户风险标识等级", "value": "0级"}])
+    assert result["has_risk_flag"] is False
+
+
+def test_high_risk_complaint():
     result = map_cust_tags_to_context([{"tag": "持卡用户是否疑似高风险代理投诉", "value": "是"}])
-    assert result["has_complaint_history"] is True
+    assert result["is_high_risk_proxy_complaint"] is True
 
 
-def test_complaint_agent():
+def test_agent_complaint():
     result = map_cust_tags_to_context([{"tag": "持卡用户是否疑似代理中介投诉", "value": "是"}])
-    assert result["has_complaint_history"] is True
-
-
-def test_complaint_both_or_together():
-    result = map_cust_tags_to_context([
-        {"tag": "持卡用户是否疑似高风险代理投诉", "value": "是"},
-        {"tag": "持卡用户是否疑似代理中介投诉", "value": "是"},
-    ])
-    assert result["has_complaint_history"] is True
+    assert result["is_proxy_intermediary_complaint"] is True
 
 
 def test_complaint_neither():
     result = map_cust_tags_to_context([{"tag": "持卡用户是否疑似高风险代理投诉", "value": "否"}])
-    assert result["has_complaint_history"] is False
+    assert result["is_high_risk_proxy_complaint"] is False
+
+
+def test_recent_repayment_yes():
+    result = map_cust_tags_to_context([{"tag": "（掌生APP操作）近7天-还款操作", "value": "Y"}])
+    assert result["recent_repayment"] is True
+
+
+def test_recent_repayment_no():
+    result = map_cust_tags_to_context([{"tag": "（掌生APP操作）近7天-还款操作", "value": "N"}])
+    assert result["recent_repayment"] is False
+
+
+def test_has_vehicle_positive():
+    result = map_cust_tags_to_context([{"tag": "持卡用户名下历史车辆数", "value": "2"}])
+    assert result["has_vehicle"] is True
+
+
+def test_has_vehicle_zero():
+    result = map_cust_tags_to_context([{"tag": "持卡用户名下历史车辆数", "value": "0"}])
+    assert result["has_vehicle"] is False
+
+
+def test_education_passthrough():
+    result = map_cust_tags_to_context([{"tag": "学历", "value": "大专"}])
+    assert result["education"] == "大专"
 
 
 def test_unknown_tag_ignored():
@@ -74,5 +96,5 @@ def test_multiple_tags():
         {"tag": "经营贷款余额", "value": "5000"},
         {"tag": "客户风险标识等级", "value": "2级"},
     ])
-    assert result["has_auto_loan"] is True
-    assert result["credit_rating_good"] is True
+    assert result["has_business_loan"] is True
+    assert result["has_risk_flag"] is True

@@ -62,7 +62,7 @@ class TestExternalSessionStart:
             "cust_tags": [{"tag": "经营贷款余额", "value": "5000"}],
         })
         session = sessions.get("call_003")
-        assert session["context"]["has_auto_loan"] is True
+        assert session["context"]["has_business_loan"] is True
 
     def test_call_info_and_agent_stored_in_session(self, client):
         from f009_api_server.server import sessions

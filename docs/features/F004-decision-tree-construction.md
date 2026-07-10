@@ -5,7 +5,7 @@ status: merged
 owner: agent
 source: ROADMAP.md
 created: 2026-06-11
-updated: 2026-07-07
+updated: 2026-07-10
 depends_on: F003
 ---
 
@@ -121,6 +121,7 @@ Nodes = collector action points. Branches = customer (facts, emotions). Willingn
 - [ADR-011](../decisions/ADR-011-decision-tree-approach.md) — Architecture decision
 - [ADR-021](../decisions/ADR-021-node-identity-dedup.md) — Node identity dedup with DAG support
 - [ADR-022](../decisions/ADR-022-redundant-emotion-collapse.md) — Redundant emotion collapse
+- [ADR-038](../decisions/ADR-038-opening-node-action-children.md) — Opening node spawns action children for greeting and information
 
 ## Implementation Plan
 
@@ -161,6 +162,7 @@ See [implementation-plan.md](F004-implementation-plan.md)
 - **Node identity deduplication (ADR-021)**: Nodes are identified by `(inherited_facts, inherited_emotions, branch_key)`. Two nodes with the same identity are the same semantic state. A global `node_registry` in `build_tree()` prevents creating duplicate nodes. Cycle prevention via `_is_ancestor` check. Post-transform `_deduplicate_nodes` catches any remaining sibling duplicates.
 - **DAG tree structure**: The tree is a DAG — nodes with the same identity can appear under multiple parents. All recursive walkers use `_visited` sets for cycle protection. The UI uses `node_id` (SHA-256 hash of identity) as the Cytoscape node ID, rendering shared nodes once with multiple incoming edges.
 - **Redundant emotion collapse (ADR-022)**: `_collapse_redundant_facts` extended to also collapse emotion nodes whose emotions are already in the accumulated parent emotions (e.g., `anger → anger` → collapse to `anger`). Symmetric with fact collapse. Uses `accumulated_emotions` tracking.
+- **Opening node action children (ADR-038)**: The root node (`role: "opening"`) now spawns `a:greeting`, `a:information`, and other action child nodes instead of pooling greeting/information sentences into its `sentence_pool`. This makes early collector turns (before the first customer branch key) visible in the tree UI dialog trace. `_place_sentences_in_node` treats opening nodes the same as decision nodes for action splitting. Greetings flow through normal segment processing instead of a separate pre-loop.
 - **Pipeline output filenames**: LLM step output filenames match actual files in `data/`: `output_2.py`, `output_logic.py`, `output_complete.py`, `output_merged.py`.
 
 ## Files

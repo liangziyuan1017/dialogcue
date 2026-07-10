@@ -1,28 +1,62 @@
 const DEFAULT_REQUEST = {
-  customer_utterance: "呃，就因为我们们我们是有两个项目，一个项目可能会拖比较久那另外一个项目我我已经在审核了，就是已经在给拆分了也就是这3个月，它能我们能出，能出那个工存款。",
-  conversation_context: "您好。戴女士，招商银行信用卡中心您的个人逾期材料已经还是审核失败了，那后端部门提将通过我们转交到您的逾期材料，后续银行也会通过强制银行清收流程追偿您在我行的一个全额欠款，那我们也不需要函件寄送，以后对您的工作生活证影响以及对您现在一个个人情况，银行也需要简单核实一下，您现在本人是在做生意还是在打工呢？ 呃我们我们自己做工程的 嗯做工程还是在 呃，我们现在现在是做工程，目前是因为工程被欠款，所以我这边才会欠款。 嗯，那那您这个工欠款拖欠了多久了呢？",
+  customer_utterance: "嗯，好的，我明白了。那您帮我看看，目前有什么还款方案可以申请",
+  conversation_context: "您好，请问是李先生吗？我是招商银行信用卡中心。您的信用卡已逾期。 嗯。 今天来电想跟您确认还款事宜。 哦。 您看目前方便处理一下欠款吗？ 最近手头确实紧。",
   conversation_state: {
-    branch_key: { facts: ["expense_pressure"] },
-    inherited_facts: ["debt_acknowledgment"],
+    branch_key: { facts: ["situational_hardship"] },
+    inherited_facts: ["debt_acknowledgment", "situational_hardship"],
     inherited_emotions: [],
     willingness: "conditional"
   },
   context: {
-    has_auto_loan: false,
+    has_business_loan: false,
     has_mortgage: false,
-    has_negotiation_history: true,
-    social_insurance_stable: false,
-    credit_rating_good: false,
-    card_restricted: false,
-    is_cash_out_customer: false,
-    has_complaint_history: false,
-    has_legal_tools: true,
-    is_negotiation_brain_customer: false
+    has_other_loan: true,
+    recent_repayment: false,
+    is_high_risk_proxy_complaint: false,
+    is_proxy_intermediary_complaint: false,
+    has_social_insurance: true,
+    has_risk_flag: true,
+    has_complaint: false,
+    has_vehicle: false,
+    education: "college",
+    risk_level: 3,
+    complaint_score: 0,
+    days_delinquent: 30,
+    recent_contact_count: 5,
+    business_loan_balance: 0,
+    mortgage_balance: 0,
+    other_loan_balance: 50000,
+    wealth_value: 0,
+    current_balance: 200000
   }
 };
 
 let restEditor = null;
 let responseEditor = null;
+let sioContextEditor = null;
+
+const DEFAULT_CONTEXT = {
+  has_business_loan: false,
+  has_mortgage: false,
+  has_other_loan: true,
+  recent_repayment: false,
+  is_high_risk_proxy_complaint: false,
+  is_proxy_intermediary_complaint: false,
+  has_social_insurance: true,
+  has_risk_flag: true,
+  has_complaint: false,
+  has_vehicle: false,
+  education: "college",
+  risk_level: 3,
+  complaint_score: 0,
+  days_delinquent: 30,
+  recent_contact_count: 5,
+  business_loan_balance: 0,
+  mortgage_balance: 0,
+  other_loan_balance: 50000,
+  wealth_value: 0,
+  current_balance: 200000
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   restEditor = CodeMirror.fromTextArea(document.getElementById("rest-request-body"), {
@@ -40,6 +74,14 @@ document.addEventListener("DOMContentLoaded", () => {
     readOnly: true,
     tabSize: 2
   });
+
+  sioContextEditor = CodeMirror.fromTextArea(document.getElementById("sio-context"), {
+    mode: "javascript",
+    json: true,
+    lineNumbers: true,
+    tabSize: 2
+  });
+  sioContextEditor.setValue(JSON.stringify(DEFAULT_CONTEXT, null, 2));
 
   document.getElementById("rest-send-btn").addEventListener("click", sendRecommend);
   document.getElementById("rest-debug-btn").addEventListener("click", sendDebug);
@@ -171,13 +213,20 @@ function sioConnect() {
 
 async function sioStartSession() {
   try {
-    const result = await sioEmit("start_session", { context: {} });
+    let context = {};
+    try {
+      context = JSON.parse(sioContextEditor.getValue());
+    } catch (e) {
+      console.error("Invalid context JSON, using {}:", e);
+    }
+    const result = await sioEmit("start_session", { context });
     if (result && result.session_id) {
       sioSessionId = result.session_id;
       document.getElementById("sio-session-id").textContent = sioSessionId;
       document.getElementById("sio-customer-btn").disabled = false;
       document.getElementById("sio-collector-btn").disabled = false;
       document.getElementById("sio-end-btn").disabled = false;
+      sioContextEditor.setOption("readOnly", true);
       updateSioState(result.conversation_state);
       addTranscriptEntry("system", "Session started: " + sioSessionId, null);
     }
@@ -232,6 +281,7 @@ async function sioEndSession() {
   document.getElementById("sio-customer-btn").disabled = true;
   document.getElementById("sio-collector-btn").disabled = true;
   document.getElementById("sio-end-btn").disabled = true;
+  sioContextEditor.setOption("readOnly", false);
   sioSessionId = null;
   document.getElementById("sio-session-id").textContent = "—";
 }

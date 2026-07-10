@@ -75,6 +75,7 @@ A dedicated `POST /recommend/debug` endpoint returns the full per-step trace dat
 - Sentence pool inspector renders the full top-20 candidate list with scores (row 0 highlighted as the recommendation)
 - Dark theme by default matching the F004 tree explorer aesthetic
 - System-status/health panel was descoped — not implemented in the shipped UI
+- **Editable customer background in session panel**: The Socket.IO Session panel now has an editable "Customer Background (context)" textarea (CodeMirror-backed) with a default context pre-filled (bitmask + bg_boost fields). The context is parsed and sent as `context` in the `start_session` payload. The field becomes read-only after session start and re-enables when the session ends. Previously, the session always started with `context: {}` (hardcoded empty), ignoring customer background entirely.
 
 ## Implementation Plan
 

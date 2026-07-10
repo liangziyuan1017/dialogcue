@@ -201,10 +201,7 @@ def _place_sentences_in_node(node, sentences, registry):
     if not sentences:
         return
     role = node.get("role", "")
-    if role == "opening":
-        _merge_sentences(node["sentence_pool"], sentences)
-        return
-    if role != "decision":
+    if role not in ("decision", "opening"):
         _merge_sentences(node["sentence_pool"], sentences)
         return
     by_action = {}
@@ -256,18 +253,6 @@ def add_dialog_to_tree(tree, record, registry, merge_decisions=None):
             break
 
     has_closing = False
-
-    for turn in turns:
-        if turn["role"] == "催收员" and turn.get("state", {}).get("action") == "greeting":
-            entry = {
-                "script_text": turn["text"],
-                "script_id": f"{call_id}_t{turn['turn_index']}",
-                "source_call_ids": [call_id],
-                "customer_willingness": None,
-                "gesture_type": "opening",
-                "collector_action": "greeting",
-            }
-            _merge_sentences(tree["sentence_pool"], [entry])
 
     segments = _extract_segments(turns, call_id)
 
@@ -452,8 +437,6 @@ def _extract_segments(turns, call_id):
                 action = entry.get("collector_action")
             else:
                 action = (state or {}).get("action")
-                if action == "greeting":
-                    continue
                 entry = {
                     "script_text": turn["text"],
                     "script_id": f"{call_id}_t{turn['turn_index']}",

@@ -29,8 +29,9 @@
         <div class="mb-2">
           <label class="text-xs text-gray-500 block mb-1">Request Body (JSON)</label>
           <details class="mb-1">
-            <summary class="text-xs text-gray-600 cursor-pointer hover:text-gray-400">context bitmask fields</summary>
-            <p class="text-xs text-gray-600 mt-1 font-mono">has_auto_loan, has_mortgage, has_negotiation_history, social_insurance_stable, credit_rating_good, card_restricted, is_cash_out_customer, has_complaint_history, has_legal_tools, is_negotiation_brain_customer</p>
+            <summary class="text-xs text-gray-600 cursor-pointer hover:text-gray-400">context fields</summary>
+            <p class="text-xs text-gray-600 mt-1 font-mono">bitmask: has_business_loan, has_mortgage, has_other_loan, recent_repayment, is_high_risk_proxy_complaint, is_proxy_intermediary_complaint, has_social_insurance, has_risk_flag, has_complaint, has_vehicle</p>
+            <p class="text-xs text-gray-600 mt-1 font-mono">bg_boost: education, risk_level, complaint_score, days_delinquent, recent_contact_count, business_loan_balance, mortgage_balance, other_loan_balance, wealth_value, current_balance</p>
           </details>
           <textarea id="rest-request-body"></textarea>
         </div>
@@ -48,6 +49,15 @@
     <section id="socket-session-panel" class="bg-gray-900 rounded-lg p-4 border border-gray-800">
       <h2 class="text-lg font-semibold text-blue-300 mb-3">Socket.IO Session</h2>
       <div id="socket-session-content">
+        <div class="mb-2">
+          <label class="text-xs text-gray-500 block mb-1">Customer Background (context)</label>
+          <details class="mb-1">
+            <summary class="text-xs text-gray-600 cursor-pointer hover:text-gray-400">context fields</summary>
+            <p class="text-xs text-gray-600 mt-1 font-mono">bitmask: has_business_loan, has_mortgage, has_other_loan, recent_repayment, is_high_risk_proxy_complaint, is_proxy_intermediary_complaint, has_social_insurance, has_risk_flag, has_complaint, has_vehicle</p>
+            <p class="text-xs text-gray-600 mt-1 font-mono">bg_boost: education, risk_level, complaint_score, days_delinquent, recent_contact_count, business_loan_balance, mortgage_balance, other_loan_balance, wealth_value, current_balance</p>
+          </details>
+          <textarea id="sio-context"></textarea>
+        </div>
         <div class="mb-2 flex gap-2 flex-wrap">
           <button id="sio-start-btn" class="px-3 py-1.5 bg-green-600 hover:bg-green-500 text-sm rounded font-medium">Start Session</button>
           <button id="sio-customer-btn" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-sm rounded font-medium" disabled>Customer Turn</button>
