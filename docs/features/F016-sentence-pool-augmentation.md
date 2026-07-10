@@ -4,9 +4,11 @@
 >
 > **Worktree**: `../ICBC-f016-sentence-pool-augmentation` | **Branch**: `feat/f016-sentence-pool-augmentation`
 >
-> **Tests**: 68 passed | **Commit**: `f3eaf73`
+> **Tests**: 78 passed | **Commit**: `f3eaf73+`
 >
 > **Goal**: Given a tree node, generate new collector sentences via LLM that match the node's background constraints and a random customer profile, then insert them into the tree UI display and the PostgreSQL database — without modifying any existing code or data.
+>
+> **Fixes applied** (ADR-040): (1) `generate_unique_call_id()` checks overlay + DB before generating, preventing `--seed` collisions; (2) LLM temperature raised `0.7 → 1.1` for diversity; (3) Prompt redesigned to "imagine customer utterance → respond" format with compliance guardrails (no internal labels, no dismissive quoting, no judgmental language).
 
 ---
 
@@ -157,6 +159,24 @@ def generate_fake_call_id() -> str:
     return "9999" + "".join(str(random.randint(0, 9)) for _ in range(15))
 ```
 
+**Collision-checked wrapper** (added per ADR-040):
+
+```python
+def generate_unique_call_id(
+    existing_script_ids: set[str],
+    count: int,
+    max_retries: int = 100,
+) -> str:
+    """Generate a fake call_id guaranteed not to collide with existing script_ids."""
+    for _ in range(max_retries):
+        call_id = generate_fake_call_id()
+        if not any(f"{call_id}_t{i}" in existing_script_ids for i in range(1, count + 1)):
+            return call_id
+    raise RuntimeError(f"Could not generate unique call_id after {max_retries} retries")
+```
+
+The caller (`augment_sentences.py`) collects existing `9999%` script_ids from overlay + DB before generating, preventing `--seed` collisions and concurrent-run collisions.
+
 ### 4.2 Random Customer Profile Generator (`random_profile.py`)
 
 Generates a `context` dict with the same 17 fields as `output_aligned.py`:
@@ -205,47 +225,51 @@ def build_augmentation_prompt(
     """Build the DeepSeek prompt for generating new collector sentences."""
 ```
 
-The prompt structure:
+The prompt structure (Prompt G — "imagine customer → respond" with compliance guardrails):
 
 ```
-你是一位专业的催收话术专家。请根据以下信息生成{N}条催收员话术。
+你正在模拟一段催收通话。请先想象客户说的话，再写出你的回复。
 
-## 节点信息
-- 节点类型: {role} (opening/decision/action)
-- 客户事实标签: {inherited_facts}
-- 客户情绪标签: {inherited_emotions}
-- 催收员动作: {collector_action}
-- 分支键: {branch_key}
+## 你的身份
+你是银行贷后管理专员，正在和一位逾期客户通电话。
 
-## 客户背景
-- 逾期天数: {days_delinquent}
-- 风险等级: {risk_level}
-- 当前余额: {current_balance}
-- 是否有房贷: {has_mortgage}
-- 是否有经营贷: {has_business_loan}
-- 是否有其他贷款: {has_other_loan}
-- 学历: {education}
-- 投诉分数: {complaint_score}
-- 近期联系次数: {recent_contact_count}
+## 客户情况
+- 逾期{days_delinquent}天，欠款{current_balance}元，风险等级{risk_desc}
+- 已被联系{recent_contact_count}次，投诉分数{complaint_score}
 
-## 现有话术示例（参考风格，不要重复）
+## 当前对话状态
+- 阶段: {collector_action} | 客户事实: {inherited_facts}
+
+## 参考真实话术
 1. {existing_sentence_1}
 2. {existing_sentence_2}
 3. {existing_sentence_3}
 
-## 要求
-- 生成{N}条不同的催收员话术
-- 话术要符合上述节点类型和客户背景
-- 语气专业、合规，不得有威胁性语言
-- 每条话术长度50-200字
-- 返回JSON格式: {"sentences": ["话术1", "话术2", ...]}
+## 任务
+请想象{N}个不同的客户反应，然后针对每句话直接回应：
+- 你的回复要像在通电话，直接接客户的话
+- 口语化，有"嗯""呃""那个""对"等自然停顿
+- 用引导式提问代替评判
+- {N}条回复措辞、节奏、开场都要不同
+- 每条50-200字
+
+## 禁忌（必须遵守）
+- 不要引用或复述客户的话来反驳
+- 不要对客户使用内部标签或分类术语（如"还款意愿""意愿不强""风险等级""标签"等）
+- 不要暴露系统内部概念（如"挂标签""系统报警""风险等级"）
+- 不要评判客户，用引导式提问代替
+- 不要用"您好"开头，直接接话
+
+- 返回JSON: {"sentences": ["你的回复1", "你的回复2", ...]}
 ```
 
-Key design decisions:
-- **Few-shot examples**: Use up to 3 existing sentences from the node's pool to guide style/tone
-- **Customer profile in Chinese**: The real data is Mandarin, so the prompt is in Chinese
+Key design decisions (updated per ADR-040):
+- **Imagine → respond format**: LLM first imagines what the customer would say, then generates a collector response — produces realistic conversational flow
+- **Compliance guardrails**: Explicit 禁忌 section forbids internal labels, dismissive quoting, judgmental language, and system concept exposure
+- **Few-shot examples**: Up to 3 existing sentences from the node's pool (truncated to 120 chars) as style reference
+- **Risk descriptor**: `risk_level` int → Chinese descriptor (极低/较低/中等/较高/极高) for natural prompt language
+- **Temperature 1.1**: Higher than original 0.7 for diverse, non-templated output
 - **JSON response**: Use `call_deepseek_json()` for structured output
-- **Compliance guard**: Explicit instruction against threatening language
 - **Length constraint**: 50-200 chars matches observed sentence lengths
 
 ### 4.4 Sentence Scoring (`score_sentences.py`)
@@ -669,19 +693,19 @@ decision_tree_scored.json ──────► augment_sentences.py (reads to f
 | Node has empty sentence_pool | Use `win_rate_node=0.5` as fallback; skip few-shot examples in prompt |
 | LLM returns fewer than N sentences | Use what we get; warn if 0 |
 | LLM returns duplicate texts | Dedup within batch; skip dups |
-| Fake call_id collision (extremely unlikely) | Regenerate if `script_id` already in overlay or DB |
+| Fake call_id collision | `generate_unique_call_id()` checks overlay + DB, retries up to 100× (ADR-040) |
 | Overlay file already has sentences for this node | Append new ones (don't replace) |
 | DB connection fails | Print error, still write overlay (graceful degradation) |
 | Embedding service (Ollama) down | Set embedding=None, warn; sentence still inserted (search_similar skips null embeddings) |
 | `--no-db` flag | Skip DB entirely, overlay only |
 | `--no-overlay` flag | Skip overlay, DB only |
-| Reproducibility | `--seed` controls `random` module; LLM temperature 0.7 |
+| Reproducibility | `--seed` controls `random` module; LLM temperature 1.1 |
 
 ---
 
 ## 8. LLM Temperature
 
-Use `temperature=0.7` for sentence generation (higher than the 0.1 used for extraction/labeling). We want creative, diverse sentences — not deterministic extraction. Passed explicitly to `call_deepseek_json(prompt, temperature=0.7)`.
+Use `temperature=1.1` for sentence generation (raised from 0.7 per ADR-040). Higher temperature produces diverse, non-templated, human-like sentences. The "imagine → respond" prompt format (§4.3) provides enough structure to keep output coherent at this temperature. Passed explicitly to `call_deepseek_json(prompt, temperature=1.1)`.
 
 ---
 

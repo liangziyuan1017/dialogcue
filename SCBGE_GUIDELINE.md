@@ -49,10 +49,13 @@ Build a two-phase system:
 | F013 | asyncpg Migration | cross-cutting | merged | [F013](docs/features/F013-asyncpg-migration.md) |
 | F014 | External API Exposure | 2 | review | [F014](docs/features/F014-external-api-exposure.md) |
 | F015 | Incremental Record Append | 1 (offline) | review | [F015](docs/features/F015-incremental-record-append.md) |
+| F016 | Sentence Pool Augmentation | 1 (offline) | review | [F016](docs/features/F016-sentence-pool-augmentation.md) |
 
 > F011/F012/F013 are cross-cutting infrastructure hardening: F011 externalizes all tunable params to `config.md`; F012 adds structured logging, retry, and config hardening; F013 replaces the psycopg2 threadpool with native asyncpg on the runtime DB path. They thread through F007–F009 rather than sitting on the F000→F009 build chain.
 >
 > F015 is the incremental ingest path: a single orchestrator (`src/add_records.py`) appends new records at every stage without full rebuild, leaving existing records intact (ADR-035/036/037).
+>
+> F016 is the sentence pool augmentation path: given a tree node, generate new collector sentences via LLM (DeepSeek, temperature 1.1) using a "imagine customer → respond" prompt with compliance guardrails, then insert into the tree UI overlay + PostgreSQL. Unique call_id generation with collision detection (ADR-040). Does not modify existing code or data.
 
 ### Dependency Graph
 
@@ -1647,3 +1650,4 @@ Authoritative decision records. Each is one line here; see
 | [ADR-035](docs/decisions/ADR-035-incremental-record-append-orchestrator.md) | Incremental record append orchestrator | Single orchestrator (`src/add_records.py`) appends new records at every stage without full rebuild; pre-check gate; targeted DB upsert; taxonomy dedup + MD5 unique index; post-success append hook. |
 | [ADR-036](docs/decisions/ADR-036-merge-decisions-cache-persistence.md) | Merge decisions cache persistence | Save `merge_decisions.json` after incremental tree build so LLM merge choices for new records are reproducible across runs. |
 | [ADR-037](docs/decisions/ADR-037-orphan-sentence-cleanup.md) | Orphan sentence cleanup | After DB upsert, delete sentences for new `call_id`s present in DB but absent from the final tree (orphans from partial/crashed runs). |
+| [ADR-040](docs/decisions/ADR-040-f016-unique-callid-diversity-compliance.md) | F016 unique call_id + diversity + compliance | `generate_unique_call_id()` with overlay+DB collision check; LLM temperature 1.1; "imagine customer → respond" prompt with guardrails (no internal labels, no dismissive quoting, no judgmental language). |
