@@ -12,7 +12,6 @@ from f005_context_scoring.scoring_metrics import (
     encode_bitmask_int,
 )
 from f007_infrastructure.config import get as _cfg
-from f007_infrastructure.embeddings import EMBEDDING_DIM, embed_texts
 from f007_infrastructure.logging import get_logger as _get_logger
 
 _log = _get_logger(__name__)
@@ -107,7 +106,7 @@ def build_conversation_context_lookup(tree, turns_lookup=None):
     return context_map
 
 
-def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, conv_ctx_lookup=None, embed_fn=None):
+def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, conv_ctx_lookup=None):
     if not sentence_pool:
         return sentence_pool
     node_hwr = compute_node_hwr(sentence_pool, reward_lookup)
@@ -132,15 +131,10 @@ def _score_sentence_pool(sentence_pool, context_lookup, reward_lookup, conv_ctx_
     sas_scores = compute_sas_for_pool(sentence_pool)
     for s, sas in zip(sentence_pool, sas_scores, strict=False):
         s["sas"] = sas
-    if embed_fn is not None:
-        texts = [s.get("conversation_context", "") or s.get("script_text", "") for s in sentence_pool]
-        vecs = embed_fn(texts)
-        for s, vec in zip(sentence_pool, vecs, strict=False):
-            s["_context_vec"] = vec
     return sentence_pool
 
 
-def score_tree(tree, context_lookup, reward_lookup, conv_ctx_lookup=None, embed_fn=None):
+def score_tree(tree, context_lookup, reward_lookup, conv_ctx_lookup=None):
     def _walk(node, parent_path=""):
         state_id = node.get("state_id", "")
         path_sig = f"{parent_path}/{state_id}" if parent_path else state_id
@@ -150,7 +144,6 @@ def score_tree(tree, context_lookup, reward_lookup, conv_ctx_lookup=None, embed_
             context_lookup,
             reward_lookup,
             conv_ctx_lookup,
-            embed_fn=embed_fn,
         )
         for child in node.get("children", []):
             _walk(child, parent_path=path_sig)
@@ -201,7 +194,7 @@ def write_scored_tree(output_path=None, db=None):
     reward_lookup = build_reward_lookup()
     turns_lookup = build_turns_lookup()
     conv_ctx_lookup = build_conversation_context_lookup(tree, turns_lookup)
-    scored = score_tree(tree, context_lookup, reward_lookup, conv_ctx_lookup, embed_fn=embed_texts if db is not None else None)
+    scored = score_tree(tree, context_lookup, reward_lookup, conv_ctx_lookup)
 
     all_sentences = _collect_tree_sentences(scored)
     for s in all_sentences:
@@ -228,7 +221,7 @@ def write_scored_tree(output_path=None, db=None):
                 "sas": s.get("sas", 0),
                 "bg_background": s.get("bg_background"),
                 "conversation_context": s.get("conversation_context", ""),
-                "embedding": s.get("_context_vec") or [0.0] * EMBEDDING_DIM,
+                "embedding": [0.0] * 1024,
             })
         db.upsert_sentences(db_sentences)
 
@@ -248,7 +241,6 @@ def write_scored_tree(output_path=None, db=None):
                 db.upsert_taxonomy_keywords(kw_rows)
 
     for s in all_sentences:
-        s.pop("_context_vec", None)
         s.pop("_node_path_sig", None)
 
     with open(output_path, "w", encoding="utf-8") as f:

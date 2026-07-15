@@ -172,6 +172,8 @@ def _word_ngrams(text, n=2):
     result = []
     for i in range(len(words) - n + 1):
         result.append("".join(words[i:i+n]))
+    if not result and words:
+        result = words
     return result
 
 

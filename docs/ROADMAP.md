@@ -20,6 +20,7 @@
 | F013 | asyncpg Migration | merged | agent | [ADR-027](decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md) | [F013](features/F013-asyncpg-migration.md) |
 | F014 | External API Exposure | review | agent | feature doc | [F014](features/F014-external-api-exposure.md) |
 | F015 | Incremental Record Append | review | agent | feature doc | [F015](features/F015-incremental-record-append.md) |
+| F017 | Corpus Scalability Hardening (100k dialogs) | draft | agent | feature doc | [F017](features/F017-corpus-scalability-hardening.md) |
 
 > **F002 removed** (ADR-009): LLM State Extraction eliminated. F001's manual annotations (493/805 turns) provide sufficient state coverage. Downstream features handle unlabeled turns gracefully.
 

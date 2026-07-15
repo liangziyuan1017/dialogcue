@@ -20,6 +20,7 @@ dependencies = [
     "pgvector>=0.3",
     "asyncpg>=0.29",
     "numpy>=1.26",
+    "scipy>=1.11",
     "pyyaml>=6.0",
 ]
 

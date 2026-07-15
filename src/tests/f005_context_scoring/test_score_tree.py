@@ -18,7 +18,6 @@ from f005_context_scoring.scoring_metrics import (
     encode_bitmask,
     encode_bitmask_int,
 )
-from f007_infrastructure.embeddings import EMBEDDING_DIM
 
 
 @pytest.fixture
@@ -32,8 +31,8 @@ def reward_lookup():
 
 
 class TestContextLookup:
-    def test_returns_103_records(self, context_lookup):
-        assert len(context_lookup) == 103
+    def test_returns_105_records(self, context_lookup):
+        assert len(context_lookup) == 105
 
     def test_all_have_context_fields(self, context_lookup):
         for _cid, ctx in context_lookup.items():
@@ -61,15 +60,15 @@ class TestContextLookup:
 
 
 class TestRewardLookup:
-    def test_returns_103_records(self, reward_lookup):
-        assert len(reward_lookup) == 103
+    def test_returns_105_records(self, reward_lookup):
 
+        assert len(reward_lookup) == 105
     def test_all_rewards_are_0_or_1(self, reward_lookup):
         for _cid, r in reward_lookup.items():
             assert r in (0, 1)
+    def test_78_rewards_are_1(self, reward_lookup):
 
-    def test_77_rewards_are_1(self, reward_lookup):
-        assert sum(1 for r in reward_lookup.values() if r == 1) == 77
+        assert sum(1 for r in reward_lookup.values() if r == 1) == 78
 
 
 class TestBitmaskEncoding:
@@ -288,30 +287,6 @@ class TestSAS:
         assert scores[1] == pytest.approx(1.0, abs=1e-6)
 
 
-class TestEmbeddingInScorePool:
-    def test_stores_context_vec_when_embed_fn_provided(self):
-        pool = [
-            {"script_text": "你好", "script_id": "s1", "source_call_ids": []},
-            {"script_text": "再见", "script_id": "s2", "source_call_ids": []},
-        ]
-        fake_vecs = [[0.1] * EMBEDDING_DIM, [0.2] * EMBEDDING_DIM]
-        _score_sentence_pool(
-            pool, {}, {}, conv_ctx_lookup={},
-            embed_fn=lambda texts: fake_vecs[:len(texts)],
-        )
-        assert "_context_vec" in pool[0]
-        assert "_context_vec" in pool[1]
-        assert len(pool[0]["_context_vec"]) == EMBEDDING_DIM
-        assert len(pool[1]["_context_vec"]) == EMBEDDING_DIM
-
-    def test_no_context_vec_when_no_embed_fn(self):
-        pool = [
-            {"script_text": "你好", "script_id": "s1", "source_call_ids": []},
-        ]
-        _score_sentence_pool(pool, {}, {}, conv_ctx_lookup={})
-        assert "_context_vec" not in pool[0]
-
-
 class TestWriteScoredTreeWithDB:
     def test_calls_upsert_nodes_and_sentences(self):
         from unittest.mock import MagicMock, patch
@@ -323,7 +298,6 @@ class TestWriteScoredTreeWithDB:
              patch("f005_context_scoring.score_tree.build_reward_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.build_turns_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.build_conversation_context_lookup", return_value={}), \
-             patch("f005_context_scoring.score_tree.embed_texts", return_value=[]), \
              patch("f005_context_scoring.score_tree._load_state_keywords", return_value={}):
             mock_tree.return_value = {
                 "state_id": "root", "branch_key": {}, "inherited_facts": [],
@@ -350,7 +324,6 @@ class TestWriteScoredTreeWithDB:
              patch("f005_context_scoring.score_tree.build_reward_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.build_turns_lookup", return_value={}), \
              patch("f005_context_scoring.score_tree.build_conversation_context_lookup", return_value={}), \
-             patch("f005_context_scoring.score_tree.embed_texts", return_value=[[0.1]*EMBEDDING_DIM]), \
              patch("f005_context_scoring.score_tree._load_state_keywords", return_value={}):
             mock_tree.return_value = {
                 "state_id": "root", "branch_key": {}, "inherited_facts": [],

@@ -165,7 +165,7 @@ def _phase3_4_score_db(tree, new_ids, dsn):
     reward_lookup = build_reward_lookup()
     turns_lookup = build_turns_lookup()
     conv_ctx_lookup = build_conversation_context_lookup(tree, turns_lookup)
-    scored = score_tree(tree, context_lookup, reward_lookup, conv_ctx_lookup, embed_fn=None)
+    scored = score_tree(tree, context_lookup, reward_lookup, conv_ctx_lookup)
 
     all_nodes = _collect_tree_nodes(scored)
     all_sentences = _collect_tree_sentences(scored)
@@ -207,13 +207,17 @@ def _phase3_4_score_db(tree, new_ids, dsn):
             affected_existing.append(row)
 
     if new_sentences:
-        texts = [s.get("conversation_context", "") or s.get("script_text", "") for s, _ in new_sentences]
-        vecs = embed_texts(texts)
-        db_rows = []
-        for (_, row), vec in zip(new_sentences, vecs, strict=False):
-            row["embedding"] = vec or [0.0] * EMBEDDING_DIM
-            db_rows.append(row)
-        db.upsert_sentences(db_rows)
+        EMBED_INSERT_BATCH = 10
+        for i in range(0, len(new_sentences), EMBED_INSERT_BATCH):
+            chunk = new_sentences[i : i + EMBED_INSERT_BATCH]
+            texts = [s.get("conversation_context", "") or s.get("script_text", "") for s, _ in chunk]
+            vecs = embed_texts(texts)
+            db_rows = []
+            for (_, row), vec in zip(chunk, vecs, strict=False):
+                row["embedding"] = vec or [0.0] * EMBEDDING_DIM
+                db_rows.append(row)
+            if db_rows:
+                db.upsert_sentences(db_rows)
     _log.info("Sentences: %d new (embedded), %d affected-existing (score update)",
               len(new_sentences), len(affected_existing))
 

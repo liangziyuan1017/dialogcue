@@ -56,7 +56,6 @@ def run_score_tree(tree: dict, aligned: list[dict], rewarded: list[dict], with_e
     print(f"{'=' * 60}")
 
     import f005_context_scoring.score_tree as st
-    from f007_infrastructure.embeddings import embed_texts
 
     context_lookup = st.build_context_lookup(aligned)
     reward_lookup = st.build_reward_lookup(rewarded)
@@ -64,8 +63,7 @@ def run_score_tree(tree: dict, aligned: list[dict], rewarded: list[dict], with_e
     turns_lookup = st.build_turns_lookup(aligned)
     conv_ctx_lookup = st.build_conversation_context_lookup(tree, turns_lookup)
 
-    embed_fn = embed_texts if with_embeddings else None
-    scored = st.score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup, embed_fn=embed_fn)
+    scored = st.score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup)
 
     sentence_count = 0
     def _count(node):
@@ -107,29 +105,11 @@ def run_build_db(scored: dict, aligned: list[dict], rewarded: list[dict], dsn: s
 
     all_sentences = st._collect_tree_sentences(scored)
 
-    print(f"  Embedding {len(all_sentences)} sentences...")
-    texts = [s.get("conversation_context", "") or s.get("script_text", "") for s in all_sentences]
-    vecs = embed_texts(texts)
-
-    db_sentences = []
     orphan_sigs: set[str] = set()
-    for s, vec in zip(all_sentences, vecs, strict=True):
+    for s in all_sentences:
         node_sig = s.get("_node_path_sig", "")
-        node_id = node_sig_to_id.get(node_sig)
-        if node_id is None:
+        if node_sig_to_id.get(node_sig) is None:
             orphan_sigs.add(node_sig)
-            continue
-        db_sentences.append({
-            "script_id": s.get("script_id", ""),
-            "node_id": node_id,
-            "script_text": s.get("script_text", ""),
-            "bg_bitmask_int": s.get("bg_bitmask_int", 0),
-            "win_rate": s.get("win_rate", 0),
-            "sas": s.get("sas", 0),
-            "bg_background": s.get("bg_background"),
-            "conversation_context": s.get("conversation_context", ""),
-            "embedding": vec or [0.0] * EMBEDDING_DIM,
-        })
 
     if orphan_sigs:
         raise ValueError(
@@ -137,8 +117,30 @@ def run_build_db(scored: dict, aligned: list[dict], rewarded: list[dict], dsn: s
             f"{sorted(orphan_sigs)[:10]}"
         )
 
-    db.upsert_sentences(db_sentences)
-    print(f"  Upserted {len(db_sentences)} sentences with embeddings.")
+    EMBED_INSERT_BATCH = 10
+    print(f"  Embedding + upserting {len(all_sentences)} sentences in batches of {EMBED_INSERT_BATCH}...")
+    total_upserted = 0
+    for i in range(0, len(all_sentences), EMBED_INSERT_BATCH):
+        chunk = all_sentences[i : i + EMBED_INSERT_BATCH]
+        texts = [s.get("conversation_context", "") or s.get("script_text", "") for s in chunk]
+        vecs = embed_texts(texts)
+        db_sentences = []
+        for s, vec in zip(chunk, vecs, strict=True):
+            db_sentences.append({
+                "script_id": s.get("script_id", ""),
+                "node_id": node_sig_to_id[s.get("_node_path_sig", "")],
+                "script_text": s.get("script_text", ""),
+                "bg_bitmask_int": s.get("bg_bitmask_int", 0),
+                "win_rate": s.get("win_rate", 0),
+                "sas": s.get("sas", 0),
+                "bg_background": s.get("bg_background"),
+                "conversation_context": s.get("conversation_context", ""),
+                "embedding": vec or [0.0] * EMBEDDING_DIM,
+            })
+        if db_sentences:
+            db.upsert_sentences(db_sentences)
+            total_upserted += len(db_sentences)
+    print(f"  Upserted {total_upserted} sentences with embeddings.")
 
     if KEYWORDS_PATH.exists():
         keywords = _load_json(KEYWORDS_PATH)
