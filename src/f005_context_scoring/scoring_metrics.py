@@ -1,4 +1,7 @@
 import numpy as np
+from scipy.sparse import csr_matrix
+from scipy.sparse.linalg import norm as _sparse_norm
+import jieba
 
 from f007_infrastructure.config import get as _cfg
 
@@ -161,36 +164,15 @@ def cosine_similarity(a, b):
     return float(dot / (norm_a * norm_b))
 
 
-def _char_ngrams(text, n=2):
-    chars = list(text)
-    return ["".join(chars[i:i+n]) for i in range(len(chars) - n + 1)]
-
-
-def _build_tfidf_matrix(texts, ngram_range=2):
-    doc_ngrams = [_char_ngrams(t, ngram_range) for t in texts]
-    vocab = {}
-    for ngrams in doc_ngrams:
-        for ng in ngrams:
-            if ng not in vocab:
-                vocab[ng] = len(vocab)
-    n_docs = len(texts)
-    df = np.zeros(len(vocab))
-    for ngrams in doc_ngrams:
-        seen = set()
-        for ng in ngrams:
-            if ng not in seen:
-                df[vocab[ng]] += 1
-                seen.add(ng)
-    idf = np.log((n_docs + 1) / (df + 1)) + 1
-    matrix = np.zeros((n_docs, len(vocab)))
-    for i, ngrams in enumerate(doc_ngrams):
-        for ng in ngrams:
-            matrix[i, vocab[ng]] += 1
-    norms = matrix.sum(axis=1, keepdims=True)
-    norms[norms == 0] = 1
-    tf = matrix / norms
-    tfidf = tf * idf
-    return tfidf
+def _word_ngrams(text, n=2):
+    words = list(jieba.cut(text))
+    words = [w.strip() for w in words if w.strip()]
+    if n == 1:
+        return words
+    result = []
+    for i in range(len(words) - n + 1):
+        result.append("".join(words[i:i+n]))
+    return result
 
 
 def compute_sas_for_pool(sentences, embeddings_map=None):
@@ -198,11 +180,47 @@ def compute_sas_for_pool(sentences, embeddings_map=None):
     if len(sentences) <= 1:
         return [1.0] * len(sentences)
     texts = [s.get("script_text", "") for s in sentences]
-    tfidf = _build_tfidf_matrix(texts, ngram_range=ngram_n)
     ref_idx = max(range(len(sentences)), key=lambda i: sentences[i].get("win_rate", 0))
+    ref_ngrams = set(_word_ngrams(texts[ref_idx], ngram_n))
+    vocab = {ng: i for i, ng in enumerate(sorted(ref_ngrams))}
+    n_vocab = len(vocab)
+    if n_vocab == 0:
+        return [0.0] * len(sentences)
+    n_docs = len(texts)
+    doc_ngrams = []
+    for t in texts:
+        ngrams = _word_ngrams(t, ngram_n)
+        doc_ngrams.append([ng for ng in ngrams if ng in vocab])
+    df = np.zeros(n_vocab)
+    for ngrams in doc_ngrams:
+        for ng in set(ngrams):
+            df[vocab[ng]] += 1
+    idf = np.log((n_docs + 1) / (df + 1)) + 1
+    rows, cols, data = [], [], []
+    for i, ngrams in enumerate(doc_ngrams):
+        counts = {}
+        for ng in ngrams:
+            counts[vocab[ng]] = counts.get(vocab[ng], 0) + 1
+        for col, cnt in counts.items():
+            rows.append(i)
+            cols.append(col)
+            data.append(cnt)
+    if not data:
+        return [0.0] * len(sentences)
+    counts_mat = csr_matrix((data, (rows, cols)), shape=(n_docs, n_vocab), dtype=np.float64)
+    norms = counts_mat.sum(axis=1)
+    norms[norms == 0] = 1
+    tf = counts_mat.multiply(1.0 / norms)
+    tfidf = tf.multiply(idf).tocsr()
     ref_vec = tfidf[ref_idx]
+    ref_norm = float(_sparse_norm(ref_vec))
+    row_norms = _sparse_norm(tfidf, axis=1).ravel()
+    dots = tfidf.dot(ref_vec.T).toarray().ravel()
     scores = []
     for i in range(len(sentences)):
-        sim = cosine_similarity(ref_vec, tfidf[i])
+        if ref_norm == 0.0 or row_norms[i] == 0.0:
+            scores.append(0.0)
+            continue
+        sim = float(dots[i]) / (ref_norm * row_norms[i])
         scores.append(min(max(sim, 0.0), 1.0))
     return scores

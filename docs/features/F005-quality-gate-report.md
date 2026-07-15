@@ -28,7 +28,7 @@ Spec: `docs/features/F005-context-tagging-quality-scoring.md`
 | 5 | AC-5: Blending formula correct | ✅ | `weight = n/(n+2)` | `test_scored_invariants.py` |
 | 6 | AC-6: win_rate_node exists and ∈ [0,1] | ✅ | `compute_node_hwr` | `test_scored_invariants.py` |
 | 7 | AC-7: sas ≥ 0 and ≤ 1 | ✅ | Cosine similarity | `test_scored_invariants.py` |
-| 8 | AC-8: SAS via char bigram TF-IDF | ✅ | `scoring_metrics.py` (ADR-020) | `test_score_tree_scoring.py` |
+| 8 | AC-8: SAS via jieba word bigram TF-IDF (ref-vocab-restricted) | ✅ | `scoring_metrics.py` (ADR-020) | `test_score_tree_scoring.py` |
 | 9 | AC-9: UC=0, CSI=0 deferred | ✅ | `score_tree.py` | `test_scored_invariants.py` |
 | 10 | AC-10: Bitmask AND filtering | ✅ | `(sb & qb) == sb` | `test_score_tree_scoring.py` |
 | 11 | AC-11: All 31 conversations | ✅ | E2E | `test_score_tree_integration.py` |

@@ -6,7 +6,7 @@ feature_ids: [F006, F007b]
 topics: [vector-search, pgvector, hnsw, retrieval, performance]
 status: accepted
 created: 2026-07-01
-updated: 2026-07-01
+updated: 2026-07-15
 schema_version: 2
 ---
 
@@ -41,6 +41,7 @@ The new flow:
 
 ## Impact
 
+- **`scoring_metrics.py`**: Replaced `_char_ngrams` with `_word_ngrams` (jieba segmentation). Removed `_build_tfidf_matrix`. `compute_sas_for_pool` now builds TF-IDF restricted to reference document's vocabulary only — fixes OOM from character bigram vocabulary explosion on Chinese text (matrix shrinks from `(n_docs, millions)` to `(n_docs, |ref_ngrams|)`).
 - **`db.py`**: New `search_by_nodes()` method. `get_vectors()` retained for backward compat but no longer called in serving path.
 - **`retrieval_engine.py`**: `recommend()` uses `search_by_nodes()` when both `db` and `query_vec` are available; falls back to per-node fetch when DB available but no query vector.
 - **`retrieval_ranking.py`**: `rank_sentences()` checks for pre-computed `vec_score` on pool entries; skips Python cosine if present. `compute_vec_similarity()` retained as fallback.

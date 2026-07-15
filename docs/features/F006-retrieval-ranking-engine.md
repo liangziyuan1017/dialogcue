@@ -216,7 +216,7 @@ See [implementation-plan.md](implementation-plan.md)
 - **Weighted fusion ranking**: `final_score = 0.35 × win_rate + 0.25 × vec_score + 0.10 × sas + 0.10 × bg_boost + 0.20 × bitmask_score`. All signals contribute simultaneously rather than staged sorting. `vec_score` from pgvector captures cross-conversation semantic similarity. Dual `limited`/`full` strategy deleted by ADR-024.
 - **Context missing fallback**: Set `vec_score = 0`, redistribute weight to `win_rate`. −0.1 confidence.
 - **bg_background as soft boost**: Shifts ranking toward profile-matching sentences without excluding viable ones.
-- **SAS as intra-pool diversity**: Intra-pool similarity to highest-HWR sentence — redundancy avoidance, not relevance. Uses TF-IDF char-bigram (no API).
+- **SAS as intra-pool diversity**: Intra-pool similarity to highest-HWR sentence — redundancy avoidance, not relevance. Uses jieba word bigram TF-IDF with reference-vocabulary restriction (no API).
 - **Confidence from fallback depth**: Additive formula with `fallbacks` list for transparency.
 - **DeepSeek embedding in hot path**: `vec_score` requires one embedding API call per recommendation. This is the only API call in the hot path (state extraction is done by the caller).
 

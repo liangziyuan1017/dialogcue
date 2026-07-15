@@ -20,7 +20,7 @@ Four design choices for F005:
 
 2. **Intersection merge for multi-source sentences**: Sentences with multiple source_call_ids use bitwise AND of all source constraints. Conservative: only universally-present constraints are set.
 
-3. **HWR (Laplace-smoothed) + SAS (TF-IDF cosine similarity)**: Two quality scores per sentence. UC and CSI deferred. SAS uses local character bigram TF-IDF + cosine similarity (no external API) for intra-pool script diversity.
+3. **HWR (Laplace-smoothed) + SAS (TF-IDF cosine similarity)**: Two quality scores per sentence. UC and CSI deferred. SAS uses jieba word bigram TF-IDF + cosine similarity with reference-vocabulary restriction (no external API) for intra-pool script diversity.
 
 4. **BGE-M3 embedding for conversation context similarity**: Compute `embed(conversation_context)` per sentence via Ollama bge-m3 → 1024-dim float32 vector stored in `embedding` field. At retrieval time (F006), pgvector cosine similarity provides `vec_score` for cross-conversation semantic matching.
 
@@ -29,8 +29,8 @@ Four design choices for F005:
 - Bitmask enables O(1) AND filtering at retrieval time vs O(n) dict comparison
 - Intersection merge is the correct conservative semantics: a sentence's bitmask represents constraints present in ALL its source conversations, avoiding false specificity
 - Laplace smoothing `(wins+1)/(total+2)` handles sparse data without 0/0
-- SAS uses character bigram TF-IDF + cosine similarity (numpy only), no external API dependency. Sufficient for intra-node script similarity (diversity measure).
-- BGE-M3 embedding provides cross-conversation semantic matching that TF-IDF char-bigram cannot achieve — it captures meaning beyond surface character overlap. pgvector HNSW index enables efficient approximate nearest neighbor search at retrieval time.
+- SAS uses jieba word bigram TF-IDF + cosine similarity (numpy only), no external API dependency. Vocabulary restricted to reference document's ngrams only — avoids OOM from character bigram explosion on Chinese text. Sufficient for intra-node script similarity (diversity measure).
+- BGE-M3 embedding provides cross-conversation semantic matching that TF-IDF word-bigram cannot achieve — it captures meaning beyond surface word overlap. pgvector HNSW index enables efficient approximate nearest neighbor search at retrieval time.
 
 ### Bitmask field history
 
@@ -68,7 +68,7 @@ Four design choices for F005:
 | Union merge for multi-source | Too permissive — sentence used in both mortgage and non-mortgage contexts would require mortgage, excluding valid non-mortgage queries |
 | Per-source bitmask list | Breaks O(1) single-integer filtering; requires list iteration |
 | No smoothing (raw wins/total) | 0/0 for unused sentences; 1/1=1.0 for single R=1 is overconfident |
-| DeepSeek embeddings for SAS | SAS measures intra-pool diversity; TF-IDF char-bigram is sufficient and deterministic |
+| DeepSeek embeddings for SAS | SAS measures intra-pool diversity; TF-IDF word-bigram is sufficient and deterministic |
 | TF-IDF for conversation context similarity | Too shallow for cross-conversation semantic matching — character overlap misses meaning |
 | Compute UC/CSI now | Requires causal analysis and data not available at current scale |
 | Encode numeric fields as bitmask bits | Balance/count fields are numeric (range/proximity filtering), not suitable for binary encoding |
