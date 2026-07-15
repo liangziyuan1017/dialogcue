@@ -9,13 +9,13 @@
 - Every sentence has `win_rate` ≥ 0 and ≤ 1
 - `win_rate` uses Laplace smoothing: (wins + 1) / (total + 2)
 - Every sentence has `sas` ≥ 0 and ≤ 1
-- `sas` computed via DeepSeek embedding cosine similarity
+- `sas` computed via jieba word bigram TF-IDF cosine similarity (reference-vocabulary-restricted)
 - `uplift_score` = 0 and `csi` = 0 with `deferred: true` on every sentence
 - Bitmask AND filtering: sentence with bitmask S is compatible with context bitmask C iff (S & C) == S
 - All 31 conversations represented in scored tree
 - Output file: `/src/decision_tree_scored.json`
-**Architecture:** Walk decision_tree.json, for each sentence look up source_call_ids in output_aligned.py (context) and output_rewarded.py (reward). Compute bitmask via intersection of source constraints, HWR via Laplace-smoothed reward ratio, SAS via DeepSeek embedding cosine similarity against best-in-node reference. See ADR-020.
-**Tech Stack:** Python, pytest, DeepSeek API (via existing `llm_client.py`), numpy
+**Architecture:** Walk decision_tree.json, for each sentence look up source_call_ids in output_aligned.py (context) and output_rewarded.py (reward). Compute bitmask via intersection of source constraints, HWR via Laplace-smoothed reward ratio, SAS via jieba word bigram TF-IDF cosine similarity against best-in-node reference (reference-vocabulary-restricted). See ADR-020.
+**Tech Stack:** Python, pytest, jieba, numpy
 
 ---
 
@@ -67,15 +67,15 @@
 **Step 4: Run test to verify it passes**
 **Step 5: Commit**
 
-### Task 5: SAS Computation (DeepSeek Embeddings)
+### Task 5: SAS Computation (Jieba Word Bigram TF-IDF)
 
 **Files:**
 - Modify: `src/f005_context_scoring/score_tree.py`
 - Modify: `src/test_score_tree.py`
 
-**Step 1: Write failing test** — test `_cosine_similarity(a, b)` returns 1.0 for identical vectors, 0.0 for orthogonal, correct value for known vectors; test `_compute_sas_for_pool(sentences, embeddings)` returns 1.0 for single-sentence pool, correct values for multi-sentence pool
+**Step 1: Write failing test** — test `_cosine_similarity(a, b)` returns 1.0 for identical vectors, 0.0 for orthogonal, correct value for known vectors; test `_compute_sas_for_pool(sentences)` returns 1.0 for single-sentence pool, correct values for multi-sentence pool
 **Step 2: Run test to verify it fails**
-**Step 3: Implement** — `_get_embeddings(texts)` calls DeepSeek embedding API via llm_client; `_cosine_similarity()` using numpy; `_compute_sas_for_pool()` finds reference (highest HWR), computes cosine similarity for each sentence against reference
+**Step 3: Implement** — `_word_ngrams(text, n)` uses jieba.cut() for Chinese word segmentation; `_compute_sas_for_pool()` builds ref-vocabulary-restricted TF-IDF, finds reference (highest HWR), computes cosine similarity for each sentence against reference
 **Step 4: Run test to verify it passes**
 **Step 5: Commit**
 

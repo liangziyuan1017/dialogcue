@@ -188,9 +188,9 @@ def recommend(inherited_facts, branch_key_values, inherited_emotions, query_bitm
 - [ ] `bg_background` soft boost computed correctly (industry +0.05, education +0.02, debt +0.03, age +0.02)
 - [ ] Confidence formula: 1.0 − (key_drops×0.1) − (descend_levels×0.05) − (bitmask_relax×0.05) − (context_missing×0.1), minimum 0.0
 - [ ] No LLM call for state extraction in hot path (state is pre-extracted by caller)
-- [ ] DeepSeek embedding API call for `vec_score` is the only API in hot path
+- [ ] bge-m3 embedding API call (via Ollama) for `vec_score` is the only API in hot path
 - [ ] All keys reachable via some (inherited_facts, branch_key_values, inherited_emotions) pair
-- [ ] Conversation context cosine similarity computed via pgvector on DeepSeek embeddings
+- [ ] Conversation context cosine similarity computed via pgvector on bge-m3 embeddings
 - [ ] Output file: `/src/f006_retrieval_engine/retrieval_engine.py`
 
 ## Dependencies
@@ -218,7 +218,7 @@ See [implementation-plan.md](implementation-plan.md)
 - **bg_background as soft boost**: Shifts ranking toward profile-matching sentences without excluding viable ones.
 - **SAS as intra-pool diversity**: Intra-pool similarity to highest-HWR sentence — redundancy avoidance, not relevance. Uses jieba word bigram TF-IDF with reference-vocabulary restriction (no API).
 - **Confidence from fallback depth**: Additive formula with `fallbacks` list for transparency.
-- **DeepSeek embedding in hot path**: `vec_score` requires one embedding API call per recommendation. This is the only API call in the hot path (state extraction is done by the caller).
+- **bge-m3 embedding in hot path**: `vec_score` requires one embedding API call (via Ollama) per recommendation. This is the only API call in the hot path (state extraction is done by the caller).
 
 ## Files
 
