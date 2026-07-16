@@ -174,7 +174,13 @@ def _collect_tree_nodes(tree, parent_id_map=None):
 
 def _collect_tree_sentences(tree):
     sentences = []
+    visited: set[str] = set()
     def walk(node, parent_path=""):
+        nid = node.get("node_id", "")
+        if nid and nid in visited:
+            return
+        if nid:
+            visited.add(nid)
         state_id = node.get("state_id", "")
         path_sig = f"{parent_path}/{state_id}" if parent_path else state_id
         for s in node.get("sentence_pool", []):

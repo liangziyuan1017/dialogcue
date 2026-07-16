@@ -26,3 +26,4 @@ Add a `_dedup_pool(pool)` helper that deduplicates by `script_text` (keeping fir
 
 - `_dedup_pool` is O(n) per call using a set — negligible cost vs tree building.
 - If two sentences with identical text but genuinely different scoring profiles exist, only the first is kept. In practice this does not occur because scoring is deterministic per script_text.
+- **Root cause since addressed (2026-07-16)**: `_propagate_sentences` removed from `build_tree` (last caller; production never used it), and `_collect_tree_sentences` now dedups by `node_id` so deep-copied DAG subtrees are counted once. This `_dedup_pool` boundary guard remains as defense-in-depth within individual pools.

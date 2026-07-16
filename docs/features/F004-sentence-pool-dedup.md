@@ -42,3 +42,7 @@ Add deduplication at each of the three high-risk transform steps so that `senten
 ## Dependencies
 
 - F004 (parent)
+
+## Resolution (2026-07-16)
+
+Root cause fully addressed: `_propagate_sentences` removed from `build_tree` (last caller; production `write_decision_tree` never used it), and `_collect_tree_sentences` (`score_tree.py`) now dedups the walk by `node_id` so deep-copied DAG subtrees are counted/embedded once. The within-pool `_dedup_pool` guards from this feature remain as defense-in-depth.

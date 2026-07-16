@@ -140,7 +140,9 @@ The global post-transform chain in `write_decision_tree` is removed (supersedes 
 - `_consolidate_endpoints` — endings placed directly into `normal_end` at insert.
 - `_ensure_leaf_termination` — removed (was creating duplicate `abrupt_end` nodes per leaf). Replaced by `_link_leaves_to_abrupt_end` + `_remove_stray_abrupt_ends`; leaves without children are implicitly terminated at root's `abrupt_end`.
 
-`_propagate_sentences` (empty-pool inheritance) and `_sort_keywords` remain as cheap final touches or fold into insert.
+`_sort_keywords` remains as a cheap final touch. `_propagate_sentences` was removed from `build_tree` (test helper) for consistency with `write_decision_tree` (production), which never used propagation — empty-pool nodes are handled at retrieval time by `descend_for_sentences` (ADR-034).
+
+**`_collect_tree_sentences` dedup by `node_id`** (`score_tree.py`): `add_dialog_to_tree` reattaches existing registry nodes under new parents, forming an in-memory DAG. `json.dump` deep-copies shared subtrees into the serialized JSON, so `_collect_tree_sentences` (which feeds `build_tree_and_db` / `add_records` embedding) re-counted and re-embedded each copy. The walk now skips any `node_id` already visited, collapsing duplicates to unique nodes. This is the root-cause fix for the sentence-count inflation observed at scale (840,000 placements → ~28,000 unique at 1,700 records). JSON storage still contains deep-copied subtrees (harmless to retrieval); embedding and DB writes drop to unique `script_id`s.
 
 ### Role tagging (ADR-030, new)
 

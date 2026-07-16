@@ -23,7 +23,7 @@ The retrieval engine receives:
 - **Current customer turn**: the utterance text
 - **Accumulated facts**: the set of facts identified so far (from `inherited_facts`)
 - **Customer background**: `bg_bitmask` + `bg_background` (from F005's context tagging)
-- **Conversation context**: last ~100 words from the customer-collector conversation
+- **Conversation context**: candidate side = `context_window.conversation_turns` turns before the script (build time); query side = last 100 words via `_last_n_words` (request time)
 
 ### Architecture: Fact-Set Index → Aggregate Pool → Rank
 
@@ -104,12 +104,15 @@ RANKING_WEIGHTS = {
 
 ### Conversation Context Similarity (pgvector)
 
-Each sentence has `source_call_ids` → look up original conversations, extract ~100 words before the sentence was used. Store as `conversation_context` field per sentence in the scored tree. At F005 build time, compute `embed(conversation_context)` via bge-m3 embedding API → 1024-dim vector stored in PostgreSQL `embedding` column with pgvector HNSW index.
+Each sentence has `source_call_ids` → look up original conversations, extract the `context_window.conversation_turns` turns immediately before the sentence was used (currently 5; was 20). Store as `conversation_context` field per sentence in the scored tree. At F005 build time, compute `embed(conversation_context)` via bge-m3 embedding API → 1024-dim vector stored in PostgreSQL `embedding` column with pgvector HNSW index.
 
 At retrieval time:
-1. Compute `embed(query_context)` via bge-m3 embedding API for the current conversation's last ~100 words
-2. **SQL-side scoring**: `db.search_by_nodes(query_vec, node_ids)` computes `vec_score = 1 - (embedding <=> query_vec)` in PostgreSQL using pgvector's cosine distance operator, filtered by `node_id = ANY(...)`, ordered by `vec_score DESC`
-3. Use pre-computed `vec_score` as ranking signal in weighted fusion (no vector transfer to Python)
+1. **Query-side windowing**: the live `conversation_context` is truncated to its last 100 words via `_last_n_words()` (`src/f009_api_server/server.py`) before embedding, so `query_vec` represents a bounded recent context window regardless of how much history the caller sends. Applied at both embedding call sites (`/recommend` and `_run_turn`, the latter covering `/api/v1/recommend` and SocketIO `customer_turn`).
+2. Compute `embed(query_context)` via bge-m3 embedding API for the windowed last-100-words context
+3. **SQL-side scoring**: `db.search_by_nodes(query_vec, node_ids)` computes `vec_score = 1 - (embedding <=> query_vec)` in PostgreSQL using pgvector's cosine distance operator, filtered by `node_id = ANY(...)`, ordered by `vec_score DESC`
+4. Use pre-computed `vec_score` as ranking signal in weighted fusion (no vector transfer to Python)
+
+> **Window asymmetry**: the candidate side windows by **turn count** (`context_window.conversation_turns` = 20 turns, `score_tree.py:71`); the query side windows by **word count** (100 words, `server.py:_EMBED_CONTEXT_MAX_WORDS`). Both are bounded; units differ. Empty context short-circuits to a zero vector (Fallback 5).
 
 See ADR-028 for rationale.
 

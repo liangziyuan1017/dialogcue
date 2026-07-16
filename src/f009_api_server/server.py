@@ -38,6 +38,13 @@ from f009_api_server.tag_mapping import map_cust_tags_to_context
 
 _REQUEST_MAX_CHARS = _cfg("server.request_max_chars", 8000)
 
+_EMBED_CONTEXT_MAX_WORDS = 100
+
+
+def _last_n_words(text: str, n: int = _EMBED_CONTEXT_MAX_WORDS) -> str:
+    words = text.split()
+    return " ".join(words[-n:]) if words else ""
+
 
 class ConversationState(BaseModel):
     branch_key: dict = {}
@@ -273,7 +280,7 @@ async def recommend_endpoint(req: RecommendRequest):
     embed_fallback = False
     if req.conversation_context:
         try:
-            query_vec = embed_single(req.conversation_context)
+            query_vec = embed_single(_last_n_words(req.conversation_context))
         except Exception:
             query_vec = [0.0] * EMBEDDING_DIM
             embed_fallback = True
@@ -501,7 +508,7 @@ async def _run_turn(session_id: str, utterance: str, conv_ctx: str) -> dict | No
 
         query_bitmask = _compute_bitmask(session["context"])
         try:
-            query_vec = embed_single(conv_ctx) if conv_ctx else [0.0] * EMBEDDING_DIM
+            query_vec = embed_single(_last_n_words(conv_ctx)) if conv_ctx else [0.0] * EMBEDDING_DIM
         except Exception:
             query_vec = [0.0] * EMBEDDING_DIM
 

@@ -117,7 +117,7 @@ def run_build_db(scored: dict, aligned: list[dict], rewarded: list[dict], dsn: s
             f"{sorted(orphan_sigs)[:10]}"
         )
 
-    EMBED_INSERT_BATCH = 10
+    EMBED_INSERT_BATCH = 128
     print(f"  Embedding + upserting {len(all_sentences)} sentences in batches of {EMBED_INSERT_BATCH}...")
     total_upserted = 0
     for i in range(0, len(all_sentences), EMBED_INSERT_BATCH):

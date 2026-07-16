@@ -75,7 +75,7 @@ End-to-end incremental append implemented and verified. Three commits land the o
 
 - **Phase 0** (`check_new_records.py`): gates on `call_id` uniqueness vs existing `output_rewarded.py` + intra-batch dedup + `check_record` format validation.
 - **Phase 1a–1e** (`add_records.py`): cleaning (LLM steps 1–3) → merge extra fields → `label_new_records` (taxonomy recompute over all labeled records) → schema alignment + relabel → reward labeling. Each stage appends only new `call_id`s to existing outputs.
-- **Phase 2** (`build_decision_tree.py`): `merge_dialogs` loads existing tree + merge cache, adds new branches/sentences only. `merge_dialogs` transform chain fixed (CR-2): `_propagate_sentences` → `_deduplicate_nodes`. Added `write_dialog_records_incremental`.
+- **Phase 2** (`build_decision_tree.py`): `merge_dialogs` loads existing tree + merge cache, adds new branches/sentences only. `merge_dialogs` transform chain fixed (CR-2): `_deduplicate_nodes` (propagation removed — redundant with ADR-034 descend-at-retrieval). Added `write_dialog_records_incremental`.
 - **Phase 3+4** (`add_records.py` + `db.py`): score tree → targeted DB upsert. New DB methods: `get_existing_path_signatures`, `get_existing_script_ids`, `upsert_nodes`, `upsert_sentences`, `update_sentence_scores`, `upsert_taxonomy_keywords`, `dedup_taxonomy_keywords`, `create_taxonomy_unique_index` (MD5 hash natural key). Embed only new sentences; recompute scores only for affected existing sentences.
 - **Phase 5**: taxonomy keyword upsert via `db.upsert_taxonomy_keywords` (replaces broken inline insert in `score_tree.py`).
 - **Post-success hook**: append `new_data.jsonl` records to `matched_data.jsonl`.

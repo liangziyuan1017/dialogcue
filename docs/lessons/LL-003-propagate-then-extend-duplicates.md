@@ -27,3 +27,9 @@ Added `_dedup_pool()` after every `.extend()` in the three transforms. Keyed on 
 ## Guard
 
 Any future transform that merges sentence pools must call `_dedup_pool()` after the merge. Search for `.extend(` on `sentence_pool` as a code review trigger.
+
+## Resolution (2026-07-16)
+
+The root cause is now fully addressed:
+- `_propagate_sentences` removed from `build_tree` (`build_decision_tree.py`) — the last caller. Production (`write_decision_tree`) never used it.
+- `_collect_tree_sentences` (`score_tree.py`) now dedups the walk by `node_id`, so deep-copied DAG subtrees (from `add_dialog_to_tree` registry reattachment + `json.dump`) are counted/embedded once. This fixes the cross-node duplication that the `_dedup_pool` band-aid could not (it only deduped within a single pool, not across deep-copied subtrees).

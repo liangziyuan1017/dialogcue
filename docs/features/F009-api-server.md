@@ -185,7 +185,7 @@ Fallback: bitmask relaxation (drop lowest bit, -0.05 confidence per relaxation).
 
 ### Step 6: Vector Semantic Match (pgvector)
 
-Embed `conversation_context` via bge-m3 embedding model (Ollama) → 1024-dim vector → cosine similarity against candidate `embedding` columns.
+Embed `conversation_context` via bge-m3 embedding model (Ollama) → 1024-dim vector → cosine similarity against candidate `embedding` columns. The live `conversation_context` is first truncated to its **last 100 words** via `_last_n_words()` (server.py, `_EMBED_CONTEXT_MAX_WORDS = 100`) before embedding, bounding `query_vec` to a recent context window regardless of how much history the caller sends. Applied at both embedding call sites (`/recommend` and `_run_turn`).
 
 **Latency**: ~50-100ms (bge-m3 embed via Ollama) + ~2ms (pgvector)
 

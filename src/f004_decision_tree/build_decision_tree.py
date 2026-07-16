@@ -31,7 +31,6 @@ from f004_decision_tree.tree_transforms import (  # noqa: F401  (re-exported for
     _make_identity,
     _merge_sibling_facts,
     _propagate_facts,
-    _propagate_sentences,
     _prune_empty_subtrees,
     _search_node,
     _sort_keywords,
@@ -399,7 +398,6 @@ def build_tree(records, merge_decisions=None):
     for record in records:
         add_dialog_to_tree(tree, record, registry, merge_decisions=merge_decisions)
     _propagate_facts(tree, [], [])
-    _propagate_sentences(tree)
     _prune_empty_subtrees(tree)
     _consolidate_endpoints(tree)
     _sort_keywords(tree)

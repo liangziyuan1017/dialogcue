@@ -70,7 +70,7 @@ batch_size:
 
 # ── Context Windows ──
 context_window:
-  conversation_turns: 20
+  conversation_turns: 5
   script_prefix_length: 50
   reward_last_n_turns: 6
   analysis_turns_before: 3
