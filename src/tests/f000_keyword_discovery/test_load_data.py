@@ -3,7 +3,7 @@ from f000_keyword_discovery.load_data import get_turns_by_role, load_records
 
 def test_load_records_count():
     records = load_records()
-    assert len(records) == 31
+    assert len(records) == 105
 
 
 def test_load_records_has_dialog():

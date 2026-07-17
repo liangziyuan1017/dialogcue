@@ -11,6 +11,11 @@ CLI_ENTRYPOINTS = {
     "serve_tree.py",
     "run_api.py",
     "check_tree.py",
+    "run_append.py",
+    "check_new_records.py",
+    "add_records.py",
+    "cleanup_db.py",
+    "augment_sentences.py",
 }
 
 

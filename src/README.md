@@ -195,7 +195,7 @@ These three stages are run by a single command: `build_tree_and_db.py`.
 
 | Stage | Input | Output | What it does |
 |-------|-------|--------|--------------|
-| 4 | `src/f003_reward_labeling/data/output_rewarded.py` | `src/f004_decision_tree/data/decision_tree.json` | Build decision tree: merge collector turns, split composite nodes, merge sibling facts, propagate, deduplicate |
+| 4 | `src/f003_reward_labeling/data/output_rewarded.py` | `src/f004_decision_tree/data/decision_tree.json` | Build decision tree: merge collector turns, split composite nodes, merge sibling facts, propagate, deduplicate, force end nodes to leaves, global `script_id` dedup (ADR-042) |
 | 5 | `src/f004_decision_tree/data/decision_tree.json`, `src/f001_schema_alignment/data/output_aligned.py`, `src/f003_reward_labeling/data/output_rewarded.py` | `src/f005_context_scoring/data/decision_tree_scored.json` | Score every sentence: bg_constraints, bitmask, win_rate (HWR), SAS, bg_background, conversation_context |
 | 6 | `src/f005_context_scoring/data/decision_tree_scored.json`, `src/f001_schema_alignment/data/output_aligned.py`, `src/f000_keyword_discovery/data/state_keywords.json` | PostgreSQL tables `nodes`, `sentences`, `taxonomy_keywords` | Upsert nodes, sentences + embeddings (Ollama bge-m3), taxonomy keywords |
 
@@ -284,6 +284,17 @@ python3 -m f004_decision_tree.check_tree --scored  # F004 + F005 checks
 ```
 
 Exit code 0 = all invariants pass. Exit code 1 = violations found (printed to stderr).
+
+### `script_id` uniqueness (ADR-042)
+
+Every `script_id` (`{call_id}_t{turn_index}`) must appear in exactly one node's `sentence_pool`. Enforced by:
+
+- **`_dedup_script_ids_global`** — final build pass that keeps the first occurrence of each `script_id` and drops later ones (DAG-safe walk via `id(node)` visited set). Wired into `write_decision_tree` / `build_tree` / `merge_dialogs` after `_consolidate_endpoints`.
+- **`_enforce_end_leaves`** — forces `normal_end` / `abrupt_end` to be leaves, eliminating the multi-parent mirror where a dialog subtree was cloned under an end node.
+- **`TestF004ScriptIdUniqueness::test_all_script_ids_unique`** — hard invariant test in `test_tree_invariants.py`.
+- **Defensive verify+repair tail** in `run_build_tree` (`build_tree_and_db.py`) — after writing and re-loading the tree, counts duplicate `script_id`s and re-runs `_dedup_script_ids_global` if any are found (catches stale-module builds).
+
+The `D4` invariant in `check_tree` warns on duplicate `script_id`s; `TestF004ScriptIdUniqueness` is the hard assert.
 
 ---
 
@@ -409,7 +420,7 @@ python3 src/build_tree_and_db.py
 | `f000_keyword_discovery/` | F000 | `discover_keywords.py`, `keyword_prompts.py`, `load_data.py` | `state_keywords.json`, `output_labeled.py` |
 | `f001_schema_alignment/` | F001 | `align_schema.py`, `relabel_state.py` | `output_aligned.py` |
 | `f003_reward_labeling/` | F003 | `analyze_collector_turns.py`, `analyze_customer_turns.py`, `define_willingness_levels.py`, `reward_label.py` | `output_rewarded.py` (deduplicated by `call_id`), `collector_analysis.json`, `customer_analysis.json` |
-| `f004_decision_tree/` | F004 | `build_decision_tree.py`, `merge_collector.py`, `tree_transforms.py`, `check_tree.py`, `serve_tree.py` | `decision_tree.json`, `merge_decisions.json`, `dialog_records.json` |
+| `f004_decision_tree/` | F004 | `build_decision_tree.py`, `merge_collector.py`, `tree_transforms.py` (`_enforce_end_leaves`, `_dedup_script_ids_global`), `check_tree.py`, `serve_tree.py` | `decision_tree.json` (unique `script_id`s), `merge_decisions.json`, `dialog_records.json` |
 | `f005_context_scoring/` | F005 | `score_tree.py`, `scoring_metrics.py`, `build_and_score_tree.py` | `decision_tree_scored.json` |
 | `f006_retrieval_engine/` | F006 | `retrieval_engine.py`, `retrieval_ranking.py` | — (runtime: PostgreSQL) |
 | `f007_infrastructure/` | F007 | `db.py`, `async_db.py`, `embeddings.py`, `llm_client.py`, `retry.py`, `config.py`, `logging.py`, `json_logging.py`, `backfill_embeddings.py`, `scheduler_state.py`, `migrations/runner.py` | — |

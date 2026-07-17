@@ -441,7 +441,7 @@ Builds a collector decision tree where nodes are collector action points, branch
 
 #### Design considerations & decisions
 
-- **ADR-011**: Nodes = collector action points, branches = customer (facts, emotions), willingness = sentence label. Eliminated chain structure (single-child ratio 14.4%). Consolidated `initial_contact` root + `normal_end` / `abrupt_end` terminals. Exactly 2 end nodes as direct children of root; leaf nodes without children are implicitly terminated at `abrupt_end` (no explicit `abrupt_end` child). `_ensure_leaf_termination` removed; `_remove_stray_abrupt_ends` strips stray `abrupt_end` children from non-root nodes after `_link_leaves_to_abrupt_end`.
+- **ADR-011**: Nodes = collector action points, branches = customer (facts, emotions), willingness = sentence label. Eliminated chain structure (single-child ratio 14.4%). Consolidated `initial_contact` root + `normal_end` / `abrupt_end` terminals. Exactly 2 end nodes as direct children of root; leaf nodes without children are implicitly terminated at `abrupt_end` (no explicit `abrupt_end` child). `_ensure_leaf_termination` removed; `_enforce_end_leaves` forces end nodes to leaves; `_remove_stray_abrupt_ends` strips stray `abrupt_end` children from non-root nodes after `_link_leaves_to_abrupt_end`.
 - **ADR-012**: `collector_action` field on sentence entries — UI display + O(1) action filtering without traversing to parent.
 - **ADR-015**: Local tree building (no global node reuse) — global reuse broke path continuity; match only against `current_node` children.
 - **ADR-016**: Fact-by-fact walking — walk each fact/emotion one at a time, creating single-key nodes; eliminates composite-node bugs.
@@ -465,7 +465,7 @@ Builds a collector decision tree where nodes are collector action points, branch
    - Place sentences: action split at insert for decision nodes → a:xxx children (role=action); unassigned → node pool
    - Closing sentences → normal_end.sentence_pool (gesture_type=ending)
    - Redundant-fact skip: if fact already in accumulated_facts, skip spawn
-3. Final touches: `_propagate_facts`, `_deduplicate_nodes`, `_ensure_leaf_termination`, `_consolidate_endpoints`, `_sort_keywords`
+3. Final touches: `_propagate_facts`, `_deduplicate_nodes`, `_enforce_end_leaves`, `_prune_empty_subtrees`, `_consolidate_endpoints`, `_dedup_script_ids_global`, `_sort_keywords`
 4. `merge_dialogs(tree_path, new_records)` — load-or-create, add each, save. Incremental = merge only new call_ids; full rebuild = delete tree file + merge all.
 
 **Output**: `/src/f004_decision_tree/data/decision_tree.json`
@@ -1650,6 +1650,7 @@ Authoritative decision records. Each is one line here; see
 | [ADR-035](docs/decisions/ADR-035-incremental-record-append-orchestrator.md) | Incremental record append orchestrator | Single orchestrator (`src/add_records.py`) appends new records at every stage without full rebuild; pre-check gate; targeted DB upsert; taxonomy dedup + MD5 unique index; post-success append hook. |
 | [ADR-036](docs/decisions/ADR-036-merge-decisions-cache-persistence.md) | Merge decisions cache persistence | Save `merge_decisions.json` after incremental tree build so LLM merge choices for new records are reproducible across runs. |
 | [ADR-037](docs/decisions/ADR-037-orphan-sentence-cleanup.md) | Orphan sentence cleanup | After DB upsert, delete sentences for new `call_id`s present in DB but absent from the final tree (orphans from partial/crashed runs). |
-| [ADR-038](docs/decisions/ADR-038-opening-node-action-children.md) | Opening node action children | The opening (root) node uses the same action-splitting logic as decision nodes — spawns `a:greeting`, `a:information`, and other action children instead of pooling into root's `sentence_pool`. Makes early collector turns visible in the tree UI dialog trace. |
+| [ADR-038](docs/decisions/ADR-038-opening-node-action-children.md) | Opening node action children | **Superseded by ADR-042.** The opening (root) node used action-splitting to spawn `a:greeting` / `a:information` children. Reversed: greetings now pool into root with `gesture_type: "opening"`. |
 | [ADR-039](docs/decisions/ADR-039-single-winner-per-utterance.md) | Single winner per utterance | `merge_state` only pushes the **previous** `branch_key` to `inherited_*`; non-winner labels from the same extraction are dropped. `inherited_*` is empty on the first utterance. Downstream retrieval matches shallower tree nodes instead of over-specifying the path. |
 | [ADR-040](docs/decisions/ADR-040-f016-unique-callid-diversity-compliance.md) | F016 unique call_id + diversity + compliance | `generate_unique_call_id()` with overlay+DB collision check; LLM temperature 1.1; "imagine customer → respond" prompt with guardrails (no internal labels, no dismissive quoting, no judgmental language). |
+| [ADR-042](docs/decisions/ADR-042-opening-greetings-end-leaves.md) | Opening greetings in root pool, precise ending gestures, end nodes are leaves | Reverses ADR-038: root pools greetings (`gesture_type: "opening"`), no `a:greeting` child; `gesture_type: "ending"` only on `closure`/`goodbye`; `_enforce_end_leaves` forces end nodes to leaves; `_dedup_script_ids_global` final pass guarantees unique `script_id`s across the tree. |

@@ -62,6 +62,41 @@ def _link_leaves_to_abrupt_end(node, abrupt_end, _visited=None):
             _link_leaves_to_abrupt_end(child, abrupt_end, _visited)
 
 
+def _enforce_end_leaves(node, _visited=None):
+    if _visited is None:
+        _visited = set()
+    nid = id(node)
+    if nid in _visited:
+        return
+    _visited.add(nid)
+    if node.get("state_id") in ("normal_end", "abrupt_end"):
+        node["children"] = []
+    for child in node.get("children", []):
+        _enforce_end_leaves(child, _visited)
+
+
+def _dedup_script_ids_global(root):
+    seen = set()
+    visited = set()
+    stack = [root]
+    while stack:
+        node = stack.pop()
+        if id(node) in visited:
+            continue
+        visited.add(id(node))
+        kept = []
+        for s in node.get("sentence_pool", []):
+            sid = s.get("script_id")
+            if sid is not None and sid in seen:
+                continue
+            if sid is not None:
+                seen.add(sid)
+            kept.append(s)
+        node["sentence_pool"] = kept
+        for c in node.get("children", []):
+            stack.append(c)
+
+
 def _remove_stray_abrupt_ends(node, root_abrupt_end, _visited=None):
     if _visited is None:
         _visited = set()

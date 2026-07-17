@@ -26,6 +26,8 @@ from f004_decision_tree.tree_transforms import (  # noqa: F401  (re-exported for
     _deduplicate_nodes,
     _ensure_abrupt_end,
     _ensure_leaf_termination,
+    _enforce_end_leaves,
+    _dedup_script_ids_global,
     _find_node_by_branch_key,
     _make_abrupt_end_node,
     _make_identity,
@@ -200,7 +202,13 @@ def _place_sentences_in_node(node, sentences, registry):
     if not sentences:
         return
     role = node.get("role", "")
-    if role not in ("decision", "opening"):
+    if role == "opening":
+        for s in sentences:
+            if s.get("collector_action") == "greeting" and not s.get("gesture_type"):
+                s["gesture_type"] = "opening"
+        _merge_sentences(node["sentence_pool"], sentences)
+        return
+    if role != "decision":
         _merge_sentences(node["sentence_pool"], sentences)
         return
     by_action = {}
@@ -267,7 +275,8 @@ def add_dialog_to_tree(tree, record, registry, merge_decisions=None):
         if seg.get("is_closing"):
             has_closing = True
             for s in seg["sentences"]:
-                s["gesture_type"] = "ending"
+                if s.get("collector_action") in CLOSING_ACTIONS:
+                    s["gesture_type"] = "ending"
             if branch_key:
                 for fact in seg_facts:
                     if fact in accumulated_facts:
@@ -384,8 +393,10 @@ def merge_dialogs(tree_path, new_records, merge_decisions=None):
         add_dialog_to_tree(tree, record, registry, merge_decisions=merge_decisions)
     _propagate_facts(tree, [], [])
     _deduplicate_nodes(tree)
+    _enforce_end_leaves(tree)
     _prune_empty_subtrees(tree)
     _consolidate_endpoints(tree)
+    _dedup_script_ids_global(tree)
     _sort_keywords(tree)
     with open(tree_path, "w", encoding="utf-8") as f:
         json.dump(tree, f, indent=2, ensure_ascii=False)
@@ -398,8 +409,11 @@ def build_tree(records, merge_decisions=None):
     for record in records:
         add_dialog_to_tree(tree, record, registry, merge_decisions=merge_decisions)
     _propagate_facts(tree, [], [])
+    _deduplicate_nodes(tree)
+    _enforce_end_leaves(tree)
     _prune_empty_subtrees(tree)
     _consolidate_endpoints(tree)
+    _dedup_script_ids_global(tree)
     _sort_keywords(tree)
     return tree
 
@@ -515,8 +529,10 @@ def write_decision_tree(records=None, output_path=None):
     _save_merge_cache(merge_cache)
     _propagate_facts(tree, [], [])
     _deduplicate_nodes(tree)
+    _enforce_end_leaves(tree)
     _prune_empty_subtrees(tree)
     _consolidate_endpoints(tree)
+    _dedup_script_ids_global(tree)
     _sort_keywords(tree)
 
     with open(output_path, "w", encoding="utf-8") as f:

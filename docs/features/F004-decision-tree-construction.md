@@ -5,7 +5,7 @@ status: merged
 owner: agent
 source: ROADMAP.md
 created: 2026-06-11
-updated: 2026-07-10
+updated: 2026-07-16
 depends_on: F003
 ---
 
@@ -41,11 +41,12 @@ Nodes = collector action points. Branches = customer (facts, emotions). Willingn
 
 ### Current Tree Statistics (2026-06-23)
 
-> **Updated 2026-07-08 (custInfo migration + additive rebuild)**: the tree was
-> rebuilt from 103 valid `call_id`s (pruned from 148). Current counts:
-> **1384 nodes, 1701 sentences, 585 merge_decisions keys**. The detailed
-> breakdown below (309 nodes / 31 call_ids) is pre-migration and retained for
-> history; recompute `check_tree` for an updated per-role/per-depth breakdown.
+> **Updated 2026-07-16 (ADR-042: opening greetings in root pool, end nodes forced
+> to leaves)**: the tree was rebuilt from 103 valid `call_id`s. Current counts:
+> **1403 nodes, 1716 sentences, 585 merge_decisions keys**. All `script_id` values
+> are unique (verified by `check_script_ids_unique`). The detailed breakdown below
+> (309 nodes / 31 call_ids) is pre-migration and retained for history; recompute
+> `check_tree` for an updated per-role/per-depth breakdown.
 
 | Metric | Value |
 |--------|-------|
@@ -121,7 +122,8 @@ Nodes = collector action points. Branches = customer (facts, emotions). Willingn
 - [ADR-011](../decisions/ADR-011-decision-tree-approach.md) — Architecture decision
 - [ADR-021](../decisions/ADR-021-node-identity-dedup.md) — Node identity dedup with DAG support
 - [ADR-022](../decisions/ADR-022-redundant-emotion-collapse.md) — Redundant emotion collapse
-- [ADR-038](../decisions/ADR-038-opening-node-action-children.md) — Opening node spawns action children for greeting and information
+- [ADR-038](../decisions/ADR-038-opening-node-action-children.md) — Opening node spawns action children for greeting and information *(superseded by ADR-042)*
+- [ADR-042](../decisions/ADR-042-opening-greetings-end-leaves.md) — Opening node pools greetings, precise ending gestures, end nodes are leaves
 
 ## Implementation Plan
 
@@ -162,7 +164,7 @@ See [implementation-plan.md](F004-implementation-plan.md)
 - **Node identity deduplication (ADR-021)**: Nodes are identified by `(inherited_facts, inherited_emotions, branch_key)`. Two nodes with the same identity are the same semantic state. A global `node_registry` in `build_tree()` prevents creating duplicate nodes. Cycle prevention via `_is_ancestor` check. Post-transform `_deduplicate_nodes` catches any remaining sibling duplicates.
 - **DAG tree structure**: The tree is a DAG — nodes with the same identity can appear under multiple parents. All recursive walkers use `_visited` sets for cycle protection. The UI uses `node_id` (SHA-256 hash of identity) as the Cytoscape node ID, rendering shared nodes once with multiple incoming edges.
 - **Redundant emotion collapse (ADR-022)**: `_collapse_redundant_facts` extended to also collapse emotion nodes whose emotions are already in the accumulated parent emotions (e.g., `anger → anger` → collapse to `anger`). Symmetric with fact collapse. Uses `accumulated_emotions` tracking.
-- **Opening node action children (ADR-038)**: The root node (`role: "opening"`) now spawns `a:greeting`, `a:information`, and other action child nodes instead of pooling greeting/information sentences into its `sentence_pool`. This makes early collector turns (before the first customer branch key) visible in the tree UI dialog trace. `_place_sentences_in_node` treats opening nodes the same as decision nodes for action splitting. Greetings flow through normal segment processing instead of a separate pre-loop.
+- **Opening node pools greetings (ADR-042, supersedes ADR-038)**: The root node (`role: "opening"`) merges greeting sentences directly into its `sentence_pool` tagged `gesture_type: "opening"`, and does not spawn `a:greeting` / `a:information` action children. This matches the feature spec (opening gesture = root pool) and the `TestF004OpeningGestures` invariants. Ending gestures are tagged `gesture_type: "ending"` only on `closure` / `goodbye` sentences, not on every sentence in a closing segment. End nodes (`normal_end`, `abrupt_end`) are forced to be leaves by `_enforce_end_leaves` after `_deduplicate_nodes`, eliminating the multi-parent DAG mirror that produced duplicate `script_id` values.
 - **Pipeline output filenames**: LLM step output filenames match actual files in `data/`: `output_2.py`, `output_logic.py`, `output_complete.py`, `output_merged.py`.
 
 ## Files

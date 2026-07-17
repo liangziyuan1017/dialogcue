@@ -102,8 +102,9 @@ class TestAddDialogToTree:
         registry = {}
         add_dialog_to_tree(tree, _sample_record(), registry)
         greeting_children = [c for c in tree["children"] if c.get("state_id") == "a:greeting"]
-        assert len(greeting_children) >= 1
-        assert len(greeting_children[0]["sentence_pool"]) > 0
+        assert len(greeting_children) == 0
+        opening = [s for s in tree["sentence_pool"] if s.get("gesture_type") == "opening"]
+        assert len(opening) > 0
 
     def test_adds_facts_branch(self):
         tree = make_base_tree()

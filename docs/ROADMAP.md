@@ -7,6 +7,7 @@
 | F003 | Reward Labeling | complete | agent | feature doc | [F003](features/F003-reward-labeling.md) |
 | F004 | Decision Tree Construction | merged | agent | feature doc | [F004](features/F004-decision-tree-construction.md) |
 | F004-dedup | Sentence Pool Deduplication | complete | agent | F004 | [F004-dedup](features/F004-sentence-pool-dedup.md) |
+| F004-fix | Opening greetings + end leaves + global script_id dedup (ADR-042) | complete | agent | F004 | [ADR-042](decisions/ADR-042-opening-greetings-end-leaves.md) |
 | F004b | Decision Tree Invariant Checker | merged | agent | feature doc | [F004b](features/F004b-decision-tree-checker.md) |
 | F005 | Context Tagging & Quality Scoring | merged | agent | feature doc | [F005](features/F005-context-tagging-quality-scoring.md) |
 | F006 | Retrieval & Ranking Engine | complete | agent | feature doc | [F006](features/F006-retrieval-ranking-engine.md) |
@@ -73,3 +74,5 @@ Consolidated index of the system's architecture choices. Each row links to the a
 | Vector scoring | **SQL-side pgvector `<=>`** | `vec_score` computed in PostgreSQL, eliminating raw embedding transfer to Python | [ADR-028](decisions/ADR-028-sql-side-cosine-scoring.md) |
 | DB concurrency | **asyncpg (runtime) + psycopg2 (build-time)** | Runtime uses `AsyncSentenceDB` with asyncpg (F013); build-time keeps `psycopg2` for batch ops | [ADR-027](decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md) |
 | API | **FastAPI** | Already in `pyproject.toml` dependencies | — |
+| Tree node sharing | **DAG with `id(node)`-safe walks** | Nodes with the same identity can share multiple parents (ADR-021); walkers visit each node once. End nodes forced to leaves (ADR-042) to prevent the `normal_end` mirror. | [ADR-021](decisions/ADR-021-node-identity-dedup.md), [ADR-042](decisions/ADR-042-opening-greetings-end-leaves.md) |
+| `script_id` uniqueness | **Global dedup as final build pass** | `_dedup_script_ids_global` keeps the first occurrence of each `script_id` across the whole tree; `run_build_tree` has a defensive verify+repair tail. Enforced by `TestF004ScriptIdUniqueness`. | [ADR-042](decisions/ADR-042-opening-greetings-end-leaves.md) |

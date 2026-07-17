@@ -58,7 +58,7 @@ class TestBuildTreeMappings:
             tree = json.load(f)
         mappings = build_tree_mappings(tree)
         total = len(mappings["tree_path_signatures"])
-        assert total == 1395, f"Expected 1395 tree nodes, got {total}"
+        assert total == 1403, f"Expected 1403 tree nodes, got {total}"
 
 
 class TestIdentifyMisplacedSentences:

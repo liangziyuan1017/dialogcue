@@ -1,9 +1,10 @@
 ---
 id: ADR-038
 title: Opening Node Spawns Action Children for Greeting and Information
-status: accepted
+status: superseded
+superseded_by: ADR-042
 created: 2026-07-10
-updated: 2026-07-10
+updated: 2026-07-16
 decision_type: architecture
 feature_ids: [F004]
 ---

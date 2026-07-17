@@ -44,9 +44,33 @@ def run_build_tree(rewarded: list[dict]) -> dict:
     import f004_decision_tree.build_decision_tree as bdt
 
     node_count = bdt.write_decision_tree(rewarded, output_path=str(TREE_PATH))
-    print(f"  → {TREE_PATH.name}  ({node_count} nodes)")
+    print(f"  → {Path(TREE_PATH).name}  ({node_count} nodes)")
 
     tree = _load_json(TREE_PATH)
+
+    # Defensive: guarantee unique script_ids even if the build module was stale
+    import f004_decision_tree.tree_transforms as tt
+    seen = set()
+    dup = 0
+    _stack = [tree]
+    _vis = set()
+    while _stack:
+        _n = _stack.pop()
+        if id(_n) in _vis:
+            continue
+        _vis.add(id(_n))
+        for _s in _n.get("sentence_pool", []):
+            _sid = _s.get("script_id")
+            if _sid is not None:
+                if _sid in seen:
+                    dup += 1
+                seen.add(_sid)
+        _stack.extend(_n.get("children", []))
+    if dup:
+        tt._dedup_script_ids_global(tree)
+        _write_json(tree, TREE_PATH)
+        print(f"  ⚠ removed {dup} duplicate script_ids (defensive pass)")
+
     return tree
 
 

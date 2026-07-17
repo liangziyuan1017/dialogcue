@@ -32,6 +32,8 @@ Produced by `src/whole_pipeline.py` (run from project root). Phase-1 outputs are
 
 Phase 2 analysis outputs (`collector_analysis.json`, `customer_analysis.json`) are written to `src/f003_reward_labeling/data/` (owned by the producer module). Phase 3 outputs (`output_aligned.py`, `output_rewarded.py`) live under `src/f001_schema_alignment/data/` and `src/f003_reward_labeling/data/`. State relabeling is applied inside `write_output_aligned` (after alignment, before writing), so `output_aligned.py` already contains the final relabeled tags. `output_rewarded.py` is deduplicated by `call_id` (first occurrence kept).
 
+> **Downstream guarantee (ADR-042):** the decision tree built from `output_rewarded.py` (Stage 4) enforces unique `script_id`s via a global dedup pass (`_dedup_script_ids_global`) and forces end nodes to leaves (`_enforce_end_leaves`). Each `{call_id}_t{turn_index}` appears in exactly one node's `sentence_pool`. If you re-run tree build from a stripped/inline path, verify with `python3 -m f004_decision_tree.check_tree` (D4 invariant) — a stale kernel or skipped final transforms can re-introduce duplicates (see `docs/lessons/LL-008`).
+
 ## data_cleaning/
 
 Phase-1 LLM cleaning scripts, invoked by `src/whole_pipeline.py` as subprocesses (`PYTHONPATH=src/infra` so `llm_client`/`retry` resolve).

@@ -213,3 +213,17 @@ class TestF004NodeMetadata:
                 pytest.fail(f"Composite branch_key in {node.get('state_id')}: {bk}")
             if len(facts) > 1:
                 pytest.fail(f"Multi-fact branch_key in {node.get('state_id')}: {bk}")
+
+
+class TestF004ScriptIdUniqueness:
+    def test_all_script_ids_unique(self, tree):
+        seen = set()
+        dups = []
+        for s in _all_sentences(tree):
+            sid = s.get("script_id")
+            if sid is None:
+                continue
+            if sid in seen:
+                dups.append(sid)
+            seen.add(sid)
+        assert not dups, f"{len(dups)} duplicate script_ids (first 5: {dups[:5]})"
