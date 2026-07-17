@@ -1,13 +1,14 @@
 ---
 id: F017
 name: Corpus Scalability Hardening (100k dialogs)
-status: draft
+status: planned
 owner: agent
 related_features: [F000, F001, F003, F004, F005, F006, F007, F009, F015]
 topics: [scalability, memory, streaming, database, performance]
 doc_kind: spec
 created: 2026-07-15
-updated: 2026-07-15
+updated: 2026-07-17
+decisions: [ADR-043, ADR-044, ADR-045]
 ---
 
 # F017: Corpus Scalability Hardening (100k dialogs)
@@ -155,3 +156,28 @@ Eight remediation tracks, ordered by leverage:
 - F005 embed_fn removal (already done — embedding moved to build_tree_and_db.py)
 - Embedding ANN (already pgvector HNSW)
 - LLM call cost reduction (separate concern)
+
+## Design Gate (2026-07-17)
+
+**Status**: Approved by Human
+
+**Approach**: Coordinate transform — from O(corpus) in-memory full materialization to O(batch_size) streaming/DB-backed access. Each of the 8 tracks replaces a full-materialization pattern with a bounded-memory alternative.
+
+**Meta-aesthetics check**: Passes — this is a coordinate transform (changes problem structure), not polynomial stacking (layered patches).
+
+**Key decisions recorded**:
+- ADR-043: Replace .py literal output with JSONL streaming (supersedes ADR-008)
+- ADR-044: Serve scored tree indexes from DB instead of app.state
+- ADR-045: source_call_ids as sentence_sources join table
+
+**Prior decisions respected**:
+- ADR-008 (superseded by ADR-043) — anticipated this evolution
+- ADR-027 (compatible) — asyncpg runtime, psycopg2 build-time
+- ADR-035 (enhanced) — incremental append orchestrator, loaders change
+- ADR-029 (enhanced) — additive tree building, merge uses join table
+
+**Main risk**: Track 2 (DB-served index latency) — needs performance verification in TDD phase.
+
+## Implementation Plan
+
+→ `docs/features/F017-implementation-plan.md` — 12 tasks across 5 phases, TDD steps with verification checkpoints.

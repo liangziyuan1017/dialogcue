@@ -480,6 +480,66 @@
         "migration"
       ]
     },
+    "ADR-043": {
+      "body_preview": "# Replace .py Literal Result Files with Streaming JSONL\n\n## What\n\nReplace all `results = [...]` Python-literal output files (`output_labeled.py`, `output_aligned.py`, `output_rewarded.py`) with JSONL format. Downstream consumers change `_load_py_results(path)` \u2192 `load_jsonl(path)` returning the same `list[dict]` API. A one-time `convert_py_to_jsonl.py` migration script converts existing files.\n\n## Why\n\nThe `.py` literal format (ADR-008) loads the entire corpus into RAM via `importlib` exec. At 1",
+      "content_hash": "f7b02dfef3b9386c1895aa8d2fec344290d545b12016aca08b2dbe69fd08bb18",
+      "created": "2026-07-17",
+      "doc_kind": "decision",
+      "feature_ids": [
+        "F017"
+      ],
+      "id": "ADR-043",
+      "indexed_at": "2026-07-17T11:10:31.112704",
+      "path": "/Users/jiani/Desktop/ICBC/docs/decisions/ADR-043-jsonl-streaming-replaces-py-literal.md",
+      "status": "accepted",
+      "title": "Replace .py literal result files with streaming JSONL",
+      "topics": [
+        "scalability",
+        "streaming",
+        "serialization",
+        "output-format"
+      ]
+    },
+    "ADR-044": {
+      "body_preview": "# Serve Scored Tree Indexes from DB Instead of app.state\n\n## What\n\nStop holding the scored tree + node index + label-set index in `app.state` for the process lifetime. Serve node/label lookups from DB queries via asyncpg (ADR-027 runtime driver). The server boot no longer materializes the full scored tree into memory.\n\n## Why\n\nAt 100k dialogs, `app.state` tree + indexes consume ~200 MB resident for the entire server lifetime. This is wasted memory \u2014 the data is already in PostgreSQL with pgvecto",
+      "content_hash": "887ea22f7c65dad8c10c301d7ecae85929f265743e868b421701408f90af862d",
+      "created": "2026-07-17",
+      "doc_kind": "decision",
+      "feature_ids": [
+        "F017"
+      ],
+      "id": "ADR-044",
+      "indexed_at": "2026-07-17T11:10:37.882972",
+      "path": "/Users/jiani/Desktop/ICBC/docs/decisions/ADR-044-serve-indexes-from-db-not-app-state.md",
+      "status": "accepted",
+      "title": "Serve scored tree indexes from DB instead of app.state",
+      "topics": [
+        "scalability",
+        "database",
+        "architecture",
+        "server"
+      ]
+    },
+    "ADR-045": {
+      "body_preview": "# source_call_ids as sentence_sources Join Table\n\n## What\n\nReplace the unbounded `source_call_ids` list on sentence dicts with a `sentence_sources` join table: `CREATE TABLE sentence_sources (script_id TEXT, call_id TEXT, PRIMARY KEY (script_id, call_id))`. Merge operations query this table instead of doing list membership + append.\n\n## Why\n\nThe current `source_call_ids` list on each sentence causes O(k\u00b2) merge costs: every placement checks `call_id in source_call_ids` (O(k) scan) and appends (O",
+      "content_hash": "8a7df2944eb0990323a5226026d76c020a59353604439ff6323e70f007b4cf02",
+      "created": "2026-07-17",
+      "doc_kind": "decision",
+      "feature_ids": [
+        "F017"
+      ],
+      "id": "ADR-045",
+      "indexed_at": "2026-07-17T11:10:37.920128",
+      "path": "/Users/jiani/Desktop/ICBC/docs/decisions/ADR-045-source-call-ids-join-table.md",
+      "status": "accepted",
+      "title": "source_call_ids as sentence_sources join table",
+      "topics": [
+        "scalability",
+        "database",
+        "schema",
+        "merge"
+      ]
+    },
     "LL-001": {
       "body_preview": "# Schema Alignment Dropped Prior Feature State Labels\n\n## Pitfall\n\nF001 Data Schema Alignment built `turns_annotated` from raw `output_manual.py` only, dropping the 493 state labels already produced by F000 in `output_labeled.py`.\n\n## Root Cause\n\nThe implementation plan and initial code only referenced `output_manual.py` as input. No check was made for intermediate outputs from prior features in the dependency chain (F000 \u2192 F001). The spec said \"derive turns_annotated\" without explicitly stating",
       "content_hash": "4e80bb9577591267fdc71a69e07b122e7b18d84f3389f3f3466348c1fc4e54c4",
@@ -596,5 +656,5 @@
   },
   "hash_conflicts": 0,
   "last_full_rebuild": "2026-07-09T14:54:36.858142",
-  "last_incremental_rebuild": null
+  "last_incremental_rebuild": "2026-07-17T11:10:37.920128"
 }
