@@ -5,7 +5,7 @@ status: complete
 owner: agent
 source: superseded (original spec plan_feature_base.md no longer in repo)
 created: 2026-06-22
-updated: 2026-06-22
+updated: 2026-07-30
 merged: 2026-06-22
 ---
 
@@ -32,7 +32,7 @@ The tree uses `inherited_facts` + `branch_key` values (both sorted alphabeticall
 The retrieval engine:
 
 1. **Matches by inherited_facts + branch_key** — emotions and willingness are NOT used to identify the node
-2. **Aggregates all sentences** from all nodes sharing the same key into a single candidate pool
+2. **Prefers database-backed sentence pools** for the matched nodes; if the database returns no sentences for a matched node, it falls back to the in-memory tree pool from the matching nodes
 3. **Ranks across the combined pool** using the dual-strategy ranker
 
 ### Node Index
@@ -56,7 +56,7 @@ All three components are sorted independently, so any permutation of input keywo
 1. **Key computation**: Sort `inherited_facts` alphabetically + sort `branch_key` values alphabetically + sort `inherited_emotions` alphabetically → `(facts_tuple, bk_tuple, emotions_tuple)` — O(1)
 2. **Node lookup**: Hash map `key → list[node]` — O(1)
 3. **Key fallback**: If exact key not in index, drop the least-frequent keyword from `inherited_facts` and retry — O(|facts|) worst case
-4. **Pool aggregation**: Collect `sentence_pool` from all matched nodes — O(nodes × pool_size)
+4. **Pool retrieval**: When a database connection is available, resolve each matched node by `path_signature` and fetch its sentence pool from the database first; if no DB sentences are found, fall back to aggregating the in-memory `sentence_pool` from the matched nodes — O(nodes × pool_size)
 5. **Descend fallback**: If aggregated pool is empty, walk DOWN the tree — collect sentences from the nearest descendants with non-empty pools (BFS). All siblings at the same depth are included. E.g., if "unemployed" has no sentences, and its child "has kids" also has none, but "has kids" branches into "not married" and "married" which both have sentences → collect from both grandchildren.
 6. **Key-drop fallback**: If descend fallback finds no sentences at any depth, drop the least-frequent keyword from `inherited_facts` and retry from step 1
 6. **Soft bitmask scoring**: `bitmask_score = popcount(sb & qb) / popcount(sb)` (sentence with no constraints scores 1.0); partial matches rank lower, none are excluded (ADR-020 updated)
@@ -212,7 +212,7 @@ See [implementation-plan.md](implementation-plan.md)
 
 - **Node index by (inherited_facts, branch_key_values, inherited_emotions)**: The lookup key combines `inherited_facts`, `branch_key` values, and `inherited_emotions`, all sorted alphabetically. Sorting ensures permutation insensitivity. `inherited_emotions` is required: without it, 31 key collisions occur (e.g., `a:closure` under `['disappointment']` vs `['anger']` must not aggregate). The tree's own dedup identity (`tree_transforms.py:_make_identity`) already uses all three components.
 - **Willingness not in key**: Willingness is a scalar (not a list) and represents the customer's current repayment intent. It's tracked in conversation state but doesn't determine node identity — it's a soft signal, not a branching dimension.
-- **Aggregate pool from matching nodes**: When a key matches multiple nodes, we pull sentences from ALL of them and rank across the combined pool. This gives the ranker more candidates and avoids premature filtering by tree position.
+- **Aggregate pool from matching nodes**: When a key matches multiple nodes, we pull sentences from ALL of them and rank across the combined pool. This gives the ranker more candidates and avoids premature filtering by tree position. In the current implementation, this pool is retrieved database-first for each matched node and only falls back to the in-memory tree pool when the database has no sentences for that node.
 - **Descend fallback (not parent walk)**: When matched nodes have empty pools but have children, walk DOWN the tree (BFS) to find the nearest descendants with sentences. This is the correct direction — we've already matched the customer's facts, so the next scripts come from deeper in the tree (more specific actions/emotions), not from going back up. All siblings at the same depth are included: e.g., "unemployed" → "has kids" (empty) → {"not married", "married"} both contribute sentences.
 - **Key-drop fallback after exhausted descend**: If descending finds no sentences at any depth (all descendants are routing-only nodes), then fall back to dropping a keyword from `inherited_facts` (least-frequent first) and retrying the lookup. This handles degenerate branches.
 - **Bitmask as soft ranking signal (ADR-020 updated)**: `bitmask_score = matched_bits / required_bits` — partial matches rank lower but are not excluded. A sentence with no constraints scores 1.0.

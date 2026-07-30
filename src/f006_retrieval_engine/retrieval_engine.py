@@ -256,15 +256,19 @@ async def recommend(query_bitmask, conversation_context, query_bg,
     if not nodes:
         return None
 
+    pool = []
     if db is not None and nodes:
-        pool = []
         for node in nodes:
             path_sig = node.get("path_signature", "") or node.get("state_id", "")
             node_row = await db.get_node_by_signature(path_sig)
-            node_id = node_row["id"] if node_row else None
-            if node_id:
-                pool.extend(await db.get_sentences_by_node(node_id))
-    else:
+            node_id = node_row.get("id") if node_row else None
+            if node_id is None:
+                continue
+            node_pool = await db.get_sentences_by_node(node_id)
+            if node_pool:
+                pool.extend(node_pool)
+
+    if not pool:
         pool = aggregate_pools(nodes)
 
     if not pool:
