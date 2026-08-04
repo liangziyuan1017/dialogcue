@@ -1,0 +1,35 @@
+# Build multihead current-state dataset
+# label_scope=window (v3.1.2): Softmax labels from encode_recent_window turn_ids only.
+# See artifacts/v3.1.2_migration/BUILD_LABEL_SCOPE_CHANGE.md
+schema_path: schema_v3.1.yaml
+raw_to_multihead: raw_to_multihead.yaml
+
+input_path: ../../../output_rewarded.py
+output_dir: ../data/state
+reports_dir: ../data/reports
+
+# Used only for cross-slot relocate (emotion/willingness → facts); not Softmax targets
+ontology:
+  emotion_mapping: slot_relocate/emotion_mapping.yaml
+  willingness_ontology: slot_relocate/willingness_ontology.yaml
+
+quality:
+  max_unmap_rate_samples: 0.15
+  max_truncation_rate: 0.50
+  require_positive_heads: true
+  # P0.5 supervision gate → W3 review (not hard fail unless you treat warnings as such)
+  min_positive: 30
+  max_masked_ratio: 0.99
+  supervision_exclude_heads:
+    - IdentityProcess
+  blocking: false
+
+train_policy:
+  window_turns: 4
+  char_budget: 200
+
+split:
+  seed: 42
+  train_ratio: 0.8
+  val_ratio: 0.1
+  test_ratio: 0.1

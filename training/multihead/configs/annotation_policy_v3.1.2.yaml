@@ -1,0 +1,105 @@
+# Annotation / build policy — v3.1.2
+#
+# Softmax labels: window-supported only.
+# Persistent memory: inference merge (not CE supervision).
+
+version: annotation_policy_v3.1.2
+status: active
+supersedes: cumulative_memory_raws_supervision_v3.1.1
+
+label_scope: window
+evidence_scope:
+  text_window:
+    max_turns: 4
+    char_budget: 200
+    trim: oldest_first_keep_anchor
+  label_raws:
+    source: customer_facts_in_same_turn_ids_as_text_window
+    after_char_trim: true
+    cumulative_dialogue_memory: false
+
+same_head_conflict: priority  # not unknown
+
+no_auto_chain:
+  - Employment → Income
+  - Income → FinancialHardship
+  - Health → FinancialHardship
+  - FamilyBurden → FinancialHardship
+  - FinancialHardship → RepaymentCapability
+  - NegotiationRequest → FinancialHardship
+
+heads:
+  FinancialHardship:
+    positive_requires:
+      - A: shortage of funds available to repay THIS institution's debt
+        examples: [没钱, 没能力, 弄不到钱, 还不起, 无法承担]
+      - B: explicit impact on current or near-term repayment to THIS institution
+        examples: [今天还不了, 这个月还不了, 这笔还不了, 分期也还不了, 4137还不了]
+    allow_cofire_with_independent_evidence:
+      - Employment.disrupted
+      - Income.unavailable
+      - NegotiationRequest.yes
+    exclude:
+      - interest/fee/penalty complaints alone
+      - 「利息还不上」alone without funds evidence
+      - health/family/expense-up without repayment impact
+      - card count / debt size alone
+      - overdue history alone
+      - unemployment alone without repayment impact
+      - affordability assessment / bank advice
+      - channel blocked (BankConstraint) alone
+      - 支付渠道、账户冻结、银行卡限制等导致无法付款，不自动触发 FinancialHardship
+      - legal/employer threat alone
+      - third-party inability alone（除非明确导致客户本人对本机构还不上）
+      - plan complaint / 无底洞 alone
+    patch: v3.1.2.1_fh_hard_evidence
+
+  RepaymentCapability:
+    partial: explicit amount OR proportion OR periodic affordable amount
+    insufficient: explicit inability to pay within required timeframe
+    exclude:
+      - busy / time_cost
+      - no_repayment_plan
+      - refuse_borrowing
+      - rejected offer
+      - vague promise / unable to promise
+
+  NegotiationRequest:
+    positive: >
+      current customer request to THIS institution to change repayment terms
+      (installment / defer / reduce / restructure / interest freeze / arrangement)
+    exclude:
+      - previous / history / applied before
+      - other-bank negotiation or settlement
+      - accept / reject offer
+      - waiting / pending approval
+      - negotiation success / cancelled / result
+      - willing_to_pay / willing_to_negotiate alone
+    freeze_gates:
+      adj_rejection: 0.90
+      history_fp: 0.05
+      other_bank_fp: 0.05
+      plan_status_fp: 0.05
+      current_request_recall: 0.90
+    patch: v3.1.2.2_nr_speech_act
+
+rules:
+  - id: window_alignment
+    text: >
+      Labels only from raws on encode_recent_window turn_ids (after char trim).
+  - id: missing_in_window_is_unknown
+    text: >
+      No non-default window evidence → label=unknown, head_mask=0.
+  - id: no_causal_auto_chain
+    text: >
+      Different heads may co-fire only with independent window evidence each.
+  - id: inference_merge_separate
+    text: >
+      Sticky state via merge(previous_memory, observable); not Softmax supervision.
+
+related:
+  design: docs/DESIGN_v3.1.1.md
+  build_change: artifacts/v3.1.2_migration/BUILD_LABEL_SCOPE_CHANGE.md
+  semantic_change: artifacts/v3.1.2_migration/SEMANTIC_P0_MIGRATION.md
+  migration_log: artifacts/v3.1.2_migration/migration_log_v3.1.2.csv
+  build_script: scripts/build_state_dataset.py

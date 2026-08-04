@@ -1,0 +1,22 @@
+# multihead-training branch — ignore local / heavy artifacts
+
+.env
+**/.env
+**/__pycache__/
+**/*.pyc
+**/.DS_Store
+
+# local rebuild / train outputs (create on the machine)
+training/multihead/data/
+training/multihead/checkpoints/
+
+# never commit archives or migration evidence on this branch
+**/archive/
+training/multihead/artifacts/v3.1.2_migration/
+
+# encoder weights (install locally)
+hfl/
+**/*.bin
+**/*.safetensors
+**/*.pt
+!**/.gitkeep

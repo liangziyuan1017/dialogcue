@@ -1,0 +1,19 @@
+# Huawei Ascend NPU training dependencies
+#
+# IMPORTANT: torch + torch_npu MUST come from the CANN-matched wheel index provided
+# by your ops team. Do NOT pip install the CPU/CUDA torch from requirements-cpu.txt.
+#
+# Typical install flow (versions depend on CANN toolkit on the machine):
+#   source /usr/local/Ascend/ascend-toolkit/set_env.sh
+#   pip install torch==2.1.0 torch_npu==2.1.0.post3 -f https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/...
+#   pip install -r requirements-npu.txt
+#
+# Verify:
+#   python -c "import torch; import torch_npu; print(torch.__version__); print('npu', torch.npu.is_available())"
+
+numpy>=1.24.0,<2.0.0
+transformers>=4.40.0,<5.0.0
+pyyaml
+scikit-learn
+tqdm
+safetensors
