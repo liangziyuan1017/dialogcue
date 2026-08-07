@@ -1,16 +1,12 @@
-version: training_ontology_v3.1.2-patch1
-status: patch
-supersedes: training_ontology_v3.1.2
+version: training_ontology_v3.1.2
+status: frozen
 knowledge_ontology: proposed_v2_action_audit
 knowledge_n_facts: 47
 n_train_labels: 22
 n_heads: 19
 architecture: multihead
-note: >-
-  v3.1.2-patch1 (Asset/Contactability/Commitment path-A). Knowledge ontology stays at 47.
-  Stage2 train layer: 19 heads / 22 positive train values (+ none). Commitment keeps
-  committed/resistant (path A: supplement resistant≥50; no ontology expand).
-  Checkpoint target: state_v312_patch1; eval report: eval_v33; freeze candidate: ontology_fact_v3.2.
+note: 'Knowledge ontology stays at 47. This file is the Stage2 train layer: 19 heads / 22 positive train values (+ none on
+  each head). See frequency_glossary for every numeric field.'
 evidence_rule: Do not auto-chain Employment→Income→Hardship→Capability without explicit evidence.
 frequency_glossary:
   _intro: 以下数字都是「规模代理」，不是金标准 utterance 训练样本量。同一条 raw 可能进入多个口径，跨口径不要直接相加当独立样本。有训练合并（absorbed_from）时，源 fact 的计数会先加进目标再算 proxy。
@@ -134,9 +130,7 @@ heads:
       anti_llm_weighted_occ_sum: 45
       unemp_include_occ_sum: 527
     none_means: null
-    note: >-
-      patch1: available = 本人可支配/可处置资产 only. 居住状态(self_residence/housing/住朋友)
-      不再进 available；非本人产权 → unavailable。见 labels.Asset.* definition。
+    note: null
   Contactability:
     type: softmax
     values:
@@ -152,9 +146,7 @@ heads:
       anti_llm_weighted_occ_sum: 188
       unemp_include_occ_sum: 944
     none_means: null
-    note: >-
-      patch1: 只回答「当前能否与客户建立有效沟通」。time_constraint/busy/deadline/complaint
-      不得进本 head（→ Commitment/NR/Grievance/Emotion）。denied 仍由 schema/Rule 侧处理。
+    note: null
   Commitment:
     type: softmax
     values:
@@ -170,10 +162,7 @@ heads:
       anti_llm_weighted_occ_sum: 205
       unemp_include_occ_sum: 514
     none_means: null
-    note: >-
-      patch1 path-A: keep committed/resistant (no uncertain/refusal expand).
-      Gate: resistant supervised train count ≥50 before state_v312_patch1 train.
-      「没办法答应/未知数」→ resistant；明确拒绝还款 → resistant；明确承诺 → committed。
+    note: null
   Responsibility:
     type: binary
     values:
@@ -898,10 +887,7 @@ labels:
     train_label: Asset.available
     dimension: Asset
     state_value: available
-    definition: >-
-      客户本人拥有、控制或可支配/可处置的资产资源（自有房产、存款、可用账户、本人车辆等）。
-      不含：租住房、家人房子、朋友住房、仅居住/地址信息、历史住址。
-      patch1 boundary: housing_status ≠ Asset.available。
+    definition: 客户存在可关注/可执行资产（房、车、存款、保险、证券等），含价值偏低或权利受限但仍属资产路径的情形。
     collector_action: 走资产核实与变现/施压路径：评估可变现性，引导处置或提供资产证明。
     include_raw:
     - asset_situation
@@ -948,7 +934,14 @@ labels:
     - asset_seizure_risk
     - funds_seized_by_other_bank
     - partner_investment
+    - housing
+    - family_house
+    - housing_situation
     - residence_ownership
+    - self_residence
+    - borrowed_residence
+    - temporary_housing
+    - housing_search
     - property_unit
     - house_purchased_before_marriage
     - has_car
@@ -965,20 +958,18 @@ labels:
     - car_for_others
     - car_in_name
     - transfer_plan
+    - third_party_asset
     - prior_savings
     - funds_locked
     - card_not_bound
     - pos_machine
     - house_construction
     - inventory_issue
+    - living_environment
+    - staying_with_friend
     - unfamiliar_with_car
-    # patch1 DROPPED from available (housing_status / non-owned living):
-    # housing, family_house, housing_situation, self_residence, borrowed_residence,
-    # temporary_housing, housing_search, living_environment, staying_with_friend, third_party_asset
-    exclude_notes: >-
-      patch1: 居住状态 raw 不得触发 available。self_residence 视为 housing_status（非 Softmax Asset）。
-      family_house/staying_with_friend/borrowed_residence → unavailable（见 Asset.unavailable / overrides）。
-    notes: absorbs liquidation_plan; patch1 housing-status scrub
+    exclude_notes: 与同Domain其他压缩Fact的边界：housing_status专门处理住房所有权与居住稳定性，动作聚焦于住房类型导致的策略差异，不与资产总体状况重叠；asset_disposal_in_progress专门跟踪正在进行的资产处置活动（出售、变卖），动作包含核实进度、要求证明，与asset_overall_info中已发生的资产转移或计划转移不同，后者更侧重状态而非过程。
+    notes: absorbs liquidation_plan
     frequency:
       yaml_raw_count_sum: 100
       unemp_include_n_raws: 90
@@ -1018,10 +1009,7 @@ labels:
     train_label: Asset.unavailable
     dimension: Asset
     state_value: unavailable
-    definition: >-
-      客户明确没有本人可支配资产，或资产非本人产权/不可处分（无房无车无存款、非本人产权、
-      住家人/朋友家且本人不可处置、已退租无房等）。
-      不含：仅「房贷未逾期」等非资产否定信号。
+    definition: 客户明确无可用资产或否认持有可执行资产（无房/无车/无存款/无抵押物等）。
     collector_action: 放弃资产催收路径，转向收入/能力协商或其他还款来源。
     include_raw:
     - asset_denial
@@ -1029,6 +1017,7 @@ labels:
     - no_property
     - not_own_house
     - no_collateral
+    - no_overdue_mortgage
     - no_asset_liquidity
     - savings_depleted
     - no_savings_left
@@ -1041,14 +1030,8 @@ labels:
     - no_rental
     - village_abandoned
     - loss_of_vehicle
-    - family_house
-    - staying_with_friend
-    - borrowed_residence
-    - third_party_asset
-    # patch1 DROPPED: no_overdue_mortgage (≠ asset unavailable)
-    exclude_notes: >-
-      patch1: no_overdue_mortgage 已移出。非本人居住/家人房/朋友住 → unavailable。
-    notes: patch1 non-owned living → unavailable
+    exclude_notes: 与同Domain其他压缩Fact的边界：housing_status专门处理住房所有权与居住稳定性，动作聚焦于住房类型导致的策略差异，不与资产总体状况重叠；asset_disposal_in_progress专门跟踪正在进行的资产处置活动（出售、变卖），动作包含核实进度、要求证明，与asset_overall_info中已发生的资产转移或计划转移不同，后者更侧重状态而非过程。
+    notes: ''
     frequency:
       yaml_raw_count_sum: 18
       unemp_include_n_raws: 18
@@ -1079,9 +1062,7 @@ labels:
     train_label: Contactability.reachable
     dimension: Contactability
     state_value: reachable
-    definition: >-
-      Collector 当前能够与客户建立有效沟通：正常回复、可交流、可预约下次联系。
-      不问「是否愿意立即处理债务」。busy/时段不便仍属 reachable（可改约）。
+    definition: 客户联系历史、可达性、响应与偏好（含首次接通、回电承诺、历史催收上下文、沟通参与、工作时段约束）。
     collector_action: 据此安排下次联系时间、渠道与跟进节奏。
     include_raw:
     - at_home
@@ -1202,12 +1183,10 @@ labels:
     train_label: Contactability.unreachable
     dimension: Contactability
     state_value: unreachable
-    definition: >-
-      当前无法建立有效联系：无法接通、多次未接、联系方式失效、明确回避接听/过滤来电等。
-      不含：还款时限紧、下午忙、抱怨催收、协商困难（→ Commitment/NR/Grievance/Emotion）。
-    collector_action: >-
-      尝试备用号码、紧急联系人、短信等渠道；调整时段与频率；持续无效则考虑外访或法律升级。
+    definition: 客户当前无法通过已知联系方式取得有效沟通，或出现联系中断、回避、选择性接听、号码被负面标记、联系过载等状态，以及电话状态的变化（包括无法接通、停机、关机、已修复等）。
+    collector_action: 若电话无法接通或客户回避，尝试备用联系号码、紧急联系人、短信、邮件等渠道；调整联系时段与频率；记录回避模式；若客户因频率过高产生压力则降低频率；若电话已修复则确认畅通后要求客户履行还款承诺；持续无效则考虑外访或法律升级。
     include_raw:
+    - contact_difficulty
     - contact_unknown
     - lack_communication
     - lack_of_communication
@@ -1221,6 +1200,7 @@ labels:
     - contact_invalidity
     - previous_communication_issues
     - avoiding_contacts
+    - communication
     - experience_ignored
     - ignored_communication
     - lack_of_response
@@ -1229,21 +1209,17 @@ labels:
     - missed_calls_reason
     - call_back_issues
     - call_back_failed
+    - missed_communication
     - selective_call_answering
     - call_marked_spam
     - phone_marked_high_risk
     - phone_labeled
+    - fear_of_repeat_collection
+    - overwhelmed_by_calls
     - phone_access_issue
-    # patch1 DROPPED from unreachable Softmax supervision (pollution / wrong head):
-    # contact_difficulty (legacy bridge hub — override-drop time_constraint/busy/location)
-    # missed_communication (often historical; do not force window unreachable)
-    # communication (too vague)
-    # fear_of_repeat_collection, overwhelmed_by_calls (emotion/pressure; still reachable)
-    # phone_repaired (implies reachable again)
-    exclude_notes: >-
-      patch1: time_constraint/busy/payment_deadline/complaint/location 不得映射本值。
-      与 reachable 区别：本值=无法建立有效联系；reachable=人在线上可交流（含忙可改约）。
-    notes: denied is Rule; patch1 contact_difficulty scrub
+    - phone_repaired
+    exclude_notes: 与contact_established区别：本fact表示未建立有效联系或状态变化，而contact_established表示已成功建立通话。
+    notes: denied is Rule
     frequency:
       yaml_raw_count_sum: 359
       unemp_include_n_raws: 33
@@ -1357,10 +1333,8 @@ labels:
     train_label: Commitment.resistant
     dimension: Commitment
     state_value: resistant
-    definition: >-
-      客户抗拒承诺、无法确认承诺、或明确拒绝还款承诺的模式（含「没办法答应」「未知数」「有难度」）。
-      path-A patch1: 暂不拆 uncertain/refusal；补 resistant 监督样本 ≥50。
-    collector_action: 记录阻碍原因；压实承诺或转协商/施压路径；勿与 NegotiationRequest 混淆。
+    definition: 客户抗拒、不可靠、干扰或隐瞒真实财务状况等阻碍催收的行为模式。
+    collector_action: 加强核实与跟进，避免被带偏，必要时升级施压。
     include_raw:
     - perceived_ineffectiveness
     - perceived_futility

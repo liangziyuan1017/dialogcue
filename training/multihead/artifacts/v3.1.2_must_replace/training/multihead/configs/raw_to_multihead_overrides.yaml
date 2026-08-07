@@ -1,8 +1,7 @@
 # Optional overrides on top of training_ontology_v3 include_raw invert.
 # v3.1.2.1 FH pollution bridges + v3.1.2.2 NR history/other-bank/plan-status bridges.
-# v3.1.2-patch1 Asset housing scrub + Contactability pollution drops.
 
-version: raw_to_multihead_overrides_v1.1_patch1
+version: raw_to_multihead_overrides_v1
 resolution_priority:
   Employment:
   - disrupted
@@ -200,43 +199,6 @@ overrides:
   unresolved_incident: []
   waiting_for_negotiation: []
   will_call_back: []
-
-  # --- v3.1.2-patch1: Asset housing_status scrub + Contact pollution drop ---
-  # Asset: living ≠ owned/disposable asset
-  self_residence: []
-  housing: []
-  housing_situation: []
-  temporary_housing: []
-  housing_search: []
-  living_environment: []
-  no_overdue_mortgage: []
-  staying_with_friend:
-  - head: Asset
-    value: unavailable
-    train_label: Asset.unavailable
-  family_house:
-  - head: Asset
-    value: unavailable
-    train_label: Asset.unavailable
-  borrowed_residence:
-  - head: Asset
-    value: unavailable
-    train_label: Asset.unavailable
-  third_party_asset:
-  - head: Asset
-    value: unavailable
-    train_label: Asset.unavailable
-
-  # Contactability: not willingness / deadline / schedule pressure
-  time_constraint: []
-  busy: []
-  location: []
-  contact_difficulty: []
-  missed_communication: []
-  communication: []
-  fear_of_repeat_collection: []
-  overwhelmed_by_calls: []
-  phone_repaired: []
 
   # v3.1.2.2 NR follow-up: ambiguous aliases still FP on RC2 adj (not current speech-act)
   requested_repayment_plan: []

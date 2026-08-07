@@ -1,6 +1,6 @@
 version: raw_to_multihead_v1
 source_ontology: C:/Users/lzy/pipeline/pipeline/label_handler/ontology_v2/training_ontology_v3.yaml
-source_ontology_version: training_ontology_v3.1.2-patch1
+source_ontology_version: training_ontology_v3
 schema: stage2_multihead_v3.1
 evidence_rule: Do not auto-chain Employment→Income→Hardship→Capability without explicit
   evidence.
@@ -51,13 +51,13 @@ resolution_priority:
   - 'yes'
 stats:
   n_train_labels: 22
-  n_include_raw_edges: 1005
+  n_include_raw_edges: 1018
   n_absorbed_edges: 58
   n_denied_edges: 16
-  n_override_raws: 169
-  n_legacy_bridge_raws: 5742
+  n_override_raws: 149
+  n_legacy_bridge_raws: 5745
   n_eval_only_labels: 1
-  n_raw_keys: 5754
+  n_raw_keys: 5926
   n_multi_head_raws: 0
   n_same_head_conflicts: 0
   n_dropped_invalid_vs_schema: 0
@@ -98,6 +98,21 @@ mappings:
     value: unreachable
     train_label: Contactability.unreachable
     via: include_raw
+  absence_excuse:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  absence_from_home:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  absence_reason:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   absent_father:
   - head: FamilyBurden
     value: 'yes'
@@ -750,6 +765,81 @@ mappings:
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
+  address_invalid:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  address_issue:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  address_mismatch:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  address_outdated:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  address_preference:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  address_provided:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  address_type:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  address_uncertainty:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  address_unchanged:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  address_unclear:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  address_unoccupied:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  address_unreachable:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  address_update:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  address_valid:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  address_validity:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   admission_of_delinquency:
   - head: IdentityProcess
     value: 'yes'
@@ -1675,6 +1765,11 @@ mappings:
     value: 'yes'
     train_label: BankConstraint.yes
     via: include_raw
+  at_bank:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   at_home:
   - head: Contactability
     value: reachable
@@ -1685,6 +1780,16 @@ mappings:
     value: 'yes'
     train_label: LegalProceeding.yes
     via: legacy_bridge:legal_pressure
+  at_work:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  at_work_field:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   attempt_to_borrow:
   - head: FinancialHardship
     value: 'yes'
@@ -1830,6 +1935,16 @@ mappings:
     value: 'yes'
     train_label: BankConstraint.yes
     via: legacy_bridge:system_issue
+  availability_constraint:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  availability_time:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   available_for_communication:
   - head: Contactability
     value: reachable
@@ -1840,6 +1955,11 @@ mappings:
     value: partial
     train_label: RepaymentCapability.partial
     via: legacy_bridge:partial_capacity
+  available_time_window:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   avoid_being_deadbeat:
   - head: IdentityProcess
     value: 'yes'
@@ -1860,6 +1980,11 @@ mappings:
     value: committed
     train_label: Commitment.committed
     via: legacy_bridge:willing_to_pay
+  avoid_contact:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   avoid_default:
   - head: IdentityProcess
     value: 'yes'
@@ -1890,6 +2015,11 @@ mappings:
     value: committed
     train_label: Commitment.committed
     via: legacy_bridge:willing_to_pay
+  avoidance:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   avoidance_behavior:
   - head: CognitiveSupport
     value: 'yes'
@@ -1900,6 +2030,11 @@ mappings:
     value: 'yes'
     train_label: FamilyBurden.yes
     via: legacy_bridge:family_strain
+  avoiding_contact:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   avoiding_contacts:
   - head: Contactability
     value: unreachable
@@ -2026,6 +2161,11 @@ mappings:
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: include_raw
+  away_from_home:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   background:
   - head: Income
     value: unavailable
@@ -2593,9 +2733,9 @@ mappings:
     via: legacy_bridge:debt_overwhelm
   borrowed_residence:
   - head: Asset
-    value: unavailable
-    train_label: Asset.unavailable
-    via: override
+    value: available
+    train_label: Asset.available
+    via: include_raw
   borrowed_to_pay:
   - head: FinancialHardship
     value: 'yes'
@@ -3156,12 +3296,51 @@ mappings:
     value: available
     train_label: Asset.available
     via: legacy_bridge:asset_situation
-  busy: []
+  busy:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   busy_afternoon:
   - head: Contactability
     value: reachable
     train_label: Contactability.reachable
     via: include_raw
+  busy_at_work:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  busy_excuse:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  busy_now:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  busy_outside:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  busy_reason:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  busy_schedule:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  busy_situation:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   busy_unavailable:
   - head: Contactability
     value: reachable
@@ -3172,6 +3351,26 @@ mappings:
     value: 'yes'
     train_label: FamilyBurden.yes
     via: legacy_bridge:family_strain
+  busy_with_other_affairs:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  busy_with_study:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  busy_with_work:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  busy_work:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   buyer_interest:
   - head: Asset
     value: available
@@ -3227,6 +3426,11 @@ mappings:
     value: 'yes'
     train_label: IdentityProcess.yes
     via: legacy_bridge:debt_inquiry
+  call_avoidance:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   call_back: []
   call_back_failed:
   - head: Contactability
@@ -3248,6 +3452,11 @@ mappings:
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
+  call_interruption:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   call_issue:
   - head: CognitiveSupport
     value: 'yes'
@@ -3263,6 +3472,16 @@ mappings:
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: include_raw
+  call_termination:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  call_time_preference:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   caller_id_mismatch:
   - head: IdentityProcess
     value: 'yes'
@@ -3474,6 +3693,11 @@ mappings:
     value: 'yes'
     train_label: FinancialHardship.yes
     via: include_raw
+  cannot_reach_boss:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   cannot_reach_employer:
   - head: FinancialHardship
     value: 'yes'
@@ -4829,7 +5053,11 @@ mappings:
     value: committed
     train_label: Commitment.committed
     via: legacy_bridge:payment_commitment
-  communication: []
+  communication:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: include_raw
   communication_attempt:
   - head: CognitiveSupport
     value: 'yes'
@@ -4865,6 +5093,11 @@ mappings:
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
+  communication_constraint:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   communication_difficulty:
   - head: CognitiveSupport
     value: 'yes'
@@ -4900,6 +5133,11 @@ mappings:
     value: reachable
     train_label: Contactability.reachable
     via: include_raw
+  communication_recovery:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   communication_willingness:
   - head: Contactability
     value: reachable
@@ -5266,6 +5504,11 @@ mappings:
     value: 'yes'
     train_label: IdentityProcess.yes
     via: include_raw_eval_only
+  confirm_availability:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   confirm_future_negotiation:
   - head: NegotiationRequest
     value: 'yes'
@@ -5517,6 +5760,11 @@ mappings:
     value: unreachable
     train_label: Contactability.unreachable
     via: include_raw
+  contact_avoidance:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   contact_compliance:
   - head: Contactability
     value: reachable
@@ -5532,7 +5780,11 @@ mappings:
     value: reachable
     train_label: Contactability.reachable
     via: include_raw
-  contact_difficulty: []
+  contact_difficulty:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: include_raw
   contact_disclosure_fear:
   - head: Grievance
     value: 'yes'
@@ -5543,6 +5795,11 @@ mappings:
     value: 'yes'
     train_label: Grievance.yes
     via: legacy_bridge:collection_grievance
+  contact_excuse:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   contact_from_collector:
   - head: Contactability
     value: reachable
@@ -5609,16 +5866,31 @@ mappings:
     value: 'yes'
     train_label: BankConstraint.yes
     via: legacy_bridge:account_restriction
+  contact_time_issue:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   contact_timeline:
   - head: Contactability
     value: reachable
     train_label: Contactability.reachable
     via: include_raw
+  contact_timing:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   contact_timing_issue:
   - head: Grievance
     value: 'yes'
     train_label: Grievance.yes
     via: legacy_bridge:collection_grievance
+  contact_unavailable:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   contact_unclear:
   - head: CognitiveSupport
     value: 'yes'
@@ -6264,11 +6536,21 @@ mappings:
     value: reachable
     train_label: Contactability.reachable
     via: include_raw
+  daytime_absence:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   daytime_unavailability:
   - head: Contactability
     value: reachable
     train_label: Contactability.reachable
     via: include_raw
+  daytime_unavailable:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   deadline:
   - head: Commitment
     value: committed
@@ -6905,6 +7187,11 @@ mappings:
     value: 'yes'
     train_label: IdentityProcess.yes
     via: legacy_bridge:debt_inquiry
+  debtor_absent:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   debtor_delay:
   - head: Income
     value: unavailable
@@ -7747,6 +8034,11 @@ mappings:
     value: 'yes'
     train_label: BankConstraint.yes
     via: legacy_bridge:system_issue
+  device_usage:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   did_not_receive_funds:
   - head: DebtDispute
     value: 'yes'
@@ -8412,6 +8704,11 @@ mappings:
     value: 'yes'
     train_label: NegotiationRequest.yes
     via: legacy_bridge:negotiation_attempt
+  distraction:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   distress: []
   distrust_of_bank:
   - head: Grievance
@@ -8484,6 +8781,26 @@ mappings:
     value: 'yes'
     train_label: NegotiationRequest.yes
     via: legacy_bridge:installment_request
+  driving:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  driving_highway:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  driving_inconvenience:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  driving_on_highway:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   due_date:
   - head: Commitment
     value: committed
@@ -8709,6 +9026,11 @@ mappings:
     value: reachable
     train_label: Contactability.reachable
     via: legacy_bridge:third_party_involvement
+  emergency_contact_availability:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   emergency_contact_child:
   - head: FamilyBurden
     value: 'yes'
@@ -8911,16 +9233,36 @@ mappings:
     value: 'yes'
     train_label: LegalProceeding.yes
     via: legacy_bridge:legal_pressure
+  environment_noise:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  environmental_context:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   environmental_distraction:
   - head: CognitiveSupport
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
+  environmental_noise:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   environmental_reason:
   - head: CognitiveSupport
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
+  errand_task:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   error_confirmed_and_staff_punished:
   - head: Grievance
     value: 'yes'
@@ -9554,6 +9896,16 @@ mappings:
     train_label: FinancialHardship.yes
     via: legacy_bridge:repayment_inability
   failed_callback: []
+  failed_contact:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  failed_contact_attempt:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   failed_installment_application:
   - head: NegotiationRequest
     value: 'yes'
@@ -9926,9 +10278,9 @@ mappings:
     via: legacy_bridge:family_strain
   family_house:
   - head: Asset
-    value: unavailable
-    train_label: Asset.unavailable
-    via: override
+    value: available
+    train_label: Asset.available
+    via: include_raw
   family_illness:
   - head: FamilyBurden
     value: 'yes'
@@ -10279,7 +10631,11 @@ mappings:
     value: 'yes'
     train_label: FinancialHardship.yes
     via: legacy_bridge:debt_overwhelm
-  fear_of_repeat_collection: []
+  fear_of_repeat_collection:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: include_raw
   fear_of_scam:
   - head: LegalProceeding
     value: 'yes'
@@ -11343,6 +11699,11 @@ mappings:
     value: committed
     train_label: Commitment.committed
     via: legacy_bridge:payment_commitment
+  future_availability:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   future_bills:
   - head: FinancialHardship
     value: 'yes'
@@ -11743,6 +12104,11 @@ mappings:
     value: partial
     train_label: RepaymentCapability.partial
     via: legacy_bridge:partial_capacity
+  geographic_distance:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   geographic_hardship:
   - head: ObjectiveBlocker
     value: 'yes'
@@ -11753,6 +12119,11 @@ mappings:
     value: 'yes'
     train_label: ObjectiveBlocker.yes
     via: include_raw
+  geographical_distance:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   gig_work:
   - head: Income
     value: unavailable
@@ -12258,6 +12629,11 @@ mappings:
     value: 'yes'
     train_label: FinancialHardship.yes
     via: legacy_bridge:expense_pressure
+  home_after_7pm:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   homelessness:
   - head: FinancialHardship
     value: 'yes'
@@ -12353,7 +12729,11 @@ mappings:
     value: available
     train_label: Asset.available
     via: legacy_bridge:asset_situation
-  housing: []
+  housing:
+  - head: Asset
+    value: available
+    train_label: Asset.available
+    via: include_raw
   housing_application:
   - head: Asset
     value: available
@@ -12409,8 +12789,16 @@ mappings:
     value: available
     train_label: Asset.available
     via: legacy_bridge:asset_situation
-  housing_search: []
-  housing_situation: []
+  housing_search:
+  - head: Asset
+    value: available
+    train_label: Asset.available
+    via: include_raw
+  housing_situation:
+  - head: Asset
+    value: available
+    train_label: Asset.available
+    via: include_raw
   housing_size:
   - head: Asset
     value: available
@@ -12617,6 +13005,11 @@ mappings:
     value: committed
     train_label: Commitment.committed
     via: legacy_bridge:payment_commitment
+  in_transit:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   inability_to_borrow:
   - head: FinancialHardship
     value: 'yes'
@@ -13160,17 +13553,32 @@ mappings:
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
+  inconvenience:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   inconvenient:
   - head: CognitiveSupport
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
+  inconvenient_call:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   inconvenient_call_time: []
   inconvenient_communication:
   - head: CognitiveSupport
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
+  inconvenient_location:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   inconvenient_time: []
   indifferent_to_lawsuit:
   - head: LegalProceeding
@@ -14240,6 +14648,11 @@ mappings:
     value: unavailable
     train_label: Income.unavailable
     via: legacy_bridge:income_reduction
+  just_returned:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   keep_contact:
   - head: Contactability
     value: reachable
@@ -14970,6 +15383,11 @@ mappings:
     value: partial
     train_label: RepaymentCapability.partial
     via: legacy_bridge:partial_capacity
+  limited_availability:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   limited_available_funds:
   - head: RepaymentCapability
     value: partial
@@ -15090,7 +15508,11 @@ mappings:
     value: 'yes'
     train_label: FinancialHardship.yes
     via: legacy_bridge:expense_pressure
-  living_environment: []
+  living_environment:
+  - head: Asset
+    value: available
+    train_label: Asset.available
+    via: include_raw
   living_expense:
   - head: FinancialHardship
     value: 'yes'
@@ -15206,12 +15628,81 @@ mappings:
     value: 'yes'
     train_label: IdentityProcess.yes
     via: legacy_bridge:debt_inquiry
-  location: []
+  location:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  location_abroad:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  location_action:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  location_away:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  location_change:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  location_confirmation:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  location_constraint:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  location_farming:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  location_not_shanghai:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  location_outside:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  location_preference:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   location_remote:
   - head: ObjectiveBlocker
     value: 'yes'
     train_label: ObjectiveBlocker.yes
     via: include_raw
+  location_status:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  location_unavailable:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  location_wuhan:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   login_failure:
   - head: BankConstraint
     value: 'yes'
@@ -15222,11 +15713,21 @@ mappings:
     value: 'yes'
     train_label: BankConstraint.yes
     via: legacy_bridge:system_issue
+  logistical_constraint:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   logistical_delay:
   - head: ObjectiveBlocker
     value: 'yes'
     train_label: ObjectiveBlocker.yes
     via: include_raw
+  logistical_difficulty:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   long_installment:
   - head: NegotiationRequest
     value: 'yes'
@@ -16092,6 +16593,26 @@ mappings:
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
+  missed_call_explanation:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  missed_call_reason:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  missed_callback:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  missed_calls:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   missed_calls_due_to_busy:
   - head: Contactability
     value: reachable
@@ -16102,7 +16623,21 @@ mappings:
     value: unreachable
     train_label: Contactability.unreachable
     via: include_raw
-  missed_communication: []
+  missed_communication:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: include_raw
+  missed_contact:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  missed_contact_due_to_non_official_caller:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   missed_deadline:
   - head: CognitiveSupport
     value: 'yes'
@@ -16133,6 +16668,11 @@ mappings:
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
+  missed_opportunity:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   missed_payment:
   - head: Commitment
     value: committed
@@ -16711,6 +17251,11 @@ mappings:
     value: reachable
     train_label: Contactability.reachable
     via: legacy_bridge:third_party_involvement
+  need_in_person:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   need_long_term:
   - head: NegotiationRequest
     value: 'yes'
@@ -17354,6 +17899,11 @@ mappings:
     value: 'yes'
     train_label: FinancialHardship.yes
     via: legacy_bridge:expense_pressure
+  no_contact:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   no_contact_notice:
   - head: CognitiveSupport
     value: 'yes'
@@ -17594,6 +18144,11 @@ mappings:
     value: 'yes'
     train_label: FinancialHardship.yes
     via: legacy_bridge:expense_pressure
+  no_human_contact:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   no_immediate_ability:
   - head: FinancialHardship
     value: 'yes'
@@ -17865,6 +18420,11 @@ mappings:
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
+  no_one_at_home:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   no_online_loan:
   - head: Asset
     value: available
@@ -17920,7 +18480,11 @@ mappings:
     value: 'yes'
     train_label: IdentityProcess.yes
     via: legacy_bridge:debt_acknowledgment
-  no_overdue_mortgage: []
+  no_overdue_mortgage:
+  - head: Asset
+    value: unavailable
+    train_label: Asset.unavailable
+    via: include_raw
   no_payment:
   - head: FinancialHardship
     value: 'yes'
@@ -18177,6 +18741,11 @@ mappings:
     value: 'yes'
     train_label: FamilyBurden.yes
     via: legacy_bridge:family_strain
+  no_trace:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   no_unemployment:
   - head: Income
     value: unavailable
@@ -18242,6 +18811,11 @@ mappings:
     value: 'yes'
     train_label: ComplianceRisk.yes
     via: legacy_bridge:policy_reference
+  noisy_environment:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   non_avoidance:
   - head: IdentityProcess
     value: 'yes'
@@ -18302,6 +18876,16 @@ mappings:
     value: 'yes'
     train_label: FinancialHardship.yes
     via: legacy_bridge:expense_pressure
+  not_at_address:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  not_at_home:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   not_avoiding:
   - head: IdentityProcess
     value: 'yes'
@@ -18347,6 +18931,21 @@ mappings:
     value: 'yes'
     train_label: IdentityProcess.yes
     via: legacy_bridge:responsibility_claim
+  not_home:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  not_home_during_day:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  not_in_city:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   not_intentional:
   - head: IdentityProcess
     value: 'yes'
@@ -18493,6 +19092,16 @@ mappings:
     value: 'yes'
     train_label: NegotiationRequest.yes
     via: legacy_bridge:installment_request
+  on_the_way:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  on_transport:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   one_car_loan:
   - head: Asset
     value: available
@@ -19040,6 +19649,11 @@ mappings:
     value: committed
     train_label: Commitment.committed
     via: legacy_bridge:payment_commitment
+  other_unreachable:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   others_cannot_pay:
   - head: Contactability
     value: reachable
@@ -19070,6 +19684,16 @@ mappings:
     value: unavailable
     train_label: Income.unavailable
     via: legacy_bridge:income_delay
+  out_of_country:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  out_of_office:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   outsourcing_claim:
   - head: Grievance
     value: 'yes'
@@ -19240,7 +19864,11 @@ mappings:
     value: 'yes'
     train_label: DebtDispute.yes
     via: legacy_bridge:billing_dispute
-  overwhelmed_by_calls: []
+  overwhelmed_by_calls:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: include_raw
   overwhelmed_by_notices:
   - head: FinancialHardship
     value: 'yes'
@@ -19769,6 +20397,11 @@ mappings:
     train_label: FinancialHardship.yes
     via: legacy_bridge:repayment_inability
   past_successful_help: []
+  past_travel:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   past_willingness_conditional:
   - head: Commitment
     value: committed
@@ -20587,6 +21220,11 @@ mappings:
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
+  personal_errand:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   personal_expense:
   - head: FinancialHardship
     value: 'yes'
@@ -20714,6 +21352,11 @@ mappings:
     value: unreachable
     train_label: Contactability.unreachable
     via: include_raw
+  phone_availability:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   phone_avoidance:
   - head: Contactability
     value: unreachable
@@ -20744,12 +21387,46 @@ mappings:
     value: unreachable
     train_label: Contactability.unreachable
     via: include_raw
-  phone_repaired: []
+  phone_not_in_use:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  phone_number_issue:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  phone_off:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  phone_recovery:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  phone_repaired:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: include_raw
   phone_settings:
   - head: Contactability
     value: unreachable
     train_label: Contactability.unreachable
     via: include_raw
+  phone_silent:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  phone_unavailable:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   physical_barrier:
   - head: Health
     value: 'yes'
@@ -21243,6 +21920,11 @@ mappings:
     value: unavailable
     train_label: Income.unavailable
     via: legacy_bridge:income_loss
+  previous_call_dropped:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   previous_collector:
   - head: Contactability
     value: reachable
@@ -21273,6 +21955,11 @@ mappings:
     value: 'yes'
     train_label: Grievance.yes
     via: legacy_bridge:collection_grievance
+  previous_contact_denial:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   previous_contact_ignored:
   - head: Grievance
     value: 'yes'
@@ -22745,6 +23432,11 @@ mappings:
     value: 'yes'
     train_label: FinancialHardship.yes
     via: legacy_bridge:expense_pressure
+  recent_return:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   recent_unemployment:
   - head: Employment
     value: disrupted
@@ -24208,6 +24900,11 @@ mappings:
     value: unavailable
     train_label: Income.unavailable
     via: legacy_bridge:income_loss
+  return_date_estimate:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   return_plan:
   - head: Commitment
     value: committed
@@ -24464,6 +25161,11 @@ mappings:
     value: 'yes'
     train_label: LegalProceeding.yes
     via: include_raw
+  schedule_uncertainty:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   school_expenses:
   - head: FinancialHardship
     value: 'yes'
@@ -24875,7 +25577,11 @@ mappings:
     value: committed
     train_label: Commitment.committed
     via: include_raw
-  self_residence: []
+  self_residence:
+  - head: Asset
+    value: available
+    train_label: Asset.available
+    via: include_raw
   self_responsibility:
   - head: IdentityProcess
     value: 'yes'
@@ -25196,6 +25902,11 @@ mappings:
     value: 'yes'
     train_label: FamilyBurden.yes
     via: legacy_bridge:family_strain
+  situational_constraint:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   skill_deficit:
   - head: ObjectiveBlocker
     value: 'yes'
@@ -25356,6 +26067,16 @@ mappings:
     value: partial
     train_label: RepaymentCapability.partial
     via: legacy_bridge:partial_capacity
+  specific_availability:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  specific_available_time:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   specific_bill:
   - head: IdentityProcess
     value: 'yes'
@@ -25426,6 +26147,11 @@ mappings:
     value: 'yes'
     train_label: NegotiationRequest.yes
     via: legacy_bridge:negotiation_attempt
+  specific_time:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   specific_time_constraint:
   - head: FinancialHardship
     value: 'yes'
@@ -25663,9 +26389,9 @@ mappings:
     via: legacy_bridge:debt_acknowledgment
   staying_with_friend:
   - head: Asset
-    value: unavailable
-    train_label: Asset.unavailable
-    via: override
+    value: available
+    train_label: Asset.available
+    via: include_raw
   still_overdue:
   - head: IdentityProcess
     value: 'yes'
@@ -25890,6 +26616,11 @@ mappings:
     value: 'yes'
     train_label: DebtDispute.yes
     via: legacy_bridge:billing_dispute
+  temporarily_busy:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   temporary_borrowing_capacity:
   - head: RepaymentCapability
     value: partial
@@ -25910,7 +26641,11 @@ mappings:
     value: partial
     train_label: RepaymentCapability.partial
     via: legacy_bridge:partial_capacity
-  temporary_housing: []
+  temporary_housing:
+  - head: Asset
+    value: available
+    train_label: Asset.available
+    via: include_raw
   temporary_inability:
   - head: FinancialHardship
     value: 'yes'
@@ -25926,6 +26661,11 @@ mappings:
     value: unavailable
     train_label: Income.unavailable
     via: legacy_bridge:income_reduction
+  temporary_inconvenience:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   temporary_job:
   - head: Income
     value: unavailable
@@ -25947,6 +26687,11 @@ mappings:
     value: 'yes'
     train_label: NegotiationRequest.yes
     via: legacy_bridge:negotiation_attempt
+  temporary_unavailability:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   temporary_work:
   - head: Income
     value: unavailable
@@ -25984,9 +26729,9 @@ mappings:
     via: legacy_bridge:third_party_involvement
   third_party_asset:
   - head: Asset
-    value: unavailable
-    train_label: Asset.unavailable
-    via: override
+    value: available
+    train_label: Asset.available
+    via: include_raw
   third_party_authorization:
   - head: Contactability
     value: reachable
@@ -26193,7 +26938,36 @@ mappings:
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
-  time_constraint: []
+  time_constraint:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  time_delay:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  time_difference:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  time_difficulty:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  time_dispute:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  time_estimate:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   time_frame:
   - head: Commitment
     value: committed
@@ -26224,6 +26998,11 @@ mappings:
     value: 'yes'
     train_label: NegotiationRequest.yes
     via: legacy_bridge:installment_request
+  time_restriction:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   timeframe:
   - head: Commitment
     value: committed
@@ -26254,6 +27033,11 @@ mappings:
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
+  timing:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   timing_inquiry:
   - head: IdentityProcess
     value: 'yes'
@@ -26405,6 +27189,21 @@ mappings:
     value: 'yes'
     train_label: ObjectiveBlocker.yes
     via: include_raw
+  travel:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  travel_business:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  travel_busy:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   travel_expense:
   - head: FinancialHardship
     value: 'yes'
@@ -26415,16 +27214,31 @@ mappings:
     value: reachable
     train_label: Contactability.reachable
     via: include_raw
+  travel_or_busy:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   travel_plans:
   - head: ObjectiveBlocker
     value: 'yes'
     train_label: ObjectiveBlocker.yes
     via: include_raw
+  travel_reason:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   travel_time:
   - head: ObjectiveBlocker
     value: 'yes'
     train_label: ObjectiveBlocker.yes
     via: include_raw
+  traveling:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   treatment:
   - head: Health
     value: 'yes'
@@ -26546,6 +27360,11 @@ mappings:
     value: reachable
     train_label: Contactability.reachable
     via: legacy_bridge:third_party_involvement
+  unable_to_contact_reference:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   unable_to_find_funds:
   - head: FinancialHardship
     value: 'yes'
@@ -26556,6 +27375,11 @@ mappings:
     value: 'yes'
     train_label: FinancialHardship.yes
     via: legacy_bridge:repayment_inability
+  unable_to_locate:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   unable_to_meet_terms:
   - head: FinancialHardship
     value: 'yes'
@@ -26701,11 +27525,21 @@ mappings:
     value: 'yes'
     train_label: IdentityProcess.yes
     via: include_raw_eval_only
+  unavailable:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   unavailable_during_day:
   - head: Contactability
     value: reachable
     train_label: Contactability.reachable
     via: include_raw
+  unavailable_to_talk:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   unaware_of_charges:
   - head: DebtDispute
     value: 'yes'
@@ -27282,6 +28116,16 @@ mappings:
     value: 'yes'
     train_label: DebtDispute.yes
     via: legacy_bridge:billing_dispute
+  unreachable:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  unreachable_explanation:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   unread_document:
   - head: Contactability
     value: denied
@@ -27764,6 +28608,11 @@ mappings:
     value: 'yes'
     train_label: CognitiveSupport.yes
     via: legacy_bridge:communication_issue
+  waiting_time:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   waive_fees_request:
   - head: NegotiationRequest
     value: 'yes'
@@ -27995,6 +28844,36 @@ mappings:
     value: 'yes'
     train_label: BankConstraint.yes
     via: legacy_bridge:account_restriction
+  work_absence:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  work_busy:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  work_commitment:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  work_condition:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  work_conflict:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  work_constraint:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   work_delay:
   - head: Income
     value: unavailable
@@ -28030,6 +28909,11 @@ mappings:
     value: unavailable
     train_label: Income.unavailable
     via: legacy_bridge:income_loss
+  work_habit:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   work_hours_conflict:
   - head: Contactability
     value: reachable
@@ -28065,11 +28949,41 @@ mappings:
     value: unavailable
     train_label: Income.unavailable
     via: legacy_bridge:income_loss
+  work_obligation:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   work_related_cost:
   - head: FinancialHardship
     value: 'yes'
     train_label: FinancialHardship.yes
     via: legacy_bridge:expense_pressure
+  work_related_missed_calls:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  work_restriction:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  work_schedule:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  work_schedule_conflict:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
+  work_schedule_or_lifestyle:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   work_supervision:
   - head: Contactability
     value: reachable
@@ -28080,6 +28994,11 @@ mappings:
     value: committed
     train_label: Commitment.committed
     via: legacy_bridge:willing_to_pay
+  work_travel:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   work_trip:
   - head: Contactability
     value: reachable
@@ -28125,6 +29044,11 @@ mappings:
     value: committed
     train_label: Commitment.committed
     via: legacy_bridge:willing_to_pay
+  workplace_constraint:
+  - head: Contactability
+    value: unreachable
+    train_label: Contactability.unreachable
+    via: legacy_bridge:contact_difficulty
   would_pay_if_had_money:
   - head: Commitment
     value: committed

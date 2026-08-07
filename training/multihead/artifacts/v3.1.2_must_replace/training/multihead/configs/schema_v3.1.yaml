@@ -5,7 +5,7 @@
 # - Contactability: denied moved from Rule into head values
 # - IdentityProcess: kind=event (not long-lived memory state for P0)
 
-version: stage2_multihead_v3.1.1-patch1
+version: stage2_multihead_v3.1.1
 knowledge_ontology: proposed_v2_action_audit
 n_train_positive_values: 22
 n_heads: 19
@@ -15,10 +15,6 @@ evidence_rule: >
 changelog_v3_1_1: >
   Pre-train: LegalRisk softmax → LegalProceeding + ComplianceRisk binaries (can co-fire);
   IdentityProcess train=false (mask=0); Employment.active Memory-only clarified.
-changelog_v3_1_2_patch1: >
-  Ontology boundary patch (no schema value expand): Asset available=own/disposable only;
-  Contactability=reachability only; Commitment path-A keep resistant + train_gate≥50.
-  See annotation_policy_v3.1.2-patch1 and artifacts/v3.1.2_patch1/LIST.md.
 
 heads:
   Employment:

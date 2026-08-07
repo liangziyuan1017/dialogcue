@@ -162,38 +162,14 @@ def main() -> None:
     out_dir = args.out_dir or args.ckpt.parent
     out_dir.mkdir(parents=True, exist_ok=True)
     stem = f"eval_{args.split}"
-    # Legacy-compatible filenames (backward)
     (out_dir / f"{stem}.json").write_text(
         json.dumps(metrics, ensure_ascii=False, indent=2), encoding="utf-8"
     )
-    meta = {
-        "ontology": "v3.1.2 freeze",
-        "model": args.ckpt.name,
-        "split": args.split,
-    }
-    md_v32 = format_metrics_md(metrics, schema, meta=meta)
-    # v3.2 primary deliverables
-    (out_dir / f"{stem}_v32.md").write_text(md_v32, encoding="utf-8")
-    (out_dir / f"{stem}_v32.json").write_text(
-        json.dumps(metrics, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
-    # keep legacy md as same v3.2 content for convenience (optional alias)
-    (out_dir / f"{stem}.md").write_text(md_v32, encoding="utf-8")
+    (out_dir / f"{stem}.md").write_text(format_metrics_md(metrics, schema), encoding="utf-8")
 
     summary = {
         k: metrics[k]
-        for k in (
-            "weighted_positive_f1",
-            "weighted_positive_precision",
-            "weighted_positive_recall",
-            "macro_f1",
-            "weighted_macro_f1",
-            "macro_f1_by_kind",
-            "n_heads_scored",
-            "evidence_samples",
-            "report_version",
-        )
-        if k in metrics
+        for k in ("macro_f1", "weighted_macro_f1", "macro_f1_by_kind", "n_heads_scored")
     }
     if args.sweep_threshold:
         thr = {}
@@ -239,10 +215,7 @@ def main() -> None:
         print(f"wrote {thr_path}")
 
     print(json.dumps(summary, ensure_ascii=False, indent=2))
-    print(f"wrote {out_dir / (stem + '_v32.md')}")
-    print(f"wrote {out_dir / (stem + '_v32.json')}")
-    print(f"wrote {out_dir / (stem + '.md')} (same as v32)")
-    print(f"wrote {out_dir / (stem + '.json')}")
+    print(f"wrote {out_dir / (stem + '.md')}")
 
 
 if __name__ == "__main__":
