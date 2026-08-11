@@ -37,4 +37,6 @@ python training/multitask_v1/scripts/eval_multitask.py \
   --split test
 ```
 
-细节见 [`docs/FULLDATA_RUNBOOK.md`](docs/FULLDATA_RUNBOOK.md)。
+细节见 [`docs/FULLDATA_RUNBOOK.md`](docs/FULLDATA_RUNBOOK.md)。  
+推理解码（不用训练 mask）见 [`docs/INFERENCE.md`](docs/INFERENCE.md)。  
+训完用 `calibrate_thresholds.py`（或 `train --calibrate`）写 `thresholds.json`；`infer_multitask.py` 会自动加载。

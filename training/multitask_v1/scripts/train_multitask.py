@@ -230,6 +230,11 @@ def main() -> None:
     ap.add_argument("--smoke", action="store_true")
     ap.add_argument("--no-progress", action="store_true")
     ap.add_argument(
+        "--calibrate",
+        action="store_true",
+        help="After train, sweep val thresholds → <output_dir>/thresholds.json",
+    )
+    ap.add_argument(
         "--device",
         type=str,
         default=None,
@@ -608,6 +613,44 @@ def main() -> None:
         f"done. best_monitor={best_score} ckpt={best_path if best_score >= 0 else 'n/a'}",
         flush=True,
     )
+
+    if args.calibrate and best_path.exists() and val_loader is not None:
+        from threshold_calib import (  # local import
+            calibrate_from_collected,
+            collect_calibration_batches,
+            write_thresholds,
+        )
+
+        print("calibrating thresholds on val ...", flush=True)
+        model.eval()
+        # reload best weights for calibration
+        best_ckpt = torch.load(best_path, map_location="cpu")
+        state = best_ckpt.get("model_state_dict") or best_ckpt.get("model")
+        model.load_state_dict(state)
+        model.to(device)
+        collected = collect_calibration_batches(
+            model,
+            val_loader,
+            schema=fact_schema,
+            emo_vocab=emo_vocab,
+            will_vocab=will_vocab,
+            device=device,
+        )
+        thr_payload = calibrate_from_collected(
+            collected,
+            fact_schema,
+            checkpoint=str(best_path),
+            split="val",
+        )
+        thr_path = out_dir / "thresholds.json"
+        write_thresholds(thr_path, thr_payload)
+        print(
+            f"wrote {thr_path} "
+            f"fact_thr={thr_payload['fact_binary_threshold']} "
+            f"emo_min={thr_payload['emotion_min_prob']} "
+            f"will_min={thr_payload['willingness_min_prob']}",
+            flush=True,
+        )
 
     if args.smoke:
         model.eval()

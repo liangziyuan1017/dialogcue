@@ -41,8 +41,11 @@ python training/multitask_v1/scripts/audit_fulldata_ready.py --run-multihead-aud
 ```bash
 python training/multitask_v1/scripts/train_multitask.py \
   --config training/multitask_v1/configs/train_multitask.yaml \
-  --device npu:0
+  --device npu:0 \
+  --calibrate
 ```
+
+`--calibrate`：训完后在 val 上扫阈值，写出 `checkpoints/multitask_v1/thresholds.json`。
 
 默认配置已对齐 multihead：
 
@@ -55,7 +58,7 @@ python training/multitask_v1/scripts/train_multitask.py \
 | EN class weight | on（Fact + Emotion + Will） |
 | init_from_encoder | true（缺 ckpt 则 WARN 后从 HF 训） |
 
-产出：`checkpoints/multitask_v1/multitask_best.pt` + `val_metrics_best.md`
+产出：`checkpoints/multitask_v1/multitask_best.pt` + `val_metrics_best.md`（+ 可选 `thresholds.json`）
 
 ## 4. 评估
 
@@ -69,13 +72,34 @@ python training/multitask_v1/scripts/eval_multitask.py \
 
 写出 `eval_test.json` / `eval_test.md`（Fact evidence-only + Emotion strict/adj + Will）。
 
-## 5. 本地无全量数据时
+## 5. 校准阈值（若训练未加 --calibrate）
+
+```bash
+python training/multitask_v1/scripts/calibrate_thresholds.py \
+  --ckpt training/multitask_v1/checkpoints/multitask_v1/multitask_best.pt \
+  --config training/multitask_v1/configs/train_multitask.yaml \
+  --split val \
+  --device npu:0
+```
+
+## 6. 推理
+
+```bash
+python training/multitask_v1/scripts/infer_multitask.py \
+  --ckpt training/multitask_v1/checkpoints/multitask_v1/multitask_best.pt \
+  --input sample.json \
+  --device npu:0
+```
+
+自动加载同目录 `thresholds.json`（见 `docs/INFERENCE.md`）。
+
+## 7. 本地无全量数据时
 
 ```bash
 python training/multitask_v1/scripts/smoke_check.py
 # 或
 python training/multitask_v1/scripts/build_multitask_dataset.py --smoke
-python training/multitask_v1/scripts/train_multitask.py --smoke
+python training/multitask_v1/scripts/train_multitask.py --smoke --calibrate
 ```
 
 `--smoke` 强制 `__mock__` + `cpu`，不依赖 NPU / HF / `output_rewarded.py`。
