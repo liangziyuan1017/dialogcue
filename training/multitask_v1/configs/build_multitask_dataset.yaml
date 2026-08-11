@@ -1,0 +1,41 @@
+# Build multitask JSONL (Fact 19-head + Emotion 11 + Willingness 5)
+# See docs/BUILD_DATASET.md — keep in sync with SPECIFICATION.md
+
+contract_path: contract.yaml
+fact_schema_path: ../multihead/configs/schema_v3.1.yaml
+raw_to_multihead: ../multihead/configs/raw_to_multihead.yaml
+
+# Same sources multihead uses for slot relocate (trainable emotion/will maps)
+ontology:
+  emotion_mapping: ../multihead/configs/slot_relocate/emotion_mapping.yaml
+  willingness_ontology: ../multihead/configs/slot_relocate/willingness_ontology.yaml
+
+emotion_labels_path: labels_emotion.yaml
+willingness_labels_path: labels_willingness.yaml
+
+# Full-data: point to rewarded conversations (multihead conversation_parser format)
+input_path: ../../../output_rewarded.py
+output_dir: ../data
+reports_dir: ../data/reports
+
+context:
+  strategy: window_only
+  max_turns: 4
+  max_chars: 200
+
+label_policy:
+  emotion: anchor_then_window_last
+  willingness: anchor_then_window_last
+  label_scope: window
+
+split:
+  seed: 42
+  train_ratio: 0.8
+  val_ratio: 0.1
+  # remainder → test
+
+quality:
+  min_samples: 1
+  # advisory: fraction of customer anchors with emotion / will supervised
+  warn_emotion_coverage_below: 0.05
+  warn_willingness_coverage_below: 0.05

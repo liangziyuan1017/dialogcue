@@ -1,0 +1,15 @@
+# Frozen Emotion 11v1 — order is class index
+version: 11v1
+labels:
+  - distress
+  - despair
+  - complaint
+  - irritation
+  - hostility
+  - anxiety
+  - distrust
+  - confusion
+  - defensive
+  - negotiation
+  - engagement
+source: label_handler/emotion TAG_LABELS (deploy memory_training_full)

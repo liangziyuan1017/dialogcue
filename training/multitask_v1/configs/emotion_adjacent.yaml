@@ -1,0 +1,31 @@
+# Frozen emotion adjacency table for EVAL only (v1 does not train with these).
+# Source: training-0715 training/src/metrics/emotion_cluster_metrics.py
+# Params (historical learn): score_threshold=0.10, min_count=10,
+#   min_direction_rate=0.04, min_direction_count=3
+version: emotion_adjacent_v1
+eval_set_default: all_rule
+
+clusters:
+  hardship: [distress, despair, anxiety]
+  grievance: [complaint, irritation, distrust]
+  confrontation: [hostility, defensive]
+  negotiation: [negotiation, engagement]
+  cognitive: [confusion]
+
+data_validated:
+  - [complaint, hostility]
+  - [complaint, irritation]
+  - [hostility, defensive]
+  - [hostility, irritation]
+  - [distress, complaint]
+  - [negotiation, engagement]
+  - [complaint, defensive]
+  - [defensive, distress]
+
+rule_only:
+  - [anxiety, confusion]
+  - [anxiety, despair]
+  - [anxiety, distress]
+  - [complaint, distrust]
+  - [defensive, distrust]
+  - [distress, despair]

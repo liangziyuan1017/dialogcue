@@ -1,0 +1,10 @@
+# Local / generated artifacts (do not ship)
+checkpoints/
+data/smoke/
+data/multitask_*.jsonl
+data/reports/
+configs/_smoke_train_override.yaml
+**/__pycache__/
+*.pt
+*.pyc
+.pytest_cache/

@@ -1,0 +1,10 @@
+# Frozen Willingness 5v1 — order is class index (ordinal)
+version: 5v1
+labels:
+  - resistant
+  - weak
+  - conditional
+  - negotiating
+  - strong
+note: fact.Commitment.resistant is a different namespace — never merge.
+source: WILLINGNESS_ORDER / willingness_ontology_v2

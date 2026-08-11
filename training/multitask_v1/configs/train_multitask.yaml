@@ -1,0 +1,62 @@
+# Multitask v1 training — full-data defaults (aligned with multihead train_state.yaml)
+# Smoke: scripts/train_multitask.py --smoke  (forces __mock__ + cpu)
+
+seed: 42
+# Explicit device for Ascend full-data env. Quote required for YAML safety.
+# Comment out to auto: NPU > CUDA > CPU.
+device: "npu:0"
+
+model_name: ../../../hfl/chinese-roberta-wwm-ext-large
+max_length: 256
+batch_size: 16
+epochs: 8
+warmup_ratio: 0.10
+grad_clip: 1.0
+early_stop_patience: 2
+
+# Optional: warm-start encoder from Stage1 / E1-A checkpoint (outside multitask).
+# If missing, train from HF/scratch (script prints WARN).
+init_from_encoder: true
+encoder_ckpt: ../../checkpoints/stage1/stage1_last.pt
+
+contract_path: configs/contract.yaml
+emotion_labels_path: configs/labels_emotion.yaml
+willingness_labels_path: configs/labels_willingness.yaml
+emotion_adjacent_path: configs/emotion_adjacent.yaml
+fact_schema_path: ../multihead/configs/schema_v3.1.yaml
+emotion_adjacent_eval_set: all_rule
+
+data:
+  train_jsonl: data/multitask_train.jsonl
+  val_jsonl: data/multitask_val.jsonl
+  test_jsonl: data/multitask_test.jsonl
+  # Full-data MUST be false. Build dataset before train.
+  use_mock_if_missing: false
+
+context:
+  strategy: window_only
+  max_turns: 4
+  max_chars: 200
+
+task_weights:
+  fact: 1.0
+  emotion: 1.0
+  willingness: 1.0
+
+optimizer:
+  encoder_lr: 1.0e-5
+  head_lr: 5.0e-5
+  weight_decay: 0.01
+
+loss:
+  effective_number_beta: 0.999
+  use_class_weight: true
+  use_focal: false
+  focal_gamma: 2.0
+
+monitor:
+  # early-stop / best ckpt metric
+  metric: emotion_strict_macro_f1
+
+save_best_on: emotion_strict_macro_f1
+output_dir: checkpoints/multitask_v1

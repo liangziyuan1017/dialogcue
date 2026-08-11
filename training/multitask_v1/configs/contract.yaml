@@ -1,0 +1,28 @@
+# Multitask v1 frozen contract — keep in sync with SPECIFICATION.md
+version: multitask_v1
+status: frozen
+
+fact: v3.1.2-patch1
+emotion: 11v1
+willingness: 5v1
+adjacency: none  # train; eval still reports adjacent metrics
+
+context:
+  strategy: window_only
+  max_turns: 4
+  max_chars: 200
+
+# Read-only references into training/multihead (do not edit those files for multitask)
+fact_schema_path: ../multihead/configs/schema_v3.1.yaml
+
+emotion_adjacent_eval_set: all_rule  # data_validated | rule_only | all_rule
+
+loss:
+  fact: masked_multihead_ce
+  emotion: ce
+  willingness: ce
+
+notes:
+  - Fact = 19 independent heads, per-head CE over ontology values; unknown uses head_mask=0
+  - evidence-only is evaluation-only; training keeps pos/neg when masked in
+  - Commitment.resistant != willingness.resistant
