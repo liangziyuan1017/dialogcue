@@ -12,6 +12,11 @@ def test_migrations_are_versioned_and_sorted():
     assert any(m.name == "baseline" for m in MIGRATIONS)
 
 
+def test_f017_migration_creates_sentence_sources_table():
+    migration = next(m for m in MIGRATIONS if m.name == "f017_sentence_sources")
+    assert any("CREATE TABLE IF NOT EXISTS sentence_sources" in statement for statement in migration.statements)
+
+
 async def _fetchval(query, *args):
     if "count(*)" in query:
         return 0

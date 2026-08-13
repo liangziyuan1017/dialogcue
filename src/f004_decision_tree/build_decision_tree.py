@@ -1,7 +1,7 @@
-import importlib.util
 import json
 import os
 from collections import defaultdict
+from pathlib import Path
 
 from f004_decision_tree.merge_collector import (  # noqa: F401  (re-exported for tests)
     ACK_MAX_WORDS,
@@ -43,16 +43,14 @@ from f004_decision_tree.tree_transforms import (  # noqa: F401  (re-exported for
     _subset_match,
 )
 from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.jsonl_utils import load_jsonl
 from f007_infrastructure.logging import get_logger as _get_logger
 
 _log = _get_logger(__name__)
 
 def _load_rewarded():
-    data_path = os.path.join(os.path.dirname(__file__), "..", "f003_reward_labeling", "data", "output_rewarded.py")
-    spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod.results
+    data_path = os.path.join(os.path.dirname(__file__), "..", "f003_reward_labeling", "data", "output_rewarded.jsonl")
+    return load_jsonl(Path(data_path))
 
 def _make_branch_key(state):
     key = {}
@@ -110,10 +108,12 @@ def _merge_sentences(existing, new_entries):
         k = (entry["script_text"], entry.get("customer_willingness"), entry.get("collector_action"))
         if k in by_key:
             for existing_entry in by_key[k]:
+                existing_set = set(existing_entry["source_call_ids"])
                 for cid in entry["source_call_ids"]:
-                    if cid not in existing_entry["source_call_ids"]:
+                    if cid not in existing_set:
                         existing_entry["source_call_ids"].append(cid)
-                        existing_entry["source_call_ids"].sort()
+                        existing_set.add(cid)
+                existing_entry["source_call_ids"].sort()
                 if entry.get("gesture_type") and not existing_entry.get("gesture_type"):
                     existing_entry["gesture_type"] = entry["gesture_type"]
                 break
@@ -122,12 +122,24 @@ def _merge_sentences(existing, new_entries):
             existing.append(entry)
 
 def _is_ancestor(node, target):
-    if node is target:
-        return True
-    for child in node.get("children", []):
-        if _is_ancestor(child, target):
+    walker = target
+    while walker is not None:
+        if walker is node:
             return True
+        walker = walker.get("_parent")
     return False
+
+
+def _strip_parent_pointers(node):
+    node.pop("_parent", None)
+    for child in node.get("children", []):
+        _strip_parent_pointers(child)
+
+
+def _rebuild_parent_pointers(node, parent=None):
+    node["_parent"] = parent
+    for child in node.get("children", []):
+        _rebuild_parent_pointers(child, node)
 
 
 def make_base_tree():
@@ -162,6 +174,8 @@ def make_base_tree():
         "children": [normal_end, abrupt_end],
         "role": "opening",
     }
+    normal_end["_parent"] = root
+    abrupt_end["_parent"] = root
     return root
 
 
@@ -193,6 +207,7 @@ def _find_or_create_child(parent, branch_key, state_id, role, identity, registry
         "node_id": _compute_node_id(identity),
         "role": role,
     }
+    node["_parent"] = parent
     parent.setdefault("children", []).append(node)
     registry[identity] = node
     return node
@@ -241,6 +256,7 @@ def _place_sentences_in_node(node, sentences, registry):
                 "children": [],
                 "role": "action",
             }
+            action_child["_parent"] = node
             node.setdefault("children", []).append(action_child)
             registry[action_identity] = action_child
         _merge_sentences(action_child["sentence_pool"], by_action[action])
@@ -289,6 +305,7 @@ def add_dialog_to_tree(tree, record, registry, merge_decisions=None):
                             children = current_node.setdefault("children", [])
                             if matching not in children:
                                 children.append(matching)
+                                matching["_parent"] = current_node
                         current_node = matching
                         accumulated_facts = sorted(set(accumulated_facts) | {fact})
                         continue
@@ -307,6 +324,7 @@ def add_dialog_to_tree(tree, record, registry, merge_decisions=None):
                             children = current_node.setdefault("children", [])
                             if matching not in children:
                                 children.append(matching)
+                                matching["_parent"] = current_node
                         current_node = matching
                         accumulated_emotions = sorted(set(accumulated_emotions) | {emotion})
                         continue
@@ -333,6 +351,7 @@ def add_dialog_to_tree(tree, record, registry, merge_decisions=None):
                         children = current_node.setdefault("children", [])
                         if matching not in children:
                             children.append(matching)
+                            matching["_parent"] = current_node
                     current_node = matching
                     accumulated_facts = sorted(set(accumulated_facts) | {fact})
                     continue
@@ -354,6 +373,7 @@ def add_dialog_to_tree(tree, record, registry, merge_decisions=None):
                         children = current_node.setdefault("children", [])
                         if matching not in children:
                             children.append(matching)
+                            matching["_parent"] = current_node
                     current_node = matching
                     accumulated_emotions = sorted(set(accumulated_emotions) | {emotion})
                     continue
@@ -382,6 +402,7 @@ def merge_dialogs(tree_path, new_records, merge_decisions=None):
         try:
             with open(tree_path, encoding="utf-8") as f:
                 tree = json.load(f)
+            _rebuild_parent_pointers(tree)
         except (json.JSONDecodeError, ValueError):
             tree = None
     if tree is None:
@@ -398,8 +419,10 @@ def merge_dialogs(tree_path, new_records, merge_decisions=None):
     _consolidate_endpoints(tree)
     _dedup_script_ids_global(tree)
     _sort_keywords(tree)
+    _strip_parent_pointers(tree)
     with open(tree_path, "w", encoding="utf-8") as f:
         json.dump(tree, f, indent=2, ensure_ascii=False)
+    _rebuild_parent_pointers(tree)
     return tree
 
 
@@ -535,6 +558,7 @@ def write_decision_tree(records=None, output_path=None):
     _dedup_script_ids_global(tree)
     _sort_keywords(tree)
 
+    _strip_parent_pointers(tree)
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(tree, f, indent=2, ensure_ascii=False)
 

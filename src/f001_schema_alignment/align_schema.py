@@ -1,8 +1,9 @@
-import importlib.util
 import json
 import os
 import re
+from pathlib import Path
 
+from f007_infrastructure.jsonl_utils import load_jsonl, write_jsonl
 from f007_infrastructure.logging import get_logger as _get_logger
 
 from f001_schema_alignment.relabel_state import relabel_all as _relabel_all
@@ -11,21 +12,15 @@ _log = _get_logger(__name__)
 
 
 def _load_output_manual():
-    data_path = os.path.join(os.path.dirname(__file__), "..", "f000_keyword_discovery", "data", "output_labeled.py")
-    spec = importlib.util.spec_from_file_location("output_labeled", data_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod.results
+    data_path = os.path.join(os.path.dirname(__file__), "..", "f000_keyword_discovery", "data", "output_labeled.jsonl")
+    return load_jsonl(Path(data_path))
 
 
 def _load_output_labeled():
-    data_path = os.path.join(os.path.dirname(__file__), "..", "f000_keyword_discovery", "data", "output_labeled.py")
+    data_path = os.path.join(os.path.dirname(__file__), "..", "f000_keyword_discovery", "data", "output_labeled.jsonl")
     if not os.path.exists(data_path):
         return None
-    spec = importlib.util.spec_from_file_location("output_labeled", data_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return {r["call_id"]: r for r in mod.results}
+    return {r["call_id"]: r for r in load_jsonl(Path(data_path))}
 
 
 def _parse_int(text):
@@ -165,26 +160,16 @@ def align_all(records=None):
     return [align_record(r, labeled_lookup) for r in records]
 
 
-def _python_dumps(obj, indent=2):
-    text = json.dumps(obj, indent=indent, ensure_ascii=False)
-    text = text.replace(": null", ": None")
-    text = text.replace(": true", ": True")
-    text = text.replace(": false", ": False")
-    return text
-
-
 def write_output_aligned(output_path=None):
     if output_path is None:
-        output_path = os.path.join(os.path.dirname(__file__), "data", "output_aligned.py")
+        output_path = os.path.join(os.path.dirname(__file__), "data", "output_aligned.jsonl")
     aligned = align_all()
     aligned, relabel_stats = _relabel_all(aligned)
     _log.info(f"Relabel stats: {relabel_stats}")
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write("results = ")
-        f.write(_python_dumps(aligned))
+    write_jsonl(Path(output_path), aligned)
     return len(aligned)
 
 
 if __name__ == "__main__":
     count = write_output_aligned()
-    _log.info(f"Wrote {count} aligned records to output_aligned.py")
+    _log.info(f"Wrote {count} aligned records to output_aligned.jsonl")

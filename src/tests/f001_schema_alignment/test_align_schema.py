@@ -3,13 +3,11 @@ from f001_schema_alignment.align_schema import align_all
 
 
 def _load_labeled():
-    import importlib.util
     import os
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f000_keyword_discovery", "data", "output_labeled.py")
-    spec = importlib.util.spec_from_file_location("output_labeled", data_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod.results
+    from pathlib import Path
+    from f007_infrastructure.jsonl_utils import load_jsonl
+    data_path = os.path.join(os.path.dirname(__file__), "../..", "f000_keyword_discovery", "data", "output_labeled.jsonl")
+    return load_jsonl(Path(data_path))
 
 
 def test_all_records_present():

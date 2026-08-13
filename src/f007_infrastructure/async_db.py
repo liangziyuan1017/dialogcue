@@ -1,4 +1,5 @@
 import asyncpg
+import json
 import numpy as np
 from pgvector.asyncpg import register_vector as _register_vector
 
@@ -53,19 +54,31 @@ class AsyncSentenceDB:
         if not nodes:
             return
         async with self._acquire() as conn:
-            for n in nodes:
-                await conn.execute(
-                    """
-                    INSERT INTO nodes (state_id, path_signature, branch_key, parent_id, depth)
-                    VALUES ($1, $2, $3, $4, $5)
-                    ON CONFLICT (path_signature) DO UPDATE SET
-                        state_id = EXCLUDED.state_id,
-                        branch_key = EXCLUDED.branch_key,
-                        parent_id = EXCLUDED.parent_id,
-                        depth = EXCLUDED.depth
-                    """,
-                    n["state_id"], n["path_signature"], n.get("branch_key", {}), n.get("parent_id"), n.get("depth", 0),
-                )
+            await conn.executemany(
+                """
+                INSERT INTO nodes (state_id, path_signature, branch_key, parent_id, depth,
+                                   inherited_facts, inherited_emotions, labels)
+                VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7::jsonb, $8::jsonb)
+                ON CONFLICT (path_signature) DO UPDATE SET
+                    state_id = EXCLUDED.state_id,
+                    branch_key = EXCLUDED.branch_key,
+                    parent_id = EXCLUDED.parent_id,
+                    depth = EXCLUDED.depth,
+                    inherited_facts = EXCLUDED.inherited_facts,
+                    inherited_emotions = EXCLUDED.inherited_emotions,
+                    labels = EXCLUDED.labels
+                """,
+                [
+                    (
+                        n["state_id"], n["path_signature"], n.get("branch_key", {}),
+                        n.get("parent_id"), n.get("depth", 0),
+                        json.dumps(n.get("inherited_facts", [])),
+                        json.dumps(n.get("inherited_emotions", [])),
+                        json.dumps(_node_labels(n)),
+                    )
+                    for n in nodes
+                ],
+            )
 
     async def get_node_by_signature(self, path_signature: str) -> dict | None:
         async with self._acquire() as conn:
@@ -74,6 +87,59 @@ class AsyncSentenceDB:
                 path_signature,
             )
             return _row_to_dict(row) if row else None
+
+    async def add_sentence_source(self, script_id: str, call_id: str) -> None:
+        async with self._acquire() as conn:
+            await conn.execute(
+                "INSERT INTO sentence_sources (script_id, call_id) VALUES ($1, $2) ON CONFLICT DO NOTHING",
+                script_id, call_id,
+            )
+
+    async def get_sentence_sources(self, script_id: str) -> list[str]:
+        async with self._acquire() as conn:
+            rows = await conn.fetch(
+                "SELECT call_id FROM sentence_sources WHERE script_id = $1 ORDER BY call_id",
+                script_id,
+            )
+            return [row["call_id"] for row in rows]
+
+    async def has_sentence_source(self, script_id: str, call_id: str) -> bool:
+        async with self._acquire() as conn:
+            row = await conn.fetchrow(
+                "SELECT 1 FROM sentence_sources WHERE script_id = $1 AND call_id = $2",
+                script_id, call_id,
+            )
+            return row is not None
+
+    async def find_nodes_for_labels(self, labels: list[str], limit: int = 32) -> list[dict]:
+        query_labels = json.dumps(sorted(set(labels)))
+        async with self._acquire() as conn:
+            rows = await conn.fetch(
+                """
+                SELECT id, state_id, path_signature, branch_key,
+                       inherited_facts, inherited_emotions, labels
+                FROM nodes
+                WHERE labels <@ $1::jsonb
+                ORDER BY jsonb_array_length(labels) DESC, depth ASC
+                LIMIT $2
+                """,
+                query_labels, limit,
+            )
+            result = []
+            for row in rows:
+                node = _row_to_dict(row)
+                sentence_rows = await conn.fetch(
+                    """
+                    SELECT script_id, script_text, bg_bitmask_int, win_rate, sas,
+                           bg_background, conversation_context
+                    FROM sentences
+                    WHERE node_id = $1
+                    """,
+                    node["id"],
+                )
+                node["sentence_pool"] = [_row_to_dict(sentence) for sentence in sentence_rows]
+                result.append(node)
+            return result
 
     async def get_node_ids_by_signatures(self, path_signatures: list[str]) -> dict[str, int]:
         if not path_signatures:
@@ -171,22 +237,10 @@ class AsyncSentenceDB:
             return
         async with self._acquire() as conn:
             await self._ensure_vector_registered(conn)
+            params = []
             for s in sentences:
                 emb = np.array(s["embedding"], dtype=np.float32) if s.get("embedding") else None
-                await conn.execute(
-                    """
-                    INSERT INTO sentences (script_id, node_id, script_text, bg_bitmask_int, win_rate, sas, bg_background, conversation_context, embedding)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::vector)
-                    ON CONFLICT (script_id) DO UPDATE SET
-                        node_id = EXCLUDED.node_id,
-                        script_text = EXCLUDED.script_text,
-                        bg_bitmask_int = EXCLUDED.bg_bitmask_int,
-                        win_rate = EXCLUDED.win_rate,
-                        sas = EXCLUDED.sas,
-                        bg_background = EXCLUDED.bg_background,
-                        conversation_context = EXCLUDED.conversation_context,
-                        embedding = EXCLUDED.embedding
-                    """,
+                params.append((
                     s["script_id"],
                     s["node_id"],
                     s["script_text"],
@@ -196,6 +250,32 @@ class AsyncSentenceDB:
                     s.get("bg_background"),
                     s.get("conversation_context"),
                     emb,
+                ))
+            await conn.executemany(
+                """
+                INSERT INTO sentences (script_id, node_id, script_text, bg_bitmask_int, win_rate, sas, bg_background, conversation_context, embedding)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::vector)
+                ON CONFLICT (script_id) DO UPDATE SET
+                    node_id = EXCLUDED.node_id,
+                    script_text = EXCLUDED.script_text,
+                    bg_bitmask_int = EXCLUDED.bg_bitmask_int,
+                    win_rate = EXCLUDED.win_rate,
+                    sas = EXCLUDED.sas,
+                    bg_background = EXCLUDED.bg_background,
+                    conversation_context = EXCLUDED.conversation_context,
+                    embedding = EXCLUDED.embedding
+                """,
+                params,
+            )
+            source_params = sorted({
+                (s["script_id"], call_id)
+                for s in sentences
+                for call_id in s.get("source_call_ids", [])
+            })
+            if source_params:
+                await conn.executemany(
+                    "INSERT INTO sentence_sources (script_id, call_id) VALUES ($1, $2) ON CONFLICT DO NOTHING",
+                    source_params,
                 )
 
     async def get_vectors(self, script_ids: list[str]) -> dict[str, list[float]]:
@@ -393,3 +473,10 @@ def _row_to_dict(r: asyncpg.Record) -> dict:
             v = 0.0
         d[k] = v
     return d
+
+
+def _node_labels(node: dict) -> list[str]:
+    labels = list(node.get("inherited_facts", [])) + list(node.get("inherited_emotions", []))
+    for value in (node.get("branch_key", {}) or {}).values():
+        labels.extend(value if isinstance(value, list) else [value])
+    return sorted({label for label in labels if label})

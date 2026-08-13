@@ -13,30 +13,22 @@ Warnings are printed for any per-phase error instead of dumping a raw traceback.
 """
 
 import argparse
-import importlib.util
 import os
 import sys
 from pathlib import Path
+
+from f007_infrastructure.jsonl_utils import load_jsonl
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR.parent / "data"
 INPUT_DIR = DATA_DIR / "data_input"
 NEW_DATA_DEFAULT = INPUT_DIR / "new_data.jsonl"
-NEW_REWARDED_DEFAULT = BASE_DIR / "f003_reward_labeling" / "data" / "new_rewarded.py"
-EXISTING_REWARDED = BASE_DIR / "f003_reward_labeling" / "data" / "output_rewarded.py"
+NEW_REWARDED_DEFAULT = BASE_DIR / "f003_reward_labeling" / "data" / "new_rewarded.jsonl"
+EXISTING_REWARDED = BASE_DIR / "f003_reward_labeling" / "data" / "output_rewarded.jsonl"
 
 
 def _warn(msg):
     print(f"WARNING: {msg}", file=sys.stderr)
-
-
-def _load_py_results(path: Path) -> list[dict]:
-    spec = importlib.util.spec_from_file_location("results_mod", path)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Cannot load Python module from {path}")
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod.results
 
 
 def _new_data_nonempty(path: Path) -> bool:
@@ -128,7 +120,7 @@ def run_skip_cleaning(args):
         _warn(f"skip-cleaning mode but {rewarded_path} is missing")
         return 1
 
-    new_rewarded = _load_py_results(rewarded_path)
+    new_rewarded = load_jsonl(rewarded_path)
     if not new_rewarded:
         _warn(f"{rewarded_path} contains no records (results = [])")
         return 1
@@ -136,13 +128,13 @@ def run_skip_cleaning(args):
     existing_ids = set()
     if EXISTING_REWARDED.exists():
         try:
-            existing_ids = {r["call_id"] for r in _load_py_results(EXISTING_REWARDED)}
+            existing_ids = {r["call_id"] for r in load_jsonl(EXISTING_REWARDED)}
         except Exception as e:
-            _warn(f"could not load existing output_rewarded.py: {e}")
+            _warn(f"could not load existing output_rewarded.jsonl: {e}")
 
     new_records = [r for r in new_rewarded if r.get("call_id") not in existing_ids]
     if not new_records:
-        _warn("all records in new_rewarded.py already exist in output_rewarded.py — nothing to append")
+        _warn("all records in new_rewarded.jsonl already exist in output_rewarded.jsonl — nothing to append")
         return 0
     new_ids = {r["call_id"] for r in new_records}
 

@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from f004_decision_tree.build_decision_tree import (
     _collapse_redundant_facts,
@@ -9,6 +10,12 @@ from f004_decision_tree.build_decision_tree import (
     _split_composite_nodes,
     build_tree,
 )
+from f007_infrastructure.jsonl_utils import load_jsonl
+
+
+def _load_real_rewarded():
+    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.jsonl")
+    return load_jsonl(Path(data_path))
 
 
 def _sample_record_emotion_cycle(call_id="test-004"):
@@ -148,12 +155,7 @@ def test_emotion_cycle_anger_pool_has_both_sentences():
 
 
 def test_real_data_all_criteria():
-    import importlib.util
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.py")
-    spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    records = mod.results
+    records = _load_real_rewarded()
 
     tree = build_tree(records)
 
@@ -178,12 +180,7 @@ def test_real_data_all_criteria():
 
 
 def test_real_data_opening_gestures():
-    import importlib.util
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.py")
-    spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    records = mod.results
+    records = _load_real_rewarded()
 
     tree = build_tree(records)
     opening = [s for s in tree["sentence_pool"] if s.get("gesture_type") == "opening"]
@@ -191,12 +188,7 @@ def test_real_data_opening_gestures():
 
 
 def test_real_data_abrupt_end_exists():
-    import importlib.util
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.py")
-    spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    records = mod.results
+    records = _load_real_rewarded()
 
     tree = build_tree(records)
     abrupt_as_root = [c for c in tree.get("children", []) if c.get("state_id") == "abrupt_end"]
@@ -206,12 +198,7 @@ def test_real_data_abrupt_end_exists():
 
 
 def test_real_data_leaf_termination():
-    import importlib.util
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.py")
-    spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    records = mod.results
+    records = _load_real_rewarded()
 
     tree = build_tree(records)
     child_ids = [c.get("state_id") for c in tree.get("children", [])]
@@ -220,12 +207,7 @@ def test_real_data_leaf_termination():
 
 
 def test_real_data_branches_not_chains():
-    import importlib.util
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.py")
-    spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    records = mod.results
+    records = _load_real_rewarded()
 
     tree = build_tree(records)
     branching = _branching_histogram(tree)

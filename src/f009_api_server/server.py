@@ -151,6 +151,8 @@ def _check_api_key_guard():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    for legacy_name in ("tree", "index", "label_set_index"):
+        app.state._state.pop(legacy_name, None)
     ready, reason = _check_api_key_guard()
     app.state.ready = ready
     app.state.ready_reason = reason
@@ -169,17 +171,6 @@ async def lifespan(app: FastAPI):
         app.state.boot_errors.append(f"taxonomy: {e}")
         app.state.taxonomy = {"facts": [], "emotions": [], "collector_actions": []}
         _log.error("taxonomy load failed: %s", e)
-    try:
-        tree = _load_scored_tree()
-        app.state.tree = tree
-        app.state.index = build_node_index(tree)
-        app.state.label_set_index = _build_label_set_index(app.state.index)
-    except Exception as e:
-        app.state.boot_errors.append(f"scored_tree: {e}")
-        app.state.tree = None
-        app.state.index = {}
-        app.state.label_set_index = {}
-        _log.error("scored tree load failed: %s", e)
     app.state.ready = not app.state.boot_errors
     yield
     if hasattr(app.state, "db") and app.state.db is not None:
@@ -291,9 +282,6 @@ async def recommend_endpoint(req: RecommendRequest):
         query_bitmask=query_bitmask,
         conversation_context=req.conversation_context,
         query_bg=req.context,
-        tree=app.state.tree,
-        index=app.state.index,
-        label_set_index=app.state.label_set_index,
         db=app.state.db,
         query_vec=query_vec,
         conversation_state=merged,
@@ -516,9 +504,6 @@ async def _run_turn(session_id: str, utterance: str, conv_ctx: str) -> dict | No
             query_bitmask=query_bitmask,
             conversation_context=conv_ctx,
             query_bg=session["context"],
-            tree=app.state.tree,
-            index=app.state.index,
-            label_set_index=app.state.label_set_index,
             db=app.state.db,
             query_vec=query_vec,
             conversation_state=merged,

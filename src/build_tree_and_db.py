@@ -1,15 +1,16 @@
 import argparse
-import importlib.util
 import json
 import os
 import sys
 from datetime import datetime
 from pathlib import Path
 
+from f007_infrastructure.jsonl_utils import load_jsonl
+
 BASE_DIR = Path(__file__).resolve().parent
 
-REWARDED_PATH = BASE_DIR / "f003_reward_labeling" / "data" / "output_rewarded.py"
-ALIGNED_PATH = BASE_DIR / "f001_schema_alignment" / "data" / "output_aligned.py"
+REWARDED_PATH = BASE_DIR / "f003_reward_labeling" / "data" / "output_rewarded.jsonl"
+ALIGNED_PATH = BASE_DIR / "f001_schema_alignment" / "data" / "output_aligned.jsonl"
 TREE_PATH = BASE_DIR / "f004_decision_tree" / "data" / "decision_tree.json"
 SCORED_PATH = BASE_DIR / "f005_context_scoring" / "data" / "decision_tree_scored.json"
 KEYWORDS_PATH = BASE_DIR / "f000_keyword_discovery" / "data" / "state_keywords.json"
@@ -17,13 +18,6 @@ KEYWORDS_PATH = BASE_DIR / "f000_keyword_discovery" / "data" / "state_keywords.j
 
 def _ts():
     return f"[{datetime.now():%Y-%m-%d %H:%M:%S}]"
-
-
-def _load_py_results(path: Path) -> list[dict]:
-    spec = importlib.util.spec_from_file_location("results_mod", path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod.results
 
 
 def _load_json(path: Path) -> dict:
@@ -209,8 +203,8 @@ def run(args) -> None:
         sys.exit(1)
 
     print(f"{_ts()} Loading pre-computed data...")
-    rewarded = _load_py_results(rewarded_path)
-    aligned = _load_py_results(aligned_path)
+    rewarded = load_jsonl(rewarded_path)
+    aligned = load_jsonl(aligned_path)
     print(f"  Rewarded: {len(rewarded)} records from {rewarded_path.name}")
     print(f"  Aligned:  {len(aligned)} records from {aligned_path.name}")
 
@@ -243,11 +237,11 @@ def main() -> None:
     )
     parser.add_argument(
         "--rewarded-file", type=Path, default=None,
-        help="Path to output_rewarded.py (default: f003_reward_labeling/data/output_rewarded.py)",
+        help="Path to output_rewarded.jsonl (default: f003_reward_labeling/data/output_rewarded.jsonl)",
     )
     parser.add_argument(
         "--aligned-file", type=Path, default=None,
-        help="Path to output_aligned.py (default: f001_schema_alignment/data/output_aligned.py)",
+        help="Path to output_aligned.jsonl (default: f001_schema_alignment/data/output_aligned.jsonl)",
     )
     parser.add_argument(
         "--dsn", type=str, default=None,

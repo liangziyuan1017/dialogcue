@@ -1,7 +1,6 @@
-import copy
-import importlib.util
 import json
 import os
+from pathlib import Path
 
 from f000_keyword_discovery.keyword_prompts import (
     BATCH_SIZE,
@@ -16,82 +15,92 @@ from f000_keyword_discovery.keyword_prompts import (
     _group_items,
 )
 from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.jsonl_utils import load_jsonl, write_jsonl
 from f007_infrastructure.llm_client import call_deepseek_json
 
 
 def _load_labeled_records():
-    path = os.path.join(os.path.dirname(__file__), "data", "output_labeled.py")
+    path = os.path.join(os.path.dirname(__file__), "data", "output_labeled.jsonl")
     if not os.path.exists(path):
         return []
-    spec = importlib.util.spec_from_file_location("output_labeled", path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod.results
+    return load_jsonl(Path(path))
+
+
+def _process_customer_batch(batch, customer_raw):
+    prompt = _build_customer_batch_prompt([(t["text"], ctx) for t, ctx in batch])
+    try:
+        results = call_deepseek_json(prompt)
+        if isinstance(results, list):
+            for j, result in enumerate(results):
+                if j >= len(batch):
+                    continue
+                turn, _ = batch[j]
+                state = {}
+                facts = result.get("facts")
+                if facts:
+                    fact_groups = list({f.get("group", f.get("keyword", "")) for f in facts if isinstance(f, dict)})
+                    if fact_groups:
+                        state["facts"] = fact_groups
+                emotions = result.get("emotions")
+                if emotions:
+                    emotion_groups = list({e.get("group", e.get("keyword", "")) for e in emotions if isinstance(e, dict)})
+                    if emotion_groups:
+                        state["emotions"] = emotion_groups
+                willingness = result.get("willingness") or result.get("willingness_signal")
+                if willingness:
+                    state["willingness"] = willingness
+                if state:
+                    turn["state"] = state
+                result["_turn_text"] = turn["text"]
+                customer_raw.append(result)
+    except Exception:
+        pass
+
+
+def _process_collector_batch(batch, collector_raw):
+    prompt = _build_collector_batch_prompt([t["text"] for t in batch])
+    try:
+        results = call_deepseek_json(prompt)
+        if isinstance(results, list):
+            for j, result in enumerate(results):
+                if j >= len(batch):
+                    continue
+                turn = batch[j]
+                action_group = result.get("action_group")
+                if action_group:
+                    turn["state"] = {"action": action_group}
+                result["_turn_text"] = turn["text"]
+                collector_raw.append(result)
+    except Exception:
+        pass
 
 
 def _label_turns(records):
-    customer_turns = []
-    collector_turns = []
+    customer_raw = []
+    collector_raw = []
+    customer_batch = []
+    collector_batch = []
+
     for record in records:
         dialog = record["response"]["dialog"]
         for i, turn in enumerate(dialog):
             if turn["role"] == "客户":
                 context_start = max(0, i - _cfg("context_window.analysis_turns_before", 3))
                 context_turns = dialog[context_start:i]
-                customer_turns.append((turn, context_turns))
+                customer_batch.append((turn, context_turns))
+                if len(customer_batch) >= BATCH_SIZE:
+                    _process_customer_batch(customer_batch, customer_raw)
+                    customer_batch = []
             elif turn["role"] == "催收员":
-                collector_turns.append(turn)
+                collector_batch.append(turn)
+                if len(collector_batch) >= BATCH_SIZE:
+                    _process_collector_batch(collector_batch, collector_raw)
+                    collector_batch = []
 
-    customer_raw = []
-    for batch_start in range(0, len(customer_turns), BATCH_SIZE):
-        batch = customer_turns[batch_start:batch_start + BATCH_SIZE]
-        prompt = _build_customer_batch_prompt([(t["text"], ctx) for t, ctx in batch])
-        try:
-            results = call_deepseek_json(prompt)
-            if isinstance(results, list):
-                for j, result in enumerate(results):
-                    if batch_start + j >= len(customer_turns):
-                        continue
-                    turn, _ = customer_turns[batch_start + j]
-                    state = {}
-                    facts = result.get("facts")
-                    if facts:
-                        fact_groups = list({f.get("group", f.get("keyword", "")) for f in facts if isinstance(f, dict)})
-                        if fact_groups:
-                            state["facts"] = fact_groups
-                    emotions = result.get("emotions")
-                    if emotions:
-                        emotion_groups = list({e.get("group", e.get("keyword", "")) for e in emotions if isinstance(e, dict)})
-                        if emotion_groups:
-                            state["emotions"] = emotion_groups
-                    willingness = result.get("willingness") or result.get("willingness_signal")
-                    if willingness:
-                        state["willingness"] = willingness
-                    if state:
-                        turn["state"] = state
-                    result["_turn_text"] = turn["text"]
-                    customer_raw.append(result)
-        except Exception:
-            pass
-
-    collector_raw = []
-    for batch_start in range(0, len(collector_turns), BATCH_SIZE):
-        batch = collector_turns[batch_start:batch_start + BATCH_SIZE]
-        prompt = _build_collector_batch_prompt([t["text"] for t in batch])
-        try:
-            results = call_deepseek_json(prompt)
-            if isinstance(results, list):
-                for j, result in enumerate(results):
-                    if batch_start + j >= len(collector_turns):
-                        continue
-                    turn = collector_turns[batch_start + j]
-                    action_group = result.get("action_group")
-                    if action_group:
-                        turn["state"] = {"action": action_group}
-                    result["_turn_text"] = turn["text"]
-                    collector_raw.append(result)
-        except Exception:
-            pass
+    if customer_batch:
+        _process_customer_batch(customer_batch, customer_raw)
+    if collector_batch:
+        _process_collector_batch(collector_batch, collector_raw)
 
     return customer_raw, collector_raw
 
@@ -152,7 +161,7 @@ def _recompute_taxonomy(all_labeled_records):
 
 
 def label_new_records(new_records, output_path=None, labeled_output_path=None):
-    labeled_new = copy.deepcopy(new_records)
+    labeled_new = new_records
     _label_turns(labeled_new)
 
     existing_labeled = _load_labeled_records()
@@ -163,10 +172,8 @@ def label_new_records(new_records, output_path=None, labeled_output_path=None):
             existing_ids.add(record.get("call_id"))
 
     if labeled_output_path is None:
-        labeled_output_path = os.path.join(os.path.dirname(__file__), "data", "output_labeled.py")
-    with open(labeled_output_path, "w", encoding="utf-8") as f:
-        f.write("results = ")
-        f.write(json.dumps(existing_labeled, ensure_ascii=False, indent=2))
+        labeled_output_path = os.path.join(os.path.dirname(__file__), "data", "output_labeled.jsonl")
+    write_jsonl(Path(labeled_output_path), existing_labeled)
 
     taxonomy = _recompute_taxonomy(existing_labeled)
     if output_path is None:
@@ -178,7 +185,7 @@ def label_new_records(new_records, output_path=None, labeled_output_path=None):
 
 
 def discover_keywords(records, output_path: str = None, labeled_output_path: str = None) -> dict:
-    labeled_records = copy.deepcopy(records)
+    labeled_records = records
     customer_raw, collector_raw = _label_turns(labeled_records)
 
     facts = _group_items(customer_raw, "facts")
@@ -218,7 +225,7 @@ def discover_keywords(records, output_path: str = None, labeled_output_path: str
         json.dump(taxonomy, f, ensure_ascii=False, indent=2)
 
     if labeled_output_path is None:
-        labeled_output_path = os.path.join(os.path.dirname(__file__), "data", "output_labeled.py")
+        labeled_output_path = os.path.join(os.path.dirname(__file__), "data", "output_labeled.jsonl")
     seen_call_ids = set()
     deduped_records = []
     for record in labeled_records:
@@ -227,8 +234,6 @@ def discover_keywords(records, output_path: str = None, labeled_output_path: str
             continue
         seen_call_ids.add(call_id)
         deduped_records.append(record)
-    with open(labeled_output_path, "w", encoding="utf-8") as f:
-        f.write("results = ")
-        f.write(json.dumps(deduped_records, ensure_ascii=False, indent=2))
+    write_jsonl(Path(labeled_output_path), deduped_records)
 
     return taxonomy

@@ -1,5 +1,5 @@
-import importlib.util
 import os
+from pathlib import Path
 
 from f004_decision_tree.build_decision_tree import (
     MAX_MERGED_WORDS,
@@ -9,14 +9,12 @@ from f004_decision_tree.build_decision_tree import (
     _is_ack_interruption,
     _word_count,
 )
+from f007_infrastructure.jsonl_utils import load_jsonl
 
 
 def _load_record(index):
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.py")
-    spec = importlib.util.spec_from_file_location("mod", data_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod.results[index]
+    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.jsonl")
+    return load_jsonl(Path(data_path))[index]
 
 
 class TestWordCount:

@@ -1,13 +1,12 @@
-import importlib.util
 import os
+from pathlib import Path
+
+from f007_infrastructure.jsonl_utils import load_jsonl
 
 
 def load_records():
-    data_path = os.path.join(os.path.dirname(__file__), "data", "output_labeled.py")
-    spec = importlib.util.spec_from_file_location("output_labeled", data_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod.results
+    data_path = os.path.join(os.path.dirname(__file__), "data", "output_labeled.jsonl")
+    return load_jsonl(Path(data_path))
 
 
 def get_turns_by_role(records, role):

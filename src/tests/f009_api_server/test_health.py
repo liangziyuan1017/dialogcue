@@ -50,10 +50,10 @@ class TestHealthEndpoints:
             assert resp.json()["ready"] is False
             break
 
-    def test_readyz_503_when_tree_missing(self):
+    def test_readyz_200_when_scored_tree_missing(self):
         for c in _boot(tree_ok=False):
             resp = c.get("/readyz")
-            assert resp.status_code == 503
+            assert resp.status_code == 200
             break
 
     def test_recommend_503_when_not_ready(self):

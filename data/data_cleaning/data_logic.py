@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.jsonl_utils import load_jsonl, write_jsonl
 
 from llm_client import _get_client
 from retry import retry_call
@@ -18,8 +19,8 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 INPUT_DIR = _PROJECT_ROOT / "data" / "data_input"
 OUTPUT_DIR = _PROJECT_ROOT / "data" / "data_output"
 load_dotenv(_PROJECT_ROOT / ".env")
-DATA_FILE = Path(os.environ.get("DATA_FILE", str(OUTPUT_DIR / "output_2.py")))
-OUTPUT_FILE = Path(os.environ.get("OUTPUT_FILE", str(OUTPUT_DIR / "output_logic.py")))
+DATA_FILE = Path(os.environ.get("DATA_FILE", str(OUTPUT_DIR / "output_2.jsonl")))
+OUTPUT_FILE = Path(os.environ.get("OUTPUT_FILE", str(OUTPUT_DIR / "output_logic.jsonl")))
 
 PROMPT = """
 You are repairing corrupted ASR transcription in Chinese debt-collection phone call dialogues.
@@ -135,11 +136,7 @@ def create_client() -> OpenAI:
 
 
 def load_all_records() -> list[dict]:
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
-        code = compile(f.read(), DATA_FILE, "exec")
-        namespace = {}
-        exec(code, namespace)
-        data = namespace.get("results", [])
+    data = load_jsonl(DATA_FILE)
 
     records = []
     for item in data:
@@ -244,18 +241,11 @@ def call_llm(client: OpenAI, system_prompt: str, dialog: list[dict],
 def load_existing_results() -> list[dict]:
     if not OUTPUT_FILE.exists():
         return []
-    with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
-        code = compile(f.read(), OUTPUT_FILE, "exec")
-        namespace = {}
-        exec(code, namespace)
-        return namespace.get("results", [])
+    return load_jsonl(OUTPUT_FILE)
 
 
 def write_results(results: list[dict]) -> None:
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write("results = ")
-        f.write(json.dumps(results, ensure_ascii=False, indent=2))
-        f.write("\n")
+    write_jsonl(OUTPUT_FILE, results)
 
 
 def main() -> None:

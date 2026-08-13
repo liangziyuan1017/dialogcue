@@ -3,18 +3,22 @@
 **Feature:** F017 — `docs/features/F017-corpus-scalability-hardening.md`
 **Goal:** Pipeline runs end-to-end on 100k dialogs without OOM (peak RSS < 2 GiB)
 **Acceptance Criteria:**
-- [ ] No `_load_py_results` / importlib exec of `results = [...]` remains in `src/` (excl. tests)
+- [x] No `_load_py_results` / importlib exec of `results = [...]` remains in `src/` (excl. tests)
 - [ ] Pipeline runs end-to-end on a 100k-record synthetic corpus without OOM (peak RSS < 2 GiB)
-- [ ] `add_records` incremental append is O(new batch), not O(corpus)
-- [ ] DB upserts use `executemany`/`COPY`; no per-row `execute` loops in upsert paths
-- [ ] `server.py` boot does not hold the full scored tree in `app.state`; node/label lookup served from DB
-- [ ] `source_call_ids` stored in `sentence_sources` table; merge is O(new) not O(k²)
-- [ ] Existing F000–F016 tests still pass
+- [x] `add_records` incremental append is O(new batch), not O(corpus)
+- [x] DB upserts use `executemany`/`COPY`; no per-row `execute` loops in upsert paths
+- [x] `server.py` boot does not hold the full scored tree in `app.state`; node/label lookup served from DB
+- [x] `source_call_ids` stored in `sentence_sources` table; merge is O(new) not O(k²)
+- [x] Existing F000–F016 tests still pass (`751 passed, 9 skipped`)
 
 **Architecture:** Coordinate transform from O(corpus) in-memory full materialization to O(batch_size) streaming/DB-backed access. 8 independent tracks decomposed into 12 tasks across 5 phases.
 **Tech Stack:** Python, PostgreSQL, asyncpg (runtime), psycopg2 (build-time), JSONL
 
 **Decisions:** ADR-043 (JSONL streaming), ADR-044 (DB-served indexes), ADR-045 (sentence_sources join table)
+
+## Execution Status (2026-07-31)
+
+Tasks 1-12 are implemented and covered by the full regression suite (`751 passed, 9 skipped`). Track 3 now persists provenance in the `sentence_sources` join table while retaining the JSON tree field as an offline compatibility projection. The 100k synthetic end-to-end RSS verification remains intentionally skipped per Human request.
 
 ---
 
@@ -29,7 +33,7 @@
 
 **Step 1: Write failing test** — test `load_jsonl` reads a JSONL file and returns `list[dict]` matching the `.py` literal API
 **Step 2: Run test to verify it fails** — module doesn't exist
-**Step 3: Write minimal implementation** — `load_jsonl(path) -> list[dict]` reading line-by-line; `write_jsonl(path, records)` appending JSON lines; `convert_py_to_jsonl.py` reads `.py` literal via existing `_load_py_results`, writes `.jsonl`
+**Step 3: Write minimal implementation** — `load_jsonl(path) -> list[dict]` reading line-by-line; `write_jsonl(path, records)` appending JSON lines; `convert_py_to_jsonl.py` parses legacy literal assignments with `ast.literal_eval` without executing the source file, then writes `.jsonl`
 **Step 4: Run test to verify it passes**
 **Step 5: Commit** — `feat(F017): add jsonl_utils + convert_py_to_jsonl migration script`
 
@@ -58,7 +62,7 @@
 
 **Step 1: Write failing test** — test that discovery loads from `.jsonl`, not importlib exec
 **Step 2: Run test to verify it fails**
-**Step 3: Write minimal implementation** — replace importlib exec with `load_jsonl` call pointing to `output_labeled.jsonl`
+**Step 3: Write minimal implementation** — replace executable loading with `load_jsonl` calls pointing to JSONL artifacts
 **Step 4: Run test to verify it passes**
 **Step 5: Commit** — `feat(F017): replace importlib exec with load_jsonl in discovery modules`
 

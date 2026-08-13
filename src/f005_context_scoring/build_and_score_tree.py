@@ -1,10 +1,9 @@
 import argparse
-import importlib.util
 import json
-import pprint
 from datetime import datetime
 from pathlib import Path
 
+from f007_infrastructure.jsonl_utils import load_jsonl, write_jsonl
 from f007_infrastructure.logging import get_logger as _get_logger
 
 _log = _get_logger(__name__)
@@ -14,20 +13,6 @@ DATA_DIR = BASE_DIR.parent / "data"
 OUTPUT_DIR = DATA_DIR / "data_output"
 
 
-def _load_py_results(path: Path) -> list[dict]:
-    spec = importlib.util.spec_from_file_location("results_mod", path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod.results
-
-
-def _write_py_results(results: list[dict], path: Path) -> None:
-    with open(path, "w", encoding="utf-8") as f:
-        f.write("results = ")
-        f.write(pprint.pformat(results, width=120))
-        f.write("\n")
-
-
 def run(args) -> None:
     def ts():
         return f"[{datetime.now():%Y-%m-%d %H:%M:%S}]"
@@ -35,12 +20,12 @@ def run(args) -> None:
     if args.merged_file:
         merged = args.merged_file.resolve()
     else:
-        merged = OUTPUT_DIR / "output_merged.py"
+        merged = OUTPUT_DIR / "output_merged.jsonl"
     if not merged.exists():
         _log.info(f"Merged file not found: {merged}")
         return
 
-    records = _load_py_results(merged)
+    records = load_jsonl(merged)
     seen_call_ids = set()
     deduped = []
     for r in records:
@@ -77,8 +62,8 @@ def run(args) -> None:
     _log.info(f"\n{ts()} F001: align_schema")
     import f001_schema_alignment.align_schema as als
     aligned = als.align_all(records)
-    aligned_out = BASE_DIR / "f001_schema_alignment" / "data" / "output_aligned.py"
-    _write_py_results(aligned, aligned_out)
+    aligned_out = BASE_DIR / "f001_schema_alignment" / "data" / "output_aligned.jsonl"
+    write_jsonl(aligned_out, aligned)
     _log.info(f"  → {aligned_out.name}  ({len(aligned)} records)")
 
     # ── F004: write_dialog_records ─────────────────────────────────────────
@@ -91,8 +76,8 @@ def run(args) -> None:
     _log.info(f"\n{ts()} F003: reward_label")
     import f003_reward_labeling.reward_label as rl
     rewarded = rl.label_all(aligned)
-    reward_out = BASE_DIR / "f003_reward_labeling" / "data" / "output_rewarded.py"
-    _write_py_results(rewarded, reward_out)
+    reward_out = BASE_DIR / "f003_reward_labeling" / "data" / "output_rewarded.jsonl"
+    write_jsonl(reward_out, rewarded)
     reward_count = sum(1 for r in rewarded if r.get("reward") == 1)
     _log.info(f"  → {reward_out.name}  (R=1: {reward_count}/{len(rewarded)})")
 
@@ -139,7 +124,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--merged-file", type=Path, default=None,
-        help="Path to merged output (default: data/data_output/output_merged.py)",
+        help="Path to merged output (default: data/data_output/output_merged.jsonl)",
     )
     parser.add_argument(
         "--rebuild", action="store_true", default=False,

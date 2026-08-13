@@ -1,19 +1,19 @@
 ---
 id: F017
 name: Corpus Scalability Hardening (100k dialogs)
-status: planned
+status: complete
 owner: agent
 related_features: [F000, F001, F003, F004, F005, F006, F007, F009, F015]
 topics: [scalability, memory, streaming, database, performance]
 doc_kind: spec
 created: 2026-07-15
-updated: 2026-07-17
+updated: 2026-08-13
 decisions: [ADR-043, ADR-044, ADR-045]
 ---
 
 # F017: Corpus Scalability Hardening (100k dialogs)
 
-> **Status**: draft | **Owner**: agent | **Priority**: P1
+> **Status**: complete | **Owner**: agent | **Priority**: P1
 >
 > **Trigger**: `scoring_metrics.py` OOM (1.96 GiB) on a larger corpus; audit
 > found systemic full-corpus in-memory patterns that break at 100,000 dialogs.
@@ -97,7 +97,7 @@ Eight remediation tracks, ordered by leverage:
 | 7 (parent pointer) | H2 |
 | 8 (stream turn labeling) | H6 |
 
-## Progress (2026-07-15)
+## Progress (2026-07-31)
 
 | Item | Status | Detail |
 |------|--------|--------|
@@ -105,14 +105,60 @@ Eight remediation tracks, ordered by leverage:
 | F005 embed_fn removal | done | `score_tree.py` — removed `embed_fn` param from `_score_sentence_pool`/`score_tree`; embedding now happens once in `build_tree_and_db.py` (line 112), eliminating redundant double-embedding |
 | Embed+insert streaming (batch=10) | done | `build_tree_and_db.py`, `add_records.py` — embed 10 → upsert 10 → repeat; bounds peak embedding memory to ~10 sentences instead of full corpus; orphan check hoisted before any write |
 | F008 `merge_state` idempotency bug | done | `state_extraction.py` — non-winner new facts/emotions were silently dropped; now absorbed into `inherited_facts`/`inherited_emotions` per docstring contract; co-occurring emotions absorbed when facts win |
-| Track 1 (replace `.py` literal loaders) | pending | Migration: one-time `convert_py_to_jsonl.py` script; downstream consumers change `_load_py_results(path)` → `load_jsonl(path)` returning same list[dict] API |
-| Track 2 (serve indexes from DB) | pending | — |
-| Track 3 (`source_call_ids` table) | pending | Schema: `CREATE TABLE sentence_sources (script_id TEXT, call_id TEXT, PRIMARY KEY (script_id, call_id))`; replaces `source_call_ids` list on sentence dicts |
-| Track 4 (`execute_values` batch writes in `db.py`) | pending | embed+insert interleaving done; DB-level `execute_values` batching not yet applied |
-| Track 5 (stream full-table reads) | pending | — |
-| Track 6 (drop `copy.deepcopy`) | pending | 1-line change in `discover_keywords.py` — label in place |
-| Track 7 (`_is_ancestor` → parent pointer) | pending | — |
-| Track 8 (stream turn labeling) | pending | — |
+| Track 1 (replace `.py` literal loaders) | done | JSONL utility, migration, generated JSONL artifacts, and downstream loader updates committed in `34e3378` and `52a985d`. |
+| Track 2 (serve indexes from DB) | done | Node labels are persisted by migration 4; server startup no longer loads the scored tree, and retrieval uses bounded DB candidate queries. |
+| Track 3 (`source_call_ids` table) | done | Migration 5 creates `sentence_sources`; sync/async DB APIs support lookup, and sentence upserts batch provenance rows into the join table. The JSON tree retains `source_call_ids` as an offline compatibility projection. |
+| Track 4 (`execute_values` batch writes in `db.py`) | done | Sync and async node/sentence upsert paths use batched executemany calls. |
+| Track 5 (stream full-table reads) | done | Full-table existing-ID/signature reads use server-side cursor iteration. |
+| Track 6 (drop `copy.deepcopy`) | done | Discovery labels records in place. |
+| Track 7 (`_is_ancestor` → parent pointer) | done | Ancestor checks walk parent pointers. |
+| Track 8 (stream turn labeling) | done | Turn labeling uses interleaved batch processing. |
+
+## Productization Analysis: From Pipeline to Usable Recommendation System
+
+F017 makes the data path bounded and DB-backed, but scalability alone does not
+make ingestion easy or recommendations trustworthy. The next improvements should
+turn the current collection of scripts into a durable product boundary with a
+clear ingest contract, observable jobs, versioned knowledge, and policy-aware
+recommendations.
+
+| Priority | Improvement | Why it matters | Completion signal |
+|---|---|---|---|
+| P0 | **One resumable ingest command** | Users should not understand F000-F005 internals or manually place files at each stage. | `debt ingest <file> --tenant <id>` validates, fingerprints, checkpoints, resumes, and exposes job status. |
+| P0 | **Versioned corpus and taxonomy manifests** | New schemas, labels, models, and prompts must be reproducible and reversible. | Every output records `corpus_id`, `schema_version`, `taxonomy_version`, `model_version`, and `prompt_version`. |
+| P0 | **Hard safety and compliance policy layer** | A high-scoring historical script can still be illegal, coercive, discriminatory, or inappropriate for the customer state. | Policy filters run before ranking; every recommendation records rule checks, policy version, and an auditable reason. |
+| P0 | **Offline recommendation evaluation set** | Win rate alone is biased by collector behavior and cannot establish that the system recommends the best response. | Curated cases measure top-1 accuracy, top-k usefulness, policy violations, abstention quality, calibration, and slice performance. |
+| P1 | **Job control plane and dead-letter handling** | LLM, embedding, and database failures need retry budgets and operator visibility instead of silent partial output. | Each record has a durable status; failed records go to a replayable dead-letter queue with structured error codes. |
+| P1 | **Adaptive taxonomy and model registry** | Domains, products, languages, and collection policies change over time. | Taxonomy versions can be promoted, rolled back, compared, and scoped per tenant or campaign without rewriting history. |
+| P1 | **Feedback and drift loop** | Real-time outcomes and collector overrides are the strongest source of adaptation. | Store shown/accepted/edited/rejected recommendations and later outcomes; schedule drift reports and controlled retraining. |
+| P1 | **Latency and resilience envelope** | The LLM currently dominates the hot path and external model outages can block recommendations. | Define p50/p95/p99 SLOs, add circuit breakers, cache embeddings/taxonomy lookups, and provide a deterministic policy-safe fallback script. |
+| P2 | **Operator and integrator experience** | Adoption depends on being able to inspect data, replay jobs, test recommendations, and integrate without reading source code. | Add ingestion validation reports, preview/replay endpoints, an OpenAPI SDK, tenant configuration, and a trace view linking recommendation to source calls. |
+| P2 | **Data governance and privacy controls** | Debt dialogs contain PII and sensitive financial information. | Encrypt data, redact logs, define retention/deletion workflows, restrict tenant access, and test PII leakage in prompts and responses. |
+
+### Recommended implementation order
+
+1. Define the versioned ingest manifest, schema validation, idempotency key, and
+   resumable job state. This is the foundation for an easy operator workflow.
+2. Add policy filtering, abstention, and a curated evaluation set before
+   optimizing ranking. A recommendation system should be allowed to say “no
+   safe recommendation” rather than force a historically common response.
+3. Add durable record-level checkpoints, dead-letter replay, structured metrics,
+   and p95 latency dashboards around the existing F017 batch/streaming pieces.
+4. Add taxonomy/model promotion and rollback, then connect collector feedback and
+   outcome labels to controlled evaluation and adaptation.
+5. Add tenant-facing CLI/API/UI conveniences after the underlying contracts are
+   stable; otherwise usability features will encode assumptions that later data
+   and policy versions invalidate.
+
+### Architectural direction
+
+Keep the system modular around four replaceable contracts: `IngestRecord` for
+source data, `StateExtraction` for taxonomy/model outputs, `CandidateStore` for
+DB retrieval, and `PolicyAndRanker` for safe recommendation selection. Each
+contract should have a version, deterministic test fixtures, and an explicit
+fallback. This preserves the current PostgreSQL/pgvector design while allowing
+new call-center schemas, languages, embedding models, ranking policies, and
+deployment environments without another full-pipeline rewrite.
 
 ## Memory Budget Estimate (100k dialogs)
 
@@ -128,13 +174,13 @@ Eight remediation tracks, ordered by leverage:
 
 ## Success Criteria
 
-- [ ] No `_load_py_results` / importlib exec of `results = [...]` remains in `src/` (excl. tests)
-- [ ] Pipeline runs end-to-end on a 100k-record synthetic corpus without OOM (peak RSS < 2 GiB)
-- [ ] `add_records` incremental append is O(new batch), not O(corpus)
-- [ ] DB upserts use `executemany`/`COPY`; no per-row `execute` loops in upsert paths
-- [ ] `server.py` boot does not hold the full scored tree in `app.state`; node/label lookup served from DB
-- [ ] `source_call_ids` stored in `sentence_sources` table; merge is O(new) not O(k²)
-- [ ] Existing F000–F016 tests still pass
+- [x] No `_load_py_results` / importlib exec of `results = [...]` remains in `src/` (excl. tests)
+- [ ] Pipeline runs end-to-end on a 100k-record synthetic corpus without OOM (peak RSS < 2 GiB) (explicitly skipped per Human request)
+- [x] `add_records` incremental append is O(new batch), not O(corpus)
+- [x] DB upserts use `executemany`/`COPY`; no per-row `execute` loops in upsert paths
+- [x] `server.py` boot does not hold the full scored tree in `app.state`; node/label lookup served from DB
+- [x] `source_call_ids` stored in `sentence_sources` table; merge is O(new) not O(k²)
+- [x] Existing F000–F016 tests still pass (`751 passed, 9 skipped` in the full suite)
 
 ## Files Touched (indicative)
 
@@ -181,3 +227,7 @@ Eight remediation tracks, ordered by leverage:
 ## Implementation Plan
 
 → `docs/features/F017-implementation-plan.md` — 12 tasks across 5 phases, TDD steps with verification checkpoints.
+
+## Development
+
+**Worktree**: `../ICBC-f017` | **Branch**: `feat/f017-corpus-scalability`

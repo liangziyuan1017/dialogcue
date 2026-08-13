@@ -1,7 +1,7 @@
 # F000: State Keyword Discovery — Implementation Plan
 
 **Feature:** F000 — `docs/features/F000-state-keyword-discovery.md`
-**Goal:** Analyze all turns across 31 records to discover fact groups, emotion groups, collector action groups, and data-driven willingness levels from real data. Output taxonomy to `/src/state_keywords.json`.
+**Goal:** Analyze all turns across the corpus to discover fact groups, emotion groups, collector action groups, and data-driven willingness levels from real data. Output taxonomy to `/src/state_keywords.json` and per-record labels as JSONL.
 **Acceptance Criteria:** See F000 feature doc (AC-A1 through AC-C5)
 **Architecture:** Single DeepSeek LLM pass over all customer and collector turns. LLM classifies each turn, results are aggregated into groups with frequency counts. A second LLM call defines willingness levels from the aggregated willingness signals. Output is a single JSON taxonomy file.
 **Tech Stack:** Python, DeepSeek API (deepseek-chat), json
@@ -15,12 +15,12 @@
 - Test: `src/test_load_data.py`
 
 **Step 1: Write the failing test**
-Test that `load_records()` returns 31 records from `/data/output_manual.py`, each with `response.dialog` list, and that customer/collector turns can be separated by role.
+Test that `load_records()` reads the configured JSONL corpus, each record has a `response.dialog` list, and customer/collector turns can be separated by role.
 
 **Step 2: Run test to verify it fails**
 
 **Step 3: Write minimal implementation**
-`load_records()` imports `results` from `output_manual.py`, returns the list. `get_turns_by_role(records, role)` filters dialog turns.
+`load_records()` uses the shared JSONL loader and returns records. `get_turns_by_role(records, role)` filters dialog turns.
 
 **Step 4: Run test to verify it passes**
 

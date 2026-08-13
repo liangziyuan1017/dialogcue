@@ -32,7 +32,7 @@ def _mock_records():
 def test_discover_keywords_writes_json():
     with tempfile.TemporaryDirectory() as tmpdir:
         out_path = os.path.join(tmpdir, "state_keywords.json")
-        labeled_path = os.path.join(tmpdir, "output_labeled.py")
+        labeled_path = os.path.join(tmpdir, "output_labeled.jsonl")
         with patch("f000_keyword_discovery.discover_keywords.call_deepseek_json", side_effect=[_mock_customer_response(), _mock_collector_response(), _mock_cluster_response()]):
             discover_keywords(_mock_records(), output_path=out_path, labeled_output_path=labeled_path)
             assert os.path.exists(out_path)
@@ -47,14 +47,13 @@ def test_discover_keywords_writes_json():
 def test_discover_keywords_writes_labeled_output():
     with tempfile.TemporaryDirectory() as tmpdir:
         out_path = os.path.join(tmpdir, "state_keywords.json")
-        labeled_path = os.path.join(tmpdir, "output_labeled.py")
+        labeled_path = os.path.join(tmpdir, "output_labeled.jsonl")
         with patch("f000_keyword_discovery.discover_keywords.call_deepseek_json", side_effect=[_mock_customer_response(), _mock_collector_response(), _mock_cluster_response()]):
             discover_keywords(_mock_records(), output_path=out_path, labeled_output_path=labeled_path)
             assert os.path.exists(labeled_path)
             with open(labeled_path) as f:
-                content = f.read()
-            assert content.startswith("results = ")
-            data = json.loads(content[len("results = "):])
+                lines = [line for line in f if line.strip()]
+            data = [json.loads(line) for line in lines]
             assert isinstance(data, list)
             assert len(data) > 0
 
@@ -62,11 +61,11 @@ def test_discover_keywords_writes_labeled_output():
 def test_labeled_turns_have_state_field():
     with tempfile.TemporaryDirectory() as tmpdir:
         out_path = os.path.join(tmpdir, "state_keywords.json")
-        labeled_path = os.path.join(tmpdir, "output_labeled.py")
+        labeled_path = os.path.join(tmpdir, "output_labeled.jsonl")
         with patch("f000_keyword_discovery.discover_keywords.call_deepseek_json", side_effect=[_mock_customer_response(), _mock_collector_response(), _mock_cluster_response()]):
             discover_keywords(_mock_records(), output_path=out_path, labeled_output_path=labeled_path)
             with open(labeled_path) as f:
-                data = json.loads(f.read()[len("results = "):])
+                data = [json.loads(line) for line in f if line.strip()]
             has_state = False
             for record in data:
                 for turn in record["response"]["dialog"]:

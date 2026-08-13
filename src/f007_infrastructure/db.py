@@ -14,6 +14,13 @@ from f007_infrastructure.logging import get_logger as _get_logger
 _log = _get_logger(__name__)
 
 
+def _node_labels(node: dict) -> list[str]:
+    labels = list(node.get("inherited_facts", [])) + list(node.get("inherited_emotions", []))
+    for value in (node.get("branch_key", {}) or {}).values():
+        labels.extend(value if isinstance(value, list) else [value])
+    return sorted({label for label in labels if label})
+
+
 class SentenceDB:
     def __init__(self, dsn: str, pool_max: int | None = None):
         self._dsn = dsn
@@ -109,6 +116,15 @@ class SentenceDB:
             """)
             cur.execute("CREATE INDEX IF NOT EXISTS idx_taxonomy_tsv ON taxonomy_keywords USING gin (tsv)")
             cur.execute("CREATE INDEX IF NOT EXISTS idx_taxonomy_group ON taxonomy_keywords(group_name, category)")
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS sentence_sources (
+                    script_id   TEXT NOT NULL,
+                    call_id     TEXT NOT NULL,
+                    PRIMARY KEY (script_id, call_id)
+                )
+            """)
+            cur.execute("CREATE INDEX IF NOT EXISTS idx_sentence_sources_call_id ON sentence_sources(call_id)")
             cur.close()
 
     def create_taxonomy_unique_index(self):
@@ -145,30 +161,60 @@ class SentenceDB:
             return
         with self.connection() as conn:
             cur = conn.cursor()
-            for kr in rows:
-                cur.execute(
-                    """
-                    INSERT INTO taxonomy_keywords (group_name, category, keyword, frequency)
-                    VALUES (%s, %s, %s, %s)
-                    ON CONFLICT (natural_key_hash) DO UPDATE SET frequency = EXCLUDED.frequency
-                    """,
-                    (kr["group_name"], kr["category"], kr["keyword"], kr.get("frequency", 0)),
-                )
+            cur.executemany(
+                """
+                INSERT INTO taxonomy_keywords (group_name, category, keyword, frequency)
+                VALUES (%s, %s, %s, %s)
+                ON CONFLICT (natural_key_hash) DO UPDATE SET frequency = EXCLUDED.frequency
+                """,
+                [(kr["group_name"], kr["category"], kr["keyword"], kr.get("frequency", 0)) for kr in rows],
+            )
             cur.close()
 
     def get_existing_path_signatures(self) -> set[str]:
         with self.connection() as conn:
-            cur = conn.cursor()
+            cur = conn.cursor(name="stream_sigs", withhold=True)
+            cur.itersize = 1000
             cur.execute("SELECT path_signature FROM nodes")
-            sigs = {r[0] for r in cur.fetchall()}
+            sigs = set()
+            for batch in cur:
+                sigs.add(batch[0])
             cur.close()
             return sigs
 
-    def get_existing_script_ids(self) -> set[str]:
+    def add_sentence_source(self, script_id: str, call_id: str):
         with self.connection() as conn:
             cur = conn.cursor()
+            cur.execute(
+                "INSERT INTO sentence_sources (script_id, call_id) VALUES (%s, %s) ON CONFLICT DO NOTHING",
+                (script_id, call_id),
+            )
+            cur.close()
+
+    def get_sentence_sources(self, script_id: str) -> list[str]:
+        with self.connection() as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT call_id FROM sentence_sources WHERE script_id = %s ORDER BY call_id", (script_id,))
+            result = [r[0] for r in cur.fetchall()]
+            cur.close()
+            return result
+
+    def has_sentence_source(self, script_id: str, call_id: str) -> bool:
+        with self.connection() as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT 1 FROM sentence_sources WHERE script_id = %s AND call_id = %s", (script_id, call_id))
+            result = cur.fetchone() is not None
+            cur.close()
+            return result
+
+    def get_existing_script_ids(self) -> set[str]:
+        with self.connection() as conn:
+            cur = conn.cursor(name="stream_ids", withhold=True)
+            cur.itersize = 1000
             cur.execute("SELECT script_id FROM sentences")
-            ids = {r[0] for r in cur.fetchall()}
+            ids = set()
+            for batch in cur:
+                ids.add(batch[0])
             cur.close()
             return ids
 
@@ -177,17 +223,17 @@ class SentenceDB:
             return
         with self.connection() as conn:
             cur = conn.cursor()
-            for s in rows:
-                cur.execute(
-                    """
-                    UPDATE sentences SET
-                        win_rate = %s,
-                        sas = %s,
-                        bg_bitmask_int = %s,
-                        bg_background = %s,
-                        conversation_context = %s
-                    WHERE script_id = %s
-                    """,
+            cur.executemany(
+                """
+                UPDATE sentences SET
+                    win_rate = %s,
+                    sas = %s,
+                    bg_bitmask_int = %s,
+                    bg_background = %s,
+                    conversation_context = %s
+                WHERE script_id = %s
+                """,
+                [
                     (
                         s.get("win_rate", 0),
                         s.get("sas", 0),
@@ -195,8 +241,10 @@ class SentenceDB:
                         json.dumps(s.get("bg_background")) if s.get("bg_background") else None,
                         s.get("conversation_context"),
                         s["script_id"],
-                    ),
-                )
+                    )
+                    for s in rows
+                ],
+            )
             cur.close()
 
     def delete_sentences(self, script_ids: list[str]):
@@ -218,20 +266,53 @@ class SentenceDB:
             return
         with self.connection() as conn:
             cur = conn.cursor()
-            for n in nodes:
-                cur.execute(
-                    """
-                    INSERT INTO nodes (state_id, path_signature, branch_key, parent_id, depth)
-                    VALUES (%s, %s, %s, %s, %s)
-                    ON CONFLICT (path_signature) DO UPDATE SET
-                        state_id = EXCLUDED.state_id,
-                        branch_key = EXCLUDED.branch_key,
-                        parent_id = EXCLUDED.parent_id,
-                        depth = EXCLUDED.depth
-                    """,
-                    (n["state_id"], n["path_signature"], json.dumps(n.get("branch_key", {})), n.get("parent_id"), n.get("depth", 0)),
-                )
+            cur.executemany(
+                """
+                INSERT INTO nodes (state_id, path_signature, branch_key, parent_id, depth,
+                                   inherited_facts, inherited_emotions, labels)
+                VALUES (%s, %s, %s, %s, %s, %s::jsonb, %s::jsonb, %s::jsonb)
+                ON CONFLICT (path_signature) DO UPDATE SET
+                    state_id = EXCLUDED.state_id,
+                    branch_key = EXCLUDED.branch_key,
+                    parent_id = EXCLUDED.parent_id,
+                    depth = EXCLUDED.depth,
+                    inherited_facts = EXCLUDED.inherited_facts,
+                    inherited_emotions = EXCLUDED.inherited_emotions,
+                    labels = EXCLUDED.labels
+                """,
+                [
+                    (
+                        n["state_id"], n["path_signature"], json.dumps(n.get("branch_key", {})),
+                        n.get("parent_id"), n.get("depth", 0),
+                        json.dumps(n.get("inherited_facts", [])),
+                        json.dumps(n.get("inherited_emotions", [])),
+                        json.dumps(_node_labels(n)),
+                    )
+                    for n in nodes
+                ],
+            )
             cur.close()
+
+    def find_nodes_for_labels(self, labels: list[str], limit: int = 32) -> list[dict]:
+        query_labels = json.dumps(sorted(set(labels)))
+        with self.connection() as conn:
+            cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            cur.execute(
+                """
+                SELECT id, state_id, path_signature, branch_key,
+                       inherited_facts, inherited_emotions, labels
+                FROM nodes
+                WHERE labels <@ %s::jsonb
+                ORDER BY jsonb_array_length(labels) DESC, depth ASC
+                LIMIT %s
+                """,
+                (query_labels, limit),
+            )
+            rows = [dict(row) for row in cur.fetchall()]
+            cur.close()
+        for node in rows:
+            node["sentence_pool"] = self.get_sentences_by_node(node["id"])
+        return rows
 
     def get_node_by_signature(self, path_signature: str) -> dict | None:
         with self.connection() as conn:
@@ -260,33 +341,45 @@ class SentenceDB:
         with self.connection() as conn:
             self._ensure_vector_registered(conn)
             cur = conn.cursor()
+            params = []
             for s in sentences:
                 emb = np.array(s["embedding"], dtype=np.float32) if s.get("embedding") else None
-                cur.execute(
-                    """
-                    INSERT INTO sentences (script_id, node_id, script_text, bg_bitmask_int, win_rate, sas, bg_background, conversation_context, embedding)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    ON CONFLICT (script_id) DO UPDATE SET
-                        node_id = EXCLUDED.node_id,
-                        script_text = EXCLUDED.script_text,
-                        bg_bitmask_int = EXCLUDED.bg_bitmask_int,
-                        win_rate = EXCLUDED.win_rate,
-                        sas = EXCLUDED.sas,
-                        bg_background = EXCLUDED.bg_background,
-                        conversation_context = EXCLUDED.conversation_context,
-                        embedding = EXCLUDED.embedding
-                    """,
-                    (
-                        s["script_id"],
-                        s["node_id"],
-                        s["script_text"],
-                        s.get("bg_bitmask_int", 0),
-                        s.get("win_rate", 0),
-                        s.get("sas", 0),
-                        json.dumps(s.get("bg_background")) if s.get("bg_background") else None,
-                        s.get("conversation_context"),
-                        emb,
-                    ),
+                params.append((
+                    s["script_id"],
+                    s["node_id"],
+                    s["script_text"],
+                    s.get("bg_bitmask_int", 0),
+                    s.get("win_rate", 0),
+                    s.get("sas", 0),
+                    json.dumps(s.get("bg_background")) if s.get("bg_background") else None,
+                    s.get("conversation_context"),
+                    emb,
+                ))
+            cur.executemany(
+                """
+                INSERT INTO sentences (script_id, node_id, script_text, bg_bitmask_int, win_rate, sas, bg_background, conversation_context, embedding)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (script_id) DO UPDATE SET
+                    node_id = EXCLUDED.node_id,
+                    script_text = EXCLUDED.script_text,
+                    bg_bitmask_int = EXCLUDED.bg_bitmask_int,
+                    win_rate = EXCLUDED.win_rate,
+                    sas = EXCLUDED.sas,
+                    bg_background = EXCLUDED.bg_background,
+                    conversation_context = EXCLUDED.conversation_context,
+                    embedding = EXCLUDED.embedding
+                """,
+                params,
+            )
+            source_params = sorted({
+                (s["script_id"], call_id)
+                for s in sentences
+                for call_id in s.get("source_call_ids", [])
+            })
+            if source_params:
+                cur.executemany(
+                    "INSERT INTO sentence_sources (script_id, call_id) VALUES (%s, %s) ON CONFLICT DO NOTHING",
+                    source_params,
                 )
             cur.close()
 

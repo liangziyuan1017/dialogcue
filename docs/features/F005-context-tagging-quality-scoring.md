@@ -20,7 +20,7 @@ The retrieval engine (F006) needs two capabilities that the current decision tre
 
 ### Context Tagging (Bitmask Encoding)
 
-Tag each sentence in the decision tree with `bg_constraints` derived from the source conversation's `context` fields (from F001's `output_aligned.py`). Encode as a bitmask for O(1) filtering at retrieval time.
+Tag each sentence in the decision tree with `bg_constraints` derived from the source conversation's `context` fields (from F001's `output_aligned.jsonl`). Encode as a bitmask for indexed soft scoring at retrieval time.
 
 The 10 bitmask fields (from ADR-006's 18 custInfo-derived context fields — boolean-derivable fields suitable for binary encoding):
 
@@ -103,8 +103,8 @@ Balance fields are stored as **digit counts** (`len(str(abs(value)))` for value 
 ## Dependencies
 
 - F004 (Decision Tree Construction) — `decision_tree.json` provides the tree structure and sentence pools
-- F003 (Reward Labeling) — `output_rewarded.py` provides reward labels for HWR computation
-- F001 (Data Schema Alignment) — `output_aligned.py` provides context fields for bitmask encoding
+- F003 (Reward Labeling) — `output_rewarded.jsonl` provides reward labels for HWR computation
+- F001 (Data Schema Alignment) — `output_aligned.jsonl` provides context fields for bitmask encoding
 
 ## Links
 

@@ -25,22 +25,22 @@ The retrieval engine receives:
 - **Customer background**: `bg_bitmask` + `bg_background` (from F005's context tagging)
 - **Conversation context**: candidate side = `context_window.conversation_turns` turns before the script (build time); query side = last 100 words via `_last_n_words` (request time)
 
-### Architecture: Fact-Set Index → Aggregate Pool → Rank
+### Architecture: DB Label Lookup → Aggregate Pool → Rank
 
 The tree uses `inherited_facts` + `branch_key` values (both sorted alphabetically) as the node lookup key. Sorting ensures that permutations of keywords do not affect index matching. Multiple nodes sharing the same key represent the same conversational context at different tree positions — their sentences are aggregated into one candidate pool.
 
 The retrieval engine:
 
 1. **Matches by inherited_facts + branch_key** — emotions and willingness are NOT used to identify the node
-2. **Prefers database-backed sentence pools** for the matched nodes; if the database returns no sentences for a matched node, it falls back to the in-memory tree pool from the matching nodes
+2. **Queries database-backed node labels and sentence pools**; the API process does not load the full scored tree or indexes into `app.state`
 3. **Ranks across the combined pool** using the dual-strategy ranker
 
-### Node Index
+### Node Lookup
 
-Precompute at build time:
+Persist at build time:
 
 ```
-node_index: dict[tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]], list[node]]
+nodes.labels: JSONB array with a GIN index; `path_signature` remains unique and indexed
 ```
 
 Key = `(tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)), tuple(sorted(inherited_emotions)))`.
@@ -49,14 +49,14 @@ Key = `(tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)), tuple(
 - `branch_key_values`: sorted alphabetically from the node's `branch_key` values (flattening lists: `{"facts": ["a", "b"]}` → `["a", "b"]`, `{"action": "closure"}` → `["closure"]`)
 - `inherited_emotions`: sorted alphabetically from the node's `inherited_emotions` field
 
-All three components are sorted independently, so any permutation of input keywords produces the same key. `inherited_emotions` is required: without it, 31 key collisions occur (e.g., `a:closure` under `['disappointment']` vs `['anger']` must not aggregate). The tree's own dedup identity (`tree_transforms.py:_make_identity`) already uses all three components. Willingness is tracked in conversation state but **not** in the node key.
+All three components are persisted in `nodes.labels` and queried with JSONB containment, so any permutation of input keywords produces the same candidate set. `inherited_emotions` is required: without it, emotional contexts can collide. Willingness is tracked in conversation state but **not** in the node key.
 
 ### Retrieval Pipeline
 
-1. **Key computation**: Sort `inherited_facts` alphabetically + sort `branch_key` values alphabetically + sort `inherited_emotions` alphabetically → `(facts_tuple, bk_tuple, emotions_tuple)` — O(1)
-2. **Node lookup**: Hash map `key → list[node]` — O(1)
+1. **Key computation**: Sort `inherited_facts` alphabetically + sort `branch_key` values alphabetically + sort `inherited_emotions` alphabetically → normalized DB label query
+2. **Node lookup**: Query indexed `nodes.labels` with a bounded candidate limit
 3. **Key fallback**: If exact key not in index, drop the least-frequent keyword from `inherited_facts` and retry — O(|facts|) worst case
-4. **Pool retrieval**: When a database connection is available, resolve each matched node by `path_signature` and fetch its sentence pool from the database first; if no DB sentences are found, fall back to aggregating the in-memory `sentence_pool` from the matched nodes — O(nodes × pool_size)
+4. **Pool retrieval**: Fetch each matched node's sentences from PostgreSQL by `node_id` — O(nodes × pool_size), bounded by the candidate limit
 5. **Descend fallback**: If aggregated pool is empty, walk DOWN the tree — collect sentences from the nearest descendants with non-empty pools (BFS). All siblings at the same depth are included. E.g., if "unemployed" has no sentences, and its child "has kids" also has none, but "has kids" branches into "not married" and "married" which both have sentences → collect from both grandchildren.
 6. **Key-drop fallback**: If descend fallback finds no sentences at any depth, drop the least-frequent keyword from `inherited_facts` and retry from step 1
 6. **Soft bitmask scoring**: `bitmask_score = popcount(sb & qb) / popcount(sb)` (sentence with no constraints scores 1.0); partial matches rank lower, none are excluded (ADR-020 updated)
@@ -67,7 +67,7 @@ All three components are sorted independently, so any permutation of input keywo
 
 | # | Failure point | Cause | Fallback | Confidence impact |
 |---|--------------|-------|----------|-------------------|
-| 1 | **Key miss** | `(sorted_facts, sorted_bk)` not in `node_index` | Drop least-frequent keyword from `inherited_facts`, recompute key, retry. Repeat until match or empty facts. | Each drop: −0.1 |
+| 1 | **Key miss** | No DB node contains the normalized label set | Drop least-frequent keyword from `inherited_facts`, recompute the DB query, retry. Repeat until match or empty facts. | Each drop: −0.1 |
 | 2 | **Empty pool — descend** | All matched nodes have empty `sentence_pool` but have children | Walk DOWN tree (BFS): collect sentences from nearest descendants with non-empty pools. All siblings at the same depth are included. E.g., "unemployed" → "has kids" (empty) → {"not married", "married"} (both have sentences) → collect from both. | Each level: −0.05 |
 | 3 | **Empty pool — key drop** | Descend found no sentences at any depth | Drop least-frequent keyword from `inherited_facts`, retry from key lookup. | Each drop: −0.1 |
 | 4 | **Bitmask partial match** | No sentence has a perfect bitmask overlap | Soft scoring: `bitmask_score = matched_bits / required_bits`; partial matches rank lower but are not excluded. Confidence reduced by `(1.0 − bitmask_score) × 0.1`. | −(1.0 − bitmask_score) × 0.1 |
@@ -104,7 +104,7 @@ RANKING_WEIGHTS = {
 
 ### Conversation Context Similarity (pgvector)
 
-Each sentence has `source_call_ids` → look up original conversations, extract the `context_window.conversation_turns` turns immediately before the sentence was used (currently 5; was 20). Store as `conversation_context` field per sentence in the scored tree. At F005 build time, compute `embed(conversation_context)` via bge-m3 embedding API → 1024-dim vector stored in PostgreSQL `embedding` column with pgvector HNSW index.
+Each sentence has provenance in `sentence_sources(script_id, call_id)`; use it to look up original conversations and extract the `context_window.conversation_turns` turns immediately before the sentence was used. Store the resulting `conversation_context` with the sentence. At F005 build time, compute `embed(conversation_context)` via bge-m3 embedding API → 1024-dim vector stored in PostgreSQL `embedding` column with pgvector HNSW index.
 
 At retrieval time:
 1. **Query-side windowing**: the live `conversation_context` is truncated to its last 100 words via `_last_n_words()` (`src/f009_api_server/server.py`) before embedding, so `query_vec` represents a bounded recent context window regardless of how much history the caller sends. Applied at both embedding call sites (`/recommend` and `_run_turn`, the latter covering `/api/v1/recommend` and SocketIO `customer_turn`).
@@ -130,8 +130,8 @@ See ADR-028 for rationale.
 ```python
 def recommend(inherited_facts, branch_key_values, inherited_emotions, query_bitmask, conversation_context, query_bg):
     key = (tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)), tuple(sorted(inherited_emotions)))
-    nodes = lookup_by_key(key, node_index)               # step 1-3
-    pool = aggregate_pools(nodes)                         # step 4-6
+    nodes = db.find_nodes_for_labels(labels, limit=32)     # step 1-3
+    pool = db.get_sentences_by_node_ids(nodes)             # step 4-6
     for s in pool:
         s["bitmask_score"] = compute_bitmask_score(s.bg_bitmask_int, query_bitmask)  # soft (ADR-020)
     vec_score = compute_vec_score(pool, conversation_context)  # pgvector SQL-side (ADR-028)
@@ -166,7 +166,7 @@ def recommend(inherited_facts, branch_key_values, inherited_emotions, query_bitm
 - Weighted fusion: `final_score = 0.35 × win_rate + 0.25 × vec_score + 0.10 × sas + 0.10 × bg_boost + 0.20 × bitmask_score` (weights from `config.md`; dual `limited`/`full` strategy deleted by ADR-024)
 - `bg_boost` computed from profile similarity (industry, education, debt range, age)
 - Confidence decreases with each fallback activated
-- Retrieval latency < 150ms (hash lookup + embed API + filter + sort)
+- Retrieval latency < 150ms (indexed DB lookup + embed API + filter + sort)
 
 ## Acceptance Criteria
 
@@ -212,14 +212,14 @@ See [implementation-plan.md](implementation-plan.md)
 
 - **Node index by (inherited_facts, branch_key_values, inherited_emotions)**: The lookup key combines `inherited_facts`, `branch_key` values, and `inherited_emotions`, all sorted alphabetically. Sorting ensures permutation insensitivity. `inherited_emotions` is required: without it, 31 key collisions occur (e.g., `a:closure` under `['disappointment']` vs `['anger']` must not aggregate). The tree's own dedup identity (`tree_transforms.py:_make_identity`) already uses all three components.
 - **Willingness not in key**: Willingness is a scalar (not a list) and represents the customer's current repayment intent. It's tracked in conversation state but doesn't determine node identity — it's a soft signal, not a branching dimension.
-- **Aggregate pool from matching nodes**: When a key matches multiple nodes, we pull sentences from ALL of them and rank across the combined pool. This gives the ranker more candidates and avoids premature filtering by tree position. In the current implementation, this pool is retrieved database-first for each matched node and only falls back to the in-memory tree pool when the database has no sentences for that node.
+- **Aggregate pool from matching nodes**: When a label query matches multiple nodes, we pull sentences from all bounded candidates and rank across the combined pool. This gives the ranker more candidates without retaining the tree in process memory. Sentence provenance is served from `sentence_sources`; the JSON tree field remains an offline compatibility projection.
 - **Descend fallback (not parent walk)**: When matched nodes have empty pools but have children, walk DOWN the tree (BFS) to find the nearest descendants with sentences. This is the correct direction — we've already matched the customer's facts, so the next scripts come from deeper in the tree (more specific actions/emotions), not from going back up. All siblings at the same depth are included: e.g., "unemployed" → "has kids" (empty) → {"not married", "married"} both contribute sentences.
 - **Key-drop fallback after exhausted descend**: If descending finds no sentences at any depth (all descendants are routing-only nodes), then fall back to dropping a keyword from `inherited_facts` (least-frequent first) and retrying the lookup. This handles degenerate branches.
 - **Bitmask as soft ranking signal (ADR-020 updated)**: `bitmask_score = matched_bits / required_bits` — partial matches rank lower but are not excluded. A sentence with no constraints scores 1.0.
 - **Weighted fusion ranking**: `final_score = 0.35 × win_rate + 0.25 × vec_score + 0.10 × sas + 0.10 × bg_boost + 0.20 × bitmask_score`. All signals contribute simultaneously rather than staged sorting. `vec_score` from pgvector captures cross-conversation semantic similarity. Dual `limited`/`full` strategy deleted by ADR-024.
 - **Context missing fallback**: Set `vec_score = 0`, redistribute weight to `win_rate`. −0.1 confidence.
 - **bg_background as soft boost**: Shifts ranking toward profile-matching sentences without excluding viable ones.
-- **SAS as intra-pool diversity**: Intra-pool similarity to highest-HWR sentence — redundancy avoidance, not relevance. Uses jieba word bigram TF-IDF with reference-vocabulary restriction (no API).
+- **SAS as intra-pool diversity**: Intra-pool similarity to highest-HWR sentence — redundancy avoidance, not relevance. Uses restricted-vocabulary jieba word-ngram TF-IDF with no external API.
 - **Confidence from fallback depth**: Additive formula with `fallbacks` list for transparency.
 - **bge-m3 embedding in hot path**: `vec_score` requires one embedding API call (via Ollama) per recommendation. This is the only API call in the hot path (state extraction is done by the caller).
 

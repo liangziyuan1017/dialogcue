@@ -174,7 +174,7 @@ class TestVectorCastInSql:
             await db.connect()
             sentences = [{"script_id": "s1", "node_id": 1, "script_text": "hello", "embedding": [0.1] * EMBEDDING_DIM}]
             await db.upsert_sentences(sentences)
-            calls = [str(c) for c in conn.execute.call_args_list]
+            calls = [str(c) for c in conn.executemany.call_args_list]
             assert any("::vector" in c for c in calls)
 
 
@@ -261,7 +261,7 @@ class TestUpsertNodes:
             await db.connect()
             nodes = [{"state_id": "initial_contact", "path_signature": "", "branch_key": {}, "parent_id": None, "depth": 0}]
             await db.upsert_nodes(nodes)
-            assert conn.execute.call_count > 0
+            assert conn.executemany.call_count > 0
 
     @pytest.mark.asyncio
     async def test_uses_on_conflict(self):
@@ -271,7 +271,7 @@ class TestUpsertNodes:
             await db.connect()
             nodes = [{"state_id": "s1", "path_signature": "p1", "branch_key": {}, "parent_id": None, "depth": 0}]
             await db.upsert_nodes(nodes)
-            calls = [str(c) for c in conn.execute.call_args_list]
+            calls = [str(c) for c in conn.executemany.call_args_list]
             assert any("ON CONFLICT" in c.upper() for c in calls)
 
     @pytest.mark.asyncio
@@ -281,7 +281,7 @@ class TestUpsertNodes:
             db = AsyncSentenceDB("postgresql://localhost/test")
             await db.connect()
             await db.upsert_nodes([])
-            assert conn.execute.call_count == 0
+            assert conn.executemany.call_count == 0
 
     @pytest.mark.asyncio
     async def test_passes_node_params(self):
@@ -291,12 +291,13 @@ class TestUpsertNodes:
             await db.connect()
             nodes = [{"state_id": "s1", "path_signature": "p1", "branch_key": {"k": 1}, "parent_id": 5, "depth": 2}]
             await db.upsert_nodes(nodes)
-            args = conn.execute.call_args_list[0]
-            assert args[0][1] == "s1"
-            assert args[0][2] == "p1"
-            assert args[0][3] == {"k": 1}
-            assert args[0][4] == 5
-            assert args[0][5] == 2
+            args = conn.executemany.call_args_list[0]
+            row = args[0][1][0]
+            assert row[0] == "s1"
+            assert row[1] == "p1"
+            assert row[2] == {"k": 1}
+            assert row[3] == 5
+            assert row[4] == 2
 
 
 class TestGetNodeBySignature:
@@ -320,6 +321,29 @@ class TestGetNodeBySignature:
             conn.fetchrow.return_value = None
             result = await db.get_node_by_signature("nonexistent")
             assert result is None
+
+
+class TestSentenceSources:
+    @pytest.mark.asyncio
+    async def test_add_source_uses_idempotent_insert(self):
+        pool, conn = _make_mock_pool()
+        with _patch_create_pool(pool):
+            db = AsyncSentenceDB("postgresql://localhost/test")
+            await db.connect()
+            await db.add_sentence_source("s1", "c1")
+            query = conn.execute.call_args.args[0]
+            assert "sentence_sources" in query
+            assert "ON CONFLICT" in query
+
+    @pytest.mark.asyncio
+    async def test_get_source_ids(self):
+        pool, conn = _make_mock_pool()
+        conn.fetch.return_value = [_FakeRecord(call_id="c2"), _FakeRecord(call_id="c1")]
+        with _patch_create_pool(pool):
+            db = AsyncSentenceDB("postgresql://localhost/test")
+            await db.connect()
+            result = await db.get_sentence_sources("s1")
+            assert result == ["c2", "c1"]
 
     @pytest.mark.asyncio
     async def test_passes_path_signature_param(self):
@@ -459,7 +483,7 @@ class TestUpsertSentences:
             await db.connect()
             sentences = [{"script_id": "s1", "node_id": 1, "script_text": "你好", "embedding": [0.1] * EMBEDDING_DIM}]
             await db.upsert_sentences(sentences)
-            assert conn.execute.call_count > 0
+            assert conn.executemany.call_count > 0
 
     @pytest.mark.asyncio
     async def test_uses_on_conflict(self):
@@ -469,7 +493,7 @@ class TestUpsertSentences:
             await db.connect()
             sentences = [{"script_id": "s1", "node_id": 1, "script_text": "你好", "embedding": [0.0] * EMBEDDING_DIM}]
             await db.upsert_sentences(sentences)
-            calls = [str(c) for c in conn.execute.call_args_list]
+            calls = [str(c) for c in conn.executemany.call_args_list]
             assert any("ON CONFLICT" in c.upper() for c in calls)
 
     @pytest.mark.asyncio
@@ -479,7 +503,7 @@ class TestUpsertSentences:
             db = AsyncSentenceDB("postgresql://localhost/test")
             await db.connect()
             await db.upsert_sentences([])
-            assert conn.execute.call_count == 0
+            assert conn.executemany.call_count == 0
 
     @pytest.mark.asyncio
     async def test_passes_sentence_params(self):
@@ -489,13 +513,14 @@ class TestUpsertSentences:
             await db.connect()
             sentences = [{"script_id": "s1", "node_id": 2, "script_text": "hello", "bg_bitmask_int": 7, "win_rate": 0.9, "sas": 0.8, "embedding": [0.1] * EMBEDDING_DIM}]
             await db.upsert_sentences(sentences)
-            args = conn.execute.call_args_list[0]
-            assert args[0][1] == "s1"
-            assert args[0][2] == 2
-            assert args[0][3] == "hello"
-            assert args[0][4] == 7
-            assert args[0][5] == 0.9
-            assert args[0][6] == 0.8
+            args = conn.executemany.call_args_list[0]
+            row = args[0][1][0]
+            assert row[0] == "s1"
+            assert row[1] == 2
+            assert row[2] == "hello"
+            assert row[3] == 7
+            assert row[4] == 0.9
+            assert row[5] == 0.8
 
     @pytest.mark.asyncio
     async def test_no_embedding_passes_none(self):
@@ -505,8 +530,9 @@ class TestUpsertSentences:
             await db.connect()
             sentences = [{"script_id": "s1", "node_id": 1, "script_text": "hello"}]
             await db.upsert_sentences(sentences)
-            args = conn.execute.call_args_list[0]
-            assert args[0][9] is None
+            args = conn.executemany.call_args_list[0]
+            row = args[0][1][0]
+            assert row[8] is None
 
 
 class TestGetVectors:

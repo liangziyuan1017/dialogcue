@@ -216,13 +216,6 @@ def compute_bitmask_score(sentence_bitmask, query_bitmask):
 async def recommend(query_bitmask, conversation_context, query_bg,
               tree=None, index=None, db=None, query_vec=None,
               conversation_state=None, label_set_index=None):
-    if tree is None:
-        tree = _load_scored_tree()
-    if index is None:
-        index = build_node_index(tree)
-    if label_set_index is None:
-        label_set_index = _build_label_set_index(index)
-
     from f008_state_extraction.state_extraction import flat_to_path_state, path_state_to_flat
 
     if conversation_state is None:
@@ -245,9 +238,22 @@ async def recommend(query_bitmask, conversation_context, query_bg,
     if context_missing:
         fallbacks.append("context_missing")
 
-    nodes, n_conf, n_fb = _find_matching_nodes_subset(
-        all_facts, all_emotions, all_actions, index, label_set_index
-    )
+    if db is not None and tree is None and index is None and label_set_index is None:
+        nodes = await db.find_nodes_for_labels(all_facts + all_emotions + all_actions)
+        matched = len(nodes[0].get("labels", [])) if nodes else 0
+        query_size = len(all_facts + all_emotions + all_actions)
+        n_conf = min(1.0, matched / max(query_size, 1)) if matched else 0.0
+        n_fb = [] if nodes else ["no_match"]
+    else:
+        if tree is None:
+            tree = _load_scored_tree()
+        if index is None:
+            index = build_node_index(tree)
+        if label_set_index is None:
+            label_set_index = _build_label_set_index(index)
+        nodes, n_conf, n_fb = _find_matching_nodes_subset(
+            all_facts, all_emotions, all_actions, index, label_set_index
+        )
     confidence = n_conf
     fallbacks.extend(n_fb)
     if context_missing:

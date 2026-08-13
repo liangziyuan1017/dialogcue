@@ -84,7 +84,7 @@ Single-turn recommendation. Caller manages `conversation_state` accumulation man
 | `conversation_state.emotions` | string[] | yes | e.g. `["pleading", "disappointment"]` |
 | `conversation_state.actions` | string[] | yes | e.g. `["empathy", "plan_proposal"]` |
 | `conversation_state.willingness` | string or null | yes | e.g. `"conditional"`, `"negotiating"`, `"strong"`, or `null` |
-| `context` | object | yes | Customer profile (same schema as `output_aligned.py` `context` field) |
+| `context` | object | yes | Customer profile (same schema as `output_aligned.jsonl` `context` field) |
 
 **Response (200):**
 
@@ -163,9 +163,9 @@ Merge new extractions into `conversation_state`. Deduplicate, preserve insertion
 
 **Latency**: <1ms
 
-### Step 4: Node Lookup (O(1) hash)
+### Step 4: Node Lookup (DB-backed)
 
-`node_id = hash_index[signature]`. Fallback: progressive tag removal (strip lowest-frequency tag, retry, -0.1 confidence per removal).
+Normalize the accumulated facts, emotions, and actions into a label set and query the indexed `nodes.labels` JSONB column. The query is bounded to the most specific candidates. Fallback: progressive tag removal (strip lowest-frequency tag, retry, -0.1 confidence per removal).
 
 **Latency**: <1ms
 
@@ -470,7 +470,7 @@ Accumulated across turns. Taxonomy group names from `state_keywords.json`.
 
 ### `context`
 
-Customer profile. Same schema as `output_aligned.py` `context` field, derived from `customer_info` Chinese fields.
+Customer profile. Same schema as `output_aligned.jsonl` `context` field, derived from `custInfo` Chinese fields.
 
 | Field | Type | Source `customer_info` key | Transform |
 |---|---|---|---|
@@ -522,7 +522,7 @@ final_score = 0.35 × win_rate + 0.25 × vec_score + 0.10 × sas + 0.10 × bg_bo
 
 | Signal | Weight | Source | Range |
 |---|---|---|---|
-| `win_rate` | 0.35 | HWR from `reward` labels in `output_rewarded.py` | [0, 1] |
+| `win_rate` | 0.35 | HWR from `reward` labels in `output_rewarded.jsonl` | [0, 1] |
 | `vec_score` | 0.25 | pgvector cosine similarity on `conversation_context` embeddings | [0, 1] |
 | `sas` | 0.10 | Char bigram TF-IDF cosine within sentence pool | [0, 1] |
 | `bg_boost` | 0.10 | Profile match heuristic (education, risk level, complaint, delinquency) | [0, 0.12] |
@@ -570,11 +570,10 @@ uvicorn src.f009_api_server.server:app --host 0.0.0.0 --port 8000 --ws websocket
 ```
 
 On startup, the server:
-1. Loads `nodes` table from PostgreSQL → builds in-memory `hash_index` (path_signature → node_id)
+1. Connects to PostgreSQL (pgvector) for indexed node-label lookup, sentence retrieval, provenance, and vector search; it does not load the scored tree or indexes into `app.state`
 2. Loads `state_keywords.json` → taxonomy for state extraction
-3. Connects to PostgreSQL (pgvector) for sentence retrieval + vector search
-4. bge-m3 embedding client initialized via Ollama at `EMBEDDING_BASE_URL` (default `http://localhost:11434/v1`)
-5. DeepSeek LLM client initialized from `DEEPSEEK_API_KEY` in `.env` (for state extraction)
+3. Initializes the bge-m3 embedding client via Ollama at `EMBEDDING_BASE_URL` (default `http://localhost:11434/v1`)
+4. Initializes the DeepSeek LLM client from `DEEPSEEK_API_KEY` in `.env` (for state extraction)
 
 ## Links
 

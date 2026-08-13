@@ -1,9 +1,10 @@
-import importlib.util
 import json
 import os
 import re
+from pathlib import Path
 
 from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.jsonl_utils import load_jsonl, write_jsonl
 from f007_infrastructure.llm_client import call_deepseek_json
 from f007_infrastructure.logging import get_logger as _get_logger
 from f007_infrastructure.retry import retry_call
@@ -12,11 +13,8 @@ _log = _get_logger(__name__)
 
 
 def _load_aligned():
-    data_path = os.path.join(os.path.dirname(__file__), "..", "f001_schema_alignment", "data", "output_aligned.py")
-    spec = importlib.util.spec_from_file_location("output_aligned", data_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod.results
+    data_path = os.path.join(os.path.dirname(__file__), "..", "f001_schema_alignment", "data", "output_aligned.jsonl")
+    return load_jsonl(Path(data_path))
 
 
 def _build_explanation_prompt(record, acceptance_type):
@@ -184,14 +182,6 @@ def cross_validate(rewarded_records):
     return warnings
 
 
-def _python_dumps(obj, indent=2):
-    text = json.dumps(obj, indent=indent, ensure_ascii=False)
-    text = text.replace(": null", ": None")
-    text = text.replace(": true", ": True")
-    text = text.replace(": false", ": False")
-    return text
-
-
 def _dedup_by_call_id(records):
     seen = set()
     deduped = []
@@ -210,15 +200,13 @@ def _dedup_by_call_id(records):
 
 def write_output_rewarded(output_path=None):
     if output_path is None:
-        output_path = os.path.join(os.path.dirname(__file__), "data", "output_rewarded.py")
+        output_path = os.path.join(os.path.dirname(__file__), "data", "output_rewarded.jsonl")
     rewarded = label_all()
     rewarded = _dedup_by_call_id(rewarded)
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write("results = ")
-        f.write(_python_dumps(rewarded))
+    write_jsonl(Path(output_path), rewarded)
     return len(rewarded)
 
 
 if __name__ == "__main__":
     count = write_output_rewarded()
-    _log.info(f"Wrote {count} rewarded records to output_rewarded.py")
+    _log.info(f"Wrote {count} rewarded records to output_rewarded.jsonl")

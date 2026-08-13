@@ -1,24 +1,16 @@
-import importlib.util
 import tempfile
 from pathlib import Path
 
-from f005_context_scoring.build_and_score_tree import _write_py_results as _write_bst
-from whole_pipeline import _write_py_results as _write_wp
-
-
-def _load_py_results(path: Path) -> list[dict]:
-    spec = importlib.util.spec_from_file_location("results_mod", path)
-    mod = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
-    spec.loader.exec_module(mod)  # type: ignore[union-attr]
-    return mod.results
+from f005_context_scoring.build_and_score_tree import write_jsonl as _write_bst
+from f007_infrastructure.jsonl_utils import load_jsonl, write_jsonl as _write_wp
 
 
 def _round_trip(write_fn, original):
-    with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as f:
+    with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False) as f:
         path = Path(f.name)
     try:
-        write_fn(original, path)
-        return _load_py_results(path)
+        write_fn(path, original)
+        return load_jsonl(path)
     finally:
         path.unlink()
 

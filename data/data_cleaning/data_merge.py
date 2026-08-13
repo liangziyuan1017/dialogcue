@@ -6,11 +6,13 @@ import json
 import os
 from pathlib import Path
 
+from f007_infrastructure.jsonl_utils import load_jsonl, write_jsonl
+
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 INPUT_DIR = _PROJECT_ROOT / "data" / "data_input"
 OUTPUT_DIR = _PROJECT_ROOT / "data" / "data_output"
 DATA_FILE = Path(os.environ.get("DATA_FILE", str(INPUT_DIR / "matched_data.jsonl")))
-OUTPUT_FILE = Path(os.environ.get("OUTPUT_FILE", str(OUTPUT_DIR / "output_merged.py")))
+OUTPUT_FILE = Path(os.environ.get("OUTPUT_FILE", str(OUTPUT_DIR / "output_merged.jsonl")))
 
 EXTRA_FIELDS = [
     "custInfo",
@@ -55,18 +57,11 @@ def load_source() -> dict:
 def load_results() -> list[dict]:
     if not OUTPUT_FILE.exists():
         return []
-    with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
-        code = compile(f.read(), OUTPUT_FILE, "exec")
-        namespace = {}
-        exec(code, namespace)
-        return namespace.get("results", [])
+    return load_jsonl(OUTPUT_FILE)
 
 
 def write_results(results: list[dict]) -> None:
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write("results = ")
-        f.write(json.dumps(results, ensure_ascii=False, indent=2))
-        f.write("\n")
+    write_jsonl(OUTPUT_FILE, results)
 
 
 def main() -> None:

@@ -1,7 +1,7 @@
-import importlib.util
 import json
 import os
 import tempfile
+from pathlib import Path
 
 import pytest
 
@@ -13,14 +13,12 @@ from f004_decision_tree.build_decision_tree import (
     merge_dialogs,
     write_decision_tree,
 )
+from f007_infrastructure.jsonl_utils import load_jsonl
 
 
 def _load_rewarded():
-    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.py")
-    spec = importlib.util.spec_from_file_location("output_rewarded", data_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod.results
+    data_path = os.path.join(os.path.dirname(__file__), "../..", "f003_reward_labeling", "data", "output_rewarded.jsonl")
+    return load_jsonl(Path(data_path))
 
 
 def _sample_record(call_id="test-001", reward=0):

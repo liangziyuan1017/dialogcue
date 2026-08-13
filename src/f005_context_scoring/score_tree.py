@@ -1,6 +1,6 @@
-import importlib.util
 import json
 import os
+from pathlib import Path
 
 from f005_context_scoring.scoring_metrics import (
     compute_bg_background,
@@ -12,26 +12,20 @@ from f005_context_scoring.scoring_metrics import (
     encode_bitmask_int,
 )
 from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.jsonl_utils import load_jsonl
 from f007_infrastructure.logging import get_logger as _get_logger
 
 _log = _get_logger(__name__)
 
 
-def _load_py(filepath):
-    spec = importlib.util.spec_from_file_location("mod", filepath)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod
-
-
 def _load_output_aligned():
-    path = os.path.join(os.path.dirname(__file__), "..", "f001_schema_alignment", "data", "output_aligned.py")
-    return _load_py(path).results
+    path = os.path.join(os.path.dirname(__file__), "..", "f001_schema_alignment", "data", "output_aligned.jsonl")
+    return load_jsonl(Path(path))
 
 
 def _load_output_rewarded():
-    path = os.path.join(os.path.dirname(__file__), "..", "f003_reward_labeling", "data", "output_rewarded.py")
-    return _load_py(path).results
+    path = os.path.join(os.path.dirname(__file__), "..", "f003_reward_labeling", "data", "output_rewarded.jsonl")
+    return load_jsonl(Path(path))
 
 
 def _load_decision_tree():

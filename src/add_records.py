@@ -1,5 +1,4 @@
 import argparse
-import importlib.util
 import json
 import os
 import subprocess
@@ -8,8 +7,9 @@ from pathlib import Path
 
 from check_new_records import check_new_records
 from f007_infrastructure.embeddings import EMBEDDING_DIM, embed_texts
+from f007_infrastructure.jsonl_utils import load_jsonl, write_jsonl
 from f007_infrastructure.logging import get_logger as _get_logger
-from whole_pipeline import LLM_STEPS, _load_py_results, _write_py_results
+from whole_pipeline import LLM_STEPS
 
 _log = _get_logger(__name__)
 
@@ -51,9 +51,9 @@ def _phase1a_clean(new_input):
 
 def _phase1b_merge(new_input, new_ids):
     _log.info("Phase 1b: Merge extra fields")
-    complete = _load_py_results(OUTPUT_DIR / "output_complete.py")
-    merged_path = OUTPUT_DIR / "output_merged.py"
-    merged = _load_py_results(merged_path) if merged_path.exists() else []
+    complete = load_jsonl(OUTPUT_DIR / "output_complete.jsonl")
+    merged_path = OUTPUT_DIR / "output_merged.jsonl"
+    merged = load_jsonl(merged_path) if merged_path.exists() else []
     existing_ids = {r["call_id"] for r in merged}
 
     with open(new_input, encoding="utf-8") as f:
@@ -72,7 +72,7 @@ def _phase1b_merge(new_input, new_ids):
                 r[field] = src[field]
         merged.append(r)
         existing_ids.add(cid)
-    _write_py_results(merged, merged_path)
+    write_jsonl(merged_path, merged)
     _log.info("Merged: %d records total", len(merged))
     return [r for r in merged if r["call_id"] in new_ids]
 
@@ -95,8 +95,8 @@ def _phase1d_align_relabel(new_merged_records, new_ids):
     fact_map = load_fact_map()
     emotion_map = load_emotion_map()
 
-    aligned_path = BASE_DIR / "f001_schema_alignment" / "data" / "output_aligned.py"
-    existing_aligned = _load_py_results(aligned_path)
+    aligned_path = BASE_DIR / "f001_schema_alignment" / "data" / "output_aligned.jsonl"
+    existing_aligned = load_jsonl(aligned_path)
     existing_ids = {r["call_id"] for r in existing_aligned}
 
     new_aligned = []
@@ -107,7 +107,7 @@ def _phase1d_align_relabel(new_merged_records, new_ids):
         aligned = relabel_record(aligned, fact_map, emotion_map)
         existing_aligned.append(aligned)
         new_aligned.append(aligned)
-    _write_py_results(existing_aligned, aligned_path)
+    write_jsonl(aligned_path, existing_aligned)
     _log.info("Aligned: %d records total", len(existing_aligned))
     return new_aligned
 
@@ -116,8 +116,8 @@ def _phase1e_reward(new_aligned):
     _log.info("Phase 1e: Reward labeling (new records only)")
     from f003_reward_labeling.reward_label import label_reward
 
-    rewarded_path = BASE_DIR / "f003_reward_labeling" / "data" / "output_rewarded.py"
-    existing_rewarded = _load_py_results(rewarded_path)
+    rewarded_path = BASE_DIR / "f003_reward_labeling" / "data" / "output_rewarded.jsonl"
+    existing_rewarded = load_jsonl(rewarded_path)
     existing_ids = {r["call_id"] for r in existing_rewarded}
 
     new_rewarded = []
@@ -127,7 +127,7 @@ def _phase1e_reward(new_aligned):
         rewarded = label_reward(r)
         existing_rewarded.append(rewarded)
         new_rewarded.append(rewarded)
-    _write_py_results(existing_rewarded, rewarded_path)
+    write_jsonl(rewarded_path, existing_rewarded)
     _log.info("Rewarded: %d records total", len(existing_rewarded))
     return new_rewarded
 

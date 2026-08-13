@@ -87,17 +87,17 @@ class TestUpsertNodes:
     def test_inserts_node(self, db, mock_cursor):
         nodes = [{"state_id": "initial_contact", "path_signature": "", "branch_key": {}, "parent_id": None, "depth": 0}]
         db.upsert_nodes(nodes)
-        assert mock_cursor.execute.call_count > 0
+        assert mock_cursor.executemany.call_count > 0
 
     def test_uses_on_conflict(self, db, mock_cursor):
         nodes = [{"state_id": "s1", "path_signature": "p1", "branch_key": {}, "parent_id": None, "depth": 0}]
         db.upsert_nodes(nodes)
-        calls = [str(c) for c in mock_cursor.execute.call_args_list]
+        calls = [str(c) for c in mock_cursor.executemany.call_args_list]
         assert any("ON CONFLICT" in c.upper() for c in calls)
 
     def test_empty_list_noop(self, db, mock_cursor):
         db.upsert_nodes([])
-        assert mock_cursor.execute.call_count == 0
+        assert mock_cursor.executemany.call_count == 0
 
 
 class TestGetNodeBySignature:
@@ -117,17 +117,17 @@ class TestUpsertSentences:
     def test_inserts_sentence(self, db, mock_cursor):
         sentences = [{"script_id": "s1", "node_id": 1, "script_text": "你好", "bg_bitmask_int": 3, "win_rate": 0.5, "sas": 0.8, "embedding": [0.1] * EMBEDDING_DIM}]
         db.upsert_sentences(sentences)
-        assert mock_cursor.execute.call_count > 0
+        assert mock_cursor.executemany.call_count > 0
 
     def test_uses_on_conflict(self, db, mock_cursor):
         sentences = [{"script_id": "s1", "node_id": 1, "script_text": "你好", "bg_bitmask_int": 0, "win_rate": 0.5, "sas": 0.8, "embedding": [0.0] * EMBEDDING_DIM}]
         db.upsert_sentences(sentences)
-        calls = [str(c) for c in mock_cursor.execute.call_args_list]
+        calls = [str(c) for c in mock_cursor.executemany.call_args_list]
         assert any("ON CONFLICT" in c.upper() for c in calls)
 
     def test_empty_list_noop(self, db, mock_cursor):
         db.upsert_sentences([])
-        assert mock_cursor.execute.call_count == 0
+        assert mock_cursor.executemany.call_count == 0
 
 
 class TestGetSentencesByNode:

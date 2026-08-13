@@ -16,17 +16,18 @@ branch: feat/f010-infra-layer
 
 ## Why
 
-The original system used in-memory JSON files and char-ngram TF-IDF for retrieval. The spec (see `SCBGE_GUIDELINE.md`, [F009 API contract](F009-api-server.md)) requires PostgreSQL + pgvector for hybrid vector + bitmask + FTS search, and a REST + Socket.IO API for integration with the call platform. F007 provides the shared infrastructure that F007b, F008, and F009 build on.
+The original system used in-memory JSON files and corpus-wide TF-IDF for retrieval. F017 hardens that path with JSONL artifacts, PostgreSQL-backed serving, and bounded batch operations. The spec (see `SCBGE_GUIDELINE.md`, [F009 API contract](F009-api-server.md)) requires PostgreSQL + pgvector for hybrid vector + bitmask + FTS search, and a REST + Socket.IO API for integration with the call platform. F007 provides the shared infrastructure that F007b, F008, and F009 build on.
 
 ## What
 
 ### PostgreSQL + pgvector Database Client
 
-`db.py` module with `SentenceDB` class:
+`db.py` module with `SentenceDB` class and `async_db.py` with the runtime `AsyncSentenceDB` class:
 
-- **Schema**: `nodes` table (tree structure), `sentences` table (script text + embedding + metadata), `taxonomy_keywords` table (keyword → node mapping for FTS)
+- **Schema**: `nodes` table (tree structure + persisted labels), `sentences` table (script text + embedding + metadata), `sentence_sources` table (script-to-call provenance), and `taxonomy_keywords` table (keyword → node mapping for FTS)
 - **pgvector**: `sentences.embedding vector(1024)` column for cosine similarity search
-- **Operations**: `create_tables()`, `upsert_nodes()`, `upsert_sentences()`, `search_similar()` (vector search), `keyword_search()` (FTS), `taxonomy_keyword_search()`, `get_vectors()`, `get_node_by_signature()`, `get_sentences_by_node()`
+- **Operations**: `create_tables()`, batched `upsert_nodes()`/`upsert_sentences()`, `search_similar()` (vector search), `keyword_search()` (FTS), `taxonomy_keyword_search()`, `get_vectors()`, DB-backed node-label lookup, sentence-source lookup, and `get_sentences_by_node()`
+- **Scalability**: `executemany` writes, server-side cursor reads for existing IDs/signatures, and migrations 4-5 for node labels and sentence provenance.
 
 ### Embedding Client
 
@@ -47,7 +48,7 @@ The original system used in-memory JSON files and char-ngram TF-IDF for retrieva
 
 ## Passing Criteria
 
-- `SentenceDB` creates all 3 tables with correct schema
+- `SentenceDB` and `AsyncSentenceDB` create the complete schema, including `sentence_sources`
 - `upsert_nodes()` and `upsert_sentences()` write and update records
 - `search_similar()` returns cosine-similar sentences via pgvector
 - `keyword_search()` and `taxonomy_keyword_search()` return FTS matches
@@ -92,20 +93,21 @@ See [implementation-plan.md](F007-implementation-plan.md)
 
 ## Scaling Path
 
-Migration path from 108 → 100,000+ nodes. Retrieval is O(1) hash lookup regardless of tree size; scaling challenges are storage, build-time, and index maintenance — not retrieval latency.
+Migration path from prototype → 100,000+ nodes. F017 removes full-tree startup materialization and uses bounded DB candidate lookup; the 100k RSS benchmark remains a separate, intentionally skipped verification item.
 
 | Dimension | Current (108 records) | Target (50K+ records) | Solution |
 |-----------|---------------------|----------------------|----------|
 | Nodes | 309 | 100,000+ | Tree grows with record diversity, not linearly with records |
-| Node storage | JSON file | PG `nodes` table with `path_signature` B-tree index | O(log N) lookup |
+| Node storage | JSON compatibility artifact | PG `nodes` table with `path_signature` B-tree and `labels` GIN indexes | Bounded DB candidate lookup |
 | Sentence storage | JSON in-memory pools | PG `sentences` table with `node_id` index | Filter + rank in SQL |
-| Vector search | char-ngram TF-IDF | pgvector HNSW index | O(log N) approximate KNN |
+| Sentence provenance | Unbounded `source_call_ids` list | PG `sentence_sources(script_id, call_id)` | Batched writes and indexed lookup |
+| Vector search | Dense corpus-side TF-IDF | pgvector HNSW index | Approximate KNN |
 | Full-text search | None | PG tsvector + GIN index | BM25-ish keyword search |
 | Build time | ~30s (with LLM merge) | Batch LLM + incremental rebuild | Only rebuild affected subtrees on new data |
 | Child lookup | Linear scan of `children[]` | Hash map `branch_key → child` per node | O(1) child resolution |
 | Context filter | Python loop | PG bitwise op: `bg_bitmask_int & ? = bg_bitmask_int` | Index + SQL filter |
-| Retrieval | JSON load + tree walk | Hash lookup + PG SELECT + pgvector | O(1) + O(pool_size) |
+| Retrieval | JSON load + tree walk | DB label lookup + PG SELECT + pgvector | O(candidate nodes + pool size) |
 
-Migration steps: (1) JSON → PostgreSQL with `path_signature` column; (2) hash index for child lookup; (3) incremental rebuild of affected subtrees; (4) batch LLM merge with merge cache; (5) pgvector HNSW tuning (`ef_construction`, `m`).
+Migration steps: (1) JSON → PostgreSQL with `path_signature` and persisted labels; (2) DB-backed node/sentence lookup; (3) incremental rebuild of affected subtrees; (4) batch LLM merge with merge cache; (5) pgvector HNSW tuning (`ef_construction`, `m`); (6) JSONL loaders, batched writes, streamed reads, parent-pointer ancestry, and lazy turn labeling via F017.
 
 Managed hosting: Supabase (PostgreSQL + pgvector + realtime), Neon (serverless Postgres with branching), or self-hosted `docker run postgres:16-pgvector`.

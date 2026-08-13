@@ -1,8 +1,6 @@
 import argparse
-import importlib.util
 import json
 import os
-import pprint
 import shutil
 import subprocess
 import sys
@@ -11,6 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 from f007_infrastructure.config import get as _cfg
+from f007_infrastructure.jsonl_utils import load_jsonl, write_jsonl
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR.parent / "data"
@@ -21,47 +20,31 @@ LLM_STEPS = [
     {
         "name": "data_clean_2",
         "script": DATA_DIR / "data_cleaning" / "data_clean_2.py",
-        "default_output": "output_2.py",
+        "default_output": "output_2.jsonl",
     },
     {
         "name": "data_logic",
         "script": DATA_DIR / "data_cleaning" / "data_logic.py",
-        "default_output": "output_logic.py",
+        "default_output": "output_logic.jsonl",
     },
     {
         "name": "data_complete",
         "script": DATA_DIR / "data_cleaning" / "data_complete.py",
-        "default_output": "output_complete.py",
+        "default_output": "output_complete.jsonl",
     },
     {
         "name": "data_merge",
         "script": DATA_DIR / "data_cleaning" / "data_merge.py",
-        "default_output": "output_merged.py",
+        "default_output": "output_merged.jsonl",
     },
 ]
 
 ANALYSIS_OUTPUTS = {
     "analyze_collector_turns": BASE_DIR / "f003_reward_labeling" / "data" / "collector_analysis.json",
     "analyze_customer_turns": BASE_DIR / "f003_reward_labeling" / "data" / "customer_analysis.json",
-    "align_schema": BASE_DIR / "f001_schema_alignment" / "data" / "output_aligned.py",
-    "reward_label": BASE_DIR / "f003_reward_labeling" / "data" / "output_rewarded.py",
+    "align_schema": BASE_DIR / "f001_schema_alignment" / "data" / "output_aligned.jsonl",
+    "reward_label": BASE_DIR / "f003_reward_labeling" / "data" / "output_rewarded.jsonl",
 }
-
-
-def _load_py_results(path: Path) -> list[dict]:
-    spec = importlib.util.spec_from_file_location("results_mod", path)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Cannot load Python module from {path}")
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod.results
-
-
-def _write_py_results(results: list[dict], path: Path) -> None:
-    with open(path, "w", encoding="utf-8") as f:
-        f.write("results = ")
-        f.write(pprint.pformat(results, width=120))
-        f.write("\n")
 
 
 def _run_llm_step(step: dict, data_file: Path, output_file: Path) -> None:
@@ -121,7 +104,7 @@ def run_pipeline(input_file: Path) -> None:
     print("PHASE 1.5: Keyword Discovery & Turn Labeling")
     print("=" * 60)
 
-    records = _load_py_results(merged_file)
+    records = load_jsonl(merged_file)
     print(f"Loaded {len(records)} records from {merged_file.name}")
 
     print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Running discover_keywords...")
@@ -164,7 +147,7 @@ def run_pipeline(input_file: Path) -> None:
     import f001_schema_alignment.relabel_state as rs
     relabeled, stats = rs.relabel_all(aligned)
     aligned_out = ANALYSIS_OUTPUTS["align_schema"]
-    _write_py_results(relabeled, aligned_out)
+    write_jsonl(aligned_out, relabeled)
     print(f"  Aligned+relabeled output written to {aligned_out.name}")
     print(f"  Fact map: {stats['fact_map_size']} entries, {len(stats['facts_relabeled'])} tags relabeled")
     print(f"  Emotion map: {stats['emotion_map_size']} entries, {len(stats['emotions_relabeled'])} tags relabeled")
@@ -177,7 +160,7 @@ def run_pipeline(input_file: Path) -> None:
     import f003_reward_labeling.reward_label as rl
     rewarded = rl.label_all(relabeled)
     reward_out = ANALYSIS_OUTPUTS["reward_label"]
-    _write_py_results(rewarded, reward_out)
+    write_jsonl(reward_out, rewarded)
     print(f"  Reward output written to {reward_out.name}")
     reward_count = sum(1 for r in rewarded if r.get("reward") == 1)
     print(f"  Rewarded (R=1): {reward_count}/{len(rewarded)}")
@@ -196,12 +179,12 @@ def _run_skip_llm(args) -> None:
     if args.merged_file:
         merged = args.merged_file.resolve()
     else:
-        merged = OUTPUT_DIR / "output_merged.py"
+        merged = OUTPUT_DIR / "output_merged.jsonl"
     if not merged.exists():
         print(f"Merged file not found: {merged}")
         sys.exit(1)
     print(f"Skipping Phase 1. Loading records from {merged}...")
-    records = _load_py_results(merged)
+    records = load_jsonl(merged)
     print(f"Loaded {len(records)} records. Running analysis and reward phases...")
 
     print(f"\n[{datetime.now():%Y-%m-%d %H:%M:%S}] Running discover_keywords...")
@@ -225,12 +208,12 @@ def _run_skip_llm(args) -> None:
 
     import f001_schema_alignment.relabel_state as rs
     relabeled, stats = rs.relabel_all(aligned)
-    _write_py_results(relabeled, ANALYSIS_OUTPUTS["align_schema"])
+    write_jsonl(ANALYSIS_OUTPUTS["align_schema"], relabeled)
     print(f"  Relabeled {len(stats['facts_relabeled'])} fact tags, {len(stats['emotions_relabeled'])} emotion tags")
 
     import f003_reward_labeling.reward_label as rl
     rewarded = rl.label_all(relabeled)
-    _write_py_results(rewarded, ANALYSIS_OUTPUTS["reward_label"])
+    write_jsonl(ANALYSIS_OUTPUTS["reward_label"], rewarded)
     print("Done.")
 
 

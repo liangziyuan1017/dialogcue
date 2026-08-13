@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 _REWARDED_PATH = os.path.join(
     os.path.dirname(__file__), "..", "..", "..", "..",
-    "f003_reward_labeling", "data", "output_rewarded.py",
+    "f003_reward_labeling", "data", "output_rewarded.jsonl",
 )
 
 
@@ -91,11 +91,9 @@ def node_identity(n):
 
 
 def load_rewarded():
-    import importlib.util
-    spec = importlib.util.spec_from_file_location("output_rewarded", _REWARDED_PATH)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod.results
+    from pathlib import Path
+    from f007_infrastructure.jsonl_utils import load_jsonl
+    return load_jsonl(Path(_REWARDED_PATH))
 
 
 def trace_call_id(tree, call_id):

@@ -1,22 +1,20 @@
 import argparse
-import importlib.util
 import json
 import os
 import sys
+from pathlib import Path
 
 from check_data_format import check_record
+from f007_infrastructure.jsonl_utils import load_jsonl
 
 
 def _load_existing_call_ids():
     rewarded_path = os.path.join(
-        os.path.dirname(__file__), "f003_reward_labeling", "data", "output_rewarded.py"
+        os.path.dirname(__file__), "f003_reward_labeling", "data", "output_rewarded.jsonl"
     )
     if not os.path.exists(rewarded_path):
         return set()
-    spec = importlib.util.spec_from_file_location("output_rewarded", rewarded_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return {r["call_id"] for r in mod.results}
+    return {r["call_id"] for r in load_jsonl(Path(rewarded_path))}
 
 
 def _load_new_records(new_input_path):

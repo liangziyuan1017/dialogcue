@@ -116,6 +116,22 @@ MIGRATIONS: list[Migration] = [
         "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS call_info JSONB",
         "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS agent JSONB",
     ]),
+    Migration(4, "f017_node_labels", [
+        "ALTER TABLE nodes ADD COLUMN IF NOT EXISTS inherited_facts JSONB NOT NULL DEFAULT '[]'::jsonb",
+        "ALTER TABLE nodes ADD COLUMN IF NOT EXISTS inherited_emotions JSONB NOT NULL DEFAULT '[]'::jsonb",
+        "ALTER TABLE nodes ADD COLUMN IF NOT EXISTS labels JSONB NOT NULL DEFAULT '[]'::jsonb",
+        "CREATE INDEX IF NOT EXISTS idx_nodes_labels ON nodes USING gin (labels)",
+    ]),
+    Migration(5, "f017_sentence_sources", [
+        """
+        CREATE TABLE IF NOT EXISTS sentence_sources (
+            script_id TEXT NOT NULL,
+            call_id TEXT NOT NULL,
+            PRIMARY KEY (script_id, call_id)
+        )
+        """,
+        "CREATE INDEX IF NOT EXISTS idx_sentence_sources_call_id ON sentence_sources(call_id)",
+    ]),
 ]
 
 

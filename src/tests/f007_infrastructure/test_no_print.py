@@ -16,6 +16,7 @@ CLI_ENTRYPOINTS = {
     "add_records.py",
     "cleanup_db.py",
     "augment_sentences.py",
+    "convert_py_to_jsonl.py",
 }
 
 

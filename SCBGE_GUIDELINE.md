@@ -18,11 +18,12 @@ Build a two-phase system:
 
 1. **Offline (Phase 1 — Ingest):** Mine historical call recordings to discover a state taxonomy (facts, emotions, willingness, collector actions), label every turn, score each conversation for repayment reward, construct a collector decision tree keyed by customer state, tag each tree sentence with a customer-profile bitmask + quality scores + semantic embedding, and load everything into PostgreSQL + pgvector.
 
-2. **Online (Phase 2 — Retrieve):** For each `POST /recommend` call, extract the customer's state from their utterance (LLM-first, keyword fallback), accumulate it into the conversation state, compute a permutation-insensitive node key, look up matching tree nodes O(1), aggregate their sentence pools, and rank the survivors by unified weighted fusion (`0.35·win_rate + 0.25·vec_score + 0.10·sas + 0.10·bg_boost + 0.20·bitmask_score`) -- configurable via configs. Return the top-1 collector script.
+2. **Online (Phase 2 — Retrieve):** For each `POST /recommend` call, extract the customer's state from their utterance (LLM-first, keyword fallback), accumulate it into the conversation state, query DB-backed node labels, retrieve matching sentence rows, and rank the survivors by unified weighted fusion (`0.35·win_rate + 0.25·vec_score + 0.10·sas + 0.10·bg_boost + 0.20·bitmask_score`) -- configurable via configs. Return the top-1 collector script.
 
 ### Architecture
 
-- **Database**: PostgreSQL + pgvector + pg_trgm — single database for metadata, 1024-dim vectors, 10-bit bitmask soft scoring, and full-text search.
+- **Database**: PostgreSQL + pgvector + pg_trgm — authoritative store for node labels, sentence provenance, metadata, 1024-dim vectors, 10-bit bitmask soft scoring, and full-text search.
+- **Offline artifacts**: JSONL for labeled, aligned, and rewarded corpora; JSON tree files remain compatibility/debug artifacts rather than the serving index.
 - **Embeddings**: bge-m3 (1024-dim) served locally via Ollama, OpenAI-compatible API. No external per-call cost; offline-capable (ADR-024).
 - **LLM**: DeepSeek for offline taxonomy discovery / reward labeling / turn labelling, and for the single online state-extraction call in the hot path.
 - **API**: FastAPI, `POST /recommend` (REST, caller manages conversation state) + Socket.IO session interface (server manages state accumulation automatically). See F009.
@@ -50,12 +51,15 @@ Build a two-phase system:
 | F014 | External API Exposure | 2 | review | [F014](docs/features/F014-external-api-exposure.md) |
 | F015 | Incremental Record Append | 1 (offline) | review | [F015](docs/features/F015-incremental-record-append.md) |
 | F016 | Sentence Pool Augmentation | 1 (offline) | review | [F016](docs/features/F016-sentence-pool-augmentation.md) |
+| F017 | Corpus Scalability Hardening | cross-cutting | implemented (100k benchmark skipped) | [F017](docs/features/F017-corpus-scalability-hardening.md) |
 
 > F011/F012/F013 are cross-cutting infrastructure hardening: F011 externalizes all tunable params to `config.md`; F012 adds structured logging, retry, and config hardening; F013 replaces the psycopg2 threadpool with native asyncpg on the runtime DB path. They thread through F007–F009 rather than sitting on the F000→F009 build chain.
 >
 > F015 is the incremental ingest path: a single orchestrator (`src/add_records.py`) appends new records at every stage without full rebuild, leaving existing records intact (ADR-035/036/037).
 >
 > F016 is the sentence pool augmentation path: given a tree node, generate new collector sentences via LLM (DeepSeek, temperature 1.1) using a "imagine customer → respond" prompt with compliance guardrails, then insert into the tree UI overlay + PostgreSQL. Unique call_id generation with collision detection (ADR-040). Does not modify existing code or data.
+>
+> F017 hardens large-corpus ingestion and serving: JSONL loaders replace executable `.py` literals, DB writes are batched, full-table reads are streamed, node labels and sentence provenance are persisted in PostgreSQL, and the API no longer retains the full scored tree or indexes in `app.state`. The 100k-record RSS benchmark is intentionally skipped; see [F017](docs/features/F017-corpus-scalability-hardening.md).
 
 ### Dependency Graph
 
@@ -82,16 +86,16 @@ F015 (incremental append) ──► reuses F000..F005 + F007 in append-only mode
 data/data_input/matched_data.jsonl  (raw call records)
         │
         ▼  F000  (LLM taxonomy discovery + turn labelling)
-state_keywords.json          output_labeled.py   (per-turn state labels)
+state_keywords.json          output_labeled.jsonl (per-turn state labels)
         │                            │
         ▼  F001  (schema alignment, carry F000 labels, derive context) ──────────────┐
-output_aligned.py  (turns_annotated + context + reward:null)                          │
+      output_aligned.jsonl  (turns_annotated + context + reward:null)                          │
         │                                                                            │
         ▼  F003  (state relabeling: facts/emotions CSV remap)                         │
-output_aligned.py  (overwritten with relabeled tags)                                  │
+output_aligned.jsonl  (overwritten with relabeled tags)                              │
         │                                                                            │
         ▼  F003  (LLM reward R∈{0,1} + counterfactual credit)                         │
-output_rewarded.py  (reward + reward_action_credit + reward_evidence)                 │
+output_rewarded.jsonl  (reward + reward_action_credit + reward_evidence)             │
         │                                                                            │
         ▼  F004  (additive per-dialog insertion → action split at insert → consolidate endpoints)  │
 decision_tree.json  (1384 nodes, 1701 sentences, DAG)                                  │
@@ -101,7 +105,7 @@ decision_tree.json  (1384 nodes, 1701 sentences, DAG)                           
 decision_tree_scored.json  (backward-compat JSON)                                     │
         │                                                                            │
         ▼  F007  (load into PostgreSQL)                                               │
-PostgreSQL: nodes │ sentences (embedding vector(1024), tsvector) │ taxonomy_keywords  │
+PostgreSQL: nodes │ sentences │ sentence_sources │ taxonomy_keywords                  │
         │                                                                            │
         ▼  F008 + F006 + F009  (online retrieval)                                    │
 POST /recommend  →  state extraction  →  relabel  →  node lookup  →  bitmask score  →  vector rank  →  top-1 script
@@ -259,28 +263,15 @@ labelled; filler turns ("嗯", "对", "好") are left unlabeled.
 }
 ```
 
-**Output 2**: `/src/f000_keyword_discovery/data/output_labeled.py` (per-turn state labels)
+**Output 2**: `/src/f000_keyword_discovery/data/output_labeled.jsonl` (per-turn state labels)
 
-> **Note**: This is an F000-produced artifact. It is written under the `f000_keyword_discovery/data/` directory and consumed by F001.
+> **Note**: This is an F000-produced JSONL artifact. It is written under the `f000_keyword_discovery/data/` directory and consumed by F001 line by line.
 
 493 of 805 turns are labeled with `state` dicts. Customer turns get `state: {facts: [...], emotions: [...], willingness: "..."}`. Collector turns get `state: {action: "..."}`. Unlabeled turns (filler like "嗯", "对", "好") omit `state`.
 
 ```python
-# output_labeled.py excerpt
-results = [
-  {
-    "call_id": "2317941550352385028",
-    "response": {
-      "dialog": [
-        {"role": "催收员", "text": "唉，您好，请问是……喂，您好，请问是。", "state": {"action": "greeting"}},
-        {"role": "客户", "text": "喂。"},  # unlabeled — filler
-        {"role": "客户", "text": "我想问一下……整个账单分期……", "state": {"facts": ["request_installment"], "willingness": "conditional"}},
-        ...
-      ]
-    }
-  },
-  ...
-]
+# output_labeled.jsonl excerpt
+{"call_id": "2317941550352385028", "response": {"dialog": [...]}}
 ```
 
 ### Step 1.3: F001 — Schema Alignment
@@ -293,14 +284,16 @@ Maps the raw records from the collection-system schema to a SOP-aligned schema w
 
 - **ADR-006**: Map `custInfo` JSON array (tagName/tagValue pairs) → 18 typed English `context` fields (boolean bitmask fields + numeric/categorical fields). Migrated from `customer_info` dict to `custInfo` JSON on 2026-07-09.
 - **ADR-007**: Carry F000 state labels into `turns_annotated` — aligned schema is a superset, not lossy; preserves data lineage.
-- **ADR-008**: Output format is a `.py` file with `results = [...]` for consistency with the existing pipeline (loaded via `importlib`); JSON would break downstream loading.
+- **ADR-008**: Superseded by ADR-043. Pipeline result artifacts are JSONL and are loaded line by line; the old executable `.py` literal format is retained only in historical decision context.
 - **Review Note (resolved)**: Include F000 state labels in `turns_annotated`.
 
-**Input**: `/data/matched_data.jsonl` + `state_keywords.json` + `output_labeled.py`
+**Input**: `/data/matched_data.jsonl` + `state_keywords.json` + `output_labeled.jsonl`
 
-**Process**: Parse raw `dialog` string into structured turns. **Carry F000 state labels from `output_labeled.py` into `turns_annotated`** (ADR-007: aligned schema is a superset of prior outputs, not a lossy transformation). Derive `context` constraint dict from `custInfo` JSON array (ADR-006: 18 fields mapped).
+**Process**: Parse raw `dialog` string into structured turns. **Carry F000 state labels from `output_labeled.jsonl` into `turns_annotated`** (ADR-007: aligned schema is a superset of prior outputs, not a lossy transformation). Derive `context` constraint dict from `custInfo` JSON array (ADR-006: 18 fields mapped).
 
-**Output**: `/src/f001_schema_alignment/data/output_aligned.py`
+**Output**: `/src/f001_schema_alignment/data/output_aligned.jsonl`
+
+The schema shape below is shown as an array for readability; on disk, each record is one JSONL line.
 
 ```python
 results = [
@@ -378,7 +371,7 @@ results = [
 ]
 ```
 
-**Key**: `turns_annotated[].state` labels are carried from F000's `output_labeled.py` per ADR-007. `context` is derived from `custInfo` JSON array → 18 English fields per ADR-006.
+**Key**: `turns_annotated[].state` labels are carried from F000's `output_labeled.jsonl` per ADR-007. `context` is derived from `custInfo` JSON array → 18 English fields per ADR-006.
 
 ### Step 1.4: F003 — Reward Labeling
 
@@ -392,16 +385,18 @@ Assigns a binary reward R ∈ {0,1} per conversation via LLM detection of repaym
 - **ADR-010**: Reward labeling via LLM with counterfactual verification — manual labeling doesn't scale; LLM + counterfactual + cross-validation against `plan_evaluation` gives consistency and auditability.
 - **Review Note (resolved)**: since the counterfactual verification outputs a single action turn which does not really convey useful information in a glance, the success may be credited to the strategy used throughout the conversation. `reward_action_credit` includes an `explanation` field (<100 words) describing the causal flow from trigger to credited collector action.
 
-**Input**: `output_aligned.py`
+**Input**: `output_aligned.jsonl`
 
 **Process**: LLM determines R ∈ {0, 1} per conversation. Detects repayment commitment triggers in final turns, performs counterfactual verification.
 
-**Output**: `/src/f003_reward_labeling/data/output_rewarded.py`
+**Output**: `/src/f003_reward_labeling/data/output_rewarded.jsonl`
 
-Same structure as `output_aligned.py`, but:
+Same structure as `output_aligned.jsonl`, but:
 - `reward` is now ∈ {0, 1} (was `null`)
 - `reward_action_credit` added for R=1 records
 - `reward_evidence` added for R=1 records
+
+The record shape below is shown as a single object; the output file contains one JSON object per line.
 
 ```python
 # R=1 record example:
@@ -454,7 +449,7 @@ Builds a collector decision tree where nodes are collector action points, branch
 - **LLM-guided collector turn merging**: merge fragmented consecutive collector turns before segment extraction; hard limit `MAX_MERGED_WORDS=150`.
 - **Start/end node model**: exactly 1 opening root + 2 consolidated end nodes (1 `normal_end` + 1 `abrupt_end`) as direct children of root; leaf nodes without children are implicitly terminated at `abrupt_end` (no explicit `abrupt_end` child on leaves); clean vertical structure.
 
-**Input**: `output_rewarded.py`
+**Input**: `output_rewarded.jsonl`
 
 **Process** (additive):
 1. `make_base_tree()` → root (role=opening) + normal_end (role=ending) + abrupt_end (role=ending)
@@ -535,27 +530,29 @@ Tree structure:
 
 **Key**: `branch_key` is a dict with one key — either `"facts"`, `"emotions"`, or `"action"` — containing the state group that led to this branch. `role` tags the node's function: `opening` (root), `ending` (terminal), `decision` (fact/emotion branch), `action` (collector action leaf). `inherited_facts` accumulates facts from ancestor nodes. `inherited_emotions` accumulates emotions from ancestor nodes.
 
+**Scalability note (F017)**: `source_call_ids` remains in the JSON tree for offline transforms and audit compatibility, but PostgreSQL `sentence_sources(script_id, call_id)` is the authoritative serving-side provenance table.
+
 ### Step 1.6: F005 — Context Scoring + Embedding + Database Load
 
 #### What this does
 
-Tags each tree sentence with a 10-bit `bg_bitmask` (customer profile constraints) for soft-label, computes two quality scores (HWR = Laplace-smoothed blended win rate; SAS = char-bigram TF-IDF cosine within pool), extracts the ~100-word conversation context preceding each script, embeds it via bge-m3 (1024-dim), and loads nodes + sentences + taxonomy into PostgreSQL.
+Tags each tree sentence with a 10-bit `bg_bitmask` (customer profile constraints) for soft-label, computes two quality scores (HWR = Laplace-smoothed blended win rate; SAS = restricted-vocabulary jieba word-ngram TF-IDF cosine within pool), extracts the ~100-word conversation context preceding each script, embeds it via bge-m3 (1024-dim), and loads nodes + sentences + provenance + taxonomy into PostgreSQL.
 
 #### Design considerations & decisions
 
-- **ADR-020**: 10-bit bitmask for soft scoring; intersection merge for multi-source sentences (conservative — only constraints in ALL source conversations are set); Laplace-smoothed HWR; char-bigram TF-IDF SAS (numpy only, no external API). Fields updated for custInfo migration on 2026-07-09. Soft scoring replaced hard filter on 2026-06-29.
+- **ADR-020**: 10-bit bitmask for soft scoring; intersection merge for multi-source sentences (conservative — only constraints in ALL source conversations are set); Laplace-smoothed HWR. SAS uses restricted-vocabulary jieba word n-grams to bound the TF-IDF matrix at larger corpus sizes. Fields updated for custInfo migration on 2026-07-09. Soft scoring replaced hard filter on 2026-06-29.
 - **ADR-024**: bge-m3 via Ollama replaces char-ngram TF-IDF for semantic similarity — captures meaning ("没钱" ≈ "经济困难"); local/no-cost/offline; pgvector hybrid; unified ranking replaces dual-strategy.
 - **HWR with node-level aggregation**: sentence-level HWR unreliable for sentences in only 1-2 calls; blend `weight * sentence_hwr + (1-weight) * node_hwr` where `weight = n/(n+2)`.
 - **UC and CSI deferred**: `uplift_score = 0`, `csi = 0` with `deferred: true` — require causal analysis unavailable at prototype scale.
 - **F007 design**: Ollama for local embeddings (no per-call cost); OpenAI-compatible API (reuse `openai` client); Python-side ranking (`bg_boost` needs JSONB dict comparison); pgvector for hybrid vector+bitmask+FTS in one query; optional embedding in `score_tree.py` (backward compat when `db=None`).
 
-**Input**: `decision_tree.json` + `output_aligned.py` + `output_rewarded.py`
+**Input**: `decision_tree.json` + `output_aligned.jsonl` + `output_rewarded.jsonl`
 
 **Process** (per sentence in every node's `sentence_pool`):
 
 1. **Bitmask encoding**: Extract `bg_constraints` from source conversation's `context` → encode as 10-bit integer `bg_bitmask_int`
 2. **HWR/win_rate**: Compute historical win rate: `(wins + 1) / (total + 2)` where wins = count of R=1 in `source_call_ids`
-3. **SAS**: Compute Script Analogy Score via char bigram TF-IDF cosine similarity within pool (no external API — ADR-020)
+3. **SAS**: Compute Script Analogy Score via restricted-vocabulary jieba word-ngram TF-IDF cosine similarity within pool (no external API — ADR-020/041)
 4. **Conversation context extraction**: Extract the ~100 words preceding this script in the source conversation → `conversation_context` string
 5. **Embedding**: `embed(conversation_context)` via bge-m3 embedding model served by Ollama → 1024-dim float32 vector → `embedding` column (ADR-024)
 6. **Full-text vector**: `to_tsvector('simple', script_text)` → `script_tsv` column
@@ -651,24 +648,17 @@ VALUES ('financial_hardship', 'facts', '最近经济压力有点大', 29),
        ...;
 ```
 
-**In-memory node index** (loaded at API startup from `nodes` table):
+**DB-backed node lookup** (queried per request; not retained in `app.state`):
 
 ```python
-# Key = (tuple(sorted(inherited_facts)), tuple(sorted(branch_key_values)), tuple(sorted(inherited_emotions)))
-# Value = list of node_ids sharing the same key (for pool aggregation)
-node_index = {
-  ((), (), ()):                                                      [1],     # root (initial_contact)
-  ((), ("closure",), ()):                                            [2],     # a:closure (no inherited emotions)
-  ((), ("empathy",), ()):                                            [3],     # a:empathy
-  ((), ("greeting",), ()):                                           [4],     # a:greeting
-  (("request_installment",), (), ()):                                [5],     # f:request_installment
-  (("request_installment",), ("information",), ()):                  [6],     # f:request_installment → a:information
-  (("request_installment",), ("disappointment",), ()):               [7],     # f:request_installment → e:disappointment
-  (("request_installment",), ("plan_proposal",), ("disappointment",)): [8],  # ... → a:plan_proposal (inherited: disappointment)
-  # ...1377 unique keys → 1384 nodes total
-}
-# Maps (facts_tuple, bk_tuple, emotions_tuple) → [node_ids] for O(1) lookup + pool aggregation
-# inherited_emotions is required: 31 key collisions without it (same facts+bk, different emotional context)
+SELECT id, state_id, path_signature, branch_key,
+       inherited_facts, inherited_emotions, labels
+FROM nodes
+WHERE labels <@ $query_labels::jsonb
+ORDER BY jsonb_array_length(labels) DESC, depth ASC
+LIMIT 32;
+-- Sentence pools are fetched from sentences by node_id and ranked in PostgreSQL.
+-- The API process does not retain the scored tree or label indexes in app.state.
 ```
 
 ---
@@ -1064,7 +1054,7 @@ Ranks the filtered candidates by unified weighted fusion: `0.35·win_rate + 0.25
 
 | Signal | Source | Range | Meaning |
 |---|---|---|---|
-| `win_rate` | HWR from `reward` labels in `output_rewarded.py` | [0, 1] | Historical effectiveness |
+| `win_rate` | HWR from `reward` labels in `output_rewarded.jsonl` | [0, 1] | Historical effectiveness |
 | `vec_score` | pgvector cosine similarity | [0, 1] | Semantic relevance to current conversation |
 | `sas` | Char bigram TF-IDF cosine within pool | [0, 1] | Script diversity |
 | `bg_boost` | Profile match heuristic | [0, 0.12] | Customer profile similarity bonus |
@@ -1481,7 +1471,7 @@ and ADR-025.
 | Label relabel (novel, sync LLM) | 800-1200ms | Conditional — only when label not in cache (ADR-026) |
 | State accumulation | <1ms | In-memory set operations |
 | Node key computation | <1ms | Sort + tuple |
-| Node lookup + aggregation | <1ms | Hash map O(1) + pool merge |
+| Node lookup + aggregation | DB-dependent | Indexed node-label query + bounded sentence-pool fetch |
 | Candidate retrieval + bitmask scoring | 2-5ms | Indexed PG query + soft bitmask scoring |
 | Vector embedding (query) | 50-100ms | bge-m3 embed via Ollama |
 | Vector similarity | 1-2ms | pgvector HNSW or brute-force cosine |
@@ -1518,10 +1508,14 @@ CREATE TABLE nodes (
   path_signature  TEXT NOT NULL UNIQUE,
   branch_key      JSONB,
   parent_id       INTEGER REFERENCES nodes(id),
-  depth           INTEGER NOT NULL DEFAULT 0
+  depth           INTEGER NOT NULL DEFAULT 0,
+  inherited_facts JSONB NOT NULL DEFAULT '[]'::jsonb,
+  inherited_emotions JSONB NOT NULL DEFAULT '[]'::jsonb,
+  labels          JSONB NOT NULL DEFAULT '[]'::jsonb
 );
 CREATE INDEX idx_nodes_path_sig ON nodes(path_signature);
 CREATE INDEX idx_nodes_parent ON nodes(parent_id);
+CREATE INDEX idx_nodes_labels ON nodes USING gin (labels);
 
 CREATE TABLE sentences (
   id                  SERIAL PRIMARY KEY,
@@ -1542,6 +1536,13 @@ CREATE INDEX idx_sentences_embedding ON sentences USING hnsw (embedding vector_c
   WITH (m = 16, ef_construction = 64);
 CREATE INDEX idx_sentences_tsv ON sentences USING gin (script_tsv);
 CREATE INDEX idx_sentences_script_text_trgm ON sentences USING gin (script_text gin_trgm_ops);
+
+CREATE TABLE sentence_sources (
+  script_id TEXT NOT NULL,
+  call_id   TEXT NOT NULL,
+  PRIMARY KEY (script_id, call_id)
+);
+CREATE INDEX idx_sentence_sources_call_id ON sentence_sources(call_id);
 
 CREATE TABLE taxonomy_keywords (
   id          SERIAL PRIMARY KEY,
@@ -1579,27 +1580,32 @@ Note: `bg_boost` is computed in Python after fetching, since it requires compari
 
 ## Scaling Path
 
-Migration path from prototype → 100,000+ records. Retrieval is O(1) hash lookup
-regardless of tree size; scaling challenges are storage, build-time, and index
-maintenance — not retrieval latency.
+Migration path from prototype → 100,000+ records. F017 removes the largest
+full-corpus memory allocations from ingestion and serving; the API queries
+PostgreSQL for bounded candidate nodes and sentence pools instead of loading a
+scored tree and indexes for the process lifetime. The 100k-record RSS benchmark
+is still an explicit verification gap.
 
 | Dimension | Current (prototype scale) | Target (50K+ records) | Solution |
 |-----------|---------------------|----------------------|----------|
 | Nodes | 309 | 100,000+ | Tree grows with record diversity, not linearly with records |
-| Node storage | JSON file | PG `nodes` table with `path_signature` B-tree index | O(log N) lookup |
+| Node storage | JSON compatibility artifact | PG `nodes` table with `path_signature` B-tree and `labels` GIN indexes | Bounded DB candidate lookup |
 | Sentence storage | JSON in-memory pools | PG `sentences` table with `node_id` index | Filter + rank in SQL |
-| Vector search | char-ngram TF-IDF | pgvector HNSW index | O(log N) approximate KNN |
+| Sentence provenance | Unbounded `source_call_ids` list | PG `sentence_sources(script_id, call_id)` join table | Batched writes and indexed lookup |
+| Vector search | Dense corpus-side TF-IDF | pgvector HNSW index | Approximate KNN |
 | Full-text search | None | PG tsvector + GIN index | BM25-ish keyword search |
 | Build time | ~30s (with LLM merge) | Batch LLM + incremental rebuild | **F015 implemented**: `src/add_records.py` appends new records at every stage without full rebuild (ADR-035) |
 | Child lookup | Linear scan of `children[]` | Hash map `branch_key → child` per node | O(1) child resolution |
 | Context filter | Python loop | PG bitwise scoring: `popcount(bg_bitmask_int & ?) / popcount(bg_bitmask_int)` | Index + SQL scoring |
-| Retrieval | JSON load + tree walk | Hash lookup + PG SELECT + pgvector | O(1) + O(pool_size) |
+| Retrieval | JSON load + tree walk | DB label lookup + PG SELECT + pgvector | O(candidate nodes + pool size) |
 
-**Migration steps**: (1) JSON → PostgreSQL with `path_signature` column;
-(2) hash index for child lookup; (3) incremental rebuild of affected subtrees
+**Migration steps**: (1) JSON → PostgreSQL with `path_signature` and persisted
+label columns; (2) DB-backed node and sentence lookup; (3) incremental rebuild of affected subtrees
 — **implemented as F015** (`src/add_records.py`, ADR-035/036/037); (4) batch LLM
 merge with merge cache — **merge cache persistence implemented** (ADR-036);
-(5) pgvector HNSW tuning (`ef_construction`, `m`).
+(5) pgvector HNSW tuning (`ef_construction`, `m`); (6) JSONL loaders, batched
+upserts, streamed reads, parent-pointer ancestry, and lazy turn labeling —
+**implemented as F017** (ADR-043/044/045).
 
 **Managed hosting**: Supabase (PostgreSQL + pgvector + realtime), Neon
 (serverless Postgres with branching), or self-hosted
@@ -1621,7 +1627,7 @@ Authoritative decision records. Each is one line here; see
 | [ADR-005](docs/decisions/ADR-005-data-driven-willingness-levels.md) | Data-driven willingness levels | Willingness level count determined by natural clustering (yielded 5 levels), not preset. |
 | [ADR-006](docs/decisions/ADR-006-context-constraint-mapping.md) | Context constraint mapping | Map `custInfo` JSON array → 18 typed English `context` fields. Migrated from `customer_info` dict on 2026-07-09. |
 | [ADR-007](docs/decisions/ADR-007-carry-state-labels.md) | Carry state labels | F001 carries F000 state labels into `turns_annotated` — aligned schema is a superset, not lossy. |
-| [ADR-008](docs/decisions/ADR-008-output-format-py-file.md) | Output format .py file | Output `.py` with `results = [...]` for `importlib` loading consistency; JSON would break downstream. |
+| [ADR-008](docs/decisions/ADR-008-output-format-py-file.md) | Output format .py file | Superseded by ADR-043; historical `.py` literal output is no longer used by pipeline loaders. |
 | [ADR-009](docs/decisions/ADR-009-eliminate-f002-llm-state-extraction.md) | Eliminate F002 | Remove offline LLM state extraction — F001's 493/805 annotations (LLM-labelled by F000, carried into F001 per ADR-007) suffice; online extraction is the only hot-path LLM call. |
 | [ADR-010](docs/decisions/ADR-010-reward-labeling-approach.md) | Reward labeling approach | LLM + counterfactual verification + cross-validation against `plan_evaluation` for scalable, auditable R labels. |
 | [ADR-011](docs/decisions/ADR-011-decision-tree-approach.md) | Decision tree approach | Nodes = collector action points, branches = customer (facts, emotions), willingness = sentence label. Consolidated start/end nodes. Exactly 2 end nodes as root children; implicit abrupt_end termination for leaf nodes. |
@@ -1633,7 +1639,7 @@ Authoritative decision records. Each is one line here; see
 | [ADR-017](docs/decisions/ADR-017-action-node-splitting.md) | Action node splitting | **Superseded by ADR-029.** Force-split pools into `a:xxx` children for fact/emotion parents. |
 | [ADR-018](docs/decisions/ADR-018-redundant-fact-collapse.md) | Redundant fact collapse | **Superseded by ADR-029.** Remove `f:X → f:X` redundant nodes; propagate `inherited_facts`. |
 | [ADR-019](docs/decisions/ADR-019-state-none-handling.md) | state=None handling | Capture 58 no-action collector turns in parent pool without synthetic `other` label. |
-| [ADR-020](docs/decisions/ADR-020-f005-bitmask-scoring-design.md) | F005 bitmask + scoring | 10-bit bitmask for soft scoring (matched_bits/required_bits); intersection merge; Laplace-smoothed HWR; char-bigram TF-IDF SAS (numpy only). Fields updated for custInfo migration on 2026-07-09. Soft scoring replaced hard filter on 2026-06-29. |
+| [ADR-020](docs/decisions/ADR-020-f005-bitmask-scoring-design.md) | F005 bitmask + scoring | 10-bit bitmask for soft scoring (matched_bits/required_bits); intersection merge; Laplace-smoothed HWR; memory-bounded jieba word-ngram SAS. Fields updated for custInfo migration on 2026-07-09. Soft scoring replaced hard filter on 2026-06-29. |
 | [ADR-021](docs/decisions/ADR-021-node-identity-dedup.md) | Node identity dedup | Identity = `(inherited_facts, inherited_emotions, branch_key)`; DAG with cycle protection. |
 | [ADR-022](docs/decisions/ADR-022-redundant-emotion-collapse.md) | Redundant emotion collapse | **Superseded by ADR-029.** Extend ADR-018 to collapse `anger → anger` nested emotion paths. |
 | [ADR-023](docs/decisions/ADR-023-sentence-pool-dedup.md) | Sentence pool dedup | **Superseded by ADR-029.** `_dedup_pool` by `script_text` after every `.extend()` in transforms. |
@@ -1654,3 +1660,6 @@ Authoritative decision records. Each is one line here; see
 | [ADR-039](docs/decisions/ADR-039-single-winner-per-utterance.md) | Single winner per utterance | `merge_state` only pushes the **previous** `branch_key` to `inherited_*`; non-winner labels from the same extraction are dropped. `inherited_*` is empty on the first utterance. Downstream retrieval matches shallower tree nodes instead of over-specifying the path. |
 | [ADR-040](docs/decisions/ADR-040-f016-unique-callid-diversity-compliance.md) | F016 unique call_id + diversity + compliance | `generate_unique_call_id()` with overlay+DB collision check; LLM temperature 1.1; "imagine customer → respond" prompt with guardrails (no internal labels, no dismissive quoting, no judgmental language). |
 | [ADR-042](docs/decisions/ADR-042-opening-greetings-end-leaves.md) | Opening greetings in root pool, precise ending gestures, end nodes are leaves | Reverses ADR-038: root pools greetings (`gesture_type: "opening"`), no `a:greeting` child; `gesture_type: "ending"` only on `closure`/`goodbye`; `_enforce_end_leaves` forces end nodes to leaves; `_dedup_script_ids_global` final pass guarantees unique `script_id`s across the tree. |
+| [ADR-043](docs/decisions/ADR-043-jsonl-streaming-replaces-py-literal.md) | JSONL streaming | Replace executable `.py` literal result files with JSONL artifacts and line-oriented loaders. |
+| [ADR-044](docs/decisions/ADR-044-serve-indexes-from-db-not-app-state.md) | DB-served indexes | Persist node labels and serve node/sentence lookup from PostgreSQL instead of retaining the scored tree and indexes in `app.state`. |
+| [ADR-045](docs/decisions/ADR-045-source-call-ids-join-table.md) | Sentence provenance join table | Persist `(script_id, call_id)` in `sentence_sources`; batch provenance writes while retaining the JSON tree field as an offline compatibility projection. |

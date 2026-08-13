@@ -37,11 +37,11 @@ A single orchestrator (`src/add_records.py`) that:
 ## Input
 
 - New records file: `data/data_input/new_data.jsonl` (user always places new data here)
-- Existing canonical data: `data/data_input/matched_data.jsonl` (108 records; 105 unique `call_id`s in `output_rewarded.py` after dedup)
+	- Existing canonical data: `data/data_input/matched_data.jsonl` (108 records; 105 unique `call_id`s in `output_rewarded.jsonl` after dedup)
 
 ## Output
 
-- Existing outputs appended with new records (cleaning, labeling, alignment, reward)
+- Existing JSONL outputs appended with new records (cleaning, labeling, alignment, reward)
 - `decision_tree.json` extended with new branches/sentences
 - `decision_tree_scored.json` recomputed for affected nodes
 - PostgreSQL `nodes`, `sentences`, `taxonomy_keywords` updated incrementally
@@ -49,7 +49,7 @@ A single orchestrator (`src/add_records.py`) that:
 
 ## Success Criteria
 
-- `output_rewarded.py` count == 105; first 103 `call_id`s unchanged
+- `output_rewarded.jsonl` count == 105; first 103 `call_id`s unchanged
 - All old node `path_signature`s still present in tree (superset check)
 - DB `sentences` count increased by exactly new sentences; no existing `script_id` deleted
 - `taxonomy_keywords` has zero duplicate groups post-dedup
@@ -73,7 +73,7 @@ End-to-end incremental append implemented and verified. Three commits land the o
 
 ### Commit 1 — `d06e1dd`: incremental record append (2 new records)
 
-- **Phase 0** (`check_new_records.py`): gates on `call_id` uniqueness vs existing `output_rewarded.py` + intra-batch dedup + `check_record` format validation.
+- **Phase 0** (`check_new_records.py`): gates on `call_id` uniqueness vs existing `output_rewarded.jsonl` + intra-batch dedup + `check_record` format validation.
 - **Phase 1a–1e** (`add_records.py`): cleaning (LLM steps 1–3) → merge extra fields → `label_new_records` (taxonomy recompute over all labeled records) → schema alignment + relabel → reward labeling. Each stage appends only new `call_id`s to existing outputs.
 - **Phase 2** (`build_decision_tree.py`): `merge_dialogs` loads existing tree + merge cache, adds new branches/sentences only. `merge_dialogs` transform chain fixed (CR-2): `_deduplicate_nodes` (propagation removed — redundant with ADR-034 descend-at-retrieval). Added `write_dialog_records_incremental`.
 - **Phase 3+4** (`add_records.py` + `db.py`): score tree → targeted DB upsert. New DB methods: `get_existing_path_signatures`, `get_existing_script_ids`, `upsert_nodes`, `upsert_sentences`, `update_sentence_scores`, `upsert_taxonomy_keywords`, `dedup_taxonomy_keywords`, `create_taxonomy_unique_index` (MD5 hash natural key). Embed only new sentences; recompute scores only for affected existing sentences.
