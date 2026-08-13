@@ -8,6 +8,7 @@ topics: [scalability, memory, streaming, database, performance]
 doc_kind: spec
 created: 2026-07-15
 updated: 2026-08-13
+merged: 2026-08-13 6aa1c21
 decisions: [ADR-043, ADR-044, ADR-045]
 ---
 
