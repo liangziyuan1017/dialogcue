@@ -18,7 +18,8 @@
 | `V312_FULLDATA_TRAIN_EVAL_REPORT.md` | 全量训练/评估纪要 |
 | `V3_FULLDATA_TRAIN_EVAL_REPORT.md` | 改窗前 V3 对照 |
 | `state_v312_eval_test.md` | 早期 legacy 指标摘录 |
-| `DECISION_PACKAGE_V312_TEXT_FROM_SCREENSHOTS.md` | Residual audit 文字版（截图转录） |
+
+> 已移除：`DECISION_PACKAGE_V312_TEXT_FROM_SCREENSHOTS.md`（含真实通话摘录与会话 id，公开前脱敏删除）。
 
 ## 历史 / 迁移（勿当 runtime）
 

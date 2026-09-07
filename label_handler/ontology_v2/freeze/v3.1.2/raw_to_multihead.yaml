@@ -1,5 +1,5 @@
 version: raw_to_multihead_v1
-source_ontology: C:/Users/lzy/pipeline/pipeline/label_handler/ontology_v2/training_ontology_v3.yaml
+source_ontology: label_handler/ontology_v2/training_ontology_v3.yaml
 source_ontology_version: training_ontology_v3
 schema: stage2_multihead_v3.1
 evidence_rule: Do not auto-chain Employment→Income→Hardship→Capability without explicit

@@ -355,7 +355,6 @@ strategy_definitions:
 mappings:
   abusive:
     raw_label: abusive
-    raw_example: 辱骂
     emotion_canonical: abusive
     trainable_emotion: hostility
     strategy: S5
@@ -364,7 +363,6 @@ mappings:
     merged: true
   acceptance:
     raw_label: acceptance
-    raw_example: 接受
     emotion_canonical: acceptance
     trainable_emotion: engagement
     strategy: S11
@@ -373,7 +371,6 @@ mappings:
     merged: true
   accusation:
     raw_label: accusation
-    raw_example: 指责
     emotion_canonical: accusation
     trainable_emotion: hostility
     strategy: S5
@@ -382,7 +379,6 @@ mappings:
     merged: true
   acknowledgment:
     raw_label: acknowledgment
-    raw_example: 这个事情我们也晓得比较棘手
     emotion_canonical: acknowledgment
     trainable_emotion: engagement
     strategy: S11
@@ -391,7 +387,6 @@ mappings:
     merged: true
   agitation:
     raw_label: agitation
-    raw_example: 激动
     emotion_canonical: agitation
     trainable_emotion: irritation
     strategy: S4
@@ -400,7 +395,6 @@ mappings:
     merged: true
   agreement:
     raw_label: agreement
-    raw_example: 是的是的是的
     emotion_canonical: agreement
     trainable_emotion: engagement
     strategy: S11
@@ -409,7 +403,6 @@ mappings:
     merged: true
   alertness:
     raw_label: alertness
-    raw_example: 警惕
     emotion_canonical: alertness
     trainable_emotion: anxiety
     strategy: S6
@@ -418,7 +411,6 @@ mappings:
     merged: true
   ambivalent:
     raw_label: ambivalent
-    raw_example: 政策不好也不孬
     emotion_canonical: ambivalent
     trainable_emotion: anxiety
     strategy: S6
@@ -427,7 +419,6 @@ mappings:
     merged: true
   anger:
     raw_label: anger
-    raw_example: 我没见过这么恶心的女的
     emotion_canonical: anger
     trainable_emotion: hostility
     strategy: S5
@@ -436,7 +427,6 @@ mappings:
     merged: true
   angry:
     raw_label: angry
-    raw_example: 愤怒
     emotion_canonical: angry
     trainable_emotion: hostility
     strategy: S5
@@ -445,7 +435,6 @@ mappings:
     merged: true
   annoyance:
     raw_label: annoyance
-    raw_example: 已经打扰到我的生活了
     emotion_canonical: annoyance
     trainable_emotion: irritation
     strategy: S4
@@ -454,7 +443,6 @@ mappings:
     merged: true
   anxiety:
     raw_label: anxiety
-    raw_example: 利息累计跟滚雪球一样越滚越多
     emotion_canonical: anxiety
     trainable_emotion: anxiety
     strategy: S6
@@ -463,7 +451,6 @@ mappings:
     merged: false
   anxious:
     raw_label: anxious
-    raw_example: 焦虑
     emotion_canonical: anxious
     trainable_emotion: anxiety
     strategy: S6
@@ -472,7 +459,6 @@ mappings:
     merged: true
   anxious_questioning:
     raw_label: anxious_questioning
-    raw_example: 个性化还款方式
     emotion_canonical: anxious_questioning
     trainable_emotion: negotiation
     strategy: S10
@@ -481,7 +467,6 @@ mappings:
     merged: true
   apologetic:
     raw_label: apologetic
-    raw_example: 不好意思
     emotion_canonical: apologetic
     trainable_emotion: engagement
     strategy: S11
@@ -490,7 +475,6 @@ mappings:
     merged: true
   apology:
     raw_label: apology
-    raw_example: 不好意思
     emotion_canonical: apology
     trainable_emotion: engagement
     strategy: S11
@@ -499,7 +483,6 @@ mappings:
     merged: true
   appreciation:
     raw_label: appreciation
-    raw_example: 觉得挺好
     emotion_canonical: appreciation
     trainable_emotion: engagement
     strategy: S11
@@ -508,7 +491,6 @@ mappings:
     merged: true
   argumentative:
     raw_label: argumentative
-    raw_example: 争辩
     emotion_canonical: argumentative
     trainable_emotion: hostility
     strategy: S5
@@ -517,7 +499,6 @@ mappings:
     merged: true
   assertion:
     raw_label: assertion
-    raw_example: 非常有诚意
     emotion_canonical: assertion
     trainable_emotion: engagement
     strategy: S11
@@ -526,7 +507,6 @@ mappings:
     merged: true
   assertive:
     raw_label: assertive
-    raw_example: 坚决
     emotion_canonical: assertive
     trainable_emotion: engagement
     strategy: S11
@@ -535,7 +515,6 @@ mappings:
     merged: true
   assertiveness:
     raw_label: assertiveness
-    raw_example: 我的意愿非常强烈
     emotion_canonical: assertiveness
     trainable_emotion: engagement
     strategy: S11
@@ -544,7 +523,6 @@ mappings:
     merged: true
   assurance:
     raw_label: assurance
-    raw_example: 保证
     emotion_canonical: assurance
     trainable_emotion: engagement
     strategy: S11
@@ -553,7 +531,6 @@ mappings:
     merged: true
   avoidance:
     raw_label: avoidance
-    raw_example: 不方便
     emotion_canonical: avoidance
     trainable_emotion: defensive
     strategy: S9
@@ -562,7 +539,6 @@ mappings:
     merged: true
   bargaining:
     raw_label: bargaining
-    raw_example: 试探
     emotion_canonical: bargaining
     trainable_emotion: negotiation
     strategy: S10
@@ -571,7 +547,6 @@ mappings:
     merged: true
   betrayal:
     raw_label: betrayal
-    raw_example: 出尔反尔
     emotion_canonical: betrayal
     trainable_emotion: hostility
     strategy: S5
@@ -580,7 +555,6 @@ mappings:
     merged: true
   bitterness:
     raw_label: bitterness
-    raw_example: 你没倒的时候，它什么都可以
     emotion_canonical: bitterness
     trainable_emotion: complaint
     strategy: S3
@@ -589,7 +563,6 @@ mappings:
     merged: true
   blame:
     raw_label: blame
-    raw_example: 指责
     emotion_canonical: blame
     trainable_emotion: hostility
     strategy: S5
@@ -598,7 +571,6 @@ mappings:
     merged: true
   calm:
     raw_label: calm
-    raw_example: 心平气静
     emotion_canonical: calm
     trainable_emotion: engagement
     strategy: S11
@@ -607,7 +579,6 @@ mappings:
     merged: true
   candid:
     raw_label: candid
-    raw_example: 坦诚
     emotion_canonical: candid
     trainable_emotion: engagement
     strategy: S11
@@ -616,7 +587,6 @@ mappings:
     merged: true
   caution:
     raw_label: caution
-    raw_example: 谨慎
     emotion_canonical: caution
     trainable_emotion: anxiety
     strategy: S6
@@ -625,7 +595,6 @@ mappings:
     merged: true
   cautious_optimism:
     raw_label: cautious_optimism
-    raw_example: 试探
     emotion_canonical: cautious_optimism
     trainable_emotion: anxiety
     strategy: S6
@@ -634,7 +603,6 @@ mappings:
     merged: true
   certainty:
     raw_label: certainty
-    raw_example: 确信
     emotion_canonical: certainty
     trainable_emotion: engagement
     strategy: S11
@@ -643,7 +611,6 @@ mappings:
     merged: true
   challenge:
     raw_label: challenge
-    raw_example: 挑战
     emotion_canonical: challenge
     trainable_emotion: negotiation
     strategy: S10
@@ -652,7 +619,6 @@ mappings:
     merged: true
   complaint:
     raw_label: complaint
-    raw_example: 抱怨
     emotion_canonical: complaint
     trainable_emotion: complaint
     strategy: S3
@@ -661,7 +627,6 @@ mappings:
     merged: false
   concern:
     raw_label: concern
-    raw_example: 对呀
     emotion_canonical: concern
     trainable_emotion: complaint
     strategy: S3
@@ -670,7 +635,6 @@ mappings:
     merged: true
   concern_about_interest:
     raw_label: concern_about_interest
-    raw_example: 利息太高了
     emotion_canonical: concern_about_interest
     trainable_emotion: complaint
     strategy: S3
@@ -679,7 +643,6 @@ mappings:
     merged: true
   concern_protective:
     raw_label: concern_protective
-    raw_example: 我也希望你们不用打扰他们
     emotion_canonical: concern_protective
     trainable_emotion: complaint
     strategy: S3
@@ -688,7 +651,6 @@ mappings:
     merged: true
   conditional:
     raw_label: conditional
-    raw_example: 你只要回答我问题我就还款
     emotion_canonical: conditional
     trainable_emotion: negotiation
     strategy: S10
@@ -697,7 +659,6 @@ mappings:
     merged: true
   confirmation_seeking:
     raw_label: confirmation_seeking
-    raw_example: 确认
     emotion_canonical: confirmation_seeking
     trainable_emotion: confusion
     strategy: S8
@@ -706,7 +667,6 @@ mappings:
     merged: true
   confrontational:
     raw_label: confrontational
-    raw_example: 质问
     emotion_canonical: confrontational
     trainable_emotion: hostility
     strategy: S5
@@ -715,7 +675,6 @@ mappings:
     merged: true
   confused:
     raw_label: confused
-    raw_example: 困惑
     emotion_canonical: confused
     trainable_emotion: confusion
     strategy: S8
@@ -724,7 +683,6 @@ mappings:
     merged: true
   confusion:
     raw_label: confusion
-    raw_example: 我不明白
     emotion_canonical: confusion
     trainable_emotion: confusion
     strategy: S8
@@ -733,7 +691,6 @@ mappings:
     merged: false
   confusion_defensive:
     raw_label: confusion_defensive
-    raw_example: 说什么东西啊
     emotion_canonical: confusion_defensive
     trainable_emotion: confusion
     strategy: S8
@@ -742,7 +699,6 @@ mappings:
     merged: true
   confusion_or_displeasure:
     raw_label: confusion_or_displeasure
-    raw_example: 怎么比之前还高
     emotion_canonical: confusion_or_displeasure
     trainable_emotion: confusion
     strategy: S8
@@ -751,7 +707,6 @@ mappings:
     merged: true
   confusion_or_frustration:
     raw_label: confusion_or_frustration
-    raw_example: 不对
     emotion_canonical: confusion_or_frustration
     trainable_emotion: complaint
     strategy: S3
@@ -760,7 +715,6 @@ mappings:
     merged: true
   contempt:
     raw_label: contempt
-    raw_example: 征信有个屌用
     emotion_canonical: contempt
     trainable_emotion: hostility
     strategy: S5
@@ -769,7 +723,6 @@ mappings:
     merged: true
   cooperative:
     raw_label: cooperative
-    raw_example: 有耐心沟通
     emotion_canonical: cooperative
     trainable_emotion: engagement
     strategy: S11
@@ -778,7 +731,6 @@ mappings:
     merged: true
   correction:
     raw_label: correction
-    raw_example: 纠正
     emotion_canonical: correction
     trainable_emotion: confusion
     strategy: S8
@@ -787,7 +739,6 @@ mappings:
     merged: true
   defensive:
     raw_label: defensive
-    raw_example: 不好意思
     emotion_canonical: defensive
     trainable_emotion: defensive
     strategy: S9
@@ -796,7 +747,6 @@ mappings:
     merged: false
   defensive_rejection:
     raw_label: defensive_rejection
-    raw_example: 不需要
     emotion_canonical: defensive_rejection
     trainable_emotion: defensive
     strategy: S9
@@ -805,7 +755,6 @@ mappings:
     merged: true
   defensiveness:
     raw_label: defensiveness
-    raw_example: 抵触
     emotion_canonical: defensiveness
     trainable_emotion: defensive
     strategy: S9
@@ -814,7 +763,6 @@ mappings:
     merged: true
   defiance:
     raw_label: defiance
-    raw_example: 那你们就起诉好了呀
     emotion_canonical: defiance
     trainable_emotion: hostility
     strategy: S5
@@ -823,7 +771,6 @@ mappings:
     merged: true
   defiant:
     raw_label: defiant
-    raw_example: 挑衅
     emotion_canonical: defiant
     trainable_emotion: hostility
     strategy: S5
@@ -832,7 +779,6 @@ mappings:
     merged: true
   demanding:
     raw_label: demanding
-    raw_example: 要求停息挂账
     emotion_canonical: demanding
     trainable_emotion: negotiation
     strategy: S10
@@ -841,7 +787,6 @@ mappings:
     merged: true
   denial:
     raw_label: denial
-    raw_example: 否认
     emotion_canonical: denial
     trainable_emotion: defensive
     strategy: S9
@@ -850,7 +795,6 @@ mappings:
     merged: true
   desire_to_pay:
     raw_label: desire_to_pay
-    raw_example: 非常想还
     emotion_canonical: desire_to_pay
     trainable_emotion: engagement
     strategy: S11
@@ -859,7 +803,6 @@ mappings:
     merged: true
   desire_to_repay:
     raw_label: desire_to_repay
-    raw_example: 确实想还
     emotion_canonical: desire_to_repay
     trainable_emotion: engagement
     strategy: S11
@@ -868,7 +811,6 @@ mappings:
     merged: true
   desire_to_resolve:
     raw_label: desire_to_resolve
-    raw_example: 想还完
     emotion_canonical: desire_to_resolve
     trainable_emotion: engagement
     strategy: S11
@@ -877,7 +819,6 @@ mappings:
     merged: true
   despair:
     raw_label: despair
-    raw_example: 要跳楼了
     emotion_canonical: despair
     trainable_emotion: despair
     strategy: S2
@@ -886,7 +827,6 @@ mappings:
     merged: false
   desperation:
     raw_label: desperation
-    raw_example: 实在还不上了
     emotion_canonical: desperation
     trainable_emotion: despair
     strategy: S2
@@ -895,7 +835,6 @@ mappings:
     merged: true
   determination:
     raw_label: determination
-    raw_example: 坚定
     emotion_canonical: determination
     trainable_emotion: engagement
     strategy: S11
@@ -904,7 +843,6 @@ mappings:
     merged: true
   determined:
     raw_label: determined
-    raw_example: 坚定
     emotion_canonical: determined
     trainable_emotion: engagement
     strategy: S11
@@ -913,7 +851,6 @@ mappings:
     merged: true
   difficulty:
     raw_label: difficulty
-    raw_example: 很难
     emotion_canonical: difficulty
     trainable_emotion: distress
     strategy: S1
@@ -922,7 +859,6 @@ mappings:
     merged: true
   disagreement:
     raw_label: disagreement
-    raw_example: 质疑
     emotion_canonical: disagreement
     trainable_emotion: defensive
     strategy: S9
@@ -931,7 +867,6 @@ mappings:
     merged: true
   disappointment:
     raw_label: disappointment
-    raw_example: 我以为会有点小照顾
     emotion_canonical: disappointment
     trainable_emotion: complaint
     strategy: S3
@@ -940,7 +875,6 @@ mappings:
     merged: true
   disbelief:
     raw_label: disbelief
-    raw_example: 不可能不可能
     emotion_canonical: disbelief
     trainable_emotion: distrust
     strategy: S7
@@ -949,7 +883,6 @@ mappings:
     merged: true
   discomfort:
     raw_label: discomfort
-    raw_example: 不舒服
     emotion_canonical: discomfort
     trainable_emotion: complaint
     strategy: S3
@@ -958,7 +891,6 @@ mappings:
     merged: true
   disgust:
     raw_label: disgust
-    raw_example: 厌恶
     emotion_canonical: disgust
     trainable_emotion: hostility
     strategy: S5
@@ -967,7 +899,6 @@ mappings:
     merged: true
   dismissive:
     raw_label: dismissive
-    raw_example: 敷衍
     emotion_canonical: dismissive
     trainable_emotion: irritation
     strategy: S4
@@ -976,7 +907,6 @@ mappings:
     merged: true
   dissatisfaction:
     raw_label: dissatisfaction
-    raw_example: 不认同
     emotion_canonical: dissatisfaction
     trainable_emotion: complaint
     strategy: S3
@@ -985,7 +915,6 @@ mappings:
     merged: true
   distracted:
     raw_label: distracted
-    raw_example: 心不在焉
     emotion_canonical: distracted
     trainable_emotion: confusion
     strategy: S8
@@ -994,7 +923,6 @@ mappings:
     merged: true
   distraction:
     raw_label: distraction
-    raw_example: 没注意听
     emotion_canonical: distraction
     trainable_emotion: confusion
     strategy: S8
@@ -1003,7 +931,6 @@ mappings:
     merged: true
   distress:
     raw_label: distress
-    raw_example: 前心有点不……做外伤
     emotion_canonical: distress
     trainable_emotion: distress
     strategy: S1
@@ -1012,7 +939,6 @@ mappings:
     merged: false
   distrust:
     raw_label: distrust
-    raw_example: 怀疑
     emotion_canonical: distrust
     trainable_emotion: distrust
     strategy: S7
@@ -1021,7 +947,6 @@ mappings:
     merged: false
   dominant:
     raw_label: dominant
-    raw_example: 打断/强势
     emotion_canonical: dominant
     trainable_emotion: hostility
     strategy: S5
@@ -1030,7 +955,6 @@ mappings:
     merged: true
   doubt:
     raw_label: doubt
-    raw_example: 质疑
     emotion_canonical: doubt
     trainable_emotion: distrust
     strategy: S7
@@ -1039,7 +963,6 @@ mappings:
     merged: true
   eager_agreement:
     raw_label: eager_agreement
-    raw_example: 对对对
     emotion_canonical: eager_agreement
     trainable_emotion: engagement
     strategy: S11
@@ -1048,7 +971,6 @@ mappings:
     merged: true
   eager_confirmation:
     raw_label: eager_confirmation
-    raw_example: 急切确认
     emotion_canonical: eager_confirmation
     trainable_emotion: confusion
     strategy: S8
@@ -1057,7 +979,6 @@ mappings:
     merged: true
   eagerness:
     raw_label: eagerness
-    raw_example: 急切
     emotion_canonical: eagerness
     trainable_emotion: negotiation
     strategy: S10
@@ -1066,7 +987,6 @@ mappings:
     merged: true
   earnest:
     raw_label: earnest
-    raw_example: 非常想还
     emotion_canonical: earnest
     trainable_emotion: engagement
     strategy: S11
@@ -1075,7 +995,6 @@ mappings:
     merged: true
   earnestness:
     raw_label: earnestness
-    raw_example: 表达还款意愿
     emotion_canonical: earnestness
     trainable_emotion: engagement
     strategy: S11
@@ -1084,7 +1003,6 @@ mappings:
     merged: true
   embarrassment:
     raw_label: embarrassment
-    raw_example: 不好意思
     emotion_canonical: embarrassment
     trainable_emotion: engagement
     strategy: S11
@@ -1093,7 +1011,6 @@ mappings:
     merged: true
   emotional_attachment:
     raw_label: emotional_attachment
-    raw_example: 情感还是很丰富的
     emotion_canonical: emotional_attachment
     trainable_emotion: engagement
     strategy: S11
@@ -1102,7 +1019,6 @@ mappings:
     merged: true
   emotional_distress:
     raw_label: emotional_distress
-    raw_example: 感觉自己都有点抑郁了
     emotion_canonical: emotional_distress
     trainable_emotion: distress
     strategy: S1
@@ -1111,7 +1027,6 @@ mappings:
     merged: true
   evasiveness:
     raw_label: evasiveness
-    raw_example: 敷衍
     emotion_canonical: evasiveness
     trainable_emotion: defensive
     strategy: S9
@@ -1120,7 +1035,6 @@ mappings:
     merged: true
   exasperation:
     raw_label: exasperation
-    raw_example: 我的大姐呀
     emotion_canonical: exasperation
     trainable_emotion: irritation
     strategy: S4
@@ -1129,7 +1043,6 @@ mappings:
     merged: true
   exhausted:
     raw_label: exhausted
-    raw_example: 疲惫
     emotion_canonical: exhausted
     trainable_emotion: distress
     strategy: S1
@@ -1138,7 +1051,6 @@ mappings:
     merged: true
   exhaustion:
     raw_label: exhaustion
-    raw_example: 连腿都拉不动了
     emotion_canonical: exhaustion
     trainable_emotion: distress
     strategy: S1
@@ -1147,7 +1059,6 @@ mappings:
     merged: true
   explanatory:
     raw_label: explanatory
-    raw_example: 解释、说明困境
     emotion_canonical: explanatory
     trainable_emotion: engagement
     strategy: S11
@@ -1156,7 +1067,6 @@ mappings:
     merged: true
   extreme_distress:
     raw_label: extreme_distress
-    raw_example: 极端情绪
     emotion_canonical: extreme_distress
     trainable_emotion: despair
     strategy: S2
@@ -1165,7 +1075,6 @@ mappings:
     merged: true
   fatigue:
     raw_label: fatigue
-    raw_example: 敷衍
     emotion_canonical: fatigue
     trainable_emotion: distress
     strategy: S1
@@ -1174,7 +1083,6 @@ mappings:
     merged: true
   fatigue_or_weakness:
     raw_label: fatigue_or_weakness
-    raw_example: 刚好点
     emotion_canonical: fatigue_or_weakness
     trainable_emotion: distress
     strategy: S1
@@ -1183,7 +1091,6 @@ mappings:
     merged: true
   fear:
     raw_label: fear
-    raw_example: 把我得死了
     emotion_canonical: fear
     trainable_emotion: anxiety
     strategy: S6
@@ -1192,7 +1099,6 @@ mappings:
     merged: true
   fear_of_default:
     raw_label: fear_of_default
-    raw_example: 我怕二次逾期
     emotion_canonical: fear_of_default
     trainable_emotion: anxiety
     strategy: S6
@@ -1201,7 +1107,6 @@ mappings:
     merged: true
   feeling_deceived:
     raw_label: feeling_deceived
-    raw_example: 被欺骗感
     emotion_canonical: feeling_deceived
     trainable_emotion: distrust
     strategy: S7
@@ -1210,7 +1115,6 @@ mappings:
     merged: true
   feeling_disrespected:
     raw_label: feeling_disrespected
-    raw_example: 被冒犯感
     emotion_canonical: feeling_disrespected
     trainable_emotion: hostility
     strategy: S5
@@ -1219,7 +1123,6 @@ mappings:
     merged: true
   feeling_ignored:
     raw_label: feeling_ignored
-    raw_example: 也不听我说话
     emotion_canonical: feeling_ignored
     trainable_emotion: complaint
     strategy: S3
@@ -1228,7 +1131,6 @@ mappings:
     merged: true
   feeling_pressured:
     raw_label: feeling_pressured
-    raw_example: 被逼迫感
     emotion_canonical: feeling_pressured
     trainable_emotion: complaint
     strategy: S3
@@ -1237,7 +1139,6 @@ mappings:
     merged: true
   feeling_targeted:
     raw_label: feeling_targeted
-    raw_example: 针对我
     emotion_canonical: feeling_targeted
     trainable_emotion: distrust
     strategy: S7
@@ -1246,7 +1147,6 @@ mappings:
     merged: true
   feeling_threatened:
     raw_label: feeling_threatened
-    raw_example: 被威胁感
     emotion_canonical: feeling_threatened
     trainable_emotion: distrust
     strategy: S7
@@ -1255,7 +1155,6 @@ mappings:
     merged: true
   financial_hardship:
     raw_label: financial_hardship
-    raw_example: 这个、这个还的难度也很大呀
     emotion_canonical: financial_hardship
     trainable_emotion: distress
     strategy: S1
@@ -1264,7 +1163,6 @@ mappings:
     merged: true
   financial_stress:
     raw_label: financial_stress
-    raw_example: 紧张
     emotion_canonical: financial_stress
     trainable_emotion: distress
     strategy: S1
@@ -1273,7 +1171,6 @@ mappings:
     merged: true
   firm_refusal:
     raw_label: firm_refusal
-    raw_example: 肯定还不了
     emotion_canonical: firm_refusal
     trainable_emotion: defensive
     strategy: S9
@@ -1282,7 +1179,6 @@ mappings:
     merged: true
   forgetfulness:
     raw_label: forgetfulness
-    raw_example: 遗忘
     emotion_canonical: forgetfulness
     trainable_emotion: confusion
     strategy: S8
@@ -1291,7 +1187,6 @@ mappings:
     merged: true
   frankness:
     raw_label: frankness
-    raw_example: 实话实说
     emotion_canonical: frankness
     trainable_emotion: engagement
     strategy: S11
@@ -1300,7 +1195,6 @@ mappings:
     merged: true
   frustrated:
     raw_label: frustrated
-    raw_example: 你总之是要钱的嘛
     emotion_canonical: frustrated
     trainable_emotion: complaint
     strategy: S3
@@ -1309,7 +1203,6 @@ mappings:
     merged: true
   frustration:
     raw_label: frustration
-    raw_example: 你问我啥时候能好
     emotion_canonical: frustration
     trainable_emotion: complaint
     strategy: S3
@@ -1318,7 +1211,6 @@ mappings:
     merged: true
   frustration_defensive:
     raw_label: frustration_defensive
-    raw_example: 如果说我现在没钱，你要我怎么办
     emotion_canonical: frustration_defensive
     trainable_emotion: defensive
     strategy: S9
@@ -1327,7 +1219,6 @@ mappings:
     merged: true
   gratitude:
     raw_label: gratitude
-    raw_example: 感谢理解
     emotion_canonical: gratitude
     trainable_emotion: engagement
     strategy: S11
@@ -1336,7 +1227,6 @@ mappings:
     merged: true
   grievance:
     raw_label: grievance
-    raw_example: 委屈
     emotion_canonical: grievance
     trainable_emotion: complaint
     strategy: S3
@@ -1345,7 +1235,6 @@ mappings:
     merged: true
   guilt:
     raw_label: guilt
-    raw_example: 自责
     emotion_canonical: guilt
     trainable_emotion: engagement
     strategy: S11
@@ -1354,7 +1243,6 @@ mappings:
     merged: true
   harassment_complaint:
     raw_label: harassment_complaint
-    raw_example: 一天打四五个电话，换人打
     emotion_canonical: harassment_complaint
     trainable_emotion: complaint
     strategy: S3
@@ -1363,7 +1251,6 @@ mappings:
     merged: true
   hardship:
     raw_label: hardship
-    raw_example: 困难
     emotion_canonical: hardship
     trainable_emotion: distress
     strategy: S1
@@ -1372,7 +1259,6 @@ mappings:
     merged: true
   helpless:
     raw_label: helpless
-    raw_example: 无奈、解释
     emotion_canonical: helpless
     trainable_emotion: distress
     strategy: S1
@@ -1381,7 +1267,6 @@ mappings:
     merged: true
   helplessness:
     raw_label: helplessness
-    raw_example: 我的确没办法
     emotion_canonical: helplessness
     trainable_emotion: distress
     strategy: S1
@@ -1390,7 +1275,6 @@ mappings:
     merged: true
   hesitant:
     raw_label: hesitant
-    raw_example: 犹豫
     emotion_canonical: hesitant
     trainable_emotion: anxiety
     strategy: S6
@@ -1399,7 +1283,6 @@ mappings:
     merged: true
   hesitation:
     raw_label: hesitation
-    raw_example: 比较那个啥
     emotion_canonical: hesitation
     trainable_emotion: anxiety
     strategy: S6
@@ -1408,7 +1291,6 @@ mappings:
     merged: true
   hope:
     raw_label: hope
-    raw_example: 期待
     emotion_canonical: hope
     trainable_emotion: engagement
     strategy: S11
@@ -1417,7 +1299,6 @@ mappings:
     merged: true
   hopeful:
     raw_label: hopeful
-    raw_example: 我希望
     emotion_canonical: hopeful
     trainable_emotion: engagement
     strategy: S11
@@ -1426,7 +1307,6 @@ mappings:
     merged: true
   hopeless:
     raw_label: hopeless
-    raw_example: 绝望
     emotion_canonical: hopeless
     trainable_emotion: despair
     strategy: S2
@@ -1435,7 +1315,6 @@ mappings:
     merged: true
   hopelessness:
     raw_label: hopelessness
-    raw_example: 没有办法，我是没有办法了
     emotion_canonical: hopelessness
     trainable_emotion: despair
     strategy: S2
@@ -1444,7 +1323,6 @@ mappings:
     merged: true
   hostility:
     raw_label: hostility
-    raw_example: 敌意
     emotion_canonical: hostility
     trainable_emotion: hostility
     strategy: S5
@@ -1453,7 +1331,6 @@ mappings:
     merged: false
   impatience:
     raw_label: impatience
-    raw_example: 不要浪费我时间
     emotion_canonical: impatience
     trainable_emotion: irritation
     strategy: S4
@@ -1462,7 +1339,6 @@ mappings:
     merged: true
   impatient:
     raw_label: impatient
-    raw_example: 催促
     emotion_canonical: impatient
     trainable_emotion: irritation
     strategy: S4
@@ -1471,7 +1347,6 @@ mappings:
     merged: true
   indifference:
     raw_label: indifference
-    raw_example: 随便你们寄哪个呀
     emotion_canonical: indifference
     trainable_emotion: irritation
     strategy: S4
@@ -1480,7 +1355,6 @@ mappings:
     merged: true
   inquisitiveness:
     raw_label: inquisitiveness
-    raw_example: 追问
     emotion_canonical: inquisitiveness
     trainable_emotion: confusion
     strategy: S8
@@ -1489,7 +1363,6 @@ mappings:
     merged: true
   insistence:
     raw_label: insistence
-    raw_example: 我要分期
     emotion_canonical: insistence
     trainable_emotion: negotiation
     strategy: S10
@@ -1498,7 +1371,6 @@ mappings:
     merged: true
   insistent:
     raw_label: insistent
-    raw_example: 坚持
     emotion_canonical: insistent
     trainable_emotion: negotiation
     strategy: S10
@@ -1507,7 +1379,6 @@ mappings:
     merged: true
   insult:
     raw_label: insult
-    raw_example: 辱骂
     emotion_canonical: insult
     trainable_emotion: hostility
     strategy: S5
@@ -1516,7 +1387,6 @@ mappings:
     merged: true
   interest:
     raw_label: interest
-    raw_example: 积极
     emotion_canonical: interest
     trainable_emotion: engagement
     strategy: S11
@@ -1525,7 +1395,6 @@ mappings:
     merged: true
   interrogation:
     raw_label: interrogation
-    raw_example: 质问
     emotion_canonical: interrogation
     trainable_emotion: confusion
     strategy: S8
@@ -1534,7 +1403,6 @@ mappings:
     merged: true
   irritated:
     raw_label: irritated
-    raw_example: 烦躁
     emotion_canonical: irritated
     trainable_emotion: irritation
     strategy: S4
@@ -1543,7 +1411,6 @@ mappings:
     merged: true
   irritation:
     raw_label: irritation
-    raw_example: 你打电话过来是什么意思
     emotion_canonical: irritation
     trainable_emotion: irritation
     strategy: S4
@@ -1552,7 +1419,6 @@ mappings:
     merged: false
   loneliness:
     raw_label: loneliness
-    raw_example: 孤独
     emotion_canonical: loneliness
     trainable_emotion: distress
     strategy: S1
@@ -1561,7 +1427,6 @@ mappings:
     merged: true
   overwhelmed:
     raw_label: overwhelmed
-    raw_example: 压力太大了
     emotion_canonical: overwhelmed
     trainable_emotion: distress
     strategy: S1
@@ -1570,7 +1435,6 @@ mappings:
     merged: true
   persistence:
     raw_label: persistence
-    raw_example: 坚持
     emotion_canonical: persistence
     trainable_emotion: engagement
     strategy: S11
@@ -1579,7 +1443,6 @@ mappings:
     merged: true
   physical_weakness:
     raw_label: physical_weakness
-    raw_example: 身体就……
     emotion_canonical: physical_weakness
     trainable_emotion: distress
     strategy: S1
@@ -1588,7 +1451,6 @@ mappings:
     merged: true
   pleading:
     raw_label: pleading
-    raw_example: 再申请一下吧
     emotion_canonical: pleading
     trainable_emotion: negotiation
     strategy: S10
@@ -1597,7 +1459,6 @@ mappings:
     merged: true
   politeness:
     raw_label: politeness
-    raw_example: 感谢配合
     emotion_canonical: politeness
     trainable_emotion: engagement
     strategy: S11
@@ -1606,7 +1467,6 @@ mappings:
     merged: true
   positive:
     raw_label: positive
-    raw_example: 积极
     emotion_canonical: positive
     trainable_emotion: engagement
     strategy: S11
@@ -1615,7 +1475,6 @@ mappings:
     merged: true
   positive_acceptance:
     raw_label: positive_acceptance
-    raw_example: 可以呀
     emotion_canonical: positive_acceptance
     trainable_emotion: engagement
     strategy: S11
@@ -1624,7 +1483,6 @@ mappings:
     merged: true
   positive_attitude:
     raw_label: positive_attitude
-    raw_example: 积极
     emotion_canonical: positive_attitude
     trainable_emotion: engagement
     strategy: S11
@@ -1633,7 +1491,6 @@ mappings:
     merged: true
   positive_evaluation:
     raw_label: positive_evaluation
-    raw_example: 觉得银行变通
     emotion_canonical: positive_evaluation
     trainable_emotion: engagement
     strategy: S11
@@ -1642,7 +1499,6 @@ mappings:
     merged: true
   pressure:
     raw_label: pressure
-    raw_example: 被催促感
     emotion_canonical: pressure
     trainable_emotion: complaint
     strategy: S3
@@ -1651,7 +1507,6 @@ mappings:
     merged: true
   probing:
     raw_label: probing
-    raw_example: 试探
     emotion_canonical: probing
     trainable_emotion: negotiation
     strategy: S10
@@ -1660,7 +1515,6 @@ mappings:
     merged: true
   provoked:
     raw_label: provoked
-    raw_example: 被刺激感
     emotion_canonical: provoked
     trainable_emotion: hostility
     strategy: S5
@@ -1669,7 +1523,6 @@ mappings:
     merged: true
   questioning:
     raw_label: questioning
-    raw_example: 质疑
     emotion_canonical: questioning
     trainable_emotion: confusion
     strategy: S8
@@ -1678,7 +1531,6 @@ mappings:
     merged: true
   rational:
     raw_label: rational
-    raw_example: 理性计算
     emotion_canonical: rational
     trainable_emotion: engagement
     strategy: S11
@@ -1687,7 +1539,6 @@ mappings:
     merged: true
   reasoning:
     raw_label: reasoning
-    raw_example: 理性分析
     emotion_canonical: reasoning
     trainable_emotion: engagement
     strategy: S11
@@ -1696,7 +1547,6 @@ mappings:
     merged: true
   reassurance:
     raw_label: reassurance
-    raw_example: 承诺
     emotion_canonical: reassurance
     trainable_emotion: engagement
     strategy: S11
@@ -1705,7 +1555,6 @@ mappings:
     merged: true
   reassuring:
     raw_label: reassuring
-    raw_example: 你放心吧
     emotion_canonical: reassuring
     trainable_emotion: engagement
     strategy: S11
@@ -1714,7 +1563,6 @@ mappings:
     merged: true
   regret:
     raw_label: regret
-    raw_example: 知错了
     emotion_canonical: regret
     trainable_emotion: engagement
     strategy: S11
@@ -1723,7 +1571,6 @@ mappings:
     merged: true
   rejection:
     raw_label: rejection
-    raw_example: 拒绝
     emotion_canonical: rejection
     trainable_emotion: defensive
     strategy: S9
@@ -1732,7 +1579,6 @@ mappings:
     merged: true
   relief:
     raw_label: relief
-    raw_example: 认可方案
     emotion_canonical: relief
     trainable_emotion: engagement
     strategy: S11
@@ -1741,7 +1587,6 @@ mappings:
     merged: true
   relief_or_anticipation:
     raw_label: relief_or_anticipation
-    raw_example: 终于打电话
     emotion_canonical: relief_or_anticipation
     trainable_emotion: engagement
     strategy: S11
@@ -1750,7 +1595,6 @@ mappings:
     merged: true
   reluctance:
     raw_label: reluctance
-    raw_example: 除非是找家里面的人
     emotion_canonical: reluctance
     trainable_emotion: defensive
     strategy: S9
@@ -1759,7 +1603,6 @@ mappings:
     merged: true
   resentment:
     raw_label: resentment
-    raw_example: 你扣我这扣我那
     emotion_canonical: resentment
     trainable_emotion: complaint
     strategy: S3
@@ -1768,7 +1611,6 @@ mappings:
     merged: true
   resignation:
     raw_label: resignation
-    raw_example: 那也没办法的
     emotion_canonical: resignation
     trainable_emotion: despair
     strategy: S2
@@ -1777,7 +1619,6 @@ mappings:
     merged: true
   resigned:
     raw_label: resigned
-    raw_example: 放弃
     emotion_canonical: resigned
     trainable_emotion: despair
     strategy: S2
@@ -1786,7 +1627,6 @@ mappings:
     merged: true
   resistance:
     raw_label: resistance
-    raw_example: 拒绝
     emotion_canonical: resistance
     trainable_emotion: defensive
     strategy: S9
@@ -1795,7 +1635,6 @@ mappings:
     merged: true
   resistant:
     raw_label: resistant
-    raw_example: 准确地址不可能报给你
     emotion_canonical: resistant
     trainable_emotion: defensive
     strategy: S9
@@ -1804,7 +1643,6 @@ mappings:
     merged: true
   rhetorical_question:
     raw_label: rhetorical_question
-    raw_example: 反问
     emotion_canonical: rhetorical_question
     trainable_emotion: negotiation
     strategy: S10
@@ -1813,7 +1651,6 @@ mappings:
     merged: true
   sadness:
     raw_label: sadness
-    raw_example: 心情不好
     emotion_canonical: sadness
     trainable_emotion: distress
     strategy: S1
@@ -1822,7 +1659,6 @@ mappings:
     merged: true
   sarcasm:
     raw_label: sarcasm
-    raw_example: 肯定啊
     emotion_canonical: sarcasm
     trainable_emotion: irritation
     strategy: S4
@@ -1831,7 +1667,6 @@ mappings:
     merged: true
   satisfaction:
     raw_label: satisfaction
-    raw_example: 满意
     emotion_canonical: satisfaction
     trainable_emotion: engagement
     strategy: S11
@@ -1840,7 +1675,6 @@ mappings:
     merged: true
   self_affirmation:
     raw_label: self_affirmation
-    raw_example: 强调诚信
     emotion_canonical: self_affirmation
     trainable_emotion: engagement
     strategy: S11
@@ -1849,7 +1683,6 @@ mappings:
     merged: true
   self_blame:
     raw_label: self_blame
-    raw_example: 自我否定
     emotion_canonical: self_blame
     trainable_emotion: defensive
     strategy: S9
@@ -1858,7 +1691,6 @@ mappings:
     merged: true
   self_justification:
     raw_label: self_justification
-    raw_example: 我是你们客户中最好的
     emotion_canonical: self_justification
     trainable_emotion: engagement
     strategy: S11
@@ -1867,7 +1699,6 @@ mappings:
     merged: true
   self_pity:
     raw_label: self_pity
-    raw_example: 贫苦老百姓
     emotion_canonical: self_pity
     trainable_emotion: defensive
     strategy: S9
@@ -1876,7 +1707,6 @@ mappings:
     merged: true
   seriousness:
     raw_label: seriousness
-    raw_example: 重视
     emotion_canonical: seriousness
     trainable_emotion: engagement
     strategy: S11
@@ -1885,7 +1715,6 @@ mappings:
     merged: true
   shame:
     raw_label: shame
-    raw_example: 不好意思
     emotion_canonical: shame
     trainable_emotion: engagement
     strategy: S11
@@ -1894,7 +1723,6 @@ mappings:
     merged: true
   shame_embarrassment:
     raw_label: shame_embarrassment
-    raw_example: 我怕您笑话
     emotion_canonical: shame_embarrassment
     trainable_emotion: engagement
     strategy: S11
@@ -1903,7 +1731,6 @@ mappings:
     merged: true
   shock:
     raw_label: shock
-    raw_example: 腿都软了
     emotion_canonical: shock
     trainable_emotion: anxiety
     strategy: S6
@@ -1912,7 +1739,6 @@ mappings:
     merged: true
   sigh:
     raw_label: sigh
-    raw_example: 唉
     emotion_canonical: sigh
     trainable_emotion: irritation
     strategy: S4
@@ -1921,7 +1747,6 @@ mappings:
     merged: true
   sigh_frustration:
     raw_label: sigh_frustration
-    raw_example: 唉
     emotion_canonical: sigh_frustration
     trainable_emotion: irritation
     strategy: S4
@@ -1930,7 +1755,6 @@ mappings:
     merged: true
   sincere:
     raw_label: sincere
-    raw_example: 很真诚、很诚恳
     emotion_canonical: sincere
     trainable_emotion: engagement
     strategy: S11
@@ -1939,7 +1763,6 @@ mappings:
     merged: true
   sincerity:
     raw_label: sincerity
-    raw_example: 我是有诚意去做这个事情的
     emotion_canonical: sincerity
     trainable_emotion: engagement
     strategy: S11
@@ -1948,7 +1771,6 @@ mappings:
     merged: true
   skepticism:
     raw_label: skepticism
-    raw_example: 质疑
     emotion_canonical: skepticism
     trainable_emotion: distrust
     strategy: S7
@@ -1957,7 +1779,6 @@ mappings:
     merged: true
   stress:
     raw_label: stress
-    raw_example: 压力太大了
     emotion_canonical: stress
     trainable_emotion: distress
     strategy: S1
@@ -1966,7 +1787,6 @@ mappings:
     merged: true
   strong_desire:
     raw_label: strong_desire
-    raw_example: 我的意愿也非常非常强
     emotion_canonical: strong_desire
     trainable_emotion: engagement
     strategy: S11
@@ -1975,7 +1795,6 @@ mappings:
     merged: true
   suicidal_ideation:
     raw_label: suicidal_ideation
-    raw_example: 我都想跳楼死了
     emotion_canonical: suicidal_ideation
     trainable_emotion: despair
     strategy: S2
@@ -1984,7 +1803,6 @@ mappings:
     merged: true
   suppressed_anger:
     raw_label: suppressed_anger
-    raw_example: 压抑情绪
     emotion_canonical: suppressed_anger
     trainable_emotion: hostility
     strategy: S5
@@ -1993,7 +1811,6 @@ mappings:
     merged: true
   surprise:
     raw_label: surprise
-    raw_example: 惊讶
     emotion_canonical: surprise
     trainable_emotion: confusion
     strategy: S8
@@ -2002,7 +1819,6 @@ mappings:
     merged: true
   surprise_or_annoyance:
     raw_label: surprise_or_annoyance
-    raw_example: 你们不下班吗
     emotion_canonical: surprise_or_annoyance
     trainable_emotion: confusion
     strategy: S8
@@ -2011,7 +1827,6 @@ mappings:
     merged: true
   surprised:
     raw_label: surprised
-    raw_example: 惊讶
     emotion_canonical: surprised
     trainable_emotion: confusion
     strategy: S8
@@ -2020,7 +1835,6 @@ mappings:
     merged: true
   suspicion:
     raw_label: suspicion
-    raw_example: 怀疑
     emotion_canonical: suspicion
     trainable_emotion: distrust
     strategy: S7
@@ -2029,7 +1843,6 @@ mappings:
     merged: true
   suspicious:
     raw_label: suspicious
-    raw_example: 怀疑
     emotion_canonical: suspicious
     trainable_emotion: distrust
     strategy: S7
@@ -2038,7 +1851,6 @@ mappings:
     merged: true
   threat:
     raw_label: threat
-    raw_example: 打12378投诉
     emotion_canonical: threat
     trainable_emotion: hostility
     strategy: S5
@@ -2047,7 +1859,6 @@ mappings:
     merged: true
   threat_to_avoid:
     raw_label: threat_to_avoid
-    raw_example: 我真的——我就直接不接了好不好
     emotion_canonical: threat_to_avoid
     trainable_emotion: hostility
     strategy: S5
@@ -2056,7 +1867,6 @@ mappings:
     merged: true
   threatening:
     raw_label: threatening
-    raw_example: 威胁
     emotion_canonical: threatening
     trainable_emotion: hostility
     strategy: S5
@@ -2065,7 +1875,6 @@ mappings:
     merged: true
   tired:
     raw_label: tired
-    raw_example: 疲惫
     emotion_canonical: tired
     trainable_emotion: distress
     strategy: S1
@@ -2074,7 +1883,6 @@ mappings:
     merged: true
   tiredness:
     raw_label: tiredness
-    raw_example: 疲惫
     emotion_canonical: tiredness
     trainable_emotion: distress
     strategy: S1
@@ -2083,7 +1891,6 @@ mappings:
     merged: true
   trust:
     raw_label: trust
-    raw_example: 信任
     emotion_canonical: trust
     trainable_emotion: engagement
     strategy: S11
@@ -2092,7 +1899,6 @@ mappings:
     merged: true
   uncertainty:
     raw_label: uncertainty
-    raw_example: 尽量
     emotion_canonical: uncertainty
     trainable_emotion: anxiety
     strategy: S6
@@ -2101,7 +1907,6 @@ mappings:
     merged: true
   understanding:
     raw_label: understanding
-    raw_example: 我非常理解
     emotion_canonical: understanding
     trainable_emotion: engagement
     strategy: S11
@@ -2110,7 +1915,6 @@ mappings:
     merged: true
   unfairness:
     raw_label: unfairness
-    raw_example: 那肯定是不合理的
     emotion_canonical: unfairness
     trainable_emotion: complaint
     strategy: S3
@@ -2119,7 +1923,6 @@ mappings:
     merged: true
   urgency:
     raw_label: urgency
-    raw_example: 主动求助
     emotion_canonical: urgency
     trainable_emotion: negotiation
     strategy: S10
@@ -2128,7 +1931,6 @@ mappings:
     merged: true
   urgency_distraction:
     raw_label: urgency_distraction
-    raw_example: 有事
     emotion_canonical: urgency_distraction
     trainable_emotion: negotiation
     strategy: S10
@@ -2137,7 +1939,6 @@ mappings:
     merged: true
   vague_avoidance:
     raw_label: vague_avoidance
-    raw_example: 有点事情
     emotion_canonical: vague_avoidance
     trainable_emotion: defensive
     strategy: S9
@@ -2146,7 +1947,6 @@ mappings:
     merged: true
   victimhood:
     raw_label: victimhood
-    raw_example: 受害者心态
     emotion_canonical: victimhood
     trainable_emotion: defensive
     strategy: S9
@@ -2155,7 +1955,6 @@ mappings:
     merged: true
   vigilance:
     raw_label: vigilance
-    raw_example: 警惕
     emotion_canonical: vigilance
     trainable_emotion: anxiety
     strategy: S6
@@ -2164,7 +1963,6 @@ mappings:
     merged: true
   vulnerability:
     raw_label: vulnerability
-    raw_example: 脆弱
     emotion_canonical: vulnerability
     trainable_emotion: distress
     strategy: S1
@@ -2173,7 +1971,6 @@ mappings:
     merged: true
   warning:
     raw_label: warning
-    raw_example: 警告
     emotion_canonical: warning
     trainable_emotion: hostility
     strategy: S5
@@ -2182,7 +1979,6 @@ mappings:
     merged: true
   willingness:
     raw_label: willingness
-    raw_example: 我愿意
     emotion_canonical: willingness
     trainable_emotion: engagement
     strategy: S11
@@ -2191,7 +1987,6 @@ mappings:
     merged: true
   worry:
     raw_label: worry
-    raw_example: 担忧
     emotion_canonical: worry
     trainable_emotion: anxiety
     strategy: S6
