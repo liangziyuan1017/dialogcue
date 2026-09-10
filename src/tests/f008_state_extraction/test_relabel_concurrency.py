@@ -1,18 +1,17 @@
 import csv
 import threading
 from concurrent.futures import ThreadPoolExecutor
-from pathlib import Path
 
 import pytest
 
-from f008_state_extraction import state_extraction as se
+from f007_infrastructure import label_relabel as lr
 
 
 @pytest.fixture
 def temp_csv(tmp_path, monkeypatch):
-    monkeypatch.setattr(se, "_DATA_LABELS_DIR", tmp_path)
-    se._FACT_CSV_MAP = {}
-    se._EMOTION_CSV_MAP = {}
+    monkeypatch.setattr(lr, "_DATA_LABELS_DIR", tmp_path)
+    lr._FACT_CSV_MAP = {}
+    lr._EMOTION_CSV_MAP = {}
     return tmp_path
 
 
@@ -22,7 +21,7 @@ def test_concurrent_appends_no_corruption(temp_csv):
 
     def write_batch(tid):
         mappings = {f"tag_{tid}_{i}": f"canonical_{tid}_{i}" for i in range(per_thread)}
-        se._append_relabel_to_csv("facts", mappings)
+        lr.append_relabel_to_csv("facts", mappings)
 
     with ThreadPoolExecutor(max_workers=n_threads) as pool:
         list(pool.map(write_batch, range(n_threads)))
@@ -41,7 +40,7 @@ def test_concurrent_map_updates_no_lost_entries(temp_csv):
 
     def update_batch(tid):
         barrier.wait()
-        with se._relabel_lock:
+        with lr._relabel_lock:
             for i in range(10):
                 map_obj[f"t{tid}_{i}"] = f"c{tid}_{i}"
 

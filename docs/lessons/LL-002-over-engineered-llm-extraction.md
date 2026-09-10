@@ -1,5 +1,5 @@
 ---
-id: LL-002
+REMOVED_FIELD_id: LL-002
 title: "Over-engineered per-turn LLM extraction when partial manual annotations suffice"
 doc_kind: lesson
 feature_ids: [F002]
@@ -14,7 +14,7 @@ schema_version: 1
 
 ## Pitfall
 
-Bypassed `id-allocate.py` and `write-durable.py` scripts to write ADR-009 and LL-002 manually, causing id-allocator state drift and index path inconsistencies.
+Bypassed `REMOVED_FIELD_id-allocate.py` and `write-durable.py` scripts to write ADR-009 and LL-002 manually, causing REMOVED_FIELD_id-allocator state drift and index path inconsistencies.
 
 ## Root Cause
 
@@ -26,11 +26,11 @@ When memory scripts are not found via shallow search, or when `--state-dir` is n
 
 ## Fix
 
-Used `find` to locate scripts. Passed `--state-dir ../../.agent-memory` when running from `modules/agent-memory/`. Manually synced `id-allocator.json` state to match existing docs.
+Used `find` to locate scripts. Passed `--state-dir ../../.agent-memory` when running from `modules/agent-memory/`. Manually synced `REMOVED_FIELD_id-allocator.json` state to match existing docs.
 
 ## Guard
 
-Before writing ADR/LL docs, always: (1) locate scripts via `find modules/agent-memory/scripts/ -name "*.py"`, (2) run `id-allocate.py --kind <KIND> --state-dir <PROJECT_ROOT>/.agent-memory`, (3) run `write-durable.py` with the allocated ID. Never write memory docs manually.
+Before writing ADR/LL docs, always: (1) locate scripts via `find modules/agent-memory/scripts/ -name "*.py"`, (2) run `REMOVED_FIELD_id-allocate.py --kind <KIND> --state-dir <PROJECT_ROOT>/.agent-memory`, (3) run `write-durable.py` with the allocated ID. Never write memory docs manually.
 
 ## Source Anchors
 

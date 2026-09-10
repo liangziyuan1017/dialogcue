@@ -1,5 +1,5 @@
 ---
-id: LL-008
+REMOVED_FIELD_id: LL-008
 title: Inline/stripped build skips final transforms → duplicate script_ids
 doc_kind: lesson
 feature_ids: [F004]

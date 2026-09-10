@@ -1,5 +1,5 @@
 ---
-id: F004b
+REMOVED_FIELD_id: F004b
 name: Decision Tree Invariant Checker
 status: merged
 owner: agent
@@ -91,7 +91,7 @@ The CLI `check_tree.py` is a thin wrapper that imports from `tree_checks/` and h
 
 ```python
 class CheckResult:
-    id: str          # e.g. "S1", "N4", "SC8"
+    REMOVED_FIELD_id: str          # e.g. "S1", "N4", "SC8"
     category: str    # "structure", "node", "sentence", ...
     severity: str    # "hard" | "soft"
     status: str      # "pass" | "fail" | "warn" | "skip"

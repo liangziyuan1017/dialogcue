@@ -104,6 +104,21 @@ class TestAddDialogToTree:
         opening = [s for s in tree["sentence_pool"] if s.get("gesture_type") == "opening"]
         assert len(opening) > 0
 
+    def test_opening_spawns_non_greeting_action_children(self):
+        """Pre-fact collector actions (except greeting) must be a:* children for UI tracing."""
+        tree = make_base_tree()
+        registry = {}
+        add_dialog_to_tree(tree, _sample_record(), registry)
+        child_ids = {c.get("state_id") for c in tree["children"]}
+        assert "a:greeting" not in child_ids
+        assert "a:plan_proposal" in child_ids
+        assert "a:closure" in child_ids
+        # greetings stay in root pool; non-greeting actions do not
+        root_actions = {s.get("collector_action") for s in tree["sentence_pool"]}
+        assert "greeting" in root_actions
+        assert "plan_proposal" not in root_actions
+        assert "closure" not in root_actions
+
     def test_adds_facts_branch(self):
         tree = make_base_tree()
         registry = {}

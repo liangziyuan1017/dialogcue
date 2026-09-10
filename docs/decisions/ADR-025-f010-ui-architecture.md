@@ -1,5 +1,5 @@
 ---
-id: ADR-025
+REMOVED_FIELD_id: ADR-025
 title: F010 UI Architecture — Vanilla JS + FastAPI StaticFiles
 status: accepted
 date: 2026-06-26

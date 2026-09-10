@@ -27,7 +27,7 @@ Given `inherited_facts` (list) + `branch_key_values` (list), sort both and looku
 TDD:
 1. Write test: `lookup_by_key(["financial_hardship"], ["empathy"], index)` returns matching nodes
 2. Write test: `lookup_by_key([], [], index)` returns root node
-3. Write test: facts/bk in different order produce same result (permutation insensitivity)
+3. Write test: facts/bk in different order produce same REMOVED_FIELD_result (permutation insensitivity)
 4. Write test: unknown key returns empty list
 5. Implement `lookup_by_key(inherited_facts, branch_key_values, index)`
 
@@ -39,7 +39,7 @@ TDD:
 1. Write test: single node with 3 sentences → pool of 3
 2. Write test: 7 nodes each with 1 sentence → pool of 7
 3. Write test: nodes with empty pools contribute nothing
-4. Write test: all pools empty → empty result
+4. Write test: all pools empty → empty REMOVED_FIELD_result
 5. Implement `aggregate_pools(nodes)`
 
 ## Step 4: Fallback 1 — Key Drop

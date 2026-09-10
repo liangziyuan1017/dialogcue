@@ -1,5 +1,5 @@
 ---
-id: ADR-024
+REMOVED_FIELD_id: ADR-024
 title: "Embedding architecture: bge-m3 via Ollama replaces char-ngram TF-IDF"
 doc_kind: decision
 feature_ids: [F007, F007b]

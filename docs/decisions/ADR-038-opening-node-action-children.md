@@ -1,5 +1,5 @@
 ---
-id: ADR-038
+REMOVED_FIELD_id: ADR-038
 title: Opening Node Spawns Action Children for Greeting and Information
 status: superseded
 superseded_by: ADR-042

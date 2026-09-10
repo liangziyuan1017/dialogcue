@@ -1,5 +1,5 @@
 ---
-id: ADR-017
+REMOVED_FIELD_id: ADR-017
 title: Action Node Splitting Ensures Uniform Sentence Placement
 status: accepted
 created: 2026-06-17

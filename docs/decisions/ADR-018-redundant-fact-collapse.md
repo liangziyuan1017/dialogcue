@@ -1,5 +1,5 @@
 ---
-id: ADR-018
+REMOVED_FIELD_id: ADR-018
 title: Redundant Fact Collapse with Inherited Facts Propagation
 status: superseded
 created: 2026-06-17

@@ -1,6 +1,7 @@
 """
 Merge extra fields from the source JSONL into the pipeline output.
-Matches records by call_id and cust_no.
+Matches records by call_id. Only copies fields that exist on the source record
+(aside from dialog, which is replaced by the cleaned response).
 """
 import json
 import os
@@ -11,47 +12,17 @@ from f007_infrastructure.jsonl_utils import load_jsonl, write_jsonl
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 INPUT_DIR = _PROJECT_ROOT / "data" / "data_input"
 OUTPUT_DIR = _PROJECT_ROOT / "data" / "data_output"
-DATA_FILE = Path(os.environ.get("DATA_FILE", str(INPUT_DIR / "matched_data.jsonl")))
+DATA_FILE = Path(os.environ.get("DATA_FILE", str(INPUT_DIR / "input_data.jsonl")))
 OUTPUT_FILE = Path(os.environ.get("OUTPUT_FILE", str(OUTPUT_DIR / "output_merged.jsonl")))
 
-EXTRA_FIELDS = [
-    "custInfo",
-    "dialDate",
-    "connectDate",
-    "dialType",
-    "ringTime",
-    "collUserId",
-    "collId",
-    "collArea",
-    "collGroupId",
-    "acNo",
-    "isRecorded",
-    "result",
-    "talkTime",
-    "channel",
-    "corpCode",
-    "calledNo",
-    "mobTyp",
-    "phoneRoute",
-    "agentTalkTime",
-    "call_date",
-    "coll_user_id",
-    "mob_typ",
-    "talk_time",
-    "plan_evaluation",
-]
+# Never overwrite cleaned dialogue payloads with raw source dialog.
+_SKIP_MERGE_FIELDS = {"dialog", "response"}
 
-def _get_cust_no(record: dict) -> str:
-    return record.get("cust_no") or record.get("custno") or ""
 
 def load_source() -> dict:
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         records = [json.loads(line) for line in f if line.strip()]
-    index = {}
-    for r in records:
-        key = (r["call_id"], _get_cust_no(r))
-        index[key] = r
-    return index
+    return {r["call_id"]: r for r in records if r.get("call_id")}
 
 
 def load_results() -> list[dict]:
@@ -71,16 +42,17 @@ def main() -> None:
     matched = 0
     unmatched = 0
     for r in results:
-        key = (r["call_id"], _get_cust_no(r))
-        src = source_index.get(key)
+        cid = r.get("call_id", "")
+        src = source_index.get(cid)
         if src is None:
             unmatched += 1
-            print(f"  Unmatched: call_id={r['call_id']}, cust_no={r['cust_no']}")
+            print(f"  Unmatched: call_id={cid}")
             continue
         matched += 1
-        for field in EXTRA_FIELDS:
-            if field in src:
-                r[field] = src[field]
+        for field, value in src.items():
+            if field in _SKIP_MERGE_FIELDS:
+                continue
+            r[field] = value
 
     write_results(results)
     print(f"Done. Matched: {matched}, Unmatched: {unmatched}")

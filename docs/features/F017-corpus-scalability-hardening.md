@@ -1,5 +1,5 @@
 ---
-id: F017
+REMOVED_FIELD_id: F017
 name: Corpus Scalability Hardening (100k dialogs)
 status: complete
 owner: agent
@@ -34,7 +34,7 @@ systemic risks.
 
 Eight remediation tracks, ordered by leverage:
 
-1. **Replace `.py` literal result files with streaming JSONL/SQLite** — eliminate
+1. **Replace `.py` literal REMOVED_FIELD_result files with streaming JSONL/SQLite** — eliminate
    every `_load_py_results` / importlib exec of `results = [...]`. (C1/C2)
 2. **Move served indexes into the DB** — stop holding scored tree + node index +
    label-set index in `app.state` forever; serve from DB queries. (C3)
@@ -125,7 +125,7 @@ recommendations.
 
 | Priority | Improvement | Why it matters | Completion signal |
 |---|---|---|---|
-| P0 | **One resumable ingest command** | Users should not understand F000-F005 internals or manually place files at each stage. | `debt ingest <file> --tenant <id>` validates, fingerprints, checkpoints, resumes, and exposes job status. |
+| P0 | **One resumable ingest command** | Users should not understand F000-F005 internals or manually place files at each stage. | `debt ingest <file> --tenant <REMOVED_FIELD_id>` validates, fingerprints, checkpoints, resumes, and exposes job status. |
 | P0 | **Versioned corpus and taxonomy manifests** | New schemas, labels, models, and prompts must be reproducible and reversible. | Every output records `corpus_id`, `schema_version`, `taxonomy_version`, `model_version`, and `prompt_version`. |
 | P0 | **Hard safety and compliance policy layer** | A high-scoring historical script can still be illegal, coercive, discriminatory, or inappropriate for the customer state. | Policy filters run before ranking; every recommendation records rule checks, policy version, and an auditable reason. |
 | P0 | **Offline recommendation evaluation set** | Win rate alone is biased by collector behavior and cannot establish that the system recommends the best response. | Curated cases measure top-1 accuracy, top-k usefulness, policy violations, abstention quality, calibration, and slice performance. |

@@ -24,7 +24,7 @@ Before writing this plan, I inspected the actual database and tree data. Here's 
   - Current pipeline: `{"business_loan_digits": 0, "mortgage_balance_digits": 0, ...}` (10 keys)
   - Older v1: `{"age": "49", "gender": "男", "industry": "...", ...}` (12 keys, Chinese values)
   - Older v2: `{"education": "本科", "risk_level": "", ...}` (8 keys, string values)
-- **`sentences` table DDL**: columns are `id, script_id (UNIQUE), node_id (FK), script_text, bg_bitmask_int, win_rate, sas, bg_background (JSONB), conversation_context, embedding (vector(1024)), script_tsv (generated)`
+- **`sentences` table DDL**: columns are `REMOVED_FIELD_id, script_id (UNIQUE), node_id (FK), script_text, bg_bitmask_int, win_rate, sas, bg_background (JSONB), conversation_context, embedding (vector(1024)), script_tsv (generated)`
 
 ### Tree JSON (`decision_tree_scored.json`)
 - **1,716 sentences** across **105 unique call_ids**
@@ -67,7 +67,7 @@ Before writing this plan, I inspected the actual database and tree data. Here's 
 ## 1. Overview
 
 ```
-User picks a node (CLI arg: --node-id or --path-signature)
+User picks a node (CLI arg: --node-REMOVED_FIELD_id or --path-signature)
         │
         ▼
 Script reads decision_tree_scored.json → finds target node
@@ -105,7 +105,7 @@ Script scores each new sentence (mimicking real data exactly):
         │
         └──► Insert into PostgreSQL sentences table
                — via existing SentenceDB.upsert_sentences()
-               — node looked up by path_signature → nodes.id
+               — node looked up by path_signature → nodes.REMOVED_FIELD_id
                — ON CONFLICT (script_id) DO UPDATE (idempotent)
 ```
 
@@ -469,7 +469,7 @@ def insert_into_db(sentences: list[dict], path_signature: str, dsn: str):
         for s in sentences:
             db_sentences.append({
                 "script_id": s["script_id"],
-                "node_id": node_row["id"],
+                "node_id": node_row["REMOVED_FIELD_id"],
                 "script_text": s["script_text"],
                 "bg_bitmask_int": s["bg_bitmask_int"],
                 "win_rate": s["win_rate"],
@@ -488,7 +488,7 @@ The DB `sentences` table columns mapped:
 | DB column | Source | Notes |
 |---|---|---|
 | `script_id` | `{fake_call_id}_t{turn_index}` | UNIQUE, ON CONFLICT DO UPDATE |
-| `node_id` | `nodes.id` (looked up by `path_signature`) | FK |
+| `node_id` | `nodes.REMOVED_FIELD_id` (looked up by `path_signature`) | FK |
 | `script_text` | LLM-generated text | |
 | `bg_bitmask_int` | computed from random profile | |
 | `win_rate` | node's `win_rate_node` | real range 0.333–0.889 |
@@ -502,7 +502,7 @@ The DB `sentences` table columns mapped:
 
 ```bash
 python3 -m f016_sentence_augmentation.augment_sentences \
-    --node-id n_b8e3ecee405b \
+    --node-REMOVED_FIELD_id n_b8e3ecee405b \
     --count 5 \
     --dsn "dbname=icbc user=jiani" \
     [--no-db]      # skip DB insert (overlay only)
@@ -544,8 +544,8 @@ All 1,716 tree sentences and all 1,395 tree nodes exist in the DB (0 missing). T
 **Complication found during inspection**: 58 tree sentences (by `script_id`) are linked to extra (non-tree) nodes in the DB — the sentence exists but its `node_id` points to an old node. These must be **re-linked** to the correct tree node before deleting extra nodes. Additionally, 272 extra sentences sit on tree nodes — these are simply deleted.
 
 **FK constraints** (verified safe):
-- `sentences.node_id → nodes.id`: handled by re-linking + deletion order
-- `nodes.parent_id → nodes.id`: all 4,133 extra nodes have `parent_id = NULL` (no references to or from tree nodes) — safe to delete directly
+- `sentences.node_id → nodes.REMOVED_FIELD_id`: handled by re-linking + deletion order
+- `nodes.parent_id → nodes.REMOVED_FIELD_id`: all 4,133 extra nodes have `parent_id = NULL` (no references to or from tree nodes) — safe to delete directly
 
 #### CLI
 
@@ -565,7 +565,7 @@ Step 1: Load decision_tree_scored.json → build two mappings:
   - tree_sid_to_psig: {script_id → path_signature} (which tree node each sentence belongs to)
 
 Step 2: Query DB → build:
-  - db_psig_to_node_id: {path_signature → nodes.id} (for tree path_signatures only)
+  - db_psig_to_node_id: {path_signature → nodes.REMOVED_FIELD_id} (for tree path_signatures only)
   - db_sid_to_node_psig: {script_id → path_signature} (current DB sentence→node mapping)
 
 Step 3: Identify misplaced tree sentences (58 expected):
@@ -601,7 +601,7 @@ Step 6: Execute (unless --dry-run):
 Step 7: Verify and print summary:
   - SELECT count(*) FROM sentences  → should be 1,716 + N_augmented
   - SELECT count(*) FROM nodes      → should be 1,395
-  - SELECT count(*) FROM sentences s JOIN nodes n ON s.node_id=n.id
+  - SELECT count(*) FROM sentences s JOIN nodes n ON s.node_id=n.REMOVED_FIELD_id
     WHERE n.path_signature NOT IN ({tree_path_signatures})  → should be 0
 ```
 
@@ -674,11 +674,11 @@ decision_tree_scored.json ──────► augment_sentences.py (reads to f
 | 2 | `random_profile.py` | Fake call_id + random profile generator | call_id is 19 digits, starts with `9999`; profile has all 17 fields with correct types |
 | 3 | `generate_prompts.py` | LLM prompt builder | Prompt includes node info, profile, few-shot examples |
 | 4 | `score_sentences.py` | Sentence scorer | Output dict has all scored-tree fields; `script_id` matches `{call_id}_t{turn}` format; `bg_bitmask_int` matches manual calculation; `win_rate` = node's `win_rate_node`; `deferred` = true; `gesture_type` absent |
-| 5 | `augment_sentences.py` | Main CLI | `--help` works; `--node-id` finds node; dry run with `--no-db --no-overlay` prints generated sentences with correct format |
+| 5 | `augment_sentences.py` | Main CLI | `--help` works; `--node-REMOVED_FIELD_id` finds node; dry run with `--no-db --no-overlay` prints generated sentences with correct format |
 | 6 | `data/augmented_sentences.json` | (auto-generated) | JSON valid; keyed by node_id; sentences have all fields matching scored tree schema |
 | 7 | `ui/augment_overlay.js` | UI merge snippet | Fetches overlay, merges into treeData, no console errors |
 | 8 | `tree_explorer.html` | Add `<script>` tag | One line added; UI loads; augmented sentences appear in node info panel with scores |
-| 9 | DB insert | End-to-end | `SELECT * FROM sentences WHERE script_id LIKE '9999%'` returns N rows; `embedding IS NOT NULL` for all; `node_id` matches `nodes.id` for the target path_signature |
+| 9 | DB insert | End-to-end | `SELECT * FROM sentences WHERE script_id LIKE '9999%'` returns N rows; `embedding IS NOT NULL` for all; `node_id` matches `nodes.REMOVED_FIELD_id` for the target path_signature |
 | 10 | UI verify | Reload tree explorer | Click target node → new sentences visible in info panel → HWR bar shows win_rate → CTX shows bg_bitmask_int → script_id shows `9999..._t1` format |
 | 11 | `cleanup_db.py` | DB cleanup script | `--dry-run` prints 58 re-links + 802 sentence deletes + 4,133 node deletes; actual run leaves DB at 1,716 sentences / 1,395 nodes |
 
@@ -779,7 +779,7 @@ SELECT count(*) FROM sentences WHERE script_id LIKE '9999%' AND embedding IS NOT
 -- Node FK correct
 SELECT s.script_id, n.path_signature
 FROM sentences s
-JOIN nodes n ON s.node_id = n.id
+JOIN nodes n ON s.node_id = n.REMOVED_FIELD_id
 WHERE s.script_id LIKE '9999%';
 
 -- bg_background schema correct (should have 10 keys with *_digits)
@@ -799,7 +799,7 @@ SELECT count(*) as node_count FROM nodes;          -- should be 1395
 -- No sentences on extra nodes
 SELECT count(*) as orphaned
 FROM sentences s
-JOIN nodes n ON s.node_id = n.id
+JOIN nodes n ON s.node_id = n.REMOVED_FIELD_id
 WHERE n.path_signature NOT IN (
   -- paste tree path_signatures here, or compare programmatically
   'initial_contact'

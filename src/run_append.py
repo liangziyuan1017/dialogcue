@@ -85,7 +85,7 @@ def run_full(args):
         state["counts"] = add_records._phase3_4_score_db(state["tree"], state["new_ids"], args.dsn)
 
     def p5():
-        add_records._append_to_matched_data(new_input)
+        add_records._append_to_input_data(new_input)
 
     steps = [
         ("Phase 0+1a: pre-check + clean", p1a),
@@ -95,7 +95,7 @@ def run_full(args):
         ("Phase 1e: reward", p1e),
         ("Phase 2: incremental tree", p2),
         ("Phase 3+4: score + DB upsert", p34),
-        ("Phase 5: append to matched_data", p5),
+        ("Phase 5: append to input_data", p5),
     ]
 
     for label, fn in steps:
@@ -155,7 +155,7 @@ def run_skip_cleaning(args):
             _warn(f"{label} failed: {e}")
             return 1
 
-    _warn("skip-cleaning mode: matched_data.jsonl append hook skipped (no raw input records)")
+    _warn("skip-cleaning mode: input_data.jsonl append hook skipped (no raw input records)")
     n_nodes, n_sents, n_affected = state["counts"]
     _print_summary(new_ids, n_nodes, n_sents, n_affected, appended=0)
     return 0
@@ -168,7 +168,7 @@ def _print_summary(new_ids, n_nodes, n_sents, n_affected, appended):
     print(f"  New nodes: {n_nodes}")
     print(f"  New sentences (embedded): {n_sents}")
     print(f"  Affected existing sentences (score update): {n_affected}")
-    print(f"  Records appended to matched_data.jsonl: {appended}")
+    print(f"  Records appended to input_data.jsonl: {appended}")
     print(f"{'='*60}")
 
 

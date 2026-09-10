@@ -20,7 +20,7 @@ Script scans all 14 data sources (skipping .py files)
         ├──► decision_tree.json (F004 tree)
         ├──► dialog_records.json (F004 dialog records)
         ├──► merge_decisions.json (F004 merge decisions)
-        ├──► matched_data.jsonl (raw input data)
+        ├──► input_data.jsonl (raw input data)
         ├──► embedding_cache.json (old_files)
         └──► ids.md (old_files)
         │
@@ -37,7 +37,7 @@ Print summary table
 
 ```bash
 python3 -m f016_sentence_augmentation.remove_call_id \
-    --call-id 9999104332181960013 \
+    --call-REMOVED_FIELD_id 9999104332181960013 \
     --dsn "dbname=icbc user=jiani" \
     [--dry-run]         # preview only, no modifications
     [--no-db]           # skip DB removal
@@ -48,7 +48,7 @@ python3 -m f016_sentence_augmentation.remove_call_id \
 
 | Arg | Required | Default | Description |
 |-----|----------|---------|-------------|
-| `--call-id` | Yes | — | 19-digit numeric call_id (real `2346…` or augmented `9999…`) |
+| `--call-REMOVED_FIELD_id` | Yes | — | 19-digit numeric call_id (real `2346…` or augmented `9999…`) |
 | `--dsn` | No | `""` | PostgreSQL DSN. If empty, skip DB. |
 | `--dry-run` | No | `False` | Print what would be removed, don't modify anything. |
 | `--no-db` | No | `False` | Skip DB removal. |
@@ -56,7 +56,7 @@ python3 -m f016_sentence_augmentation.remove_call_id \
 
 ### Validation
 
-- `--call-id` must be a string of exactly 19 digits. Otherwise: error + exit 1.
+- `--call-REMOVED_FIELD_id` must be a string of exactly 19 digits. Otherwise: error + exit 1.
 - If `--dsn` is empty and not `--no-db`: warn "No DSN provided, skipping DB".
 
 ---
@@ -68,7 +68,7 @@ python3 -m f016_sentence_augmentation.remove_call_id \
 ### 3.1 PostgreSQL DB (`sentences` table)
 
 - **call_id form**: `script_id` prefix (`{call_id}_t{turn}`)
-- **Identify**: `SELECT id, script_id, node_id FROM sentences WHERE script_id LIKE '{call_id}_t%'`
+- **Identify**: `SELECT REMOVED_FIELD_id, script_id, node_id FROM sentences WHERE script_id LIKE '{call_id}_t%'`
 - **Remove**: `DELETE FROM sentences WHERE script_id LIKE '{call_id}_t%'`
 - **Transaction**: yes (rollback on error)
 - **Does NOT delete nodes** — nodes are tree structure, not call-specific. But reports any nodes whose sentence count drops to 0 after removal.
@@ -114,9 +114,9 @@ python3 -m f016_sentence_augmentation.remove_call_id \
 - **Remove**: drop matching keys
 - **Write**: atomic
 
-### 3.7 `matched_data.jsonl` (raw input)
+### 3.7 `input_data.jsonl` (raw input)
 
-- **Path**: `data/data_input/matched_data.jsonl`
+- **Path**: `data/data_input/input_data.jsonl`
 - **call_id form**: `call_id` JSON key per line
 - **Identify**: `json.loads(line)["call_id"] == call_id`
 - **Remove**: filter out matching lines
@@ -289,7 +289,7 @@ decision_tree_scored.json                     0
 decision_tree.json                            0
 dialog_records.json                           0
 merge_decisions.json                          0
-matched_data.jsonl                            0
+input_data.jsonl                            0
 embedding_cache.json                          0
 ids.md                                        0
 ──────────────────────────────────────────────────
@@ -309,7 +309,7 @@ FILE_SOURCES = [
     ("decision_tree.json", "src/f004_decision_tree/data/decision_tree.json", remove_from_tree_file),
     ("dialog_records.json", "src/f004_decision_tree/data/dialog_records.json", remove_from_dialog_records_file),
     ("merge_decisions.json", "src/f004_decision_tree/data/merge_decisions.json", remove_from_merge_decisions_file),
-    ("matched_data.jsonl", "data/data_input/matched_data.jsonl", remove_from_jsonl_file),
+    ("input_data.jsonl", "data/data_input/input_data.jsonl", remove_from_jsonl_file),
     ("embedding_cache.json", "old_files/embedding_cache.json", remove_from_embedding_cache_file),
     ("ids.md", "old_files/ids.md", remove_from_ids_file),
 ]
@@ -377,5 +377,5 @@ All paths are relative to the project root (parent of `src/`).
 ### Integration Tests
 
 - `--dry-run` on `9999104332181960013` → 3 DB + 3 overlay
-- `--dry-run` on `2346089320444241687` → counts in DB + tree JSONs + dialog records + merge decisions + matched_data.jsonl
+- `--dry-run` on `2346089320444241687` → counts in DB + tree JSONs + dialog records + merge decisions + input_data.jsonl
 - `--dry-run` on `9999999999999999999` (non-existent) → 0 everywhere

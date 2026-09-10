@@ -1,5 +1,5 @@
 ---
-id: F012
+REMOVED_FIELD_id: F012
 name: Runtime Robustness Hardening
 status: complete
 owner: agent
@@ -185,7 +185,7 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 - `ruff.toml`, `mypy.ini`
 
 ### Modified
-- `src/f009_api_server/server.py` — request-id middleware, placeholder guard, logger
+- `src/f009_api_server/server.py` — request-REMOVED_FIELD_id middleware, placeholder guard, logger
 - `src/f006_retrieval_engine/retrieval_ranking.py` — `get_ranking_weights()` live-read
 - `src/f006_retrieval_engine/retrieval_engine.py` — `_pool_cap()` live-read
 - `src/f007_infrastructure/config.py` — `ConfigError`, fence handling
@@ -250,7 +250,7 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 | # | Feedback | Resolution | Commit |
 |---|----------|------------|--------|
 | 1 | Fix the ruff violations (no baseline) | Fixed all 186 violations (I001/F401/F541/UP015/E401/B007/B023/F841/B905/B006/UP031/E731/E701/B904/E402); removed baseline ignore; re-exports protected with `# noqa: F401` | `d49a481` |
-| 2 | All should be checked by mypy | Full-repo mypy clean (75 files); fixed implicit Optional, None-globals, dict annotations, and a Token-reset bug in the request-id middleware | `bee3852` |
+| 2 | All should be checked by mypy | Full-repo mypy clean (75 files); fixed implicit Optional, None-globals, dict annotations, and a Token-reset bug in the request-REMOVED_FIELD_id middleware | `bee3852` |
 | 3 | Live read | Switched response-dict `RANKING_WEIGHTS` refs to `get_ranking_weights()` in server.py, retrieval_engine.py; removed unused import in debug.py | `1d1f193` |
 | 4 | Do the follow-up | `git rm --cached` 33 tracked `.pyc` files (`.gitignore` already had `__pycache__/`+`*.pyc`) | `1d1f193` |
 | 5 | Should use existing .env | Dropped `APP_ENV`; guard now fires on placeholder `DEEPSEEK_API_KEY` unconditionally (uses only existing `.env` key) | `1d1f193` |
@@ -265,7 +265,7 @@ to DB. Scheduler `last_run_at` persistence + midnight edge-case fix.
 |---|-------|----------|------------|--------|
 | 1 | `connection()` ctx manager double `putconn` if `putconn(close=True)` raises in OperationalError handler | Bug (edge case) | Set `returned=True` before `putconn`; wrapped `putconn` in try/except to prevent double-return | `90ee50d` |
 | 2 | No test for `OperationalError` reconnect path in `connection()` | Test gap | Added `test_operational_error_closes_connection_and_reraises` + `test_operational_error_putconn_failure_does_not_double_return` | `90ee50d` |
-| 3 | `_ensure_vector_registered` called on every operation — redundant `register_vector` on pooled connections | Minor perf | Per-connection cache via `id(conn)` set | `90ee50d` |
+| 3 | `_ensure_vector_registered` called on every operation — redundant `register_vector` on pooled connections | Minor perf | Per-connection cache via `REMOVED_FIELD_id(conn)` set | `90ee50d` |
 | 4 | `zip(all_sentences, vecs, strict=False)` silently drops on count mismatch | Pre-existing | Changed to `strict=True` | `90ee50d` |
 
 **Post-fix verification:** 392 passed / 8 skipped · ruff clean · mypy clean (81 files) · 0 regressions.

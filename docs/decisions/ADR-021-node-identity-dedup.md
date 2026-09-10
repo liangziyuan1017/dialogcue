@@ -1,5 +1,5 @@
 ---
-id: ADR-021
+REMOVED_FIELD_id: ADR-021
 title: Node Identity-Based Deduplication with DAG Support
 status: accepted
 created: 2026-06-23
@@ -30,7 +30,7 @@ Three mechanisms enforce this:
 
 ### DAG Handling
 
-The tree is now a DAG — a node can appear under multiple parents. All recursive tree-walking functions use `_visited` sets (by `id(node)`) to prevent infinite recursion. The UI uses `node_id` as the Cytoscape node ID, so duplicate references render as a single node with multiple incoming edges.
+The tree is now a DAG — a node can appear under multiple parents. All recursive tree-walking functions use `_visited` sets (by `REMOVED_FIELD_id(node)`) to prevent infinite recursion. The UI uses `node_id` as the Cytoscape node ID, so duplicate references render as a single node with multiple incoming edges.
 
 ### Cycle Prevention
 

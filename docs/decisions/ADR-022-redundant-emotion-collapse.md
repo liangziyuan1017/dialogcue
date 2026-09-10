@@ -1,5 +1,5 @@
 ---
-id: ADR-022
+REMOVED_FIELD_id: ADR-022
 title: Redundant Emotion Collapse
 status: accepted
 created: 2026-06-23

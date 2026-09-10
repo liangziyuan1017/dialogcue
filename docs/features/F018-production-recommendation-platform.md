@@ -1,5 +1,5 @@
 ---
-id: F018
+REMOVED_FIELD_id: F018
 name: Production Recommendation Platform
 status: planned
 owner: agent
@@ -50,7 +50,7 @@ F018 is a staged platform layer around the existing F000-F017 pipeline:
 ## Product principles
 
 - **Recommend or abstain**: never force a low-confidence or policy-invalid script.
-- **Every result is explainable**: expose source, score components, policy checks,
+- **Every REMOVED_FIELD_result is explainable**: expose source, score components, policy checks,
   versions, and fallback reasons.
 - **Immutable inputs, replaceable versions**: new knowledge is promoted as a
   version; it does not silently rewrite historical evidence.
@@ -74,7 +74,7 @@ F018 is a staged platform layer around the existing F000-F017 pipeline:
 - [ ] Policy checks execute before final ranking and can block or require human
   review; the API supports explicit abstention.
 - [ ] Every recommendation response has a trace ID, decision ID, versions,
-  candidate count, score components, policy result, and fallback reasons.
+  candidate count, score components, policy REMOVED_FIELD_result, and fallback reasons.
 - [ ] A deterministic safe fallback is returned when extraction, embedding, or DB
   dependencies fail, unless policy requires abstention.
 - [ ] A versioned evaluation set measures top-1/top-k quality, policy violations,

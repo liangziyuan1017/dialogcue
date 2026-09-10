@@ -1,5 +1,5 @@
 ---
-id: ADR-009
+REMOVED_FIELD_id: ADR-009
 title: "Eliminate F002 LLM State Extraction — use F001 manual annotations only"
 doc_kind: decision
 feature_ids: [F002]

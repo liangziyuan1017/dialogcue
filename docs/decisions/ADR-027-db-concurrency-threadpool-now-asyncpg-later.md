@@ -1,5 +1,5 @@
 ---
-id: ADR-027
+REMOVED_FIELD_id: ADR-027
 title: "DB concurrency: threadpool on psycopg2 (F012 Phase B), then asyncpg runtime migration (F013, merged)"
 doc_kind: decision
 feature_ids: [F012, F013]

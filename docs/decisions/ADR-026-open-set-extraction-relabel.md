@@ -1,5 +1,5 @@
 ---
-id: ADR-026
+REMOVED_FIELD_id: ADR-026
 title: Open-set state extraction with synchronous relabel pipeline
 status: accepted
 date: 2026-06-29

@@ -74,11 +74,28 @@ class SentenceDB:
                     path_signature  TEXT NOT NULL UNIQUE,
                     branch_key      JSONB,
                     parent_id       INTEGER REFERENCES nodes(id),
-                    depth           INTEGER NOT NULL DEFAULT 0
+                    depth           INTEGER NOT NULL DEFAULT 0,
+                    inherited_facts JSONB NOT NULL DEFAULT '[]'::jsonb,
+                    inherited_emotions JSONB NOT NULL DEFAULT '[]'::jsonb,
+                    labels          JSONB NOT NULL DEFAULT '[]'::jsonb
                 )
             """)
+            # Migrate older nodes tables that predate label columns
+            for col, ddl in (
+                ("inherited_facts", "JSONB NOT NULL DEFAULT '[]'::jsonb"),
+                ("inherited_emotions", "JSONB NOT NULL DEFAULT '[]'::jsonb"),
+                ("labels", "JSONB NOT NULL DEFAULT '[]'::jsonb"),
+            ):
+                cur.execute(
+                    "SELECT 1 FROM information_schema.columns "
+                    "WHERE table_name = 'nodes' AND column_name = %s",
+                    (col,),
+                )
+                if cur.fetchone() is None:
+                    cur.execute(f"ALTER TABLE nodes ADD COLUMN {col} {ddl}")
             cur.execute("CREATE INDEX IF NOT EXISTS idx_nodes_path_sig ON nodes(path_signature)")
             cur.execute("CREATE INDEX IF NOT EXISTS idx_nodes_parent ON nodes(parent_id)")
+            cur.execute("CREATE INDEX IF NOT EXISTS idx_nodes_labels ON nodes USING gin (labels)")
 
             cur.execute(f"""
                 CREATE TABLE IF NOT EXISTS sentences (
@@ -343,15 +360,24 @@ class SentenceDB:
             cur = conn.cursor()
             params = []
             for s in sentences:
-                emb = np.array(s["embedding"], dtype=np.float32) if s.get("embedding") else None
+                emb = np.asarray(s["embedding"], dtype=np.float32) if s.get("embedding") else None
+                bg = s.get("bg_background")
+                if isinstance(bg, dict):
+                    bg = {
+                        k: (v.item() if isinstance(v, np.generic) else v)
+                        for k, v in bg.items()
+                    }
+                win_rate = s.get("win_rate", 0)
+                sas = s.get("sas", 0)
+                bitmask = s.get("bg_bitmask_int", 0)
                 params.append((
                     s["script_id"],
-                    s["node_id"],
+                    int(s["node_id"]),
                     s["script_text"],
-                    s.get("bg_bitmask_int", 0),
-                    s.get("win_rate", 0),
-                    s.get("sas", 0),
-                    json.dumps(s.get("bg_background")) if s.get("bg_background") else None,
+                    int(bitmask) if bitmask is not None else 0,
+                    float(win_rate) if win_rate is not None else 0.0,
+                    float(sas) if sas is not None else 0.0,
+                    json.dumps(bg) if bg is not None else None,
                     s.get("conversation_context"),
                     emb,
                 ))

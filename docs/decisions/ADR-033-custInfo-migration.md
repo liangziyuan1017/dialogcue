@@ -1,5 +1,5 @@
 ---
-id: ADR-033
+REMOVED_FIELD_id: ADR-033
 title: "custInfo migration: customer_info dict → custInfo JSON array"
 doc_kind: decision
 feature_ids: [F001, F005, F006]
@@ -33,7 +33,7 @@ Migrated the customer profile data source from `customer_info` (a dict of 27 Chi
 | `retrieval_ranking.py` | New `compute_bg_boost` with complaint_proximity, delinquent_proximity, recent_contact_signal, digits_proximity |
 | `config.md` | New bg_boost keys replacing old industry_match, debt_interest_match, age_proximity_match |
 | `tag_mapping.py` | Updated field names for new context schema |
-| `matched_data.jsonl` | 106 lines, 103 unique call_ids (deduplicated from 152 lines) |
+| `input_data.jsonl` | 106 lines, 103 unique call_ids (deduplicated from 152 lines) |
 
 ## Tradeoff
 

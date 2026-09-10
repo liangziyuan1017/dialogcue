@@ -11,7 +11,7 @@
 - Record/stage checkpoints with dead-letter replay
 - Immutable corpus/knowledge/policy/model/ranking versions
 - Pre-ranking policy checks and explicit abstention
-- Recommendation trace with versions, scores, policy result, and fallbacks
+- Recommendation trace with versions, scores, policy REMOVED_FIELD_result, and fallbacks
 - Deterministic safe fallback for provider failures
 - Offline evaluation harness with quality, safety, calibration, latency, and slice metrics
 - Feedback/outcome event capture and controlled promotion/rollback contracts

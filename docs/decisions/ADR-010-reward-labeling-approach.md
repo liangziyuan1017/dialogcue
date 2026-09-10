@@ -1,5 +1,5 @@
 ---
-id: ADR-010
+REMOVED_FIELD_id: ADR-010
 title: Reward Labeling via LLM with Counterfactual Verification
 status: accepted
 created: 2026-06-11

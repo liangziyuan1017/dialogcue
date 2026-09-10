@@ -127,7 +127,9 @@ def _init_db():
         host = parts.get("host", "localhost")
         port = parts.get("port", "5432")
         dbname = parts.get("dbname", "icbc")
-        user = parts.get("user", "postgres")
+        # Match libpq: omit user → OS username (not hard-coded "postgres")
+        import getpass
+        user = parts.get("user") or getpass.getuser()
         password = parts.get("password", "")
         cred = f"{user}:{password}" if password else user
         dsn = f"postgresql://{cred}@{host}:{port}/{dbname}"

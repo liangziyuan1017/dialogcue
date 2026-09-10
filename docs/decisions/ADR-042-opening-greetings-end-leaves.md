@@ -1,5 +1,5 @@
 ---
-id: ADR-042
+REMOVED_FIELD_id: ADR-042
 title: Opening Node Pools Greetings, Precise Ending Gestures, End Nodes Are Leaves
 status: accepted
 created: 2026-07-16
@@ -89,7 +89,7 @@ Three changes in `src/f004_decision_tree/`:
   `TestF004OpeningGestures` suite passes.
 - ADR-038 marked `superseded`.
 - **Global `script_id` dedup (`_dedup_script_ids_global`)** runs as a final build pass
-  after `_consolidate_endpoints`. It walks the tree once (DAG-safe via an `id(node)`
+  after `_consolidate_endpoints`. It walks the tree once (DAG-safe via an `REMOVED_FIELD_id(node)`
   visited set) and keeps only the first occurrence of each `script_id`, dropping later
   ones. This eliminates cross-node duplicate `script_id`s that remain after the
   end-node fix — distinct node objects holding the same `script_id`, caused by a call

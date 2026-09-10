@@ -1,5 +1,5 @@
 ---
-id: LL-007
+REMOVED_FIELD_id: LL-007
 title: "Empty sentence_pool on intermediate nodes causes root fallback"
 doc_kind: lesson
 feature_ids: [F006]

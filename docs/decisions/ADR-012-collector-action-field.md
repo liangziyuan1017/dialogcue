@@ -1,5 +1,5 @@
 ---
-id: ADR-012
+REMOVED_FIELD_id: ADR-012
 title: collector_action Field on Sentence Entries
 status: accepted
 created: 2026-06-16

@@ -1,5 +1,5 @@
 ---
-id: ADR-034
+REMOVED_FIELD_id: ADR-034
 title: Descend into children when node sentence_pool is empty
 status: accepted
 created: 2026-07-09

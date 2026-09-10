@@ -1,5 +1,5 @@
 ---
-id: ADR-028
+REMOVED_FIELD_id: ADR-028
 title: "SQL-side cosine scoring: move vec_score computation from Python to PostgreSQL"
 doc_kind: decision
 feature_ids: [F006, F007b]

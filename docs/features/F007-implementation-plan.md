@@ -18,7 +18,7 @@
 
 **Step 2:** Run test to verify it fails.
 
-**Step 3:** Implement `SentenceDB` with psycopg2 + pgvector. Schema: `nodes` (id, state_id, path_signature, branch_key, parent_id, depth), `sentences` (id, script_id, node_id, script_text, bg_bitmask_int, win_rate, sas, embedding, script_tsv), `taxonomy_keywords` (group_name, keyword, tsv). Indexes: HNSW on embedding, GIN on tsv, B-tree on path_signature.
+**Step 3:** Implement `SentenceDB` with psycopg2 + pgvector. Schema: `nodes` (REMOVED_FIELD_id, state_id, path_signature, branch_key, parent_id, depth), `sentences` (REMOVED_FIELD_id, script_id, node_id, script_text, bg_bitmask_int, win_rate, sas, embedding, script_tsv), `taxonomy_keywords` (group_name, keyword, tsv). Indexes: HNSW on embedding, GIN on tsv, B-tree on path_signature.
 
 **Step 4:** Run test to verify it passes.
 

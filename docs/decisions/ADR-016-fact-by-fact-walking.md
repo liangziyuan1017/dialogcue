@@ -1,5 +1,5 @@
 ---
-id: ADR-016
+REMOVED_FIELD_id: ADR-016
 title: Fact-by-Fact Tree Walking Eliminates Composite Nodes
 status: accepted
 created: 2026-06-17

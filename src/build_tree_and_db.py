@@ -77,11 +77,10 @@ def run_score_tree(tree: dict, aligned: list[dict], rewarded: list[dict], with_e
 
     context_lookup = st.build_context_lookup(aligned)
     reward_lookup = st.build_reward_lookup(rewarded)
-    customer_info_lookup = st.build_customer_info_lookup(rewarded)
     turns_lookup = st.build_turns_lookup(aligned)
     conv_ctx_lookup = st.build_conversation_context_lookup(tree, turns_lookup)
 
-    scored = st.score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup)
+    scored = st.score_tree(tree, context_lookup, reward_lookup, conv_ctx_lookup)
 
     sentence_count = 0
     def _count(node):
@@ -153,6 +152,7 @@ def run_build_db(scored: dict, aligned: list[dict], rewarded: list[dict], dsn: s
                 "sas": s.get("sas", 0),
                 "bg_background": s.get("bg_background"),
                 "conversation_context": s.get("conversation_context", ""),
+                "source_call_ids": s.get("source_call_ids", []),
                 "embedding": vec or [0.0] * EMBEDDING_DIM,
             })
         if db_sentences:
@@ -194,12 +194,12 @@ def run(args) -> None:
 
     if not rewarded_path.exists():
         print(f"Rewarded file not found: {rewarded_path}")
-        print("Run whole_pipeline.py first, or provide --rewarded-file.")
+        print("Run data_clean.py first, or provide --rewarded-file.")
         sys.exit(1)
 
     if not aligned_path.exists():
         print(f"Aligned file not found: {aligned_path}")
-        print("Run whole_pipeline.py first, or provide --aligned-file.")
+        print("Run data_clean.py first, or provide --aligned-file.")
         sys.exit(1)
 
     print(f"{_ts()} Loading pre-computed data...")
@@ -233,7 +233,7 @@ def run(args) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Continue after whole_pipeline.py: build decision tree → score tree → populate database"
+        description="Continue after data_clean.py: build decision tree → score tree → populate database"
     )
     parser.add_argument(
         "--rewarded-file", type=Path, default=None,

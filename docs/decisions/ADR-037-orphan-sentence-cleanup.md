@@ -1,5 +1,5 @@
 ---
-id: ADR-037
+REMOVED_FIELD_id: ADR-037
 title: "Orphan sentence cleanup for crash recovery"
 doc_kind: decision
 feature_ids: [F015, F007]

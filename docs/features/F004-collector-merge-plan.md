@@ -33,7 +33,7 @@ Identify merge candidates using deterministic rules (no LLM needed):
 
 **Rule C — Label-1 turns treated as absent**: Customer turns with `"label": 1` are manually inserted annotations. They are skipped during candidate identification — consecutive collector turns separated only by label-1 turns are treated as if the label-1 turns don't exist. These turns are removed from the output after merging.
 
-**Same-action auto-merge**: If all turns in a candidate group share the same `collector_action`, they are automatically merged (no LLM call needed). After LLM partitioning, `_ensure_same_action_merged` post-processes the result to merge any consecutive same-action turns that the LLM kept separate.
+**Same-action auto-merge**: If all turns in a candidate group share the same `collector_action`, they are automatically merged (no LLM call needed). After LLM partitioning, `_ensure_same_action_merged` post-processes the REMOVED_FIELD_result to merge any consecutive same-action turns that the LLM kept separate.
 
 These rules produce **merge groups** — sequences of collector turns that should potentially be merged.
 

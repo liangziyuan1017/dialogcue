@@ -1,5 +1,5 @@
 ---
-id: ADR-002
+REMOVED_FIELD_id: ADR-002
 title: "Group same-meaning keywords into canonical groups"
 doc_kind: decision
 feature_ids: [F000]

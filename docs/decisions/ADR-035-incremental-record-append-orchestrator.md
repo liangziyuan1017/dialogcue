@@ -1,5 +1,5 @@
 ---
-id: ADR-035
+REMOVED_FIELD_id: ADR-035
 title: "Incremental record append orchestrator (single-pass, append-only)"
 doc_kind: decision
 feature_ids: [F015]
@@ -28,7 +28,7 @@ A single orchestrator `src/add_records.py` appends new records at every pipeline
 - **Append-only outputs**: every stage loads existing output, appends new records by `call_id`, rewrites the file. No in-place mutation of existing records.
 - **Targeted DB upsert**: diff against `get_existing_path_signatures` / `get_existing_script_ids`; insert new, update scores for affected existing, freeze unaffected.
 - **Taxonomy dedup + unique index**: `dedup_taxonomy_keywords` removes existing duplicates; `create_taxonomy_unique_index` adds an MD5(`group_name|category|keyword`) generated column + unique index so future inserts cannot re-introduce duplicates. `upsert_taxonomy_keywords` does `ON CONFLICT (natural_key_hash) DO UPDATE SET frequency`.
-- **Post-success append hook**: new records are appended to `matched_data.jsonl` only after the full pipeline succeeds, so a crash leaves the canonical input unchanged.
+- **Post-success append hook**: new records are appended to `input_data.jsonl` only after the full pipeline succeeds, so a crash leaves the canonical input unchanged.
 
 ## Impact
 

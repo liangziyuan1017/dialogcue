@@ -1,5 +1,5 @@
 ---
-id: F011
+REMOVED_FIELD_id: F011
 name: Config Externalization
 status: complete
 owner: agent
@@ -24,7 +24,7 @@ A single `config.md` file at project root with YAML frontmatter containing all c
 
 ### `src/f007_infrastructure/config.py` — Loader
 
-- `load_config()` — parse frontmatter, cache result
+- `load_config()` — parse frontmatter, cache REMOVED_FIELD_result
 - `reload_config()` — clear cache + re-parse (for runtime refresh or `CONFIG_PATH` change)
 - `get(key, default)` — dot-notation access (e.g., `get("ranking_weights.win_rate", 0.40)`)
 - `CONFIG_PATH` env var override for deployment flexibility
@@ -112,7 +112,7 @@ Invalid config raises `ValueError` with all errors listed. No partial applicatio
 - `src/f000_keyword_discovery/keyword_prompts.py`
 - `src/f000_keyword_discovery/discover_keywords.py`
 - `src/whole_pipeline.py`
-- `data/data_cleaning/data_clean_2.py`
+- `data/data_cleaning/data_clean.py`
 - `data/data_cleaning/data_logic.py`
 - `data/data_cleaning/data_complete.py`
 - `pyproject.toml`

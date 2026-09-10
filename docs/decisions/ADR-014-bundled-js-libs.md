@@ -1,5 +1,5 @@
 ---
-id: ADR-014
+REMOVED_FIELD_id: ADR-014
 title: Bundled JS Libraries for Offline Operation
 status: accepted
 created: 2026-06-16
@@ -30,7 +30,7 @@ Update `tree_explorer.html` to reference local `<script>` tags instead of CDN UR
 
 - Offline operation is a hard requirement for bank internal deployments
 - No runtime dependency on external CDN availability
-- Reproducible — same files always produce same result
+- Reproducible — same files always produce same REMOVED_FIELD_result
 - The libraries are stable (Cytoscape.js v3.x, dagre v0.8.x) — no need for frequent updates
 
 ## Consequences

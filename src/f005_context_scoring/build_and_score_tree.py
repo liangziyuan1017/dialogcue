@@ -99,10 +99,9 @@ def run(args) -> None:
         tree = json.load(f)
     context_lookup = st.build_context_lookup(aligned)
     reward_lookup = st.build_reward_lookup(rewarded)
-    customer_info_lookup = st.build_customer_info_lookup(rewarded)
-    turns_lookup = st.build_turns_lookup()
+    turns_lookup = st.build_turns_lookup(aligned)
     conv_ctx_lookup = st.build_conversation_context_lookup(tree, turns_lookup)
-    scored = st.score_tree(tree, context_lookup, reward_lookup, customer_info_lookup, conv_ctx_lookup)
+    scored = st.score_tree(tree, context_lookup, reward_lookup, conv_ctx_lookup)
     scored_path = BASE_DIR / "f005_context_scoring" / "data" / "decision_tree_scored.json"
     with open(scored_path, "w", encoding="utf-8") as f:
         json.dump(scored, f, indent=2, ensure_ascii=False)

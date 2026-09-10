@@ -217,11 +217,50 @@ def _place_sentences_in_node(node, sentences, registry):
     if not sentences:
         return
     role = node.get("role", "")
+    # ADR-042: opening pools greetings (gesture_type=opening) in the root pool and
+    # must not create a:greeting. Non-greeting collector actions still need a:*
+    # children so UI path tracing (findChildByAction) can show them before the
+    # first customer fact branch.
     if role == "opening":
+        greetings = []
+        by_action: dict = {}
+        unassigned = []
         for s in sentences:
-            if s.get("collector_action") == "greeting" and not s.get("gesture_type"):
-                s["gesture_type"] = "opening"
-        _merge_sentences(node["sentence_pool"], sentences)
+            action = s.get("collector_action")
+            if action == "greeting":
+                if not s.get("gesture_type"):
+                    s["gesture_type"] = "opening"
+                greetings.append(s)
+            elif action:
+                by_action.setdefault(action, []).append(s)
+            else:
+                unassigned.append(s)
+        if greetings or unassigned:
+            _merge_sentences(node["sentence_pool"], greetings + unassigned)
+        for action in sorted(by_action):
+            action_bk = {"action": action}
+            action_identity = _make_identity(
+                node.get("inherited_facts", []),
+                node.get("inherited_emotions", []),
+                action_bk,
+            )
+            action_child = None
+            for child in node.get("children", []):
+                if child.get("branch_key") == action_bk:
+                    action_child = child
+                    break
+            if action_child is None:
+                action_child = {
+                    "state_id": f"a:{action}",
+                    "branch_key": action_bk,
+                    "sentence_pool": [],
+                    "children": [],
+                    "role": "action",
+                }
+                action_child["_parent"] = node
+                node.setdefault("children", []).append(action_child)
+                registry[action_identity] = action_child
+            _merge_sentences(action_child["sentence_pool"], by_action[action])
         return
     if role != "decision":
         _merge_sentences(node["sentence_pool"], sentences)

@@ -1,5 +1,5 @@
 ---
-id: LL-004
+REMOVED_FIELD_id: LL-004
 title: "Plan docs drifted from shipped feature IDs, causing silent renumber and dead links"
 doc_kind: lesson
 feature_ids: [F007, F007b, F008, F009, F010]
@@ -11,7 +11,7 @@ pitfall: "The original plan doc (plan_feature_base.md, now folded into docs/ROAD
 root_cause: "Feature IDs were renumbered during implementation without back-propagating the change to the plan doc, ROADMAP, source labels, and ADR feature_ids. No gate checks that ROADMAP dependency graph == feature doc depends_on"
 trigger_conditions: "When features are re-ID'd after planning, or when a plan doc is left as a fossil while implementation proceeds under different IDs"
 fix: "Renumbered F010–F013 → F007/F007b/F008/F009 (scope-mapped), renamed files, updated all frontmatter/depends_on/ROADMAP/ADR feature_ids/cross-links. Then renumbered F014 → F010 to fill the freed ID, and closed the ADR-024 gap by shifting ADR-025→024, ADR-026→025"
-guard: "After any feature renumber or plan update, run a consistency pass: (1) every ROADMAP row link resolves, (2) every feature doc id/name/status matches ROADMAP, (3) every depends_on resolves to an existing feature id, (4) every ADR ref resolves, (5) every relative .md link resolves, (6) ROADMAP dependency graph matches the union of feature doc depends_on. Treat a stale plan doc as a bug, not a historical artifact"
+guard: "After any feature renumber or plan update, run a consistency pass: (1) every ROADMAP row link resolves, (2) every feature doc REMOVED_FIELD_id/name/status matches ROADMAP, (3) every depends_on resolves to an existing feature REMOVED_FIELD_id, (4) every ADR ref resolves, (5) every relative .md link resolves, (6) ROADMAP dependency graph matches the union of feature doc depends_on. Treat a stale plan doc as a bug, not a historical artifact"
 source_anchor: ["docs/ROADMAP.md dependency graph", "docs/features/F007-infra-layer.md", "docs/decisions/ADR-024-embedding-architecture.md"]
 ---
 
@@ -43,15 +43,15 @@ When features are re-ID'd after planning, or when a plan doc is left as a fossil
 - Renumbered F014 → F010 to fill the freed ID.
 - Closed the ADR-024 gap by shifting ADR-025→024 (embedding) and ADR-026→025 (UI).
 - Fixed all broken relative links (bare `implementation-plan.md`, `../../decisions/` one level too deep, `../../plan.md`).
-- Normalized all feature doc frontmatter to `id`/`name`/`status` schema.
+- Normalized all feature doc frontmatter to `REMOVED_FIELD_id`/`name`/`status` schema.
 
 ## Guard
 
 After any feature renumber or plan update, run a consistency pass:
 
 1. Every ROADMAP row link resolves to a file.
-2. Every feature doc `id`/`name`/`status` matches its ROADMAP row.
-3. Every `depends_on` resolves to an existing feature `id`.
+2. Every feature doc `REMOVED_FIELD_id`/`name`/`status` matches its ROADMAP row.
+3. Every `depends_on` resolves to an existing feature `REMOVED_FIELD_id`.
 4. Every ADR reference resolves to an existing ADR file.
 5. Every relative `.md` link resolves.
 6. `docs/ROADMAP.md` dependency graph matches the union of feature doc `depends_on`.

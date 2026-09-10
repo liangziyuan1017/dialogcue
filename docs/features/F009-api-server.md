@@ -1,5 +1,5 @@
 ---
-id: F009
+REMOVED_FIELD_id: F009
 name: REST API + Socket.IO Server
 status: review
 depends_on: [F007, F007b, F008]
@@ -240,7 +240,7 @@ Initialize a call session with customer profile. Server creates a session and re
 
 ```json
 {
-  "cust_no": "0100252354",
+  "REMOVED_FIELD_cust_no": "0100252354",
   "context": {
     "has_auto_loan": false,
     "has_mortgage": true,

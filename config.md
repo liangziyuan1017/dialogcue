@@ -120,7 +120,7 @@ extraction:
 
 # ── Pipeline ──
 pipeline:
-  default_data_file: "matched_data.jsonl"
+  default_data_file: "input_data.jsonl"
   scheduler_interval: 600
 
 # ── HWR ──

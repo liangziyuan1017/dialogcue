@@ -1,5 +1,5 @@
 ---
-id: ADR-020
+REMOVED_FIELD_id: ADR-020
 title: "F005 context tagging: bitmask encoding, HWR, SAS, embedding design"
 doc_kind: decision
 feature_ids: [F005]

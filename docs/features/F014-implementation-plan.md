@@ -10,7 +10,7 @@
 
 | External endpoint | Reuses | Shared function |
 |---|---|---|
-| `POST /api/v1/session/start` | `SessionStore.create()` + `_persist_session()` | `_create_session(cust_no, context, session_id=None)` |
+| `POST /api/v1/session/start` | `SessionStore.create()` + `_persist_session()` | `_create_session(REMOVED_FIELD_cust_no, context, session_id=None)` |
 | `POST /api/v1/recommend` | `extract_state()` + `merge_state()` + `recommend()` + `_compute_bitmask()` + `embed_single()` + DB persist | `_run_turn(session_id, utterance, conv_ctx)` |
 | `DELETE /api/v1/session/end` | `SessionStore.remove()` | `_end_session(session_id)` |
 
@@ -46,7 +46,7 @@
 - Modified: `src/f009_api_server/session_store.py`
 - Modified: `src/tests/f009_api_server/test_session_store.py`
 
-**Task:** Add `create_with_id(session_id, cust_no, context)` — same as `create()` but uses the caller-provided `session_id` instead of auto-generating `sess_xxxx`. This lets the external API use `call_id` directly.
+**Task:** Add `create_with_id(session_id, REMOVED_FIELD_cust_no, context)` — same as `create()` but uses the caller-provided `session_id` instead of auto-generating `sess_xxxx`. This lets the external API use `call_id` directly.
 
 **TDD:**
 1. RED: `store.create_with_id("call_123", "c1", {})` → session exists with `store.get("call_123")`
@@ -108,7 +108,7 @@ This function:
 **Task:** Extract session creation and ending into reusable functions:
 
 ```python
-async def _create_session(cust_no: str, context: dict, session_id: str | None = None) -> str:
+async def _create_session(REMOVED_FIELD_cust_no: str, context: dict, session_id: str | None = None) -> str:
     """Create session in SessionStore + persist to DB.
     If session_id is None, auto-generate (SocketIO behavior).
     Returns session_id.
@@ -171,7 +171,7 @@ def _end_session(session_id: str) -> dict | None:
 ```
 validate request (pydantic)
 context = map_cust_tags_to_context(req.cust_tags)
-session_id = await _create_session(req.customer.cust_no, context, session_id=req.call_id)
+session_id = await _create_session(req.customer.REMOVED_FIELD_cust_no, context, session_id=req.call_id)
 return {"call_id": session_id}
 ```
 
@@ -200,12 +200,12 @@ return {"call_id": session_id}
 ```
 validate request (pydantic)
 conv_ctx = " ".join(req.history_context + [req.current_text])
-result = await _run_turn(req.call_id, req.current_text, conv_ctx)
-if result is None: → 404
-turn = result["entry"]["turn"]
+REMOVED_FIELD_result = await _run_turn(req.call_id, req.current_text, conv_ctx)
+if REMOVED_FIELD_result is None: → 404
+turn = REMOVED_FIELD_result["entry"]["turn"]
 rec_id = f"{req.call_id}_{turn:03d}"
-state_tags = result["extraction"].get("facts", []) + result["extraction"].get("emotions", [])
-recommendation = result["rec_result"].get("script_text") if result["rec_result"] else None
+state_tags = REMOVED_FIELD_result["extraction"].get("facts", []) + REMOVED_FIELD_result["extraction"].get("emotions", [])
+recommendation = REMOVED_FIELD_result["rec_result"].get("script_text") if REMOVED_FIELD_result["rec_result"] else None
 return {recommendation, state_tags, confidence, rec_id, info: ""}
 ```
 

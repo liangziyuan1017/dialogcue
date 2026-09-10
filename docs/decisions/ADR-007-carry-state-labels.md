@@ -1,5 +1,5 @@
 ---
-id: ADR-007
+REMOVED_FIELD_id: ADR-007
 title: "F001 carry F000 state labels into turns_annotated"
 doc_kind: decision
 feature_ids: [F001]

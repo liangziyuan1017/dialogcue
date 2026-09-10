@@ -7,56 +7,63 @@ Input data, pipeline outputs, and data-cleaning scripts for the debt-collection 
 ```
 data/
 ├── data_input/        # source data
-├── data_output/       # pipeline outputs (Phase 1–2)
+├── data_output/       # Phase-1 cleaning outputs (jsonl)
 ├── data_cleaning/     # Phase-1 LLM cleaning scripts
-└── data_labels/       # emotion/fact taxonomies
+└── data_labels/       # canonical fact/emotion taxonomies + llm_relabel_*
 ```
 
 ## data_input/
 
 | File | Description |
 |------|-------------|
-| `matched_data.jsonl` | Source — raw ASR-transcribed Mandarin debt-collection call records (one JSON object per line). The raw count grows as new data is added; run `wc -l data/data_input/matched_data.jsonl` for the current count. 23 fields per record: `id`, `call_id`, `dialDate`, `connectDate`, `dialType`, `ringTime`, `collUserId`, `collId`, `collArea`, `collGroupId`, `cust_no`, `acNo`, `isRecorded`, `result`, `talkTime`, `channel`, `corpCode`, `calledNo`, `mobTyp`, `phoneRoute`, `agentTalkTime`, `dialog`, `custInfo`. `dialog` is a single string with turns separated by `；`/`;`. `custInfo` is a JSON-stringified array of `{tagName, tagValue}` pairs. |
-| `new_data.jsonl` | Incremental input for `src/run_append.py` (F015). Place new raw records here (same schema as `matched_data.jsonl`). On successful append, records are appended to `matched_data.jsonl` and this file is cleared. |
+| `input_data.jsonl` | Source records (one JSON object per line). **Schema is exactly three fields:** `call_id` (string), `dialog` (string; turns separated by `；`/`;`), `custInfo` (JSON string or list of `{tagName, tagValue}`). Validate with `python3 src/check_data_format.py data/data_input/input_data.jsonl --strict`. |
+| `new_data.jsonl` | Incremental input for `src/run_append.py` (F015). Same 3-field schema. On successful append, records are appended to `input_data.jsonl` and this file is cleared. |
 
 ## data_output/
 
-Produced by `src/whole_pipeline.py` (run from project root). Phase-1 outputs are Python files containing `results = [...]`.
+Produced by `src/data_clean.py` (run from project root). All Phase-1 artifacts are **JSONL** (one record per line).
 
 | File | Stage | Description |
 |------|-------|-------------|
-| `output_2.py` | 1 — data_clean_2 | Emotion-preserving ASR rewrite. |
-| `output_logic.py` | 2 — data_logic | Collector (催收员) logic repair; customer turns untouched. |
-| `output_complete.py` | 3 — data_complete | Dialogue reconstruction (merge/split/reorder turns, infer missing replies). |
-| `output_merged.py` | 4 — data_merge | Source field merge (no LLM); matched by `(call_id, cust_no)`. |
+| `output_clean.jsonl` | 1 — data_clean | Emotion-preserving ASR rewrite. Passes through `call_id` / `dialog` / `custInfo`. |
+| `output_logic.jsonl` | 2 — data_logic | Collector (催收员) logic repair; customer turns untouched. |
+| `output_complete.jsonl` | 3 — data_complete | Dialogue reconstruction (merge/split/reorder turns, infer missing replies). |
+| `output_merged.jsonl` | 4 — data_merge | Source field merge (no LLM); matched by `call_id` only. |
 
-Phase 2 analysis outputs (`collector_analysis.json`, `customer_analysis.json`) are written to `src/f003_reward_labeling/data/` (owned by the producer module). Phase 3 outputs (`output_aligned.py`, `output_rewarded.py`) live under `src/f001_schema_alignment/data/` and `src/f003_reward_labeling/data/`. State relabeling is applied inside `write_output_aligned` (after alignment, before writing), so `output_aligned.py` already contains the final relabeled tags. `output_rewarded.py` is deduplicated by `call_id` (first occurrence kept).
+Downstream stages write under `src/`:
 
-> **Downstream guarantee (ADR-042):** the decision tree built from `output_rewarded.py` (Stage 4) enforces unique `script_id`s via a global dedup pass (`_dedup_script_ids_global`) and forces end nodes to leaves (`_enforce_end_leaves`). Each `{call_id}_t{turn_index}` appears in exactly one node's `sentence_pool`. If you re-run tree build from a stripped/inline path, verify with `python3 -m f004_decision_tree.check_tree` (D4 invariant) — a stale kernel or skipped final transforms can re-introduce duplicates (see `docs/lessons/LL-008`).
+| File | Owner |
+|------|-------|
+| `src/f000_keyword_discovery/data/output_labeled.jsonl` | F000 (includes canonical relabel) |
+| `src/f000_keyword_discovery/data/state_keywords.json` | F000 taxonomy |
+| `src/f001_schema_alignment/data/output_aligned.jsonl` | F001 |
+| `src/f003_reward_labeling/data/output_rewarded.jsonl` | F003 (dedup by `call_id`) |
+| `src/f003_reward_labeling/data/collector_analysis.json`, `customer_analysis.json` | F003 aggregation from F000 |
+
+> **Downstream guarantee (ADR-042):** the decision tree built from `output_rewarded.jsonl` enforces unique `script_id`s via `_dedup_script_ids_global` and forces end nodes to leaves (`_enforce_end_leaves`). Verify with `PYTHONPATH=src python3 -m f004_decision_tree.check_tree` (D4).
 
 ## data_cleaning/
 
-Phase-1 LLM cleaning scripts, invoked by `src/whole_pipeline.py` as subprocesses (`PYTHONPATH=src/infra` so `llm_client`/`retry` resolve).
+Phase-1 LLM cleaning scripts, invoked by `src/data_clean.py` as subprocesses (`PYTHONPATH=src` so `f007_infrastructure.llm_client` / `retry` resolve).
 
 | File | Description |
 |------|-------------|
-| `data_clean_2.py` | Step 1 — Emotion-preserving ASR rewrite. |
+| `data_clean.py` | Step 1 — Emotion-preserving ASR rewrite. |
 | `data_logic.py` | Step 2 — Collector logic repair (customer turns untouched). |
 | `data_complete.py` | Step 3 — Dialogue reconstruction. |
-| `data_merge.py` | Step 4 — Source field merge (no LLM). |
+| `data_merge.py` | Step 4 — Source field merge (no LLM); join key = `call_id`. |
 
-Each script resolves `INPUT_DIR = <root>/data/data_input`, `OUTPUT_DIR = <root>/data/data_output`, and loads `.env` from project root. Resume-safe: checkpoints after every record, skips processed `call_id`s. Defaults are used for standalone runs; `whole_pipeline.py` overrides via `DATA_FILE`/`OUTPUT_FILE` env vars.
+Each script resolves `INPUT_DIR` / `OUTPUT_DIR` under `data/`, and loads `.env` from the project root. Resume-safe: checkpoints after every record, skips processed `call_id`s. `data_clean.py` (orchestrator) overrides paths via `DATA_FILE` / `OUTPUT_FILE` env vars.
 
 ## data_labels/
 
-Manual and LLM-relabeled emotion/fact taxonomies used by state extraction (F008) and reward labeling (F003).
+Canonical fact/emotion taxonomies used by F000 canonical relabel, F001 `relabel_state`, and F008 online extraction. Shared runtime: `src/f007_infrastructure/label_relabel.py` (reuses the `llm_relabel_*` modules below).
 
 | File | Description |
 |------|-------------|
-| `emotions.csv`, `facts.csv` | Original emotion/fact label sets. `facts.csv` has a header row (`tag,example,count,old_label`). |
-| `emotions_relabeled.csv`, `facts_relabeled.csv` | LLM-relabeled variants. `emotions_relabeled.csv` expands the 25 original emotions to ~251 fine-grained labels (intentional — each coarse emotion maps to multiple specific labels for F008 extraction granularity); all original tags are preserved. `facts_relabeled.csv` expands beyond the 4,935 original fact tags to 6,214 relabeled rows (not 1:1 — the relabeling augments the tag set with additional fine-grained categories). |
-| `emotions_descriptions.py`, `facts_descriptions.py` | Label description for prompt context. |
-| `facts_pipeline.csv` | Facts extracted via the pipeline run. |
-| `llm_relabel_emotions.py`, `llm_relabel_facts.py` | Scripts that produce the relabeled CSVs. |
-| `llm_relabel.py` | LLM pipeline to classify debt-collection tags into semantic categories. |
-| `explore_distribution.ipynb` | Distribution exploration notebook. |
+| `emotions.csv`, `facts.csv` | Original emotion/fact label inventories. |
+| `emotions_relabeled.csv`, `facts_relabeled.csv` | Cached tag → canonical category maps (grown by offline and online LLM relabel). |
+| `emotions_descriptions.py`, `facts_descriptions.py` | Canonical `TAG_LABELS` (keys + domain + description) for prompts and hard-match. |
+| `llm_relabel_emotions.py`, `llm_relabel_facts.py` | Relabel pipelines: `build_categories_block`, `classify_batch`, `validate_mapping`, `TAG_LABELS`. Imported at runtime by `label_relabel.py` — do not reimplement. |
+
+**Cascade:** descriptions hard-match → CSV map → `llm_relabel_{facts,emotions}.classify_batch` → append new rows to `*_relabeled.csv`.

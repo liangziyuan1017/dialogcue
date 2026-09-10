@@ -1,5 +1,5 @@
 ---
-id: ADR-013
+REMOVED_FIELD_id: ADR-013
 title: Dialog Tracer with Animated Walkthrough
 status: accepted
 created: 2026-06-16

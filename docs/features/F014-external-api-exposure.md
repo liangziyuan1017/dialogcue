@@ -1,5 +1,5 @@
 ---
-id: F014
+REMOVED_FIELD_id: F014
 name: External API Exposure
 status: review
 owner: agent
@@ -31,7 +31,7 @@ Three REST endpoints on the existing FastAPI app, under the `/api/v1/` prefix. E
 
 | Function | Extracted from | Used by |
 |---|---|---|
-| `_create_session(cust_no, context, session_id=None)` | `start_session` (SocketIO) | SocketIO `start_session` + `POST /api/v1/session/start` |
+| `_create_session(REMOVED_FIELD_cust_no, context, session_id=None)` | `start_session` (SocketIO) | SocketIO `start_session` + `POST /api/v1/session/start` |
 | `_run_turn(session_id, utterance, conv_ctx)` | `customer_turn` (SocketIO) | SocketIO `customer_turn` + `POST /api/v1/recommend` |
 | `_end_session(session_id)` | `end_session` (SocketIO) | SocketIO `end_session` + `DELETE /api/v1/session/end` |
 
@@ -43,7 +43,7 @@ Creates a session and binds customer profile data (画像). Called once at the s
 
 **Request**: `call_id` (session identifier), `call_info`, `agent`, `customer`, `cust_tags[]`
 
-**Logic**: `map_cust_tags_to_context(cust_tags)` → `_create_session(cust_no, context, session_id=call_id, call_info, agent)` → 200. `call_info` and `agent` stored on the session for context.
+**Logic**: `map_cust_tags_to_context(cust_tags)` → `_create_session(REMOVED_FIELD_cust_no, context, session_id=call_id, call_info, agent)` → 200. `call_info` and `agent` stored on the session for context.
 
 ### Endpoint 2: `POST /api/v1/recommend`
 
@@ -116,7 +116,7 @@ The external system sends `cust_tags` as `[{tag, value}]`. These must be mapped 
 | KD-4 | `rec_id` = `rec_{call_id}_{turn:03d}` | Matches `external_api.md` spec; deterministic, traceable to call + turn |
 | KD-5 | Wrap internal APIs — extract shared functions from SocketIO handlers | No logic duplication; SocketIO and REST share the same core pipeline; external endpoints are thin adapters (~5–10 lines each) |
 | KD-6 | `SessionStore.create_with_id()` for caller-provided session IDs | `create()` auto-generates `sess_xxxx`; external API needs `call_id` as ID; refactor `create()` to delegate |
-| KD-7 | `ExternalCustomer` models `cust_no`, `ac_no`, `called_no` | Matches `external_api.md` spec schema; all fields stored |
+| KD-7 | `ExternalCustomer` models `REMOVED_FIELD_cust_no`, `ac_no`, `called_no` | Matches `external_api.md` spec schema; all fields stored |
 | KD-8 | `call_info` and `agent` stored on session dict | Spec passes meaningful call/agent metadata; preserved for analytics and routing |
 | KD-9 | Session TTL default 7200s (2 hours) | Matches `external_api.md` spec: "TTL（默认2小时）" |
 | KD-10 | `call_id` and `cust_tags[]` have max_length limits | AC-5 oversize payload validation; `call_id` max 8000 chars, `cust_tags` max 500 items |
@@ -162,7 +162,7 @@ The external system sends `cust_tags` as `[{tag, value}]`. These must be mapped 
 |------|--------|-------------|
 | `src/f009_api_server/tag_mapping.py` | New | Pure function `map_cust_tags_to_context()` |
 | `src/f009_api_server/session_store.py` | Modified | Added `create_with_id()`, refactored `create()` to delegate |
-| `src/f009_api_server/server.py` | Modified | Extracted `_run_turn()`, `_create_session()` (with `call_info`/`agent` storage), `_end_session()`; added 3 external endpoints + Pydantic models (`ExternalCustomer` with `cust_no`/`ac_no`/`called_no`); extended rate limiting to `/api/v1/recommend`; `rec_id` format `rec_{call_id}_{turn:03d}`; TTL default 7200s |
+| `src/f009_api_server/server.py` | Modified | Extracted `_run_turn()`, `_create_session()` (with `call_info`/`agent` storage), `_end_session()`; added 3 external endpoints + Pydantic models (`ExternalCustomer` with `REMOVED_FIELD_cust_no`/`ac_no`/`called_no`); extended rate limiting to `/api/v1/recommend`; `rec_id` format `rec_{call_id}_{turn:03d}`; TTL default 7200s |
 | `config.md` | Modified | `session_ttl: 7200` (2 hours per spec) |
 | `src/tests/f009_api_server/test_tag_mapping.py` | New | 14 tests for tag mapping |
 | `src/tests/f009_api_server/test_session_store.py` | Modified | 4 new tests for `create_with_id()` |

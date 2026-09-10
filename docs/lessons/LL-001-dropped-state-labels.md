@@ -1,5 +1,5 @@
 ---
-id: LL-001
+REMOVED_FIELD_id: LL-001
 title: "Schema alignment dropped prior feature state labels"
 doc_kind: lesson
 feature_ids: [F001]

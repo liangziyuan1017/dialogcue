@@ -1,5 +1,5 @@
 ---
-id: F001
+REMOVED_FIELD_id: F001
 name: Data Schema Alignment
 status: complete
 owner: agent
@@ -14,7 +14,7 @@ merged: 2026-06-10 63e5a0c
 > **custInfo migration (2026-07-08)** — The context mapping table below is
 > **pre-migration**. The source schema changed from a `customer_info` Chinese
 > dict + snake_case metadata to a `custInfo` JSON tag-string + canonical
-> camelCase fields (`dialDate`, `collUserId`, `mobTyp`, …). `build_context`
+> camelCase fields (`REMOVED_FIELD_dialDate`, `REMOVED_FIELD_collUserId`, `REMOVED_FIELD_mobTyp`, …). `build_context`
 > was rewritten to map real `custInfo` tags → 18 English `context` fields
 > (replacing the 21-field set, several of which referenced nonexistent tags).
 > The authoritative current mapping is

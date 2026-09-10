@@ -1,5 +1,5 @@
 ---
-id: ADR-005
+REMOVED_FIELD_id: ADR-005
 title: "Willingness level count is data-driven"
 doc_kind: decision
 feature_ids: [F000]

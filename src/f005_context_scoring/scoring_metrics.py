@@ -223,6 +223,6 @@ def compute_sas_for_pool(sentences, embeddings_map=None):
         if ref_norm == 0.0 or row_norms[i] == 0.0:
             scores.append(0.0)
             continue
-        sim = float(dots[i]) / (ref_norm * row_norms[i])
-        scores.append(min(max(sim, 0.0), 1.0))
+        sim = float(dots[i]) / (ref_norm * float(row_norms[i]))
+        scores.append(float(min(max(sim, 0.0), 1.0)))
     return scores

@@ -1,5 +1,5 @@
 ---
-id: ADR-015
+REMOVED_FIELD_id: ADR-015
 title: Local Tree Building Without Global Node Reuse
 status: accepted
 created: 2026-06-17

@@ -1,6 +1,6 @@
 ---
-id: ADR-043
-title: "Replace .py literal result files with streaming JSONL"
+REMOVED_FIELD_id: ADR-043
+title: "Replace .py literal REMOVED_FIELD_result files with streaming JSONL"
 doc_kind: decision
 feature_ids: [F017]
 topics: [scalability, streaming, serialization, output-format]

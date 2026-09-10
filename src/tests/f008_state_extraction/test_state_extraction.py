@@ -137,49 +137,46 @@ class TestExtractState:
 
 class TestRelabelCascade:
     def test_canonical_skip_keeps_tag(self):
-        import f008_state_extraction.state_extraction as se
-        with patch.object(se, "_FACT_DESCRIPTIONS", {"financial_hardship": {}}), \
-             patch.object(se, "_EMOTION_DESCRIPTIONS", {}), \
-             patch.object(se, "_FACT_CSV_MAP", {}), \
-             patch.object(se, "_EMOTION_CSV_MAP", {}), \
-             patch.object(se, "_load_csv_relabel_maps"), \
-             patch.object(se, "_load_descriptions"):
+        import f007_infrastructure.label_relabel as lr
+        with patch.object(lr, "_FACT_DESCRIPTIONS", {"financial_hardship": {}}), \
+             patch.object(lr, "_EMOTION_DESCRIPTIONS", {}), \
+             patch.object(lr, "_FACT_CSV_MAP", {}), \
+             patch.object(lr, "_EMOTION_CSV_MAP", {}), \
+             patch.object(lr, "load_csv_relabel_maps", return_value=({}, {})), \
+             patch.object(lr, "load_descriptions", return_value=({"financial_hardship": {}}, {})):
+            # Force maps used inside relabel_label_list via globals set above + load stubs
+            lr._FACT_CSV_MAP = {}
+            lr._EMOTION_CSV_MAP = {}
+            lr._FACT_DESCRIPTIONS = {"financial_hardship": {}}
+            lr._EMOTION_DESCRIPTIONS = {}
             result = {"facts": ["financial_hardship"], "emotions": []}
-            se._apply_relabel(result)
+            lr.apply_relabel(result)
         assert result["facts"] == ["financial_hardship"]
 
     def test_csv_map_replaces_tag(self):
-        import f008_state_extraction.state_extraction as se
-        with patch.object(se, "_FACT_DESCRIPTIONS", {}), \
-             patch.object(se, "_EMOTION_DESCRIPTIONS", {}), \
-             patch.object(se, "_FACT_CSV_MAP", {"unknown_tag": "financial_hardship"}), \
-             patch.object(se, "_EMOTION_CSV_MAP", {}), \
-             patch.object(se, "_load_csv_relabel_maps"), \
-             patch.object(se, "_load_descriptions"):
+        import f007_infrastructure.label_relabel as lr
+        with patch.object(lr, "load_csv_relabel_maps",
+                          return_value=({"unknown_tag": "financial_hardship"}, {})), \
+             patch.object(lr, "load_descriptions", return_value=({}, {})), \
+             patch.object(lr, "relabel_via_llm", side_effect=AssertionError("LLM should not run")):
             result = {"facts": ["unknown_tag"], "emotions": []}
-            se._apply_relabel(result)
+            lr.apply_relabel(result)
         assert result["facts"] == ["financial_hardship"]
 
     def test_llm_fallback_only_when_both_miss(self):
-        import f008_state_extraction.state_extraction as se
+        import f007_infrastructure.label_relabel as lr
         mock_mod = MagicMock()
         mock_mod.TAG_LABELS = {"financial_hardship": {}}
         mock_mod.build_categories_block.return_value = "cats"
-        mock_mod.SYSTEM_PROMPT = "sys {categories}"
-        mock_mod.USER_PROMPT_TEMPLATE = "user {count} {tags}"
-        with patch.object(se, "_FACT_DESCRIPTIONS", {}), \
-             patch.object(se, "_EMOTION_DESCRIPTIONS", {}), \
-             patch.object(se, "_FACT_CSV_MAP", {}), \
-             patch.object(se, "_EMOTION_CSV_MAP", {}), \
-             patch.object(se, "_load_csv_relabel_maps"), \
-             patch.object(se, "_load_descriptions"), \
-             patch.object(se, "_get_fact_relabel_module", return_value=mock_mod), \
-             patch.object(se, "_get_emotion_relabel_module", return_value=mock_mod), \
-             patch.object(se, "_append_relabel_to_csv"), \
-             patch("f008_state_extraction.state_extraction.call_deepseek_json",
-                   return_value={"novel_tag": "financial_hardship"}):
+        mock_mod.classify_batch.return_value = {"novel_tag": "financial_hardship"}
+        mock_mod.validate_mapping.return_value = []
+        with patch.object(lr, "load_csv_relabel_maps", return_value=({}, {})), \
+             patch.object(lr, "load_descriptions", return_value=({"financial_hardship": {}}, {})), \
+             patch.object(lr, "load_relabel_module", return_value=mock_mod), \
+             patch.object(lr, "append_relabel_to_csv"), \
+             patch.object(lr, "_get_client", return_value=MagicMock()):
             result = {"facts": ["novel_tag"], "emotions": []}
-            se._apply_relabel(result)
+            lr.apply_relabel(result)
         assert result["facts"] == ["financial_hardship"]
 
 

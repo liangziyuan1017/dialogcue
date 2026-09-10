@@ -159,6 +159,8 @@ def _collect_tree_nodes(tree, parent_id_map=None):
             "branch_key": node.get("branch_key", {}),
             "parent_id": parent_id_map.get(parent_path) if parent_path else None,
             "depth": depth,
+            "inherited_facts": node.get("inherited_facts", []),
+            "inherited_emotions": node.get("inherited_emotions", []),
         })
         for child in node.get("children", []):
             walk(child, parent_path=path_sig, depth=depth + 1)

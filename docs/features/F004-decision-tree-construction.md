@@ -1,5 +1,5 @@
 ---
-id: F004
+REMOVED_FIELD_id: F004
 name: Decision Tree Construction
 status: merged
 owner: agent
@@ -165,7 +165,7 @@ See [implementation-plan.md](F004-implementation-plan.md)
 - **DAG tree structure**: The tree is a DAG — nodes with the same identity can appear under multiple parents. All recursive walkers use `_visited` sets for cycle protection. The UI uses `node_id` (SHA-256 hash of identity) as the Cytoscape node ID, rendering shared nodes once with multiple incoming edges.
 - **Redundant emotion collapse (ADR-022)**: `_collapse_redundant_facts` extended to also collapse emotion nodes whose emotions are already in the accumulated parent emotions (e.g., `anger → anger` → collapse to `anger`). Symmetric with fact collapse. Uses `accumulated_emotions` tracking.
 - **Opening node pools greetings (ADR-042, supersedes ADR-038)**: The root node (`role: "opening"`) merges greeting sentences directly into its `sentence_pool` tagged `gesture_type: "opening"`, and does not spawn `a:greeting` / `a:information` action children. This matches the feature spec (opening gesture = root pool) and the `TestF004OpeningGestures` invariants. Ending gestures are tagged `gesture_type: "ending"` only on `closure` / `goodbye` sentences, not on every sentence in a closing segment. End nodes (`normal_end`, `abrupt_end`) are forced to be leaves by `_enforce_end_leaves` after `_deduplicate_nodes`, eliminating the multi-parent DAG mirror that produced duplicate `script_id` values.
-- **Pipeline output filenames**: LLM step output filenames match actual files in `data/`: `output_2.py`, `output_logic.py`, `output_complete.py`, `output_merged.py`.
+- **Pipeline output filenames**: LLM step output filenames match actual files in `data/`: `output_clean.jsonl`, `output_logic.jsonl`, `output_complete.jsonl`, `output_merged.jsonl`.
 
 ## Files
 

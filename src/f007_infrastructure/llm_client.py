@@ -13,6 +13,7 @@ from f007_infrastructure.retry import retry_call
 _log = _get_logger(__name__)
 
 load_dotenv(Path(__file__).resolve().parent / ".env")
+load_dotenv(Path(__file__).resolve().parents[2] / ".env", override=False)
 
 
 RETRYABLE_LLM_ERRORS: tuple[type[Exception], ...] = (

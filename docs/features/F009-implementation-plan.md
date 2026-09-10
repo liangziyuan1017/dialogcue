@@ -19,7 +19,7 @@
 
 **Step 2:** Run test to verify it fails.
 
-**Step 3:** Implement FastAPI app with `/recommend` endpoint. Wire: `extract_state()` → `merge_state()` → path signature → `recommend()` → return result with updated `conversation_state`.
+**Step 3:** Implement FastAPI app with `/recommend` endpoint. Wire: `extract_state()` → `merge_state()` → path signature → `recommend()` → return REMOVED_FIELD_result with updated `conversation_state`.
 
 **Step 4:** Run test to verify it passes.
 

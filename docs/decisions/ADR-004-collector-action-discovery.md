@@ -1,5 +1,5 @@
 ---
-id: ADR-004
+REMOVED_FIELD_id: ADR-004
 title: "Discover collector action types from data too"
 doc_kind: decision
 feature_ids: [F000]

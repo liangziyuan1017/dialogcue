@@ -1,5 +1,5 @@
 ---
-id: ADR-023
+REMOVED_FIELD_id: ADR-023
 title: Sentence pool deduplication at transform boundaries
 status: accepted
 date: 2026-06-23

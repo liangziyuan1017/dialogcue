@@ -1,5 +1,5 @@
 ---
-id: ADR-011
+REMOVED_FIELD_id: ADR-011
 title: Collector Decision Tree with Customer Response Branching
 status: accepted
 created: 2026-06-11

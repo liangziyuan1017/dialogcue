@@ -85,19 +85,19 @@ CREATE EXTENSION IF NOT EXISTS vector;
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 CREATE TABLE nodes (
-  id              SERIAL PRIMARY KEY,
+  REMOVED_FIELD_id              SERIAL PRIMARY KEY,
   state_id        TEXT NOT NULL,
   path_signature  TEXT NOT NULL UNIQUE,
   branch_key      JSONB,
-  parent_id       INTEGER REFERENCES nodes(id),
+  parent_id       INTEGER REFERENCES nodes(REMOVED_FIELD_id),
   depth           INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX idx_nodes_path_sig ON nodes(path_signature);
 
 CREATE TABLE sentences (
-  id                  SERIAL PRIMARY KEY,
+  REMOVED_FIELD_id                  SERIAL PRIMARY KEY,
   script_id           TEXT NOT NULL UNIQUE,
-  node_id             INTEGER NOT NULL REFERENCES nodes(id),
+  node_id             INTEGER NOT NULL REFERENCES nodes(REMOVED_FIELD_id),
   script_text         TEXT NOT NULL,
   bg_bitmask_int      INTEGER NOT NULL DEFAULT 0,
   win_rate            REAL NOT NULL DEFAULT 0,
@@ -115,7 +115,7 @@ CREATE INDEX idx_sentences_tsv ON sentences USING gin (script_tsv);
 CREATE INDEX idx_sentences_script_text_trgm ON sentences USING gin (script_text gin_trgm_ops);
 
 CREATE TABLE taxonomy_keywords (
-  id          SERIAL PRIMARY KEY,
+  REMOVED_FIELD_id          SERIAL PRIMARY KEY,
   group_name  TEXT NOT NULL,
   category    TEXT NOT NULL,
   keyword     TEXT NOT NULL,
@@ -203,7 +203,7 @@ CREATE INDEX idx_taxonomy_group ON taxonomy_keywords(group_name, category);
                  strategy=RANKING_STRATEGY, tree=None, index=None, keyword_freq=None):
    ```
 4. **Replace** `aggregate_pools(nodes)` with `db.get_sentences_by_node(node_id)` — candidates from PostgreSQL, not in-memory JSON
-5. **Add** state accumulation: merge `conversation_state` with new extraction result
+5. **Add** state accumulation: merge `conversation_state` with new extraction REMOVED_FIELD_result
 6. **Update** output dict:
    - Add `vec_score`, `final_score`, `conversation_state`
    - Remove `conversation_context_similarity`, `strategy`
@@ -301,7 +301,7 @@ class RecommendRequest(BaseModel):
 
 | Event | Direction | Description |
 |---|---|---|
-| `start_session` | client→server | Initialize session with `cust_no` + `context`. Server creates session, returns `session_id`. |
+| `start_session` | client→server | Initialize session with `REMOVED_FIELD_cust_no` + `context`. Server creates session, returns `session_id`. |
 | `customer_turn` | client→server | Send utterance + `conversation_context`. Server runs full pipeline, accumulates state automatically. |
 | `collector_turn` | client→server | Record collector response. LLM extracts actions, accumulates into `conversation_state.actions`. |
 | `end_session` | client→server | Close session, return full transcript. |
@@ -311,7 +311,7 @@ class RecommendRequest(BaseModel):
 ```python
 sessions = {
     "sess_abc123": {
-        "cust_no": "0100252354",
+        "REMOVED_FIELD_cust_no": "0100252354",
         "context": {},
         "conversation_state": {"facts": [], "emotions": [], "actions": []},
         "conversation_context_buffer": "",  # accumulated context text

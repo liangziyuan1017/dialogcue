@@ -1,5 +1,5 @@
 ---
-id: LL-005
+REMOVED_FIELD_id: LL-005
 title: "Ruff F401 auto-fix breaks re-exports; ContextVar middleware must use reset(token) not set(token)"
 doc_kind: lesson
 feature_ids: [F012]
@@ -22,7 +22,7 @@ knowledge:
 
 Two issues surfaced during F012 Phase A review fixes:
 (a) `ruff check --fix --select F401` removed re-exported imports (names imported only to be re-exported by the module), breaking downstream importers.
-(b) A request-id middleware reset the ContextVar by calling `bind_request_id(token)` (i.e. `set(token)`) instead of `_request_id.reset(token)` — passing a `Token` where a `str | None` was expected.
+(b) A request-REMOVED_FIELD_id middleware reset the ContextVar by calling `bind_request_id(token)` (i.e. `set(token)`) instead of `_request_id.reset(token)` — passing a `Token` where a `str | None` was expected.
 
 ## 2. Root Cause
 

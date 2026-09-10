@@ -6,10 +6,10 @@ import sys
 from pathlib import Path
 
 from check_new_records import check_new_records
+from data_clean import LLM_STEPS
 from f007_infrastructure.embeddings import EMBEDDING_DIM, embed_texts
 from f007_infrastructure.jsonl_utils import load_jsonl, write_jsonl
 from f007_infrastructure.logging import get_logger as _get_logger
-from whole_pipeline import LLM_STEPS
 
 _log = _get_logger(__name__)
 
@@ -20,11 +20,17 @@ OUTPUT_DIR = DATA_DIR / "data_output"
 
 
 def _run_cleaning_step(script_path, data_file, output_file):
-    infra_path = str(BASE_DIR / "f007_infrastructure")
-    env = {**os.environ, "DATA_FILE": str(data_file), "OUTPUT_FILE": str(output_file),
-           "PYTHONPATH": f"{str(BASE_DIR)}:{os.environ.get('PYTHONPATH', '')}"}
-    wrapper = f"import sys; sys.path.append({infra_path!r}); import runpy; runpy.run_path({str(script_path)!r}, run_name='__main__')"
-    result = subprocess.run([sys.executable, "-c", wrapper], env=env, cwd=str(DATA_DIR))
+    env = {
+        **os.environ,
+        "DATA_FILE": str(data_file),
+        "OUTPUT_FILE": str(output_file),
+        "PYTHONPATH": f"{str(BASE_DIR)}:{os.environ.get('PYTHONPATH', '')}",
+    }
+    result = subprocess.run(
+        [sys.executable, str(script_path)],
+        env=env,
+        cwd=str(DATA_DIR),
+    )
     if result.returncode != 0:
         raise RuntimeError(f"{script_path.name} failed with exit code {result.returncode}")
 
@@ -134,12 +140,20 @@ def _phase1e_reward(new_aligned):
 
 def _phase2_tree(new_rewarded):
     _log.info("Phase 2: Incremental tree build")
-    from f004_decision_tree.build_decision_tree import merge_dialogs, write_dialog_records_incremental, _load_merge_cache, _save_merge_cache
+    from f004_decision_tree.build_decision_tree import (
+        merge_dialogs,
+        write_dialog_records_incremental,
+        _load_merge_cache,
+        _save_merge_cache,
+        _strip_parent_pointers,
+    )
     tree_path = BASE_DIR / "f004_decision_tree" / "data" / "decision_tree.json"
     merge_cache = _load_merge_cache()
     tree = merge_dialogs(str(tree_path), new_rewarded, merge_decisions=merge_cache)
     _save_merge_cache(merge_cache)
     write_dialog_records_incremental(new_rewarded)
+    # merge_dialogs re-attaches _parent pointers after writing; strip so scoring can JSON-serialize
+    _strip_parent_pointers(tree)
     node_count = _count_tree_nodes(tree)
     _log.info("Tree: %d nodes", node_count)
     return tree
@@ -249,6 +263,8 @@ def _phase3_4_score_db(tree, new_ids, dsn):
     for s in all_sentences:
         s.pop("_context_vec", None)
         s.pop("_node_path_sig", None)
+    from f004_decision_tree.build_decision_tree import _strip_parent_pointers
+    _strip_parent_pointers(scored)
     with open(scored_path, "w", encoding="utf-8") as f:
         json.dump(scored, f, indent=2, ensure_ascii=False)
 
@@ -256,16 +272,16 @@ def _phase3_4_score_db(tree, new_ids, dsn):
     return len(new_nodes), len(new_sentences), len(affected_existing)
 
 
-def _append_to_matched_data(new_input):
-    matched_path = INPUT_DIR / "matched_data.jsonl"
+def _append_to_input_data(new_input):
+    input_path = INPUT_DIR / "input_data.jsonl"
     with open(new_input, encoding="utf-8") as f:
         new_lines = [line for line in f if line.strip()]
-    with open(matched_path, "a", encoding="utf-8") as f:
+    with open(input_path, "a", encoding="utf-8") as f:
         for line in new_lines:
             if not line.endswith("\n"):
                 line += "\n"
             f.write(line)
-    _log.info("Appended %d records to %s", len(new_lines), matched_path)
+    _log.info("Appended %d records to %s", len(new_lines), input_path)
     with open(new_input, "w", encoding="utf-8") as f:
         f.write("")
     _log.info("Cleared %s after successful append", new_input)
@@ -289,7 +305,7 @@ def main():
     new_rewarded = _phase1e_reward(new_aligned)
     tree = _phase2_tree(new_rewarded)
     n_nodes, n_sents, n_affected = _phase3_4_score_db(tree, new_ids, args.dsn)
-    _append_to_matched_data(new_input)
+    _append_to_input_data(new_input)
 
     print(f"\n{'='*60}")
     print(f"Incremental append complete:")
@@ -297,7 +313,7 @@ def main():
     print(f"  New nodes: {n_nodes}")
     print(f"  New sentences (embedded): {n_sents}")
     print(f"  Affected existing sentences (score update): {n_affected}")
-    print(f"  Records appended to matched_data.jsonl: {len(new_ids)}")
+    print(f"  Records appended to input_data.jsonl: {len(new_ids)}")
     print(f"{'='*60}")
 
 

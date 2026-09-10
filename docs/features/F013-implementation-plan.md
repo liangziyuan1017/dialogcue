@@ -20,9 +20,9 @@
 - Verify: upsert semantics match psycopg2 version
 
 **Step 1.4 — `async get_node_ids_by_signatures()`**
-- TDD: Write test that returns `{path_signature: id}` mapping
+- TDD: Write test that returns `{path_signature: REMOVED_FIELD_id}` mapping
 - Implement: `SELECT ... WHERE path_signature = ANY($1)` with asyncpg
-- Verify: same result shape
+- Verify: same REMOVED_FIELD_result shape
 
 **Step 1.5 — `async search_by_nodes()`** (HOT PATH)
 - TDD: Write test that returns sentences with `vec_score` computed in SQL

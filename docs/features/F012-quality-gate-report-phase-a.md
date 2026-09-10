@@ -31,7 +31,7 @@ Phase A is **partial** (1 of 6 phases). Human explicitly agreed to phased PRs (K
 | 3 | AC-A3 missing fence → ConfigError w/ path | ✅ | `config.py:9` `ConfigError`, `config.py:95` | `test_config_error.py` (3) |
 | 4 | AC-A4 placeholder key refused non-dev | ✅ | `server.py:60` `_check_api_key_guard` | `test_startup_guard.py` (3) |
 | 5 | AC-A5 >=3.11 + ruff/mypy clean | ✅ | `pyproject.toml:9`, `ruff.toml`, `mypy.ini` | `test_pyproject.py` (2) |
-| 6 | A2 request-id middleware | ✅ | `server.py:80` `request_id_middleware` | `test_request_id.py` (3) |
+| 6 | A2 request-REMOVED_FIELD_id middleware | ✅ | `server.py:80` `request_id_middleware` | `test_request_id.py` (3) |
 
 ## Step 4 — Runtime Guard
 
@@ -60,7 +60,7 @@ AC-A1 grep guard → 1 passed ✅
 | Gate | Result |
 |------|--------|
 | Vision coverage | ✅ 5/5 Phase A issues addressed |
-| AC compliance | ✅ 5/5 AC-A items + request-id middleware |
+| AC compliance | ✅ 5/5 AC-A items + request-REMOVED_FIELD_id middleware |
 | Tests | ✅ 366 passed, 0 regressions |
 | Lint (ruff) | ✅ clean (baseline allowlist documented) |
 | Type (mypy) | ✅ clean on new modules |

@@ -1,5 +1,5 @@
 ---
-id: LL-006
+REMOVED_FIELD_id: LL-006
 title: Context manager resource pool — guard against double-return in error handler
 status: accepted
 created: 2026-07-01

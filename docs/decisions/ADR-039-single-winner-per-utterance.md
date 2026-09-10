@@ -1,5 +1,5 @@
 ---
-id: ADR-039
+REMOVED_FIELD_id: ADR-039
 title: Single Winner Per Utterance in merge_state
 status: accepted
 created: 2026-07-10

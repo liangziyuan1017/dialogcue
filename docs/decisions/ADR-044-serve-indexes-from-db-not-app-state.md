@@ -1,5 +1,5 @@
 ---
-id: ADR-044
+REMOVED_FIELD_id: ADR-044
 title: "Serve scored tree indexes from DB instead of app.state"
 doc_kind: decision
 feature_ids: [F017]

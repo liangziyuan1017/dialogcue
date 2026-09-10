@@ -11,15 +11,14 @@ from openai import OpenAI
 
 from f007_infrastructure.config import get as _cfg
 from f007_infrastructure.jsonl_utils import load_jsonl, write_jsonl
-
-from llm_client import _get_client
-from retry import retry_call
+from f007_infrastructure.llm_client import _get_client
+from f007_infrastructure.retry import retry_call
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 INPUT_DIR = _PROJECT_ROOT / "data" / "data_input"
 OUTPUT_DIR = _PROJECT_ROOT / "data" / "data_output"
 load_dotenv(_PROJECT_ROOT / ".env")
-DATA_FILE = Path(os.environ.get("DATA_FILE", str(OUTPUT_DIR / "output_2.jsonl")))
+DATA_FILE = Path(os.environ.get("DATA_FILE", str(OUTPUT_DIR / "output_clean.jsonl")))
 OUTPUT_FILE = Path(os.environ.get("OUTPUT_FILE", str(OUTPUT_DIR / "output_logic.jsonl")))
 
 PROMPT = """
@@ -140,11 +139,13 @@ def load_all_records() -> list[dict]:
 
     records = []
     for item in data:
-        records.append({
+        entry = {
             "call_id": item.get("call_id", ""),
             "dialog": item.get("response", item),
-            "cust_no": item.get("cust_no", ""),
-        })
+        }
+        if "custInfo" in item:
+            entry["custInfo"] = item["custInfo"]
+        records.append(entry)
 
     print(f"Loaded {len(records)} records")
     return records
@@ -264,11 +265,13 @@ def main() -> None:
         print(f"  Processing record {i+1}/{len(records)} (call_id={record['call_id']})...")
         def _process():
             llm_response = call_llm(client, PROMPT, record["dialog"])
-            return {
+            out = {
                 "call_id": record["call_id"],
-                "cust_no": record["cust_no"],
                 "response": llm_response,
             }
+            if "custInfo" in record:
+                out["custInfo"] = record["custInfo"]
+            return out
 
         def _on_fail(exc):
             print(f"  SKIPPED record {i+1}/{len(records)} (call_id={record['call_id']}) after 3 retries: {exc}")

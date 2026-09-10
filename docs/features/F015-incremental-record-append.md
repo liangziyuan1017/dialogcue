@@ -1,5 +1,5 @@
 ---
-id: F015
+REMOVED_FIELD_id: F015
 name: Incremental Record Append
 status: review
 owner: agent
@@ -32,12 +32,12 @@ A single orchestrator (`src/add_records.py`) that:
 4. **Targeted DB upsert** — insert new nodes/sentences, recompute scores only in affected nodes, freeze unaffected.
 5. **Embed only new sentences** — DB as embedding cache.
 6. **Taxonomy keyword upsert** — dedup migration + unique index + frequency update in place.
-7. **Post-success hook** — append records from `new_data.jsonl` to `matched_data.jsonl`.
+7. **Post-success hook** — append records from `new_data.jsonl` to `input_data.jsonl`.
 
 ## Input
 
 - New records file: `data/data_input/new_data.jsonl` (user always places new data here)
-	- Existing canonical data: `data/data_input/matched_data.jsonl` (108 records; 105 unique `call_id`s in `output_rewarded.jsonl` after dedup)
+	- Existing canonical data: `data/data_input/input_data.jsonl` (108 records; 105 unique `call_id`s in `output_rewarded.jsonl` after dedup)
 
 ## Output
 
@@ -45,7 +45,7 @@ A single orchestrator (`src/add_records.py`) that:
 - `decision_tree.json` extended with new branches/sentences
 - `decision_tree_scored.json` recomputed for affected nodes
 - PostgreSQL `nodes`, `sentences`, `taxonomy_keywords` updated incrementally
-- On success: new records appended to `matched_data.jsonl`
+- On success: new records appended to `input_data.jsonl`
 
 ## Success Criteria
 
@@ -54,7 +54,7 @@ A single orchestrator (`src/add_records.py`) that:
 - DB `sentences` count increased by exactly new sentences; no existing `script_id` deleted
 - `taxonomy_keywords` has zero duplicate groups post-dedup
 - 2 new `call_id`s present in `sentences` via `script_id LIKE '<new_call_id>_%'`
-- `matched_data.jsonl` gains the 2 new records on success
+- `input_data.jsonl` gains the 2 new records on success
 
 ## Files Touched
 
@@ -78,9 +78,9 @@ End-to-end incremental append implemented and verified. Three commits land the o
 - **Phase 2** (`build_decision_tree.py`): `merge_dialogs` loads existing tree + merge cache, adds new branches/sentences only. `merge_dialogs` transform chain fixed (CR-2): `_deduplicate_nodes` (propagation removed — redundant with ADR-034 descend-at-retrieval). Added `write_dialog_records_incremental`.
 - **Phase 3+4** (`add_records.py` + `db.py`): score tree → targeted DB upsert. New DB methods: `get_existing_path_signatures`, `get_existing_script_ids`, `upsert_nodes`, `upsert_sentences`, `update_sentence_scores`, `upsert_taxonomy_keywords`, `dedup_taxonomy_keywords`, `create_taxonomy_unique_index` (MD5 hash natural key). Embed only new sentences; recompute scores only for affected existing sentences.
 - **Phase 5**: taxonomy keyword upsert via `db.upsert_taxonomy_keywords` (replaces broken inline insert in `score_tree.py`).
-- **Post-success hook**: append `new_data.jsonl` records to `matched_data.jsonl`.
+- **Post-success hook**: append `new_data.jsonl` records to `input_data.jsonl`.
 
-**Verified result**: 103→105 records, 1384→1395 tree nodes, 11 new DB sentences, 0 taxonomy duplicate groups.
+**Verified REMOVED_FIELD_result**: 103→105 records, 1384→1395 tree nodes, 11 new DB sentences, 0 taxonomy duplicate groups.
 
 ### Commit 2 — `7904b89`: orphan sentence cleanup (crash recovery)
 

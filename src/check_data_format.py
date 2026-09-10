@@ -4,130 +4,116 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-CANONICAL_REQUIRED = {"call_id", "dialog", "call_date", "cust_no", "coll_user_id", "mob_typ", "talk_time", "plan_evaluation", "customer_info"}
-CANONICAL_OPTIONAL = set()
+INPUT_REQUIRED = {"call_id", "dialog", "custInfo"}
+INPUT_ALLOWED_KEYS = INPUT_REQUIRED
 
-RAW_REQUIRED = {"call_id", "dialog", "cust_no"}
-RAW_EXPECTED_EXTRA = {
-    "acNo", "agentTalkTime", "calledNo", "channel", "collArea", "collGroupId",
-    "collId", "collUserId", "connectDate", "corpCode", "custInfo", "dialDate",
-    "dialType", "id", "isRecorded", "mobTyp", "phoneRoute", "result", "ringTime", "talkTime",
-}
-RAW_ALL_KEYS = RAW_REQUIRED | RAW_EXPECTED_EXTRA
-
+# Tags present on every record in data/data_input/*.jsonl
 CI_ALWAYS_TAGS = {
-    "学历",
-    "持卡用户是否疑似高风险代理投诉",
-    "持卡用户是否疑似代理中介投诉",
-    "持卡人当前是否缴纳社保",
-    "目前余额",
-    "（掌生APP操作）近7天-还款操作",
-    "持卡用户名下历史车辆数",
-    "近7日接通次数",
-    "客户风险标识等级",
-    "客户投诉评分",
-    "ct标签",
-}
-CI_OPTIONAL_TAGS = {
     "经营贷款余额",
+    "理财资产时点值",
+    "最高学历",
     "商业房贷余额",
     "其他贷款余额",
-    "理财时点值",
-    "外部投诉评分",
-    "重渠投诉次数",
-    "12378次数",
+    "高风险代理投诉",
+    "代理中介投诉",
+    "当前社保缴纳状态",
+    "账户当前余额",
+    "客户标签",
+    "历史车辆数量",
+    "近7日接通次数",
+    "客户风险等级",
+    "客户投诉评分",
 }
-CI_KNOWN_TAGS = CI_ALWAYS_TAGS | CI_OPTIONAL_TAGS
 
-CI_CANONICAL_ALWAYS = CI_ALWAYS_TAGS
-CI_CANONICAL_OPTIONAL = CI_OPTIONAL_TAGS
+# Same semantic field; either name is accepted
+CI_REPAYMENT_TAGS = {
+    "近7日还款操作",
+    "（掌生APP操作）近7天-还款操作",
+}
 
-MOB_TYP_VALUES = {"", "M1", "M2", "M3", "M4", "M5", "M6"}
+CI_KNOWN_TAGS = CI_ALWAYS_TAGS | CI_REPAYMENT_TAGS
+
+
+def _parse_cust_info(idx, ci_raw, errors):
+    if isinstance(ci_raw, str):
+        try:
+            ci_parsed = json.loads(ci_raw)
+        except json.JSONDecodeError as e:
+            errors.append(f"record {idx}: custInfo is not valid JSON: {e}")
+            return None
+    else:
+        ci_parsed = ci_raw
+
+    if not isinstance(ci_parsed, list):
+        errors.append(f"record {idx}: custInfo must be a list, got {type(ci_parsed).__name__}")
+        return None
+    return ci_parsed
+
+
+def _check_cust_info(idx, ci_parsed, errors):
+    seen_tags = set()
+    for j, item in enumerate(ci_parsed):
+        if not isinstance(item, dict):
+            errors.append(f"record {idx}: custInfo[{j}] must be a dict")
+            continue
+        if "tagName" not in item:
+            errors.append(f"record {idx}: custInfo[{j}] missing 'tagName'")
+            continue
+        if "tagValue" not in item:
+            errors.append(f"record {idx}: custInfo[{j}] missing 'tagValue'")
+            continue
+        tn = item["tagName"]
+        if not isinstance(tn, str) or not tn:
+            errors.append(f"record {idx}: custInfo[{j}] tagName must be a non-empty string")
+            continue
+        if tn in seen_tags:
+            errors.append(f"record {idx}: custInfo duplicate tagName '{tn}'")
+        seen_tags.add(tn)
+        if tn not in CI_KNOWN_TAGS:
+            errors.append(f"record {idx}: custInfo[{j}] unknown tagName '{tn}'")
+        tv = item["tagValue"]
+        if tv is not None and not isinstance(tv, (str, int, float, bool)):
+            errors.append(
+                f"record {idx}: custInfo[{j}] tagValue must be a scalar, got {type(tv).__name__}"
+            )
+
+    missing_tags = CI_ALWAYS_TAGS - seen_tags
+    if missing_tags:
+        errors.append(f"record {idx}: custInfo missing always-present tags: {sorted(missing_tags)}")
+    if not (seen_tags & CI_REPAYMENT_TAGS):
+        errors.append(
+            f"record {idx}: custInfo missing repayment tag "
+            f"(one of {sorted(CI_REPAYMENT_TAGS)})"
+        )
 
 
 def check_record(idx, record):
+    """Validate one input record. Returns (format_name, errors)."""
     errors = []
     keys = set(record.keys())
 
-    if CANONICAL_REQUIRED.issubset(keys):
-        fmt = "canonical"
-    elif RAW_REQUIRED.issubset(keys):
-        fmt = "raw"
-    else:
-        if "call_id" not in keys:
-            errors.append(f"record {idx}: missing required key 'call_id'")
-        if "dialog" not in keys:
-            errors.append(f"record {idx}: missing required key 'dialog'")
+    missing = INPUT_REQUIRED - keys
+    if missing:
+        for key in sorted(missing):
+            errors.append(f"record {idx}: missing required key '{key}'")
         return "unknown", errors
 
-    if fmt == "canonical":
-        if not isinstance(record["call_id"], str) or not record["call_id"]:
-            errors.append(f"record {idx}: call_id must be a non-empty string, got {record['call_id']!r}")
-        if not isinstance(record["dialog"], str):
-            errors.append(f"record {idx}: dialog must be a string, got {type(record['dialog']).__name__}")
-        if not isinstance(record["call_date"], str):
-            errors.append(f"record {idx}: call_date must be a string")
-        if not isinstance(record["cust_no"], str):
-            errors.append(f"record {idx}: cust_no must be a string")
-        if not isinstance(record["coll_user_id"], str):
-            errors.append(f"record {idx}: coll_user_id must be a string")
-        if record["mob_typ"] not in MOB_TYP_VALUES:
-            errors.append(f"record {idx}: mob_typ '{record['mob_typ']}' not in {MOB_TYP_VALUES}")
-        if not isinstance(record["talk_time"], str):
-            errors.append(f"record {idx}: talk_time must be a string")
-        if not isinstance(record["customer_info"], dict):
-            errors.append(f"record {idx}: customer_info must be a dict, got {type(record['customer_info']).__name__}")
-        else:
-            ci = record["customer_info"]
-            unexpected = set(ci.keys()) - CI_KNOWN_TAGS
-            if unexpected:
-                errors.append(f"record {idx}: customer_info has unexpected keys: {sorted(unexpected)}")
-            missing_tags = CI_ALWAYS_TAGS - set(ci.keys())
-            if missing_tags:
-                errors.append(f"record {idx}: customer_info missing always-present keys: {sorted(missing_tags)}")
+    extra = keys - INPUT_ALLOWED_KEYS
+    if extra:
+        errors.append(f"record {idx}: unexpected keys: {sorted(extra)}")
 
-    elif fmt == "raw":
-        if not isinstance(record["call_id"], str) or not record["call_id"]:
-            errors.append(f"record {idx}: call_id must be a non-empty string")
-        if not isinstance(record["dialog"], str):
-            errors.append(f"record {idx}: dialog must be a string")
-        missing_keys = RAW_ALL_KEYS - keys
-        if missing_keys:
-            errors.append(f"record {idx}: missing raw keys: {sorted(missing_keys)}")
-        extra_keys = keys - RAW_ALL_KEYS
-        if extra_keys:
-            errors.append(f"record {idx}: unexpected raw keys: {sorted(extra_keys)}")
-        if "custInfo" in record:
-            ci_raw = record["custInfo"]
-            if isinstance(ci_raw, str):
-                try:
-                    ci_parsed = json.loads(ci_raw)
-                except json.JSONDecodeError as e:
-                    errors.append(f"record {idx}: custInfo is not valid JSON: {e}")
-                    ci_parsed = None
-            else:
-                ci_parsed = ci_raw
-            if ci_parsed is not None:
-                if not isinstance(ci_parsed, list):
-                    errors.append(f"record {idx}: custInfo must parse to a list, got {type(ci_parsed).__name__}")
-                else:
-                    seen_tags = set()
-                    for j, item in enumerate(ci_parsed):
-                        if not isinstance(item, dict):
-                            errors.append(f"record {idx}: custInfo[{j}] must be a dict")
-                            continue
-                        if "tagName" not in item:
-                            errors.append(f"record {idx}: custInfo[{j}] missing 'tagName'")
-                            continue
-                        tn = item["tagName"]
-                        seen_tags.add(tn)
-                        if tn not in CI_KNOWN_TAGS:
-                            errors.append(f"record {idx}: custInfo[{j}] unknown tagName '{tn}'")
-                    missing_tags = CI_ALWAYS_TAGS - seen_tags
-                    if missing_tags:
-                        errors.append(f"record {idx}: custInfo missing always-present tags: {sorted(missing_tags)}")
+    if not isinstance(record["call_id"], str) or not record["call_id"]:
+        errors.append(f"record {idx}: call_id must be a non-empty string, got {record['call_id']!r}")
+    if not isinstance(record["dialog"], str):
+        errors.append(f"record {idx}: dialog must be a string, got {type(record['dialog']).__name__}")
+    elif not record["dialog"].strip():
+        errors.append(f"record {idx}: dialog must be a non-empty string")
 
-    return fmt, errors
+    ci_parsed = _parse_cust_info(idx, record["custInfo"], errors)
+    if ci_parsed is not None:
+        _check_cust_info(idx, ci_parsed, errors)
+
+    return "input", errors
 
 
 def check_file(path, strict=False):
@@ -147,7 +133,7 @@ def check_file(path, strict=False):
         try:
             record = json.loads(line)
         except json.JSONDecodeError as e:
-            all_errors.append(f"line {i+1}: JSON parse error: {e}")
+            all_errors.append(f"line {i + 1}: JSON parse error: {e}")
             parse_errors += 1
             continue
 
@@ -165,7 +151,7 @@ def check_file(path, strict=False):
 
     print(f"File: {path}")
     print(f"Records: {total}")
-    print(f"Formats: canonical={format_counts['canonical']}, raw={format_counts['raw']}, unknown={format_counts['unknown']}")
+    print(f"Formats: input={format_counts['input']}, unknown={format_counts['unknown']}")
     print(f"Unique call_ids: {len(call_ids)}")
     if duplicate_ids:
         print(f"Duplicate call_ids: {len(duplicate_ids)}")
@@ -192,8 +178,16 @@ def check_file(path, strict=False):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Validate matched_data.jsonl format")
-    parser.add_argument("file", type=Path, nargs="?", default=Path("data/data_input/matched_data.jsonl"), help="Path to JSONL file")
+    parser = argparse.ArgumentParser(
+        description="Validate data_input JSONL format (call_id, dialog, custInfo)"
+    )
+    parser.add_argument(
+        "file",
+        type=Path,
+        nargs="?",
+        default=Path("data/data_input/input_data.jsonl"),
+        help="Path to JSONL file",
+    )
     parser.add_argument("--strict", action="store_true", help="Exit with code 1 on any error")
     args = parser.parse_args()
 

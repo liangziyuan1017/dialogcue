@@ -1,5 +1,5 @@
 ---
-id: ADR-036
+REMOVED_FIELD_id: ADR-036
 title: "Persist merge decisions cache after incremental tree build"
 doc_kind: decision
 feature_ids: [F015, F004]

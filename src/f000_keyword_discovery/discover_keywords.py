@@ -17,6 +17,10 @@ from f000_keyword_discovery.keyword_prompts import (
 from f007_infrastructure.config import get as _cfg
 from f007_infrastructure.jsonl_utils import load_jsonl, write_jsonl
 from f007_infrastructure.llm_client import call_deepseek_json
+from f007_infrastructure.logging import get_logger as _get_logger
+from f000_keyword_discovery.canonical_relabel import relabel_records
+
+_log = _get_logger(__name__)
 
 
 def _load_labeled_records():
@@ -30,49 +34,69 @@ def _process_customer_batch(batch, customer_raw):
     prompt = _build_customer_batch_prompt([(t["text"], ctx) for t, ctx in batch])
     try:
         results = call_deepseek_json(prompt)
-        if isinstance(results, list):
-            for j, result in enumerate(results):
-                if j >= len(batch):
-                    continue
-                turn, _ = batch[j]
-                state = {}
-                facts = result.get("facts")
-                if facts:
-                    fact_groups = list({f.get("group", f.get("keyword", "")) for f in facts if isinstance(f, dict)})
-                    if fact_groups:
-                        state["facts"] = fact_groups
-                emotions = result.get("emotions")
-                if emotions:
-                    emotion_groups = list({e.get("group", e.get("keyword", "")) for e in emotions if isinstance(e, dict)})
-                    if emotion_groups:
-                        state["emotions"] = emotion_groups
-                willingness = result.get("willingness") or result.get("willingness_signal")
-                if willingness:
-                    state["willingness"] = willingness
-                if state:
-                    turn["state"] = state
-                result["_turn_text"] = turn["text"]
-                customer_raw.append(result)
-    except Exception:
-        pass
+        if isinstance(results, dict) and "results" in results:
+            results = results["results"]
+        if not isinstance(results, list):
+            _log.warning(
+                "customer batch: expected list, got %s; skipping %d turns",
+                type(results).__name__,
+                len(batch),
+            )
+            return
+        for j, result in enumerate(results):
+            if j >= len(batch):
+                continue
+            if not isinstance(result, dict):
+                continue
+            turn, _ = batch[j]
+            state = {}
+            facts = result.get("facts")
+            if facts:
+                fact_groups = list({f.get("group", f.get("keyword", "")) for f in facts if isinstance(f, dict)})
+                if fact_groups:
+                    state["facts"] = fact_groups
+            emotions = result.get("emotions")
+            if emotions:
+                emotion_groups = list({e.get("group", e.get("keyword", "")) for e in emotions if isinstance(e, dict)})
+                if emotion_groups:
+                    state["emotions"] = emotion_groups
+            willingness = result.get("willingness") or result.get("willingness_signal")
+            if willingness:
+                state["willingness"] = willingness
+            if state:
+                turn["state"] = state
+            result["_turn_text"] = turn["text"]
+            customer_raw.append(result)
+    except Exception as e:
+        _log.error("customer batch labeling failed (%d turns): %s", len(batch), e)
 
 
 def _process_collector_batch(batch, collector_raw):
     prompt = _build_collector_batch_prompt([t["text"] for t in batch])
     try:
         results = call_deepseek_json(prompt)
-        if isinstance(results, list):
-            for j, result in enumerate(results):
-                if j >= len(batch):
-                    continue
-                turn = batch[j]
-                action_group = result.get("action_group")
-                if action_group:
-                    turn["state"] = {"action": action_group}
-                result["_turn_text"] = turn["text"]
-                collector_raw.append(result)
-    except Exception:
-        pass
+        if isinstance(results, dict) and "results" in results:
+            results = results["results"]
+        if not isinstance(results, list):
+            _log.warning(
+                "collector batch: expected list, got %s; skipping %d turns",
+                type(results).__name__,
+                len(batch),
+            )
+            return
+        for j, result in enumerate(results):
+            if j >= len(batch):
+                continue
+            if not isinstance(result, dict):
+                continue
+            turn = batch[j]
+            action_group = result.get("action_group")
+            if action_group:
+                turn["state"] = {"action": action_group}
+            result["_turn_text"] = turn["text"]
+            collector_raw.append(result)
+    except Exception as e:
+        _log.error("collector batch labeling failed (%d turns): %s", len(batch), e)
 
 
 def _label_turns(records):
@@ -163,6 +187,15 @@ def _recompute_taxonomy(all_labeled_records):
 def label_new_records(new_records, output_path=None, labeled_output_path=None):
     labeled_new = new_records
     _label_turns(labeled_new)
+    relabel_stats = relabel_records(labeled_new)
+    _log.info(
+        "canonical relabel (append): facts %d→%d, emotions %d→%d, turns=%d",
+        relabel_stats["facts_in"],
+        relabel_stats["facts_out"],
+        relabel_stats["emotions_in"],
+        relabel_stats["emotions_out"],
+        relabel_stats["turns_touched"],
+    )
 
     existing_labeled = _load_labeled_records()
     existing_ids = {r.get("call_id") for r in existing_labeled}
@@ -186,38 +219,19 @@ def label_new_records(new_records, output_path=None, labeled_output_path=None):
 
 def discover_keywords(records, output_path: str = None, labeled_output_path: str = None) -> dict:
     labeled_records = records
-    customer_raw, collector_raw = _label_turns(labeled_records)
+    _label_turns(labeled_records)
+    relabel_stats = relabel_records(labeled_records)
+    _log.info(
+        "canonical relabel: facts %d→%d, emotions %d→%d, turns=%d",
+        relabel_stats["facts_in"],
+        relabel_stats["facts_out"],
+        relabel_stats["emotions_in"],
+        relabel_stats["emotions_out"],
+        relabel_stats["turns_touched"],
+    )
 
-    facts = _group_items(customer_raw, "facts")
-    emotions = _group_items(customer_raw, "emotions")
-    facts = _add_suggested(facts, SUGGESTED_FACTS)
-    emotions = _add_suggested(emotions, SUGGESTED_EMOTIONS)
-
-    actions = _group_actions(collector_raw)
-    actions = _add_suggested(actions, SUGGESTED_ACTIONS)
-
-    willingness_signals = []
-    for r in customer_raw:
-        sig = r.get("willingness") or r.get("willingness_signal")
-        if sig:
-            willingness_signals.append(sig)
-    unique_signals = list(dict.fromkeys(willingness_signals))
-
-    willingness_levels = []
-    if unique_signals:
-        cluster_prompt = _build_cluster_prompt(unique_signals)
-        try:
-            cluster_result = call_deepseek_json(cluster_prompt)
-            willingness_levels = cluster_result.get("levels", [])
-        except Exception:
-            pass
-
-    taxonomy = {
-        "facts": facts,
-        "emotions": emotions,
-        "willingness_levels": willingness_levels,
-        "collector_actions": actions,
-    }
+    # Rebuild taxonomy from canonicalized turn states (not pre-relabel raw groups)
+    taxonomy = _recompute_taxonomy(labeled_records)
 
     if output_path is None:
         output_path = os.path.join(os.path.dirname(__file__), "data", "state_keywords.json")

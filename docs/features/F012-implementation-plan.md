@@ -32,11 +32,11 @@
 - Modify: `src/f009_api_server/server.py`
 - Create: `src/tests/f009_api_server/test_request_id.py`
 
-**Step 1: Failing test** — POST `/recommend` → response header `X-Request-ID` present; log line for the request carries the same id.
+**Step 1: Failing test** — POST `/recommend` → response header `X-Request-ID` present; log line for the request carries the same REMOVED_FIELD_id.
 **Step 2: Run → fails.**
-**Step 3: Implement** FastAPI middleware generating `X-Request-ID` (or echoing inbound), binding into the contextvar from A1. Add a SocketIO connect handler that binds a per-sid request id.
+**Step 3: Implement** FastAPI middleware generating `X-Request-ID` (or echoing inbound), binding into the contextvar from A1. Add a SocketIO connect handler that binds a per-sid request REMOVED_FIELD_id.
 **Step 4: Run → passes.**
-**Step 5: Commit** `feat(F012): A2 request-id middleware`.
+**Step 5: Commit** `feat(F012): A2 request-REMOVED_FIELD_id middleware`.
 
 ### Task A3: Replace `print` with logging
 
@@ -152,7 +152,7 @@
 | Step | Stays in final system? | Demo/test after | Cost if removed |
 |---|---|---|---|
 | A1 logging.py | ✅ | test_logging | No structured logs → A2/A3 blocked |
-| A2 request-id | ✅ | test_request_id | No correlation across turns |
+| A2 request-REMOVED_FIELD_id | ✅ | test_request_id | No correlation across turns |
 | A3 print→log | ✅ | grep test | Silent fallbacks stay silent |
 | A4 live config | ✅ | reload test | Weights stale on reload (#27) |
 | A5 ConfigError | ✅ | fence test | Cryptic ValueError on bad config |

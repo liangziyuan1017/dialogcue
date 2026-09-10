@@ -1,7 +1,18 @@
-.DS_Store
-.env
+# Keep this file tracked; ignore every other path starting with "."
+.*
+!.gitignore
+
+# Python / local caches (non-dot)
 __pycache__/
 *.pyc
 *.egg-info/
-.worktrees/
-.hypothesis
+
+# Agent / module runtime (local only — never commit)
+global_rules/
+global_skills/
+modules/
+registry/
+AGENTS.md
+agents.md
+opencode.json
+skills-lock.json

@@ -64,7 +64,15 @@ def _parse_external_debt_institutions(text):
 
 
 def _map_education(text):
-    mapping = {"未填": "unknown", "高中": "high_school", "大专": "college", "本科": "bachelor", "硕士": "master", "博士": "phd"}
+    mapping = {
+        "未填": "unknown",
+        "高中": "high_school",
+        "高中及中专": "high_school",
+        "大专": "college",
+        "本科": "bachelor",
+        "硕士": "master",
+        "博士": "phd",
+    }
     return mapping.get(str(text).strip(), "other")
 
 
@@ -78,26 +86,91 @@ def _parse_custInfo(raw):
         return {}
 
 
+def _tag(customer_info, *names, default=""):
+    """Return first present tag value; supports renamed external tags."""
+    for name in names:
+        if name in customer_info:
+            return customer_info[name]
+    return default
+
+
+def _parse_risk_level(text):
+    raw = str(text).strip()
+    if raw in {"高", "中高"}:
+        return 3
+    if raw in {"中", "中低"}:
+        return 2
+    if raw in {"低"}:
+        return 1
+    return _parse_int(raw.rstrip("级"))
+
+
+def _has_social_insurance(text):
+    raw = str(text).strip()
+    if raw in {"", "未知", "否", "无", "N", "n"}:
+        return False
+    if raw in {"是", "有", "Y", "y"}:
+        return True
+    return bool(raw)
+
+
 def build_context(customer_info, mob_typ):
+    business = _tag(customer_info, "经营贷款余额", default="0")
+    mortgage = _tag(customer_info, "商业房贷余额", default="0")
+    other_loan = _tag(customer_info, "其他贷款余额", default="0")
+    wealth = _tag(customer_info, "理财资产时点值", "理财时点值", default="0")
+    balance = _tag(customer_info, "账户当前余额", "目前余额", default="0")
+    risk = _tag(customer_info, "客户风险等级", "客户风险标识等级", default="0")
+    education = _tag(customer_info, "最高学历", "学历", default="")
+    repayment = _tag(
+        customer_info,
+        "近7日还款操作",
+        "（掌生APP操作）近7天-还款操作",
+        default="",
+    )
+    proxy = _tag(
+        customer_info,
+        "高风险代理投诉",
+        "持卡用户是否疑似高风险代理投诉",
+        default="",
+    )
+    intermediary = _tag(
+        customer_info,
+        "代理中介投诉",
+        "持卡用户是否疑似代理中介投诉",
+        default="",
+    )
+    social = _tag(
+        customer_info,
+        "当前社保缴纳状态",
+        "持卡人当前是否缴纳社保",
+        default="",
+    )
+    vehicles = _tag(
+        customer_info,
+        "历史车辆数量",
+        "持卡用户名下历史车辆数",
+        default="0",
+    )
     return {
-        "business_loan_balance": _parse_int(customer_info.get("经营贷款余额", "0")),
-        "mortgage_balance": _parse_int(customer_info.get("商业房贷余额", "0")),
-        "other_loan_balance": _parse_int(customer_info.get("其他贷款余额", "0")),
-        "wealth_value": _parse_int(customer_info.get("理财时点值", "0")),
-        "current_balance": _parse_int(customer_info.get("目前余额", "0")),
-        "has_business_loan": _parse_int(customer_info.get("经营贷款余额", "0")) > 0,
-        "has_mortgage": _parse_int(customer_info.get("商业房贷余额", "0")) > 0,
-        "has_other_loan": _parse_int(customer_info.get("其他贷款余额", "0")) > 0,
-        "risk_level": _parse_int(customer_info.get("客户风险标识等级", "0")),
-        "complaint_score": _parse_int(customer_info.get("客户投诉评分", "0")),
-        "education": _map_education(customer_info.get("学历", "")),
+        "business_loan_balance": _parse_int(business),
+        "mortgage_balance": _parse_int(mortgage),
+        "other_loan_balance": _parse_int(other_loan),
+        "wealth_value": _parse_int(wealth),
+        "current_balance": _parse_int(balance),
+        "has_business_loan": _parse_int(business) > 0,
+        "has_mortgage": _parse_int(mortgage) > 0,
+        "has_other_loan": _parse_int(other_loan) > 0,
+        "risk_level": _parse_risk_level(risk),
+        "complaint_score": _parse_int(_tag(customer_info, "客户投诉评分", default="0")),
+        "education": _map_education(education),
         "days_delinquent": _map_days_delinquent(mob_typ),
-        "recent_repayment": customer_info.get("（掌生APP操作）近7天-还款操作", "") == "Y",
-        "recent_contact_count": _parse_int(customer_info.get("近7日接通次数", "0")),
-        "is_high_risk_proxy_complaint": customer_info.get("持卡用户是否疑似高风险代理投诉", "") == "是",
-        "is_proxy_intermediary_complaint": customer_info.get("持卡用户是否疑似代理中介投诉", "") == "是",
-        "has_social_insurance": bool(customer_info.get("持卡人当前是否缴纳社保", "")),
-        "vehicle_count": _parse_int(customer_info.get("持卡用户名下历史车辆数", "0")),
+        "recent_repayment": str(repayment).strip().upper() == "Y",
+        "recent_contact_count": _parse_int(_tag(customer_info, "近7日接通次数", default="0")),
+        "is_high_risk_proxy_complaint": str(proxy).strip() == "是",
+        "is_proxy_intermediary_complaint": str(intermediary).strip() == "是",
+        "has_social_insurance": _has_social_insurance(social),
+        "vehicle_count": _parse_int(vehicles),
     }
 
 

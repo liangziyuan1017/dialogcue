@@ -2,8 +2,14 @@ function toggleView(){
   if(viewingDialog){
     viewingDialog=false;
     document.getElementById('btn-view').classList.remove('active');
+    // treeToCytoscape skips ids already in these sets — reset so the full graph rebuilds
+    addedNodeIds=new Set();
+    addedEdgeKeys=new Set();
     const{nodes,edges,crossEdges}=treeToCytoscape(treeData);
+    addLeafToEndEdges({nodes,edges},crossEdges,treeData);
     buildGraph({nodes,edges},crossEdges);
+    if(tracePath.length) highlightPath(tracePath);
+    else cy.fit(undefined,40);
     return;
   }
   if(!currentDialog||!tracePath.length) return;

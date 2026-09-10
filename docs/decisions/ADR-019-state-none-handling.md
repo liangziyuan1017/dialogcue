@@ -1,5 +1,5 @@
 ---
-id: ADR-019
+REMOVED_FIELD_id: ADR-019
 title: Capture state=None Collector Turns Without Synthetic Action Label
 status: accepted
 created: 2026-06-17

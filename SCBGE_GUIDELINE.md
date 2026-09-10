@@ -23,7 +23,7 @@ Build a two-phase system:
 ### Architecture
 
 - **Database**: PostgreSQL + pgvector + pg_trgm — authoritative store for node labels, sentence provenance, metadata, 1024-dim vectors, 10-bit bitmask soft scoring, and full-text search.
-- **Offline artifacts**: JSONL for labeled, aligned, and rewarded corpora; JSON tree files remain compatibility/debug artifacts rather than the serving index.
+- **Offline artifacts**: JSONL for cleaned, labeled, aligned, and rewarded corpora (`data/data_output/*.jsonl` + `src/f0*/data/*.jsonl`); JSON tree files remain compatibility/debug artifacts (Tree Explorer reads `decision_tree_scored.json`) rather than the sole serving index.
 - **Embeddings**: bge-m3 (1024-dim) served locally via Ollama, OpenAI-compatible API. No external per-call cost; offline-capable (ADR-024).
 - **LLM**: DeepSeek for offline taxonomy discovery / reward labeling / turn labelling, and for the single online state-extraction call in the hot path.
 - **API**: FastAPI, `POST /recommend` (REST, caller manages conversation state) + Socket.IO session interface (server manages state accumulation automatically). See F009.
@@ -55,7 +55,7 @@ Build a two-phase system:
 
 > F011/F012/F013 are cross-cutting infrastructure hardening: F011 externalizes all tunable params to `config.md`; F012 adds structured logging, retry, and config hardening; F013 replaces the psycopg2 threadpool with native asyncpg on the runtime DB path. They thread through F007–F009 rather than sitting on the F000→F009 build chain.
 >
-> F015 is the incremental ingest path: a single orchestrator (`src/add_records.py`) appends new records at every stage without full rebuild, leaving existing records intact (ADR-035/036/037).
+> F015 is the incremental ingest path: entrypoint `src/run_append.py` delegates to `src/add_records.py`, appending new records at every stage without full rebuild, leaving existing records intact (ADR-035/036/037).
 >
 > F016 is the sentence pool augmentation path: given a tree node, generate new collector sentences via LLM (DeepSeek, temperature 1.1) using a "imagine customer → respond" prompt with compliance guardrails, then insert into the tree UI overlay + PostgreSQL. Unique call_id generation with collision detection (ADR-040). Does not modify existing code or data.
 >
@@ -83,26 +83,26 @@ F015 (incremental append) ──► reuses F000..F005 + F007 in append-only mode
 ### Data Flow
 
 ```
-data/data_input/matched_data.jsonl  (raw call records)
+data/data_input/input_data.jsonl  (raw: call_id + dialog + custInfo only)
         │
-        ▼  F000  (LLM taxonomy discovery + turn labelling)
-state_keywords.json          output_labeled.jsonl (per-turn state labels)
+        ▼  Phase 0  LLM cleaning  (src/data_clean.py → data/data_cleaning/*)
+data/data_output/output_{clean,logic,complete,merged}.jsonl
+        │
+        ▼  F000  (LLM taxonomy discovery + turn labelling + canonical relabel)
+state_keywords.json          output_labeled.jsonl (per-turn state; facts/emotions canonicalized)
         │                            │
         ▼  F001  (schema alignment, carry F000 labels, derive context) ──────────────┐
-      output_aligned.jsonl  (turns_annotated + context + reward:null)                          │
+      output_aligned.jsonl  (turns_annotated + nested state + context + reward:null)           │
         │                                                                            │
-        ▼  F003  (state relabeling: facts/emotions CSV remap)                         │
-output_aligned.jsonl  (overwritten with relabeled tags)                              │
-        │                                                                            │
-        ▼  F003  (LLM reward R∈{0,1} + counterfactual credit)                         │
-output_rewarded.jsonl  (reward + reward_action_credit + reward_evidence)             │
+        ▼  F001/F003  (CSV state remap via relabel_state, then reward)                 │
+output_aligned.jsonl / output_rewarded.jsonl                                         │
         │                                                                            │
         ▼  F004  (additive per-dialog insertion → action split at insert → consolidate endpoints)  │
-decision_tree.json  (1384 nodes, 1701 sentences, DAG)                                  │
+decision_tree.json  (DAG; opening pools greetings, spawns non-greeting a:* children)  │
         │                                                                            │
         ▼  F005  (bitmask tagging + HWR + SAS + conversation_context)                 │
         ▼  F007b (bge-m3 embedding of conversation_context)                           │
-decision_tree_scored.json  (backward-compat JSON)                                     │
+decision_tree_scored.json  (backward-compat JSON; Tree Explorer reads this)           │
         │                                                                            │
         ▼  F007  (load into PostgreSQL)                                               │
 PostgreSQL: nodes │ sentences │ sentence_sources │ taxonomy_keywords                  │
@@ -110,13 +110,22 @@ PostgreSQL: nodes │ sentences │ sentence_sources │ taxonomy_keywords      
         ▼  F008 + F006 + F009  (online retrieval)                                    │
 POST /recommend  →  state extraction  →  relabel  →  node lookup  →  bitmask score  →  vector rank  →  top-1 script
                                           ↑__________________|
-                                            *_relabeled grows (ADR-026)
+                                            *_relabeled grows (ADR-026 via label_relabel / llm_relabel_*)
 ```
 
-**Incremental path (F015)** — `src/add_records.py`, append-only, no full rebuild:
+**Offline orchestrators** (project root):
+
+| Command | Stages |
+|---------|--------|
+| `python3 src/data_clean.py data/data_input/input_data.jsonl` | clean → discover/label/canonical-relabel → align → reward |
+| `python3 src/build_tree_and_db.py` | F004 tree → F005 score → F007 DB |
+| `python3 src/run_append.py` | F015 incremental append (`new_data.jsonl`) |
+| `python3 src/launch_ui.py` | Tree Explorer `:8420` + API `:8000` |
+
+**Incremental path (F015)** — entrypoint `src/run_append.py` → `src/add_records.py`, append-only, no full rebuild:
 
 ```
-data/data_input/new_data.jsonl  (user places new records here)
+data/data_input/new_data.jsonl  (same 3-field schema as input_data.jsonl)
          │
          ▼  Phase 0  check_new_records  (call_id uniqueness + format gate)
          ▼  Phase 1a–1e  clean → merge → label_new_records → align/relabel → reward  (append to existing outputs)
@@ -124,7 +133,7 @@ data/data_input/new_data.jsonl  (user places new records here)
          ▼  Phase 3+4  score tree + targeted DB upsert  (new nodes/sentences only; embed only new; recompute affected scores)
          ▼  orphan cleanup  (delete DB sentences for new call_ids absent from tree — ADR-037)
          ▼  taxonomy upsert  (dedup + MD5 unique index + frequency update)
-         ▼  post-success hook  (append new_data.jsonl → matched_data.jsonl)
+         ▼  post-success hook  (append new_data.jsonl → input_data.jsonl; clear new_data.jsonl)
 ```
 
 ### Architecture Decisions Summary
@@ -155,10 +164,7 @@ with the decision tree, scored sentences, and pre-computed embeddings.
 
 #### What this does
 
-Ingests the raw source corpus: debt-collection call records in JSONL, each
-containing the raw dialog string, call metadata, and a `custInfo` JSON array of
-tagName/tagValue profile pairs. No transformation happens here — this is the
-input contract for the entire pipeline.
+Ingests the raw source corpus: debt-collection call records in JSONL. The **input contract is exactly three top-level fields** — `call_id`, `dialog`, and `custInfo` — validated by `src/check_data_format.py` / `src/check_new_records.py`. No other top-level keys are accepted. `custInfo` is either a JSON string or a list of `{tagName, tagValue}` profile pairs. Cleaning (`src/data_clean.py`) and later stages may pass through or invent empty metadata fields for schema compatibility, but raw ingest does not require them.
 
 #### Design considerations & decisions
 
@@ -167,24 +173,39 @@ input contract for the entire pipeline.
   system is designed to broaden with data (ADR-003 suggests domain keywords).
 - Raw `custInfo` fields are Chinese tagName/tagValue pairs, unusable for O(1) filtering.
   F001 (ADR-006) maps them to 18 typed English fields later.
+- Tag names were normalized to the current collection-system vocabulary (e.g. `最高学历`, `账户当前余额`, `理财资产时点值`, `高风险代理投诉`). F001 `build_context` accepts **legacy aliases** (`学历`/`目前余额`/`理财时点值`/`持卡用户是否疑似高风险代理投诉`/…) so older dumps still align.
+- Repayment signal accepts either `近7日还款操作` or `（掌生APP操作）近7天-还款操作`.
 
-**Source**: `/data/data_input/matched_data.jsonl` — raw call records in JSONL format.
+**Source**: `/data/data_input/input_data.jsonl` — raw call records in JSONL format.
 
-Each record has these exact fields:
+Each record has **exactly** these fields:
 
 ```json
 {
-  "call_id": "2317941550352385028",
-  "dialog": "催收员：唉，您好...；客户：喂；...",   // raw dialog string, turns separated by ；
-  "call_date": "20260506",
-  "cust_no": "0100252354",
-  "coll_user_id": "SX17625",
-  "mob_typ": "M1",
-  "talk_time": "613",
-  "plan_evaluation": "| 类型 | 执行情况 | 关键证据 | ...",
-  "custInfo": "[{\"tagName\":\"经营贷款余额\",\"tagValue\":\"0.0\"},{\"tagName\":\"理财时点值\",\"tagValue\":\"0.0\"},{\"tagName\":\"学历\",\"tagValue\":\"本科\"},{\"tagName\":\"商业房贷余额\",\"tagValue\":\"394693.0\"},{\"tagName\":\"其他贷款余额\",\"tagValue\":\"14287.0\"},{\"tagName\":\"持卡用户是否疑似高风险代理投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡用户是否疑似代理中介投诉\",\"tagValue\":\"否\"},{\"tagName\":\"持卡人当前是否缴纳社保\"},{\"tagName\":\"目前余额\",\"tagValue\":\"32807.96\"},{\"tagName\":\"近7日接通次数\",\"tagValue\":\"1\"},{\"tagName\":\"客户风险标识等级\",\"tagValue\":\"1级\"},{\"tagName\":\"客户投诉评分\",\"tagValue\":\"10\"}]"
+  "call_id": "2346089320444241687",
+  "dialog": "催收员：喂您好请问是XXX先生吗；客户：唉；...",
+  "custInfo": [
+    {"tagName": "经营贷款余额", "tagValue": "0.0"},
+    {"tagName": "理财资产时点值", "tagValue": "0.0"},
+    {"tagName": "最高学历", "tagValue": "大专"},
+    {"tagName": "商业房贷余额", "tagValue": "318420.0"},
+    {"tagName": "其他贷款余额", "tagValue": "0.0"},
+    {"tagName": "高风险代理投诉", "tagValue": "否"},
+    {"tagName": "代理中介投诉", "tagValue": "否"},
+    {"tagName": "当前社保缴纳状态", "tagValue": "未知"},
+    {"tagName": "账户当前余额", "tagValue": "11396.25"},
+    {"tagName": "客户标签", "tagValue": "146"},
+    {"tagName": "近7日还款操作", "tagValue": "N"},
+    {"tagName": "历史车辆数量", "tagValue": "2"},
+    {"tagName": "近7日接通次数", "tagValue": "5"},
+    {"tagName": "客户风险等级", "tagValue": "2级"},
+    {"tagName": "客户投诉评分", "tagValue": "2"}
+  ]
 }
 ```
+
+> `dialog` turns are separated by `；` / `;`. `custInfo` may also be a JSON-encoded string of the same array. Validate with:
+> `python3 src/check_data_format.py data/data_input/input_data.jsonl --strict`
 
 ### Step 1.2: F000 — State Keyword Discovery + Turn Labelling
 
@@ -192,9 +213,11 @@ Each record has these exact fields:
 
 Discovers the state taxonomy (facts, emotions, willingness levels, collector
 actions) from real conversation data via DeepSeek LLM, rather than prescribing
-it. Then labels each turn with the discovered state keywords. Outputs the
-taxonomy JSON plus a per-turn labelled Python file. 493 of 805 turns are
-labelled; filler turns ("嗯", "对", "好") are left unlabeled.
+it. Then labels each turn with the discovered state keywords. After labelling,
+**canonical-relabels** free-form fact/emotion tags onto the `data/data_labels`
+taxonomy (ADR-026) so downstream tree nodes use stable keys (e.g.
+`request_installment` → `installment_request`). Outputs the taxonomy JSON plus
+per-turn labelled JSONL. Filler turns ("嗯", "对", "好") are left unlabeled.
 
 #### Design considerations & decisions
 
@@ -208,15 +231,22 @@ labelled; filler turns ("嗯", "对", "好") are left unlabeled.
   7-type enum didn't match observed Chinese collector behavior.
 - **KD-5 / ADR-005**: Willingness level count is data-driven (natural
   clustering yielded 5 levels: resistant→weak→conditional→negotiating→strong).
+- **Canonical relabel (ADR-026)**: Shared runtime `f007_infrastructure/label_relabel.py`
+  (also used online by F008) — hard-match `*_descriptions.py` → cached
+  `*_relabeled.csv` → `data/data_labels/llm_relabel_{facts,emotions}.py`
+  (`classify_batch` / prompts / `validate_mapping`). F000 wrapper:
+  `canonical_relabel.relabel_records`. New mappings append to the CSV caches.
 - **Risk**: LLM may invent ungrounded keywords → mitigated by requiring verbatim
   `example_turn` for every observed keyword; suggested keywords explicitly
   flagged.
 
-**Input**: All turns across all records from `/data/data_input/matched_data.jsonl`
+**Input**: Cleaned/merged records from `data/data_output/output_merged.jsonl`
+(produced by `src/data_clean.py` Phase 1; incremental path labels only new call_ids).
 
 **Process**:
 1. **Keyword discovery**: LLM groups same-meaning keywords into canonical groups (ADR-001: data-driven, not prescribed; ADR-002: group variants under canonical names)
 2. **Turn labelling**: LLM labels each turn with state keywords from the discovered taxonomy — facts, emotions, willingness (customer) or action (collector). Turns with no meaningful state are left unlabeled.
+3. **Canonical relabel**: Map free-form fact/emotion labels onto `data/data_labels` via `label_relabel` (descriptions → CSV → `llm_relabel_*`).
 
 **Output 1**: `/src/f000_keyword_discovery/data/state_keywords.json` (taxonomy)
 
@@ -231,13 +261,13 @@ labelled; filler turns ("嗯", "对", "好") are left unlabeled.
       "source": "observed"
     },
     {
-      "group_name": "request_installment",
+      "group_name": "installment_request",
       "keywords": ["整个账单分期", "分期完之后信用卡取消", ...],
       "frequency": 6,
       "source": "observed"
     },
     {"group_name": "multiple_debts", "keywords": [...], "frequency": 5, ...},
-    {"group_name": "salary_delay", "keywords": [...], "frequency": 5, ...},
+    {"group_name": "income_delay", "keywords": [...], "frequency": 5, ...},
     {"group_name": "income_statement", "keywords": [...], "frequency": 4, ...},
     {"group_name": "ability_to_pay", "keywords": [...], "frequency": 4, ...},
     ...
@@ -265,13 +295,12 @@ labelled; filler turns ("嗯", "对", "好") are left unlabeled.
 
 **Output 2**: `/src/f000_keyword_discovery/data/output_labeled.jsonl` (per-turn state labels)
 
-> **Note**: This is an F000-produced JSONL artifact. It is written under the `f000_keyword_discovery/data/` directory and consumed by F001 line by line.
+> **Note**: JSONL artifact under `f000_keyword_discovery/data/`, consumed by F001 line by line. Fact/emotion group names in turn `state` are already canonicalized.
 
-493 of 805 turns are labeled with `state` dicts. Customer turns get `state: {facts: [...], emotions: [...], willingness: "..."}`. Collector turns get `state: {action: "..."}`. Unlabeled turns (filler like "嗯", "对", "好") omit `state`.
+Customer turns get `state: {facts: [...], emotions: [...], willingness: "..."}`. Collector turns get `state: {action: "..."}`. Unlabeled turns (filler like "嗯", "对", "好") omit `state`.
 
-```python
-# output_labeled.jsonl excerpt
-{"call_id": "2317941550352385028", "response": {"dialog": [...]}}
+```json
+{"call_id": "2346089320444241687", "response": {"dialog": [{"role": "催收员", "text": "...", "state": {"action": "greeting"}}, ...]}, "custInfo": [...]}
 ```
 
 ### Step 1.3: F001 — Schema Alignment
@@ -282,14 +311,14 @@ Maps the raw records from the collection-system schema to a SOP-aligned schema w
 
 #### Design considerations & decisions
 
-- **ADR-006**: Map `custInfo` JSON array (tagName/tagValue pairs) → 18 typed English `context` fields (boolean bitmask fields + numeric/categorical fields). Migrated from `customer_info` dict to `custInfo` JSON on 2026-07-09.
-- **ADR-007**: Carry F000 state labels into `turns_annotated` — aligned schema is a superset, not lossy; preserves data lineage.
+- **ADR-006**: Map `custInfo` JSON array (tagName/tagValue pairs) → 18 typed English `context` fields (boolean bitmask fields + numeric/categorical fields). Migrated from `customer_info` dict to `custInfo` JSON on 2026-07-09. Current tag vocabulary (with legacy aliases) includes `最高学历`/`学历`, `账户当前余额`/`目前余额`, `理财资产时点值`/`理财时点值`, `客户风险等级`/`客户风险标识等级`, `高风险代理投诉`/`持卡用户是否疑似高风险代理投诉`, etc.
+- **ADR-007**: Carry F000 state labels into `turns_annotated[].state` (nested) — aligned schema is a superset, not lossy; preserves data lineage.
 - **ADR-008**: Superseded by ADR-043. Pipeline result artifacts are JSONL and are loaded line by line; the old executable `.py` literal format is retained only in historical decision context.
 - **Review Note (resolved)**: Include F000 state labels in `turns_annotated`.
 
-**Input**: `/data/matched_data.jsonl` + `state_keywords.json` + `output_labeled.jsonl`
+**Input**: cleaned/merged JSONL (`response.dialog` or equivalent after cleaning) + `output_labeled.jsonl` + `custInfo`
 
-**Process**: Parse raw `dialog` string into structured turns. **Carry F000 state labels from `output_labeled.jsonl` into `turns_annotated`** (ADR-007: aligned schema is a superset of prior outputs, not a lossy transformation). Derive `context` constraint dict from `custInfo` JSON array (ADR-006: 18 fields mapped).
+**Process**: Parse dialog into structured turns. **Carry F000 state labels from `output_labeled.jsonl` into `turns_annotated[].state`** (ADR-007). Derive `context` constraint dict from `custInfo` JSON array (ADR-006: 18 fields; tag aliases supported). Optional call-metadata fields (`cust_no`, `mobTyp`, …) are filled when present on the merged record, otherwise empty strings — raw ingest no longer requires them.
 
 **Output**: `/src/f001_schema_alignment/data/output_aligned.jsonl`
 
@@ -298,80 +327,68 @@ The schema shape below is shown as an array for readability; on disk, each recor
 ```python
 results = [
   {
-    "call_id": "2317941550352385028",
-    "cust_no": "0100252354",
-    "call_date": "20260506",
-    "coll_user_id": "SX17625",
-    "mob_typ": "M1",
-    "talk_time": "613",
-    "plan_evaluation": "| 类型 | 执行情况 | ...",
-    "custInfo": "[...]",  # preserved verbatim from source (JSON array of tagName/tagValue pairs)
+    "call_id": "2346089320444241687",
+    "cust_no": "",                 # optional; empty when absent from raw 3-field input
+    "dialDate": "",
+    "mobTyp": "",
+    "custInfo": [...],             # preserved from source (list or JSON string of tagName/tagValue)
     "turns_annotated": [
       {
         "turn_index": 0,
         "role": "催收员",
-        "text": "唉，您好，请问是……喂，您好，请问是。",
+        "text": "喂，您好。这边是这个XXX信用卡中心…",
         "state": {"action": "greeting"}
       },
       {
         "turn_index": 1,
         "role": "客户",
-        "text": "喂。"
+        "text": "唉。"
         # no state — unlabeled turn
       },
       {
-        "turn_index": 7,
+        "turn_index": 8,
         "role": "客户",
-        "text": "我想问一下，唉，譬如说，呃，不是说我是想整个账单分期，然后呃，分期完之后，这个信用卡就没有了，就要取消了，是这个意思吗？",
+        "text": "噢，今天还，现还呢。你帮我把那个利息减免一下。",
         "state": {
-          "facts": ["request_installment"],
-          "willingness": "conditional"
+          "facts": ["installment_request"],
+          "willingness": "strong"
         }
       },
       {
-        "turn_index": 11,
-        "role": "客户",
-        "text": "这样子……那那你还有其他的办法吗？",
-        "state": {
-          "emotions": ["disappointment"],
-          "willingness": "negotiating"
-        }
-      },
-      {
-        "turn_index": 12,
+        "turn_index": 13,
         "role": "催收员",
-        "text": "嗯，其他办法，这边的话就是说，建议你去还最低还款，26463块钱。",
+        "text": "噢，好的，我这边帮您登记一下…",
         "state": {"action": "plan_proposal"}
       }
     ],
     "reward": null,             # filled by F003
-    "state_transitions": [],    # filled later
+    "state_transitions": [],
     "context": {
       "has_business_loan": false,
       "has_mortgage": true,
-      "has_other_loan": true,
+      "has_other_loan": false,
       "has_social_insurance": false,
       "is_high_risk_proxy_complaint": false,
       "is_proxy_intermediary_complaint": false,
       "recent_repayment": false,
       "business_loan_balance": 0,
-      "mortgage_balance": 3946930,
-      "other_loan_balance": 142870,
+      "mortgage_balance": 318420,
+      "other_loan_balance": 0,
       "wealth_value": 0,
-      "current_balance": 3280796,
-      "days_delinquent": 30,
-      "recent_contact_count": 1,
-      "risk_level": 1,
-      "complaint_score": 10,
-      "vehicle_count": 0,
-      "education": "bachelor"
+      "current_balance": 11396,
+      "days_delinquent": 0,
+      "recent_contact_count": 5,
+      "risk_level": 2,
+      "complaint_score": 2,
+      "vehicle_count": 2,
+      "education": "college"
     }
   },
   ...  # all labeled records
 ]
 ```
 
-**Key**: `turns_annotated[].state` labels are carried from F000's `output_labeled.jsonl` per ADR-007. `context` is derived from `custInfo` JSON array → 18 English fields per ADR-006.
+**Key**: `turns_annotated[].state` labels are carried from F000's `output_labeled.jsonl` per ADR-007. `context` is derived from `custInfo` JSON array → 18 English fields per ADR-006 (current + legacy Chinese tag names).
 
 ### Step 1.4: F003 — Reward Labeling
 
@@ -454,14 +471,15 @@ Builds a collector decision tree where nodes are collector action points, branch
 **Process** (additive):
 1. `make_base_tree()` → root (role=opening) + normal_end (role=ending) + abrupt_end (role=ending)
 2. For each conversation record, `add_dialog_to_tree(tree, record, registry)`:
-   - Greeting turns → root.sentence_pool (gesture_type=opening)
+   - Greeting turns → root.sentence_pool (gesture_type=opening); **no** `a:greeting` child (ADR-042)
+   - Other pre-fact collector actions (`information`, `pressure`, `empathy`, `plan_proposal`, …) → spawn `a:*` children under opening so Tree Explorer path tracing (`findChildByAction`) can display them before the first customer fact
    - Extract segments (fact/emotion branch keys → collector sentences)
    - Walk facts/emotions one at a time; reuse or spawn decision nodes (role=decision)
    - Place sentences: action split at insert for decision nodes → a:xxx children (role=action); unassigned → node pool
-   - Closing sentences → normal_end.sentence_pool (gesture_type=ending)
+   - Closing sentences → placed on current decision/action path; `gesture_type=ending` only for `CLOSING_ACTIONS`
    - Redundant-fact skip: if fact already in accumulated_facts, skip spawn
 3. Final touches: `_propagate_facts`, `_deduplicate_nodes`, `_enforce_end_leaves`, `_prune_empty_subtrees`, `_consolidate_endpoints`, `_dedup_script_ids_global`, `_sort_keywords`
-4. `merge_dialogs(tree_path, new_records)` — load-or-create, add each, save. Incremental = merge only new call_ids; full rebuild = delete tree file + merge all.
+4. `merge_dialogs(tree_path, new_records)` — load-or-create, add each, save. Strips `_parent` pointers before JSON write, then re-attaches them in memory (callers such as `add_records._phase2_tree` must strip again before scoring/serialize). Incremental = merge only new call_ids; full rebuild = `build_tree_and_db.py` / `write_decision_tree` over all rewarded records.
 
 **Output**: `/src/f004_decision_tree/data/decision_tree.json`
 
@@ -483,8 +501,8 @@ Tree structure:
   ],
   "children": [
     {
-      "state_id": "f:request_installment",
-      "branch_key": {"facts": ["request_installment"]},
+      "state_id": "f:installment_request",
+      "branch_key": {"facts": ["installment_request"]},
       "role": "decision",
       "inherited_facts": [],
       "inherited_emotions": [],
@@ -494,7 +512,7 @@ Tree structure:
           "state_id": "a:information",
           "branch_key": {"action": "information"},
           "role": "action",
-          "inherited_facts": ["request_installment"],
+          "inherited_facts": ["installment_request"],
           "inherited_emotions": [],
           "sentence_pool": [...],
           "children": []
@@ -503,7 +521,7 @@ Tree structure:
           "state_id": "e:disappointment",
           "branch_key": {"emotions": ["disappointment"]},
           "role": "decision",
-          "inherited_facts": ["request_installment"],
+          "inherited_facts": ["installment_request"],
           "inherited_emotions": [],
           "sentence_pool": [],
           "children": [...]
@@ -735,7 +753,7 @@ Extracts the customer's state (facts, emotions, actions, willingness) from their
 #### Design considerations & decisions
 
 - **ADR-026**: Open-set extraction for facts/emotions — the LLM extracts whatever labels best describe the utterance, unconstrained by a predefined list. Willingness remains closed-set (6 ordered levels per ADR-005).
-- **Synchronous relabel pipeline** (ADR-026): each extracted label is checked against `*_descriptions` (canonical set) → `*_relabeled` CSV (existing mapping) → if no mapping, `llm_relabel` runs synchronously to generate one and appends it to `*_relabeled`. Worst-case latency ~2x on novel labels; rare in steady state as the cache grows.
+- **Synchronous relabel pipeline** (ADR-026): shared module `f007_infrastructure/label_relabel.py` — each extracted label is checked against `*_descriptions` (canonical set) → `*_relabeled` CSV (existing mapping) → if no mapping, `data/data_labels/llm_relabel_{facts,emotions}.py` runs synchronously (`classify_batch`) and appends to `*_relabeled`. Same cascade as F000 offline canonical relabel. Worst-case latency ~2x on novel labels; rare in steady state as the cache grows.
 - **ADR-009**: Eliminated F002 (a second offline LLM state-extraction pass) — online extraction + at most one relabel call is the only LLM work in the hot path.
 - **F008**: LLM-first with keyword fallback — DeepSeek for semantic extraction, tsvector keyword scan via `taxonomy_keywords` table when LLM unavailable.
 - **State accumulation rules**: path-structured (see Step 2.2); willingness is a scalar (overwrite with latest non-null).
@@ -1594,14 +1612,14 @@ is still an explicit verification gap.
 | Sentence provenance | Unbounded `source_call_ids` list | PG `sentence_sources(script_id, call_id)` join table | Batched writes and indexed lookup |
 | Vector search | Dense corpus-side TF-IDF | pgvector HNSW index | Approximate KNN |
 | Full-text search | None | PG tsvector + GIN index | BM25-ish keyword search |
-| Build time | ~30s (with LLM merge) | Batch LLM + incremental rebuild | **F015 implemented**: `src/add_records.py` appends new records at every stage without full rebuild (ADR-035) |
+| Build time | ~30s (with LLM merge) | Batch LLM + incremental rebuild | **F015 implemented**: `src/run_append.py` → `src/add_records.py` appends new records at every stage without full rebuild (ADR-035) |
 | Child lookup | Linear scan of `children[]` | Hash map `branch_key → child` per node | O(1) child resolution |
 | Context filter | Python loop | PG bitwise scoring: `popcount(bg_bitmask_int & ?) / popcount(bg_bitmask_int)` | Index + SQL scoring |
 | Retrieval | JSON load + tree walk | DB label lookup + PG SELECT + pgvector | O(candidate nodes + pool size) |
 
 **Migration steps**: (1) JSON → PostgreSQL with `path_signature` and persisted
 label columns; (2) DB-backed node and sentence lookup; (3) incremental rebuild of affected subtrees
-— **implemented as F015** (`src/add_records.py`, ADR-035/036/037); (4) batch LLM
+— **implemented as F015** (`src/run_append.py` / `src/add_records.py`, ADR-035/036/037); (4) batch LLM
 merge with merge cache — **merge cache persistence implemented** (ADR-036);
 (5) pgvector HNSW tuning (`ef_construction`, `m`); (6) JSONL loaders, batched
 upserts, streamed reads, parent-pointer ancestry, and lazy turn labeling —
@@ -1625,8 +1643,8 @@ Authoritative decision records. Each is one line here; see
 | [ADR-003](docs/decisions/ADR-003-suggested-domain-keywords.md) | Suggested domain keywords | Include domain-common keywords not in the observed records (`source: "suggested"`, freq 0) for forward-compatibility. |
 | [ADR-004](docs/decisions/ADR-004-collector-action-discovery.md) | Collector action discovery | Discover collector action types from data too — fixed 7-type enum didn't match observed behavior. |
 | [ADR-005](docs/decisions/ADR-005-data-driven-willingness-levels.md) | Data-driven willingness levels | Willingness level count determined by natural clustering (yielded 5 levels), not preset. |
-| [ADR-006](docs/decisions/ADR-006-context-constraint-mapping.md) | Context constraint mapping | Map `custInfo` JSON array → 18 typed English `context` fields. Migrated from `customer_info` dict on 2026-07-09. |
-| [ADR-007](docs/decisions/ADR-007-carry-state-labels.md) | Carry state labels | F001 carries F000 state labels into `turns_annotated` — aligned schema is a superset, not lossy. |
+| [ADR-006](docs/decisions/ADR-006-context-constraint-mapping.md) | Context constraint mapping | Map `custInfo` JSON array → 18 typed English `context` fields. Migrated from `customer_info` dict on 2026-07-09. Current Chinese tags + legacy aliases accepted in `build_context`. |
+| [ADR-007](docs/decisions/ADR-007-carry-state-labels.md) | Carry state labels | F001 carries F000 state labels into `turns_annotated[].state` — aligned schema is a superset, not lossy. |
 | [ADR-008](docs/decisions/ADR-008-output-format-py-file.md) | Output format .py file | Superseded by ADR-043; historical `.py` literal output is no longer used by pipeline loaders. |
 | [ADR-009](docs/decisions/ADR-009-eliminate-f002-llm-state-extraction.md) | Eliminate F002 | Remove offline LLM state extraction — F001's 493/805 annotations (LLM-labelled by F000, carried into F001 per ADR-007) suffice; online extraction is the only hot-path LLM call. |
 | [ADR-010](docs/decisions/ADR-010-reward-labeling-approach.md) | Reward labeling approach | LLM + counterfactual verification + cross-validation against `plan_evaluation` for scalable, auditable R labels. |
@@ -1645,7 +1663,7 @@ Authoritative decision records. Each is one line here; see
 | [ADR-023](docs/decisions/ADR-023-sentence-pool-dedup.md) | Sentence pool dedup | **Superseded by ADR-029.** `_dedup_pool` by `script_text` after every `.extend()` in transforms. |
 | [ADR-024](docs/decisions/ADR-024-embedding-architecture.md) | Embedding architecture | bge-m3 via Ollama (1024-dim, OpenAI-compatible) replaces char-ngram TF-IDF; local/no-cost/offline; unified ranking replaces dual-strategy. |
 | [ADR-025](docs/decisions/ADR-025-f010-ui-architecture.md) | F010 UI architecture | Vanilla JS + FastAPI StaticFiles; no build step; CodeMirror 6 + Tailwind via CDN; same server/port; `/recommend/debug` endpoint. |
-| [ADR-026](docs/decisions/ADR-026-open-set-extraction-relabel.md) | Open-set extraction + sync relabel | Open-set extraction for facts/emotions (free-form labels), closed-set for willingness; synchronous relabel pipeline normalizes through `*_descriptions` → `*_relabeled` → `llm_relabel`; self-extending taxonomy. |
+| [ADR-026](docs/decisions/ADR-026-open-set-extraction-relabel.md) | Open-set extraction + sync relabel | Open-set extraction for facts/emotions (free-form labels), closed-set for willingness; shared `label_relabel` runtime normalizes through `*_descriptions` → `*_relabeled` → `llm_relabel_{facts,emotions}`; self-extending taxonomy (F000 offline + F008 online). |
 | [ADR-027](docs/decisions/ADR-027-db-concurrency-threadpool-now-asyncpg-later.md) | DB concurrency: asyncpg runtime | `psycopg2.pool.ThreadedConnectionPool` + `run_in_threadpool` was an interim fix (F012 Phase B); F013 replaced the runtime DB driver with native `asyncpg` — all hot-path DB methods are `async`, no thread overhead. Build-time batch loads keep `psycopg2`. |
 | [ADR-028](docs/decisions/ADR-028-sql-side-cosine-scoring.md) | SQL-side cosine scoring | Move `vec_score` computation from Python/numpy to PostgreSQL via pgvector `<=>` operator; eliminates raw embedding transfer to Python. |
 | [ADR-029](docs/decisions/ADR-029-additive-tree-building.md) | Additive tree building | Replace global post-transform chain with per-dialog insertion (`add_dialog_to_tree`). Action split, ending consolidation, redundant-fact skip happen at insert time. Enables incremental merge via `merge_dialogs`. Supersedes ADR-015/017/018/022/023. |
@@ -1653,13 +1671,13 @@ Authoritative decision records. Each is one line here; see
 | [ADR-031](docs/decisions/ADR-031-node-hwr-blending.md) | Node HWR blending | Compute node-level HWR from all `source_call_ids` in pool; blend with sentence-level: `win_rate = weight*sentence_hwr + (1-weight)*node_hwr` where `weight = n/(n+2)`. |
 | [ADR-033](docs/decisions/ADR-033-custInfo-migration.md) | custInfo migration | Migrate from `customer_info` dict (21 fields) to `custInfo` JSON array (18 fields). New bitmask fields, bg_background from context_lookup, digit-count transforms. |
 | [ADR-034](docs/decisions/ADR-034-descend-for-sentences-on-empty-pool.md) | Descend into children on empty pool | When a matched node's own `sentence_pool` is empty, call `descend_for_sentences` to walk children before skipping to root fallback. Fixes `/recommend` always returning the same sentence. |
-| [ADR-035](docs/decisions/ADR-035-incremental-record-append-orchestrator.md) | Incremental record append orchestrator | Single orchestrator (`src/add_records.py`) appends new records at every stage without full rebuild; pre-check gate; targeted DB upsert; taxonomy dedup + MD5 unique index; post-success append hook. |
+| [ADR-035](docs/decisions/ADR-035-incremental-record-append-orchestrator.md) | Incremental record append orchestrator | Entrypoint `src/run_append.py` → `src/add_records.py` appends new records at every stage without full rebuild; pre-check gate; targeted DB upsert; taxonomy dedup + MD5 unique index; post-success append hook. |
 | [ADR-036](docs/decisions/ADR-036-merge-decisions-cache-persistence.md) | Merge decisions cache persistence | Save `merge_decisions.json` after incremental tree build so LLM merge choices for new records are reproducible across runs. |
 | [ADR-037](docs/decisions/ADR-037-orphan-sentence-cleanup.md) | Orphan sentence cleanup | After DB upsert, delete sentences for new `call_id`s present in DB but absent from the final tree (orphans from partial/crashed runs). |
-| [ADR-038](docs/decisions/ADR-038-opening-node-action-children.md) | Opening node action children | **Superseded by ADR-042.** The opening (root) node used action-splitting to spawn `a:greeting` / `a:information` children. Reversed: greetings now pool into root with `gesture_type: "opening"`. |
+| [ADR-038](docs/decisions/ADR-038-opening-node-action-children.md) | Opening node action children | **Superseded by ADR-042** for greetings. Opening still pools greetings into root (`gesture_type: "opening"`, no `a:greeting`); non-greeting pre-fact actions (`information`, `pressure`, …) spawn `a:*` children so UI path tracing works. |
 | [ADR-039](docs/decisions/ADR-039-single-winner-per-utterance.md) | Single winner per utterance | `merge_state` only pushes the **previous** `branch_key` to `inherited_*`; non-winner labels from the same extraction are dropped. `inherited_*` is empty on the first utterance. Downstream retrieval matches shallower tree nodes instead of over-specifying the path. |
 | [ADR-040](docs/decisions/ADR-040-f016-unique-callid-diversity-compliance.md) | F016 unique call_id + diversity + compliance | `generate_unique_call_id()` with overlay+DB collision check; LLM temperature 1.1; "imagine customer → respond" prompt with guardrails (no internal labels, no dismissive quoting, no judgmental language). |
-| [ADR-042](docs/decisions/ADR-042-opening-greetings-end-leaves.md) | Opening greetings in root pool, precise ending gestures, end nodes are leaves | Reverses ADR-038: root pools greetings (`gesture_type: "opening"`), no `a:greeting` child; `gesture_type: "ending"` only on `closure`/`goodbye`; `_enforce_end_leaves` forces end nodes to leaves; `_dedup_script_ids_global` final pass guarantees unique `script_id`s across the tree. |
+| [ADR-042](docs/decisions/ADR-042-opening-greetings-end-leaves.md) | Opening greetings in root pool, precise ending gestures, end nodes are leaves | Root pools greetings (`gesture_type: "opening"`), no `a:greeting` child; non-greeting opening actions still get `a:*` children for UI tracing; `gesture_type: "ending"` only on `closure`/`goodbye`; `_enforce_end_leaves` + `_dedup_script_ids_global` guarantee leaf ends and unique `script_id`s. |
 | [ADR-043](docs/decisions/ADR-043-jsonl-streaming-replaces-py-literal.md) | JSONL streaming | Replace executable `.py` literal result files with JSONL artifacts and line-oriented loaders. |
 | [ADR-044](docs/decisions/ADR-044-serve-indexes-from-db-not-app-state.md) | DB-served indexes | Persist node labels and serve node/sentence lookup from PostgreSQL instead of retaining the scored tree and indexes in `app.state`. |
 | [ADR-045](docs/decisions/ADR-045-source-call-ids-join-table.md) | Sentence provenance join table | Persist `(script_id, call_id)` in `sentence_sources`; batch provenance writes while retaining the JSON tree field as an offline compatibility projection. |

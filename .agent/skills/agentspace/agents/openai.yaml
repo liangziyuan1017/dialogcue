@@ -1,3 +1,0 @@
-interface:
-  display_name: "Agentspace"
-  short_description: "Sync a folder to Agent Space and return a share link"

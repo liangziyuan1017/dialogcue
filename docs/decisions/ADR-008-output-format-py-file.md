@@ -1,5 +1,5 @@
 ---
-id: ADR-008
+REMOVED_FIELD_id: ADR-008
 title: "F001 output format: .py file with results list"
 doc_kind: decision
 feature_ids: [F001]

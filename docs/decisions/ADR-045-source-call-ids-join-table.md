@@ -1,5 +1,5 @@
 ---
-id: ADR-045
+REMOVED_FIELD_id: ADR-045
 title: "source_call_ids as sentence_sources join table"
 doc_kind: decision
 feature_ids: [F017]

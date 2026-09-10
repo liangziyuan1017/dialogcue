@@ -1,5 +1,5 @@
 ---
-id: ADR-040
+REMOVED_FIELD_id: ADR-040
 title: "F016 unique call_id + LLM diversity + compliance guardrails"
 doc_kind: decision
 feature_ids: [F016]

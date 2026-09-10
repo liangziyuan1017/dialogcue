@@ -1,5 +1,5 @@
 ---
-id: LL-003
+REMOVED_FIELD_id: LL-003
 title: Propagate-then-extend creates silent duplicates
 doc_kind: lesson
 feature_ids: [F004]
