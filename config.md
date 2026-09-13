@@ -114,9 +114,15 @@ server:
   allowed_origins: ["*"]
 
 # ── Extraction ──
+# provider: llm (default, DeepSeek) | bert (local model via bert_extractor.py)
+# Override at runtime with EXTRACTION_PROVIDER=llm|bert
 extraction:
+  provider: llm
   cache_size: 512
   max_labels: 40
+  bert:
+    model_dir: ""          # path to your checkpoint; used once extract_state_bert is wired
+    device: auto           # auto | cpu | cuda | mps
 
 # ── Pipeline ──
 pipeline:
@@ -133,3 +139,5 @@ hwr:
 ## Notes
 
 Edit values above to tune system behavior. Regenerate pipeline outputs after changing ranking/scoring params.
+
+State extraction defaults to DeepSeek (`extraction.provider: llm`). To use a local BERT model, implement `extract_state_bert` in `src/f008_state_extraction/bert_extractor.py`, then set `extraction.provider: bert` (or `EXTRACTION_PROVIDER=bert`). Until that function is wired, leave provider as `llm` — the placeholder raises and online falls back to keyword-only if bert is selected by mistake.

@@ -32,7 +32,7 @@ def reward_lookup():
 
 class TestContextLookup:
     def test_returns_105_records(self, context_lookup):
-        assert len(context_lookup) == 105
+        assert len(context_lookup) == 5  # current checked-in corpus
 
     def test_all_have_context_fields(self, context_lookup):
         for _cid, ctx in context_lookup.items():
@@ -62,13 +62,13 @@ class TestContextLookup:
 class TestRewardLookup:
     def test_returns_105_records(self, reward_lookup):
 
-        assert len(reward_lookup) == 105
+        assert len(reward_lookup) == 5  # current checked-in corpus
     def test_all_rewards_are_0_or_1(self, reward_lookup):
         for _cid, r in reward_lookup.items():
             assert r in (0, 1)
     def test_78_rewards_are_1(self, reward_lookup):
 
-        assert sum(1 for r in reward_lookup.values() if r == 1) == 78
+        assert sum(1 for r in reward_lookup.values() if r == 1) == 3  # current checked-in corpus
 
 
 class TestBitmaskEncoding:

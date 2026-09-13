@@ -103,6 +103,9 @@ def _validate(cfg):
             continue
         if val < lo or val > hi:
             errors.append(f"{key} = {val} outside range [{lo}, {hi}]")
+    provider = (cfg.get("extraction") or {}).get("provider") if isinstance(cfg.get("extraction"), dict) else None
+    if provider is not None and str(provider).strip().lower() not in ("llm", "bert"):
+        errors.append(f"extraction.provider = {provider!r} must be 'llm' or 'bert'")
     return errors
 
 

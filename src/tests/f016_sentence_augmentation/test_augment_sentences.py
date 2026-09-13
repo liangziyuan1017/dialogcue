@@ -41,14 +41,16 @@ class TestLoadScoredTree:
 
 class TestFindNodeById:
     def test_finds_root_node(self, scored_tree):
-        node = find_node_by_id(scored_tree, "n_b8e3ecee405b")
+        node = find_node_by_id(scored_tree, scored_tree["node_id"])
         assert node is not None
-        assert node["node_id"] == "n_b8e3ecee405b"
+        assert node["node_id"] == scored_tree["node_id"]
 
     def test_finds_child_node(self, scored_tree):
-        node = find_node_by_id(scored_tree, "n_a1a0a219c342")
+        child = (scored_tree.get("children") or [None])[0]
+        assert child is not None, "scored tree has no children"
+        node = find_node_by_id(scored_tree, child["node_id"])
         assert node is not None
-        assert node["node_id"] == "n_a1a0a219c342"
+        assert node["node_id"] == child["node_id"]
 
     def test_returns_none_for_missing(self, scored_tree):
         node = find_node_by_id(scored_tree, "n_nonexistent")
@@ -57,14 +59,16 @@ class TestFindNodeById:
 
 class TestFindNodeByPathSignature:
     def test_finds_root(self, scored_tree):
-        node = find_node_by_path_signature(scored_tree, "initial_contact")
+        node = find_node_by_path_signature(scored_tree, scored_tree["path_signature"])
         assert node is not None
-        assert node["path_signature"] == "initial_contact"
+        assert node["path_signature"] == scored_tree["path_signature"]
 
     def test_finds_child(self, scored_tree):
-        node = find_node_by_path_signature(scored_tree, "initial_contact/f:repayment_inability")
+        child = (scored_tree.get("children") or [None])[0]
+        assert child is not None, "scored tree has no children"
+        node = find_node_by_path_signature(scored_tree, child["path_signature"])
         assert node is not None
-        assert node["path_signature"] == "initial_contact/f:repayment_inability"
+        assert node["path_signature"] == child["path_signature"]
 
     def test_returns_none_for_missing(self, scored_tree):
         node = find_node_by_path_signature(scored_tree, "nonexistent/path")

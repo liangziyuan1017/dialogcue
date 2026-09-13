@@ -8,6 +8,7 @@
 - **Two-phase system** — offline ingest (clean → label → decision tree → PostgreSQL) and online retrieve (`POST /recommend`)
 - **Chinese debt-collection domain** — data-discovered state taxonomy (facts, emotions, willingness, collector actions), not a prescribed English ontology
 - **Local embeddings, no per-call vector cost** — bge-m3 via Ollama (1024-dim) + PostgreSQL/pgvector hybrid search
+- **Switchable state extraction** — DeepSeek (default) or local BERT via `extraction.provider` in `config.md`
 - **Incremental ingest** — append new calls without full rebuild (`src/run_append.py`)
 - **Built-in tooling** — Tree Explorer + Postman-style API mock / pipeline trace UI
 
@@ -74,7 +75,7 @@ If you only need a chatbot that “sounds helpful,” this project is the wrong 
 
 (Weights are configurable in `config.md`.)
 
-Stack: **Python ≥3.11**, **FastAPI + Socket.IO**, **PostgreSQL 16 + pgvector + pg_trgm**, **DeepSeek** (taxonomy / reward / online state extraction), **Ollama bge-m3** (embeddings).
+Stack: **Python ≥3.11**, **FastAPI + Socket.IO**, **PostgreSQL 16 + pgvector + pg_trgm**, **DeepSeek** (taxonomy discovery / reward / default state extraction), optional **local BERT** for turn labeling + online extraction, **Ollama bge-m3** (embeddings).
 
 End-to-end design, samples, latency budget, schema, and ADR index: [`SCBGE_GUIDELINE.md`](SCBGE_GUIDELINE.md). Feature roadmap: [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
@@ -116,9 +117,9 @@ Hard filters drop too many viable scripts on sparse data. F005/F006 use:
 
 Bitmask is a ranking signal, not a hard WHERE exclude ([ADR-020](docs/decisions/ADR-020-f005-bitmask-scoring-design.md)). Dense embeddings replaced char-ngram TF-IDF as the primary semantic signal so “没钱” ≈ “经济困难” ([ADR-024](docs/decisions/ADR-024-embedding-architecture.md)). Cosine is computed SQL-side (`<=>`) to avoid shipping raw vectors to Python ([ADR-028](docs/decisions/ADR-028-sql-side-cosine-scoring.md)).
 
-### 4. One LLM call on the hot path (+ optional relabel)
+### 4. Switchable state extraction (LLM default, BERT optional)
 
-Offline labeling is batch. Online, F008 extracts state LLM-first with keyword/tsvector fallback; a second offline LLM pass (old F002) was removed ([ADR-009](docs/decisions/ADR-009-eliminate-f002-llm-state-extraction.md)). Novel fact/emotion strings normalize through a shared relabel cascade (descriptions → CSV cache → LLM) so the taxonomy can grow without breaking node keys ([ADR-026](docs/decisions/ADR-026-open-set-extraction-relabel.md)).
+Offline turn labeling (F000) and online extraction (F008) share one provider switch: `extraction.provider: llm | bert` in `config.md` (or `EXTRACTION_PROVIDER`). Default is DeepSeek open-set extraction with keyword/tsvector fallback; a second offline LLM pass (old F002) was removed ([ADR-009](docs/decisions/ADR-009-eliminate-f002-llm-state-extraction.md)). Set `bert` only after wiring `extract_state_bert` in [`src/f008_state_extraction/bert_extractor.py`](src/f008_state_extraction/bert_extractor.py) — the placeholder raises until your model is plugged in; online then falls back to keyword-only. Novel LLM labels still normalize through the shared relabel cascade (descriptions → CSV cache → LLM) so tree keys stay stable ([ADR-026](docs/decisions/ADR-026-open-set-extraction-relabel.md)).
 
 ### 5. Fallbacks over silence (with confidence cost)
 
@@ -137,7 +138,7 @@ input_data.jsonl
     → PostgreSQL (nodes | sentences | taxonomy_keywords)
 
 POST /recommend  (or /api/v1/*)
-    → F008 state extract (+ relabel)
+    → F008 state extract (llm | bert) → keyword fallback → relabel
     → node lookup → bitmask + pgvector rank → top-1 script
 ```
 
@@ -145,7 +146,7 @@ POST /recommend  (or /api/v1/*)
 |-------|--------|-------------|
 | Database | PostgreSQL + pgvector | Metadata + vectors + FTS in one ACID store |
 | Embeddings | bge-m3 via Ollama (1024-dim) | Semantic quality, local, no per-call cost |
-| Online LLM | DeepSeek + keyword fallback | Semantic extraction with offline degrade path |
+| State extraction | DeepSeek (default) or local BERT + keyword fallback | Config switch; same output schema for offline + online |
 | API | FastAPI REST + Socket.IO + `/api/v1` | Integrators choose turn-managed or session-managed |
 | Ranking | Unified weighted fusion | Tunable tradeoff among outcome, semantics, profile |
 | Runtime DB | asyncpg (serve) / psycopg2 (build) | Async hot path; batch build keeps sync driver |

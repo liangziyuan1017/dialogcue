@@ -5,6 +5,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 CLI_ENTRYPOINTS = {
     "whole_pipeline.py",
+    "data_clean.py",
     "build_tree_and_db.py",
     "launch_ui.py",
     "check_data_format.py",

@@ -19,6 +19,12 @@ from f007_infrastructure.jsonl_utils import load_jsonl, write_jsonl
 from f007_infrastructure.llm_client import call_deepseek_json
 from f007_infrastructure.logging import get_logger as _get_logger
 from f000_keyword_discovery.canonical_relabel import relabel_records
+from f008_state_extraction.bert_extractor import (
+    ROLE_COLLECTOR,
+    ROLE_CUSTOMER,
+    extract_state_bert,
+    get_extraction_provider,
+)
 
 _log = _get_logger(__name__)
 
@@ -30,7 +36,50 @@ def _load_labeled_records():
     return load_jsonl(Path(path))
 
 
+def _apply_bert_customer_result(turn, context_turns, customer_raw):
+    result = extract_state_bert(
+        turn.get("text", ""),
+        role=ROLE_CUSTOMER,
+        context_turns=context_turns,
+    )
+    state = {}
+    facts = result.get("facts") or []
+    if facts:
+        state["facts"] = list(dict.fromkeys(facts))
+    emotions = result.get("emotions") or []
+    if emotions:
+        state["emotions"] = list(dict.fromkeys(emotions))
+    willingness = result.get("willingness")
+    if willingness:
+        state["willingness"] = willingness
+    if state:
+        turn["state"] = state
+    customer_raw.append({
+        "facts": [{"keyword": f, "group": f} for f in state.get("facts", [])],
+        "emotions": [{"keyword": e, "group": e} for e in state.get("emotions", [])],
+        "willingness": state.get("willingness"),
+        "_turn_text": turn.get("text", ""),
+    })
+
+
+def _apply_bert_collector_result(turn, collector_raw):
+    result = extract_state_bert(turn.get("text", ""), role=ROLE_COLLECTOR)
+    actions = result.get("actions") or []
+    action_group = actions[-1] if actions else None
+    if action_group:
+        turn["state"] = {"action": action_group}
+        collector_raw.append({"action_group": action_group, "_turn_text": turn.get("text", "")})
+
+
 def _process_customer_batch(batch, customer_raw):
+    if get_extraction_provider() == "bert":
+        for turn, context_turns in batch:
+            try:
+                _apply_bert_customer_result(turn, context_turns, customer_raw)
+            except Exception as e:
+                _log.error("customer BERT labeling failed: %s", e)
+        return
+
     prompt = _build_customer_batch_prompt([(t["text"], ctx) for t, ctx in batch])
     try:
         results = call_deepseek_json(prompt)
@@ -72,6 +121,14 @@ def _process_customer_batch(batch, customer_raw):
 
 
 def _process_collector_batch(batch, collector_raw):
+    if get_extraction_provider() == "bert":
+        for turn in batch:
+            try:
+                _apply_bert_collector_result(turn, collector_raw)
+            except Exception as e:
+                _log.error("collector BERT labeling failed: %s", e)
+        return
+
     prompt = _build_collector_batch_prompt([t["text"] for t in batch])
     try:
         results = call_deepseek_json(prompt)

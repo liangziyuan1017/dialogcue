@@ -102,7 +102,7 @@ class TestPathStructuredState:
 class TestSubsetMatchFallback:
     def test_exact_match_confidence_1(self, tree, index, label_set_index):
         nodes, conf, fb = _find_matching_nodes_subset(
-            ["repayment_inability"], [], [], index, label_set_index
+            ["situational_hardship"], [], [], index, label_set_index
         )
         if nodes:
             assert conf == 1.0
@@ -117,7 +117,7 @@ class TestSubsetMatchFallback:
 
     def test_drop_emotions_before_facts(self, tree, index, label_set_index):
         nodes, conf, fb = _find_matching_nodes_subset(
-            ["repayment_inability"], ["nonexistent_emo"], [], index, label_set_index
+            ["situational_hardship"], ["nonexistent_emo"], [], index, label_set_index
         )
         if nodes:
             assert any("emotion" in f for f in fb) or conf == 1.0
@@ -133,7 +133,7 @@ class TestSubsetMatchFallback:
 class TestDescendIntoChildrenForPool:
     def test_anxiety_node_returned_not_root(self, tree, index, label_set_index):
         nodes, conf, fb = _find_matching_nodes_subset(
-            ["anxiety"], [], [], index, label_set_index
+            ["situational_hardship"], [], [], index, label_set_index
         )
         assert len(nodes) > 0
         for n in nodes:
@@ -142,7 +142,7 @@ class TestDescendIntoChildrenForPool:
 
     def test_personal_info_node_returned_not_root(self, tree, index, label_set_index):
         nodes, conf, fb = _find_matching_nodes_subset(
-            ["personal_info"], [], [], index, label_set_index
+            ["installment_request"], [], [], index, label_set_index
         )
         assert len(nodes) > 0
         for n in nodes:
@@ -151,7 +151,7 @@ class TestDescendIntoChildrenForPool:
 
     def test_income_loss_node_returned_not_root(self, tree, index, label_set_index):
         nodes, conf, fb = _find_matching_nodes_subset(
-            ["income_loss"], [], [], index, label_set_index
+            ["account_info"], [], [], index, label_set_index
         )
         assert len(nodes) > 0
         for n in nodes:

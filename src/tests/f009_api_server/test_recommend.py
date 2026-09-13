@@ -29,8 +29,13 @@ def client():
         app.state.tree = {"state_id": "root", "branch_key": {}, "inherited_facts": [], "sentence_pool": [], "children": []}
         app.state.index = {}
         app.state.label_set_index = {}
-        client = TestClient(app)
-        yield client
+        with TestClient(app) as client:
+            # Lifespan may reset readiness; force ready after boot for unit tests.
+            app.state.db = mock_db
+            app.state.ready = True
+            app.state.ready_reason = None
+            app.state.boot_errors = []
+            yield client
 
 
 class TestRecommendEndpoint:

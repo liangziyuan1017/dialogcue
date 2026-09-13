@@ -5,6 +5,10 @@ from f007_infrastructure.config import get as _cfg
 from f007_infrastructure.label_relabel import apply_relabel as _apply_relabel
 from f007_infrastructure.llm_client import LLMResponseError, call_deepseek_json
 from f007_infrastructure.logging import get_logger as _get_logger
+from f008_state_extraction.bert_extractor import (
+    extract_state_bert,
+    get_extraction_provider,
+)
 
 _log = _get_logger(__name__)
 
@@ -86,22 +90,30 @@ async def extract_state(utterance: str, taxonomy: dict, db=None) -> dict:
         _extract_cache.move_to_end(cache_key)
         return cached
 
+    provider = get_extraction_provider()
+    primary = None
     try:
-        llm_result = await asyncio.to_thread(extract_state_llm, utterance, taxonomy)
+        if provider == "bert":
+            primary = await asyncio.to_thread(extract_state_bert, utterance)
+        else:
+            primary = await asyncio.to_thread(extract_state_llm, utterance, taxonomy)
     except LLMResponseError as e:
-        llm_result = None
         _log.warning("LLM JSON parse failed, falling back to keyword; raw=%s", e.raw_text[:200])
     except Exception:
-        llm_result = None
+        _log.warning(
+            "primary state extraction failed (provider=%s); falling back to keyword",
+            provider,
+            exc_info=True,
+        )
 
     kw_result = await extract_state_keyword(utterance, taxonomy, db=db)
 
-    if llm_result is not None:
+    if primary is not None:
         for key in ("facts", "emotions", "actions"):
             for item in kw_result.get(key, []):
-                if item not in llm_result.get(key, []):
-                    llm_result[key].append(item)
-        result = llm_result
+                if item not in primary.get(key, []):
+                    primary[key].append(item)
+        result = primary
     else:
         result = kw_result
 

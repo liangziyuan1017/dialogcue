@@ -99,7 +99,8 @@ class TestExtractState:
     async def test_llm_first(self):
         mock_response = {"facts": ["financial_hardship"], "emotions": [], "actions": []}
         with patch("f008_state_extraction.state_extraction.call_deepseek_json", return_value=mock_response), \
-             patch("f008_state_extraction.state_extraction._apply_relabel"):
+             patch("f008_state_extraction.state_extraction._apply_relabel"), \
+             patch("f008_state_extraction.state_extraction.get_extraction_provider", return_value="llm"):
             result = await extract_state("我现在没钱还", TAXONOMY)
         assert result["method"] == "llm"
 
@@ -109,6 +110,39 @@ class TestExtractState:
             {"group_name": "financial_hardship", "category": "facts"},
         ])
         with patch("f008_state_extraction.state_extraction.call_deepseek_json", side_effect=Exception("API error")), \
+             patch("f008_state_extraction.state_extraction._apply_relabel"), \
+             patch("f008_state_extraction.state_extraction.get_extraction_provider", return_value="llm"):
+            result = await extract_state("我现在没钱还", TAXONOMY, db=mock_db)
+        assert result["method"] == "keyword"
+
+    async def test_bert_provider_uses_bert_extractor(self):
+        bert_out = {
+            "facts": ["financial_hardship"],
+            "emotions": [],
+            "actions": [],
+            "willingness": "weak",
+            "confidence": 0.8,
+            "method": "bert",
+        }
+        with patch("f008_state_extraction.state_extraction.get_extraction_provider", return_value="bert"), \
+             patch("f008_state_extraction.state_extraction.extract_state_bert", return_value=bert_out), \
+             patch("f008_state_extraction.state_extraction.call_deepseek_json") as mock_llm, \
+             patch("f008_state_extraction.state_extraction._apply_relabel"):
+            result = await extract_state("我现在没钱还", TAXONOMY)
+        assert result["method"] == "bert"
+        assert "financial_hardship" in result["facts"]
+        mock_llm.assert_not_called()
+
+    async def test_bert_placeholder_falls_back_to_keyword(self):
+        mock_db = MagicMock()
+        mock_db.taxonomy_keyword_search = AsyncMock(return_value=[
+            {"group_name": "financial_hardship", "category": "facts"},
+        ])
+        with patch("f008_state_extraction.state_extraction.get_extraction_provider", return_value="bert"), \
+             patch(
+                 "f008_state_extraction.state_extraction.extract_state_bert",
+                 side_effect=NotImplementedError("placeholder"),
+             ), \
              patch("f008_state_extraction.state_extraction._apply_relabel"):
             result = await extract_state("我现在没钱还", TAXONOMY, db=mock_db)
         assert result["method"] == "keyword"
@@ -128,14 +162,33 @@ class TestExtractState:
             return {"facts": [], "emotions": [], "actions": []}
 
         with patch("f008_state_extraction.state_extraction.call_deepseek_json", side_effect=slow_llm), \
-             patch("f008_state_extraction.state_extraction._apply_relabel"):
+             patch("f008_state_extraction.state_extraction._apply_relabel"), \
+             patch("f008_state_extraction.state_extraction.get_extraction_provider", return_value="llm"):
             task = asyncio.create_task(other_task())
             await extract_state("test", TAXONOMY)
             assert other_ran, "event loop was blocked during LLM call — other_task never ran"
             await task
 
 
-class TestRelabelCascade:
+class TestBertExtractorPlaceholder:
+    def test_placeholder_raises(self):
+        from f008_state_extraction.bert_extractor import extract_state_bert
+
+        try:
+            extract_state_bert("test")
+            raise AssertionError("expected NotImplementedError")
+        except NotImplementedError:
+            pass
+
+    def test_default_provider_is_llm(self):
+        from f008_state_extraction.bert_extractor import get_extraction_provider
+
+        with patch.dict("os.environ", {}, clear=False):
+            # Ensure env override is not set for this check
+            import os
+
+            os.environ.pop("EXTRACTION_PROVIDER", None)
+            assert get_extraction_provider() == "llm"
     def test_canonical_skip_keeps_tag(self):
         import f007_infrastructure.label_relabel as lr
         with patch.object(lr, "_FACT_DESCRIPTIONS", {"financial_hardship": {}}), \

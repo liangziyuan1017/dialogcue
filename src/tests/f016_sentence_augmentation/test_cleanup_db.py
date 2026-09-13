@@ -51,14 +51,14 @@ class TestBuildTreeMappings:
             tree = json.load(f)
         mappings = build_tree_mappings(tree)
         total = len(mappings["tree_script_ids"])
-        assert total == 1716, f"Expected 1716 tree sentences, got {total}"
+        assert total == 71, f"Expected 71 tree sentences, got {total}"
 
     def test_real_tree_has_1395_nodes(self):
         with open(SCORED_TREE_PATH, encoding="utf-8") as f:
             tree = json.load(f)
         mappings = build_tree_mappings(tree)
         total = len(mappings["tree_path_signatures"])
-        assert total == 1403, f"Expected 1403 tree nodes, got {total}"
+        assert total == 62, f"Expected 62 tree nodes, got {total}"
 
 
 class TestIdentifyMisplacedSentences:

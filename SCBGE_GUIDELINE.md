@@ -18,14 +18,15 @@ Build a two-phase system:
 
 1. **Offline (Phase 1 — Ingest):** Mine historical call recordings to discover a state taxonomy (facts, emotions, willingness, collector actions), label every turn, score each conversation for repayment reward, construct a collector decision tree keyed by customer state, tag each tree sentence with a customer-profile bitmask + quality scores + semantic embedding, and load everything into PostgreSQL + pgvector.
 
-2. **Online (Phase 2 — Retrieve):** For each `POST /recommend` call, extract the customer's state from their utterance (LLM-first, keyword fallback), accumulate it into the conversation state, query DB-backed node labels, retrieve matching sentence rows, and rank the survivors by unified weighted fusion (`0.35·win_rate + 0.25·vec_score + 0.10·sas + 0.10·bg_boost + 0.20·bitmask_score`) -- configurable via configs. Return the top-1 collector script.
+2. **Online (Phase 2 — Retrieve):** For each `POST /recommend` call, extract the customer's state from their utterance (provider-selectable: DeepSeek LLM default or local BERT, then keyword fallback), accumulate it into the conversation state, query DB-backed node labels, retrieve matching sentence rows, and rank the survivors by unified weighted fusion (`0.35·win_rate + 0.25·vec_score + 0.10·sas + 0.10·bg_boost + 0.20·bitmask_score`) -- configurable via configs. Return the top-1 collector script.
 
 ### Architecture
 
 - **Database**: PostgreSQL + pgvector + pg_trgm — authoritative store for node labels, sentence provenance, metadata, 1024-dim vectors, 10-bit bitmask soft scoring, and full-text search.
 - **Offline artifacts**: JSONL for cleaned, labeled, aligned, and rewarded corpora (`data/data_output/*.jsonl` + `src/f0*/data/*.jsonl`); JSON tree files remain compatibility/debug artifacts (Tree Explorer reads `decision_tree_scored.json`) rather than the sole serving index.
 - **Embeddings**: bge-m3 (1024-dim) served locally via Ollama, OpenAI-compatible API. No external per-call cost; offline-capable (ADR-024).
-- **LLM**: DeepSeek for offline taxonomy discovery / reward labeling / turn labelling, and for the single online state-extraction call in the hot path.
+- **LLM**: DeepSeek for offline taxonomy discovery / reward labeling / default turn labelling, and for the default online state-extraction call in the hot path.
+- **State extraction provider**: `extraction.provider` in `config.md` (`llm` \| `bert`, overridable via `EXTRACTION_PROVIDER`). Default `llm` is unchanged DeepSeek. Optional `bert` routes F000 turn labeling and F008 online extraction through `f008_state_extraction/bert_extractor.py` (placeholder until a trained model is wired). Keyword/tsvector remains the failure fallback.
 - **API**: FastAPI, `POST /recommend` (REST, caller manages conversation state) + Socket.IO session interface (server manages state accumulation automatically). See F009.
 - **UI tooling**: F010 — Postman-style mock panel + pipeline trace + sentence pool inspector, served at `/ui`. See [Tooling](#tooling-f010-ui--debug-endpoint).
 
@@ -108,7 +109,7 @@ decision_tree_scored.json  (backward-compat JSON; Tree Explorer reads this)     
 PostgreSQL: nodes │ sentences │ sentence_sources │ taxonomy_keywords                  │
         │                                                                            │
         ▼  F008 + F006 + F009  (online retrieval)                                    │
-POST /recommend  →  state extraction  →  relabel  →  node lookup  →  bitmask score  →  vector rank  →  top-1 script
+POST /recommend  →  state extraction (llm|bert)  →  relabel  →  node lookup  →  bitmask score  →  vector rank  →  top-1 script
                                           ↑__________________|
                                             *_relabeled grows (ADR-026 via label_relabel / llm_relabel_*)
 ```
@@ -146,7 +147,7 @@ data/data_input/new_data.jsonl  (same 3-field schema as input_data.jsonl)
 | SAS (Script Analogy Score) | Char bigram TF-IDF cosine within pool | ADR-020 |
 | Full-text search | PostgreSQL tsvector + GIN | — |
 | Ranking | Unified weighted fusion | ADR-024 |
-| State extraction | LLM-first (DeepSeek), keyword fallback | ADR-009 |
+| State extraction | Provider switch: DeepSeek (default) or local BERT, then keyword fallback | ADR-009; `config.md` `extraction.provider` |
 | Taxonomy | Data-discovered, not prescribed | ADR-001..005 |
 | Context constraints | 18-field mapping → 10-bit bitmask | ADR-006, ADR-020 |
 | API | FastAPI + Socket.IO | — |
@@ -213,11 +214,13 @@ Each record has **exactly** these fields:
 
 Discovers the state taxonomy (facts, emotions, willingness levels, collector
 actions) from real conversation data via DeepSeek LLM, rather than prescribing
-it. Then labels each turn with the discovered state keywords. After labelling,
-**canonical-relabels** free-form fact/emotion tags onto the `data/data_labels`
-taxonomy (ADR-026) so downstream tree nodes use stable keys (e.g.
-`request_installment` → `installment_request`). Outputs the taxonomy JSON plus
-per-turn labelled JSONL. Filler turns ("嗯", "对", "好") are left unlabeled.
+it. Then labels each turn with the discovered state keywords. **Per-turn labeling**
+uses the same provider switch as online F008 (`extraction.provider: llm` → DeepSeek
+batches; `bert` → `extract_state_bert`). Taxonomy discovery / willingness clustering
+stay on DeepSeek. After labelling, **canonical-relabels** free-form fact/emotion tags
+onto the `data/data_labels` taxonomy (ADR-026) so downstream tree nodes use stable
+keys (e.g. `request_installment` → `installment_request`). Outputs the taxonomy JSON
+plus per-turn labelled JSONL. Filler turns ("嗯", "对", "好") are left unlabeled.
 
 #### Design considerations & decisions
 
@@ -236,6 +239,9 @@ per-turn labelled JSONL. Filler turns ("嗯", "对", "好") are left unlabeled.
   `*_relabeled.csv` → `data/data_labels/llm_relabel_{facts,emotions}.py`
   (`classify_batch` / prompts / `validate_mapping`). F000 wrapper:
   `canonical_relabel.relabel_records`. New mappings append to the CSV caches.
+- **Extraction provider**: `discover_keywords._process_customer_batch` /
+  `_process_collector_batch` branch on `get_extraction_provider()` so offline
+  labeling can use BERT without changing discovery or downstream stages.
 - **Risk**: LLM may invent ungrounded keywords → mitigated by requiring verbatim
   `example_turn` for every observed keyword; suggested keywords explicitly
   flagged.
@@ -694,7 +700,7 @@ Exposes the recommendation pipeline over two interfaces: `POST /recommend` (REST
 #### Design considerations & decisions
 
 - **F009**: FastAPI chosen (already in `pyproject.toml`). Socket.IO added for stateful session management so the call platform doesn't have to track conversation state client-side.
-- **No LLM in ranking hot path** beyond the single F008 state-extraction call (ADR-009 eliminated the second LLM pass).
+- **No generative model in ranking hot path** beyond the single F008 state-extraction call when `provider=llm` (ADR-009 eliminated the second LLM pass). With `provider=bert`, that call is local inference instead.
 - **Fallback hierarchy**: 5 levels — path signature miss → root; LLM fail → keyword; embed fail → win_rate+sas only; all exhausted → 404. Bitmask is now a soft ranking signal, not a filter. See [Fallback Hierarchy](#fallback-hierarchy).
 
 ```
@@ -739,26 +745,53 @@ POST /recommend
 **Field descriptions:**
 - `customer_utterance`: The customer's most recent turn text
 - `conversation_context`: Aggregated text of the past ~100 words of dialog (both customer and collector turns)
-- `conversation_state`: **Path-structured** state `{branch_key, inherited_facts, inherited_emotions, willingness}` mirroring the tree's node identity (ADR-021). Caller passes back the `conversation_state` from the previous API response. `branch_key` is the most recent branching decision; `inherited_facts`/`inherited_emotions` accumulate from ancestors. Note: F002 (LLM State Extraction) was eliminated per ADR-009; online extraction (Step 2.1) is the only LLM call in the hot path (plus at most one relabel call per ADR-026).
+- `conversation_state`: **Path-structured** state `{branch_key, inherited_facts, inherited_emotions, willingness}` mirroring the tree's node identity (ADR-021). Caller passes back the `conversation_state` from the previous API response. `branch_key` is the most recent branching decision; `inherited_facts`/`inherited_emotions` accumulate from ancestors. Note: F002 (LLM State Extraction) was eliminated per ADR-009; online extraction (Step 2.1) is the hot-path state call — DeepSeek by default, optional BERT via `extraction.provider`, plus at most one relabel LLM call when `provider=llm` emits a novel label (ADR-026).
 - `context`: Customer profile from `custInfo`, transformed to the `context` dict format (ADR-006: 18 fields mapped from `custInfo` JSON array)
 
 ---
 
-### Step 2.1: State Extraction (LLM-first) — F008
+### Step 2.1: State Extraction (provider-selectable) — F008
 
 #### What this does
 
-Extracts the customer's state (facts, emotions, actions, willingness) from their utterance using DeepSeek LLM as the primary path (**open-set** for facts/emotions per ADR-026, **closed-set** for willingness), then normalizes extracted labels through a synchronous relabel pipeline. PostgreSQL tsvector keyword search is the fallback when the LLM fails.
+Extracts the customer's state (facts, emotions, actions, willingness) from their
+utterance. The **primary** extractor is selected by `extraction.provider` in
+`config.md` (or `EXTRACTION_PROVIDER`):
+
+| Provider | Primary path | Notes |
+|----------|--------------|-------|
+| `llm` (default) | DeepSeek open-set JSON (ADR-026) | Facts/emotions free-form; willingness closed-set; then synchronous relabel |
+| `bert` | `f008_state_extraction.bert_extractor.extract_state_bert` | Same output dict shape (`method: "bert"`). Prefer canonical taxonomy names. Placeholder raises `NotImplementedError` until wired — then keyword fallback applies |
+
+PostgreSQL tsvector keyword search is the fallback when the primary extractor
+fails. Keyword hits are merged into a successful LLM/BERT result (additive), then
+`_apply_relabel` runs.
 
 #### Design considerations & decisions
 
-- **ADR-026**: Open-set extraction for facts/emotions — the LLM extracts whatever labels best describe the utterance, unconstrained by a predefined list. Willingness remains closed-set (6 ordered levels per ADR-005).
-- **Synchronous relabel pipeline** (ADR-026): shared module `f007_infrastructure/label_relabel.py` — each extracted label is checked against `*_descriptions` (canonical set) → `*_relabeled` CSV (existing mapping) → if no mapping, `data/data_labels/llm_relabel_{facts,emotions}.py` runs synchronously (`classify_batch`) and appends to `*_relabeled`. Same cascade as F000 offline canonical relabel. Worst-case latency ~2x on novel labels; rare in steady state as the cache grows.
-- **ADR-009**: Eliminated F002 (a second offline LLM state-extraction pass) — online extraction + at most one relabel call is the only LLM work in the hot path.
-- **F008**: LLM-first with keyword fallback — DeepSeek for semantic extraction, tsvector keyword scan via `taxonomy_keywords` table when LLM unavailable.
-- **State accumulation rules**: path-structured (see Step 2.2); willingness is a scalar (overwrite with latest non-null).
+- **Minimal switch**: one adapter file + config key; `merge_state`, ranking, and
+  the API contract are unchanged. Offline F000 turn labeling uses the same
+  `get_extraction_provider()` helper.
+- **ADR-026**: Open-set extraction for facts/emotions when using LLM — the model
+  extracts whatever labels best describe the utterance. Willingness remains
+  closed-set (ordered levels per ADR-005). BERT is expected to emit **canonical**
+  (or pre-mapped) labels so the free-form relabel cascade is mostly a no-op.
+- **Synchronous relabel pipeline** (ADR-026): shared module
+  `f007_infrastructure/label_relabel.py` — each extracted label is checked against
+  `*_descriptions` (canonical set) → `*_relabeled` CSV → if no mapping,
+  `data/data_labels/llm_relabel_{facts,emotions}.py` runs synchronously
+  (`classify_batch`) and appends to `*_relabeled`. Same cascade as F000 offline
+  canonical relabel. Worst-case latency ~2x on novel LLM labels; rare in steady
+  state as the cache grows.
+- **ADR-009**: Eliminated F002 (a second offline LLM state-extraction pass) —
+  online extraction + at most one relabel call is the only LLM work in the hot
+  path when `provider=llm`.
+- **F008**: Primary extractor (LLM or BERT) with keyword fallback — tsvector
+  keyword scan via `taxonomy_keywords` when the primary path fails.
+- **State accumulation rules**: path-structured (see Step 2.2); willingness is a
+  scalar (overwrite with latest non-null).
 
-**Primary path**: DeepSeek LLM call
+**Primary path (llm)**: DeepSeek LLM call
 
 ```
 Prompt to DeepSeek (ADR-026: open-set for facts/emotions, closed-set for willingness):
@@ -796,7 +829,12 @@ DeepSeek response (raw, pre-relabel):
   3. Final: {"facts": ["installment_request"], "emotions": ["negotiation"], "willingness": "conditional"}
 ```
 
-**Fallback path** (only if LLM fails): PostgreSQL tsvector keyword search
+**Primary path (bert)**: call `extract_state_bert(utterance, role="客户")` and expect
+the same dict keys with `method: "bert"`. See the docstring in
+`src/f008_state_extraction/bert_extractor.py` for the integration contract
+(`model_dir` / `device` under `extraction.bert` in `config.md`).
+
+**Fallback path** (only if primary fails): PostgreSQL tsvector keyword search
 
 ```sql
 SELECT group_name, category
@@ -817,7 +855,9 @@ LIMIT 10;
 }
 ```
 
-**Latency**: ~800-1200ms (extraction LLM) + 0ms (relabel cache hit) | ~1600-2400ms (novel label, relabel LLM) | ~5ms (keyword fallback)
+(`method` is `"bert"` or `"keyword"` when those paths win.)
+
+**Latency**: ~800-1200ms (extraction LLM) + 0ms (relabel cache hit) | ~1600-2400ms (novel label, relabel LLM) | local BERT typically tens–low hundreds of ms once wired | ~5ms (keyword fallback)
 
 ---
 
@@ -1484,9 +1524,10 @@ and ADR-025.
 
 | Step | Latency | Notes |
 |---|---|---|
-| State extraction (LLM) | 800-1200ms | DeepSeek API call (open-set, ADR-026) |
+| State extraction (LLM) | 800-1200ms | DeepSeek API call when `extraction.provider=llm` (open-set, ADR-026) |
+| State extraction (BERT) | tens–low hundreds ms | Local model when `provider=bert` and `extract_state_bert` is wired |
 | Label normalization (relabel) | 0ms (cache hit) | `*_descriptions` / `*_relabeled` lookup |
-| Label relabel (novel, sync LLM) | 800-1200ms | Conditional — only when label not in cache (ADR-026) |
+| Label relabel (novel, sync LLM) | 800-1200ms | Conditional — only when LLM emits a label not in cache (ADR-026) |
 | State accumulation | <1ms | In-memory set operations |
 | Node key computation | <1ms | Sort + tuple |
 | Node lookup + aggregation | DB-dependent | Indexed node-label query + bounded sentence-pool fetch |
@@ -1494,7 +1535,7 @@ and ADR-025.
 | Vector embedding (query) | 50-100ms | bge-m3 embed via Ollama |
 | Vector similarity | 1-2ms | pgvector HNSW or brute-force cosine |
 | Rerank | <1ms | Arithmetic on <20 candidates |
-| **Total** | **~900-1300ms** | Dominated by LLM; without LLM: <10ms |
+| **Total** | **~900-1300ms** | Dominated by LLM when `provider=llm`; BERT path much lower once wired; keyword-only: <10ms |
 
 ---
 

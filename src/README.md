@@ -61,7 +61,7 @@ curl http://localhost:11434/v1/models
 3. Navigate to **API Keys** → **Create new key**
 4. Copy the key (starts with `sk-`)
 
-You will need this key for all LLM-powered stages (data cleaning, keyword discovery, reward labeling, state extraction).
+You will need this key for LLM-powered stages (data cleaning, keyword discovery, reward labeling, and default `extraction.provider: llm` state extraction). If you switch state extraction to BERT, DeepSeek is still required for cleaning / discovery / reward unless those stages are skipped.
 
 ### Step 4: Install Python Dependencies
 
@@ -123,10 +123,13 @@ Runtime parameters live in `config.md` (YAML frontmatter). Key sections you may 
 |---------|-----------------|------------|
 | `llm` | LLM calls | `model`, `api_base`, `temperature` |
 | `embedding` | Embedding model | `model`, `dimension`, `api_base` |
+| `extraction` | State extraction provider | `provider` (`llm` default \| `bert`), `cache_size`, `bert.model_dir`, `bert.device` |
 | `ranking_weights` | Sentence scoring fusion | `win_rate`, `vec_score`, `sas`, `bg_boost`, `bitmask_score` (must sum to 1.0) |
 | `hnsw` | Vector index | `m`, `ef_construction` |
 | `server` | UI ports | `tree_explorer_port` (default 8420), `api_port` (default 8000) |
 | `retry` | LLM retry policy | `max_retries`, `min_sleep`, `max_sleep` |
+
+**State extraction provider:** F000 turn labeling and F008 online extraction both read `extraction.provider` (override with `EXTRACTION_PROVIDER=llm|bert`). Default `llm` keeps the existing DeepSeek path with no BERT install required. To use a local model, implement `extract_state_bert` in `f008_state_extraction/bert_extractor.py` (I/O contract is documented in that file), then set `provider: bert`. Until the placeholder is replaced, selecting `bert` makes online extraction fall back to keyword-only.
 
 ---
 
@@ -172,13 +175,22 @@ python3 src/data_clean.py --skip-llm --merged-file path/to/output_merged.jsonl
 
 Discovers facts, emotions, collector actions, and willingness levels, then **canonical-relabels** free-form fact/emotion tags onto the `data/data_labels` taxonomy (ADR-026).
 
+**Turn labeling provider** (`extraction.provider`):
+
+| Provider | Behavior |
+|----------|----------|
+| `llm` (default) | DeepSeek batch prompts in `discover_keywords.py` (unchanged) |
+| `bert` | Per-turn calls to `f008_state_extraction.bert_extractor.extract_state_bert` for customer and collector turns |
+
+Taxonomy **discovery / clustering** still uses DeepSeek regardless of provider. Only per-turn labeling switches.
+
 Canonical relabel (shared runtime `f007_infrastructure/label_relabel.py`, used by F000 and F008):
 
 1. Hard-match against `facts_descriptions.py` / `emotions_descriptions.py`
 2. Lookup cached maps in `facts_relabeled.csv` / `emotions_relabeled.csv`
 3. Novel tags → `llm_relabel_facts.py` / `llm_relabel_emotions.py` (`classify_batch`, prompts, `validate_mapping`); new mappings append to the CSV caches
 
-**Requires:** DeepSeek API
+**Requires:** DeepSeek API when `provider=llm` (default); wired BERT checkpoint when `provider=bert`
 
 This runs automatically as part of `data_clean.py` (Phase 1.5).
 
@@ -445,7 +457,7 @@ python3 src/build_tree_and_db.py
 | `f005_context_scoring/` | F005 | `score_tree.py`, `scoring_metrics.py`, `build_and_score_tree.py` | `decision_tree_scored.json` |
 | `f006_retrieval_engine/` | F006 | `retrieval_engine.py`, `retrieval_ranking.py` | — (runtime: PostgreSQL) |
 | `f007_infrastructure/` | F007 | `db.py`, `async_db.py`, `embeddings.py`, `llm_client.py`, `label_relabel.py`, `retry.py`, `config.py`, `logging.py`, `jsonl_utils.py`, `migrations/runner.py` | — |
-| `f008_state_extraction/` | F008 | `state_extraction.py` (relabel via `label_relabel.apply_relabel`) | — |
+| `f008_state_extraction/` | F008 | `state_extraction.py`, `bert_extractor.py` (provider switch + optional BERT; relabel via `label_relabel.apply_relabel`) | — |
 | `f009_api_server/` | F009 | `server.py`, `rate_limit.py`, `session_store.py`, `tag_mapping.py` | — |
 | `f010_api_mock_ui/` | F010 | `debug.py`, `ui/` | — |
 
@@ -468,7 +480,8 @@ data_input/*.jsonl
 
 ```bash
 PYTHONPATH=src python3 -m pytest src/tests/            # all tests
-PYTHONPATH=src python3 -m pytest src/tests/f008_state_extraction/ src/tests/f000_keyword_discovery/  # relabel path
+PYTHONPATH=src python3 -m pytest src/tests/f008_state_extraction/ src/tests/f000_keyword_discovery/  # extraction + relabel
+PYTHONPATH=src python3 -m pytest src/tests/ -k 'not bert and not Bert'  # default DeepSeek path only
 ```
 
 Integration tests in `f005_context_scoring/` require `decision_tree_scored.json` to exist. Run `build_tree_and_db.py --skip-db` first if those tests fail.
