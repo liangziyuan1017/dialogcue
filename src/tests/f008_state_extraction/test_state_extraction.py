@@ -170,15 +170,27 @@ class TestExtractState:
             await task
 
 
-class TestBertExtractorPlaceholder:
-    def test_placeholder_raises(self):
+class TestBertExtractorBridge:
+    def test_unconfigured_raises_runtime_error(self):
         from f008_state_extraction.bert_extractor import extract_state_bert
 
-        try:
-            extract_state_bert("test")
-            raise AssertionError("expected NotImplementedError")
-        except NotImplementedError:
-            pass
+        with patch.dict(
+            "os.environ",
+            {
+                "EXTRACTION_BERT_MODEL_DIR": "",
+                "MULTITASK_V1_ROOT": "",
+            },
+            clear=False,
+        ):
+            import os
+
+            os.environ.pop("EXTRACTION_BERT_MODEL_DIR", None)
+            os.environ.pop("MULTITASK_V1_ROOT", None)
+            try:
+                extract_state_bert("test")
+                raise AssertionError("expected RuntimeError when BERT paths unset")
+            except RuntimeError:
+                pass
 
     def test_default_provider_is_llm(self):
         from f008_state_extraction.bert_extractor import get_extraction_provider
@@ -189,6 +201,9 @@ class TestBertExtractorPlaceholder:
 
             os.environ.pop("EXTRACTION_PROVIDER", None)
             assert get_extraction_provider() == "llm"
+
+
+class TestRelabelCanonical:
     def test_canonical_skip_keeps_tag(self):
         import f007_infrastructure.label_relabel as lr
         with patch.object(lr, "_FACT_DESCRIPTIONS", {"financial_hardship": {}}), \
