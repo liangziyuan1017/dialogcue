@@ -56,3 +56,23 @@ python training/multitask_v1/scripts/infer_multitask.py \
 或 turns + `anchor_turn_id`（脚本内 4×200 裁窗）。
 
 业务优先读 **`fact_active` + emotion + willingness`**。
+
+## 对接 SCBGE `main`（F008）
+
+若要把本仓 ckpt 接到 `main` 的 `extract_state_bert` 占位接口，见
+[`SCBGE_INTEGRATION.md`](SCBGE_INTEGRATION.md)。
+
+快捷调用（输出已是 F008 dict）：
+
+```bash
+python -c "
+import sys
+sys.path.insert(0, 'training/multitask_v1/src')
+from f008_compat import extract_state_bert
+print(extract_state_bert(
+    '我现在没钱还',
+    model_dir='training/multitask_v1/checkpoints/multitask_v1',
+    device='cpu',
+))
+"
+```

@@ -1,0 +1,48 @@
+# Map multitask_v1 Fact head(+value) → SCBGE / main F008 canonical fact group names.
+# Used by f008_compat.decoded_to_f008_state. Tune when main taxonomy changes.
+#
+# Key forms:
+#   HeadName            → used for binary heads when active (any non-default value)
+#   HeadName.value      → preferred for softmax / multi-value heads
+# Fallback if missing: snake_case(HeadName) or snake_case(HeadName)_value
+
+version: f008_fact_group_map_v1
+target: scbge_main_f008
+
+map:
+  Employment.disrupted: employment_disrupted
+  Income.unavailable: income_reduction
+  FinancialHardship: financial_hardship
+  FinancialHardship.yes: financial_hardship
+  RepaymentCapability.partial: partial_capacity
+  RepaymentCapability.insufficient: repayment_inability
+  Health: health_crisis
+  Health.yes: health_crisis
+  FamilyBurden: family_issue
+  FamilyBurden.yes: family_issue
+  Asset.available: account_info
+  Asset.unavailable: situational_hardship
+  Contactability.reachable: contact_history
+  Contactability.unreachable: contact_difficulty
+  Contactability.denied: contact_difficulty
+  Commitment.committed: willing_to_pay
+  Commitment.resistant: debt_evasion
+  Responsibility.denying: debt_evasion
+  DebtDispute: debt_inquiry
+  DebtDispute.yes: debt_inquiry
+  LegalProceeding: legal_threat
+  LegalProceeding.yes: legal_threat
+  ComplianceRisk: legal_threat
+  ComplianceRisk.yes: legal_threat
+  BankConstraint: card_frozen
+  BankConstraint.yes: card_frozen
+  ObjectiveBlocker: situational_hardship
+  ObjectiveBlocker.yes: situational_hardship
+  CognitiveSupport: situational_hardship
+  CognitiveSupport.yes: situational_hardship
+  NegotiationRequest: installment_request
+  NegotiationRequest.yes: installment_request
+  Grievance: negotiation_history
+  Grievance.yes: negotiation_history
+  # IdentityProcess is train=false; usually inactive at serve time
+  IdentityProcess.yes: debt_inquiry

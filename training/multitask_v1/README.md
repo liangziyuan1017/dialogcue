@@ -7,6 +7,8 @@ Fact (19-head patch1) + Emotion (11) + Willingness (5)，共享 encoder。
 | [`SPECIFICATION.md`](SPECIFICATION.md) | 契约真源 |
 | [`docs/BUILD_DATASET.md`](docs/BUILD_DATASET.md) | 建库契约 |
 | [`docs/FULLDATA_RUNBOOK.md`](docs/FULLDATA_RUNBOOK.md) | **全量机**建库/训/评步骤 |
+| [`docs/INFERENCE.md`](docs/INFERENCE.md) | 推理解码与阈值 |
+| [`docs/SCBGE_INTEGRATION.md`](docs/SCBGE_INTEGRATION.md) | **对接 main F008 `extract_state_bert`** |
 
 不修改 `training/multihead/`；Fact schema/map/evidence metrics 只读引用。
 
