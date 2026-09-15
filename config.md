@@ -114,15 +114,20 @@ server:
   allowed_origins: ["*"]
 
 # ── Extraction ──
-# provider: llm (default, DeepSeek) | bert (local model via bert_extractor.py)
+# provider: llm (default, DeepSeek) | bert (multitask_v1 via bert_extractor.py)
 # Override at runtime with EXTRACTION_PROVIDER=llm|bert
+# BERT wiring: docs/features/F008-bert-multitask-bridge.md
 extraction:
   provider: llm
   cache_size: 512
   max_labels: 40
   bert:
-    model_dir: ""          # path to your checkpoint; used once extract_state_bert is wired
-    device: auto           # auto | cpu | cuda | mps
+    model_dir: ""              # multitask_best.pt or its parent dir
+    device: auto               # auto | cpu | cuda | mps | npu:0
+    multitask_root: ""         # Bert_training .../training/multitask_v1
+    # fact_map_path: ""        # optional override of f008_fact_group_map.yaml
+    # thresholds_path: ""      # optional; default <ckpt_dir>/thresholds.json
+    # train_config: ""         # optional; default multitask train yaml
 
 # ── Pipeline ──
 pipeline:
@@ -140,4 +145,4 @@ hwr:
 
 Edit values above to tune system behavior. Regenerate pipeline outputs after changing ranking/scoring params.
 
-State extraction defaults to DeepSeek (`extraction.provider: llm`). To use a local BERT model, implement `extract_state_bert` in `src/f008_state_extraction/bert_extractor.py`, then set `extraction.provider: bert` (or `EXTRACTION_PROVIDER=bert`). Until that function is wired, leave provider as `llm` — the placeholder raises and online falls back to keyword-only if bert is selected by mistake.
+State extraction defaults to DeepSeek (`extraction.provider: llm`). To use the Bert_training multitask checkpoint, set `extraction.bert.model_dir` + `extraction.bert.multitask_root`, then `extraction.provider: bert` (or `EXTRACTION_PROVIDER=bert`). See `docs/features/F008-bert-multitask-bridge.md`. If bert is selected without those paths, `extract_state_bert` raises and online F008 falls back to keyword-only.

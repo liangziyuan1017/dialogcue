@@ -1,25 +1,36 @@
-"""BERT-backed state extraction adapter (optional).
+"""BERT-backed state extraction via multitask_v1 (Bert_training).
 
-Default pipeline uses DeepSeek (`extraction.provider: llm`). Set
-`extraction.provider: bert` (or env ``EXTRACTION_PROVIDER=bert``) only after
-replacing :func:`extract_state_bert` with a real model call.
+Default pipeline uses DeepSeek (``extraction.provider: llm``). Set
+``extraction.provider: bert`` (or env ``EXTRACTION_PROVIDER=bert``) after
+pointing ``extraction.bert.model_dir`` at a multitask checkpoint and
+``extraction.bert.multitask_root`` at ``training/multitask_v1``.
 
-This module must not import torch/transformers at import time so LLM-only
-deployments keep working with no BERT dependencies installed.
+Torch / transformers are loaded only inside the multitask adapter, so
+LLM-only deployments keep working with ``provider: llm``.
+
+See ``docs/features/F008-bert-multitask-bridge.md``.
 """
 
 from __future__ import annotations
 
 import os
+import sys
+from pathlib import Path
 from typing import Any
 
-from f007_infrastructure.config import get as _cfg
-
-# Roles used by offline labeling (F000) and online extraction (F008).
 ROLE_CUSTOMER = "客户"
 ROLE_COLLECTOR = "催收员"
 
 _VALID_PROVIDERS = frozenset({"llm", "bert"})
+
+
+def _cfg(key: str, default: Any = None) -> Any:
+    try:
+        from f007_infrastructure.config import get as cfg_get
+
+        return cfg_get(key, default)
+    except Exception:
+        return default
 
 
 def get_extraction_provider() -> str:
@@ -36,66 +47,88 @@ def get_extraction_provider() -> str:
     return raw if raw in _VALID_PROVIDERS else "llm"
 
 
+def _multitask_root() -> Path:
+    env = (os.environ.get("MULTITASK_V1_ROOT") or "").strip()
+    if env:
+        return Path(env).resolve()
+    raw = str(_cfg("extraction.bert.multitask_root", "") or "").strip()
+    if raw:
+        return Path(raw).resolve()
+    here = Path(__file__).resolve()
+    for cand in (
+        here.parents[2] / "training" / "multitask_v1",
+        Path.cwd() / "training" / "multitask_v1",
+    ):
+        if (cand / "src" / "f008_compat.py").exists():
+            return cand.resolve()
+    raise RuntimeError(
+        "Cannot find multitask_v1. Set extraction.bert.multitask_root or "
+        "MULTITASK_V1_ROOT to the Bert_training training/multitask_v1 directory. "
+        "See docs/features/F008-bert-multitask-bridge.md."
+    )
+
+
+def _ensure_compat_on_path() -> None:
+    root = _multitask_root()
+    src = root / "src"
+    if not (src / "f008_compat.py").exists():
+        raise RuntimeError(f"f008_compat.py missing under {src}")
+    if str(src) not in sys.path:
+        sys.path.insert(0, str(src))
+
+
 def extract_state_bert(
     utterance: str,
     *,
     role: str = ROLE_CUSTOMER,
     context_turns: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Extract conversation state from one utterance using a local BERT model.
+    """Extract conversation state using multitask_v1 BERT checkpoint.
 
-    ---------------------------------------------------------------------------
-    INPUT
-    ---------------------------------------------------------------------------
-    utterance : str
-        Raw turn text (customer or collector), e.g. ``"我现在真的没钱还"``.
-    role : str
-        ``"客户"`` (customer) or ``"催收员"`` (collector).
-        Customer turns typically fill facts / emotions / willingness.
-        Collector turns typically fill actions (and leave facts/emotions empty).
-    context_turns : list[dict] | None
-        Optional prior turns for context-aware models. Each dict matches F000
-        dialog turns, e.g. ``{"role": "催收员", "text": "..."}``.
-        Online F008 currently passes ``None`` (utterance-only); offline F000
-        passes the same window as the LLM path
-        (``context_window.analysis_turns_before``).
+    Output shape matches ``extract_state_llm``::
 
-    ---------------------------------------------------------------------------
-    OUTPUT (required keys — same shape as ``extract_state_llm``)
-    ---------------------------------------------------------------------------
-    {
-        "facts": list[str],          # canonical fact group names, e.g. ["financial_hardship"]
-        "emotions": list[str],       # canonical emotion group names, e.g. ["distress"]
-        "actions": list[str],        # collector action group names, e.g. ["plan_proposal"]
-                                     # use [] for customer turns; for collector, usually one label
-        "willingness": str | None,   # one of: resistant | weak | conditional |
-                                     #          negotiating | strong  (customer); else None
-        "confidence": float,         # 0.0–1.0 model confidence
-        "method": "bert",            # must be the literal string "bert"
-    }
+        {
+            "facts": list[str],
+            "emotions": list[str],
+            "actions": list[str],
+            "willingness": str | None,
+            "confidence": float,
+            "method": "bert",
+        }
 
-    Prefer **canonical** taxonomy names (post-relabel). If your model emits
-    free-form / Chinese tags, map them to canonical names inside this function
-    before returning so tree node keys stay stable.
-
-    ---------------------------------------------------------------------------
-    INTEGRATION
-    ---------------------------------------------------------------------------
-    Replace the body below with your inference call, for example::
-
-        model = _load_model()  # lazy singleton from extraction.bert.model_dir
-        return model.predict(utterance, role=role, context=context_turns)
-
-    Config keys reserved for you (optional)::
+    Config::
 
         extraction.bert.model_dir
-        extraction.bert.device          # auto | cpu | cuda | mps
-
-    Do not hard-require torch at module import; load inside this function or a
-    private ``_load_model()`` so ``provider: llm`` never needs BERT installed.
+        extraction.bert.device
+        extraction.bert.multitask_root
+        extraction.bert.fact_map_path       # optional
+        extraction.bert.thresholds_path    # optional
+        extraction.bert.train_config       # optional
     """
-    _ = (utterance, role, context_turns, _cfg("extraction.bert.model_dir", ""))
-    raise NotImplementedError(
-        "extract_state_bert is a placeholder. Wire your trained BERT here, then "
-        "set extraction.provider: bert (or EXTRACTION_PROVIDER=bert)."
+    _ensure_compat_on_path()
+    from f008_compat import extract_state_bert as _predict  # noqa: WPS433
+
+    model_dir = (
+        os.environ.get("EXTRACTION_BERT_MODEL_DIR")
+        or str(_cfg("extraction.bert.model_dir", "") or "")
+    ).strip()
+    if not model_dir:
+        raise RuntimeError(
+            "extraction.bert.model_dir (or EXTRACTION_BERT_MODEL_DIR) is empty. "
+            "Point it at multitask_best.pt or its parent directory."
+        )
+    device = str(_cfg("extraction.bert.device", "auto") or "auto")
+    fact_map = str(_cfg("extraction.bert.fact_map_path", "") or "").strip() or None
+    thresholds = str(_cfg("extraction.bert.thresholds_path", "") or "").strip() or None
+    train_cfg = str(_cfg("extraction.bert.train_config", "") or "").strip() or None
+
+    return _predict(
+        utterance,
+        role=role,
+        context_turns=context_turns,
+        model_dir=model_dir,
+        device=device,
+        train_config=train_cfg,
+        fact_map_path=fact_map,
+        thresholds_path=thresholds,
     )
