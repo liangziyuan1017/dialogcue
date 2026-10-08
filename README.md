@@ -1,12 +1,12 @@
-# Debt Collection Script Recommendation
+# DialogCue
 
-> Recommend the single best collector reply in real time — grounded in which historical scripts actually led to repayment, not stylistic preference.
+> Real-time dialogue cues for customer-service agents — recommend the single best next reply, grounded in which historical scripts actually worked.
 
 ## Highlights
 
-- **Historically grounded ranking** — top-1 collector scripts scored by repayment outcomes, profile fit, and semantic similarity
+- **Historically grounded ranking** — top-1 agent scripts scored by outcomes, profile fit, and semantic similarity
 - **Two-phase system** — offline ingest (clean → label → decision tree → PostgreSQL) and online retrieve (`POST /recommend`)
-- **Chinese debt-collection domain** — data-discovered state taxonomy (facts, emotions, willingness, collector actions), not a prescribed English ontology
+- **Data-discovered state taxonomy** — facts, emotions, willingness, and agent actions from Chinese customer-service / collection dialogues (not a prescribed English ontology)
 - **Local embeddings, no per-call vector cost** — bge-m3 via Ollama (1024-dim) + PostgreSQL/pgvector hybrid search
 - **Switchable state extraction** — DeepSeek (default) or local BERT via `extraction.provider` in `config.md`
 - **Incremental ingest** — append new calls without full rebuild (`src/run_append.py`)
@@ -14,7 +14,7 @@
 
 ## Problem
 
-Debt-collection call centers need to recommend, **in real time**, the single best collector response given:
+Contact centers need to recommend, **in real time**, the single best agent response given:
 
 1. the customer's latest utterance, and
 2. the conversation so far (state + recent context), and
@@ -81,7 +81,7 @@ End-to-end design, samples, latency budget, schema, and ADR index: [`SCBGE_GUIDE
 
 ### Authors
 
-Maintained in [`liangziyuan1017/debt_collection`](https://github.com/liangziyuan1017/debt_collection). Feature docs and ADRs under `docs/` are authoritative for detail; this README is the product-facing overview.
+Maintained in [`liangziyuan1017/dialogcue`](https://github.com/liangziyuan1017/dialogcue). Feature docs and ADRs under `docs/` are authoritative for detail; this README is the product-facing overview.
 
 ## Design considerations
 
@@ -248,8 +248,8 @@ Incremental input uses the same schema in `data/data_input/new_data.jsonl`. On s
 **Requirements:** Python ≥3.11, PostgreSQL 16 with `vector` and `pg_trgm`, Ollama with `bge-m3`, DeepSeek API key.
 
 ```bash
-git clone https://github.com/liangziyuan1017/debt_collection.git
-cd debt_collection
+git clone https://github.com/liangziyuan1017/dialogcue.git
+cd dialogcue
 
 # System deps (macOS examples)
 brew install postgresql@16 pgvector ollama
@@ -291,4 +291,4 @@ Step-by-step setup, stage details, and troubleshooting: [`src/README.md`](src/RE
 
 ## Feedback and Contributing
 
-Issues and feature requests are welcome on the [GitHub repo](https://github.com/liangziyuan1017/debt_collection). Before changing ranking, taxonomy, or ingest contracts, read the relevant feature **Why** section and ADR — starting from [`docs/ROADMAP.md`](docs/ROADMAP.md) or the ADR index in [`SCBGE_GUIDELINE.md`](SCBGE_GUIDELINE.md#adr-index).
+Issues and feature requests are welcome on the [GitHub repo](https://github.com/liangziyuan1017/dialogcue). Before changing ranking, taxonomy, or ingest contracts, read the relevant feature **Why** section and ADR — starting from [`docs/ROADMAP.md`](docs/ROADMAP.md) or the ADR index in [`SCBGE_GUIDELINE.md`](SCBGE_GUIDELINE.md#adr-index).

@@ -1,4 +1,4 @@
-# SCBGE Guideline: Debt Collection Script Recommendation System
+# SCBGE Guideline: DialogCue (dialogue cue / next-reply recommendation)
 
 > This document is the comprehensive project guideline. It documents every processing phase end-to-end: what each phase does, why it was designed that way, all data inputs and outputs (with samples), the design considerations and decisions behind each step, the latency budget, fallback hierarchy, scaling path, and a full ADR index. 
 

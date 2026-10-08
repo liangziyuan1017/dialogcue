@@ -3,9 +3,9 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "agent_tool"
+name = "dialogcue"
 version = "0.1.0"
-description = "Project configuration for agent_tool"
+description = "DialogCue — real-time dialogue cues for customer-service agents"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.110",
