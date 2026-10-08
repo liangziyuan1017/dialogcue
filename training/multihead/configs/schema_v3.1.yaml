@@ -18,7 +18,8 @@ changelog_v3_1_1: >
 changelog_v3_1_2_patch1: >
   Ontology boundary patch (no schema value expand): Asset available=own/disposable only;
   Contactability=reachability only; Commitment path-A keep resistant + train_gate≥50.
-  See annotation_policy_v3.1.2-patch1 and artifacts/v3.1.2_patch1/LIST.md.
+  See annotation_policy_v3.1.2-patch1 and
+  label_handler/ontology_v2/freeze/v3.1.2/CHANGELOG_v3_to_v3.1.2.md.
 
 heads:
   Employment:

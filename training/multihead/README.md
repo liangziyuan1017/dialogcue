@@ -1,10 +1,10 @@
-# Stage2 Multihead Training (**v3.1.2** · **patch1** in progress)
+# Stage2 Multihead Training (**v3.1.2-patch1**)
 
-并行于已冻结的 E1-A（见 [`../FREEZE_LEGACY.md`](../FREEZE_LEGACY.md)）。
+Fact 19-head 建库 / 训练 / 评估。多任务主线见 [`../multitask_v1/`](../multitask_v1/)。
 
-**冻结交付包：** [`artifacts/v3.1.2_freeze/`](artifacts/v3.1.2_freeze/)  
-**当前 patch：** [`artifacts/v3.1.2_patch1/`](artifacts/v3.1.2_patch1/)（Asset/Contactability/Commitment path-A）  
-**产物索引：** [`artifacts/INDEX.md`](artifacts/INDEX.md)
+**生效配置：** `configs/`（已含 patch1）  
+**冻结快照：** [`../../label_handler/ontology_v2/freeze/v3.1.2/`](../../label_handler/ontology_v2/freeze/v3.1.2/)  
+**精简说明：** [`artifacts/INDEX.md`](artifacts/INDEX.md)（历史 zip/拷贝包已从本分支移除）
 
 ## 训练第一原则
 
@@ -71,4 +71,4 @@ python training/multihead/scripts/train_state.py --config training/multihead/con
 python training/multihead/scripts/eval_state.py --ckpt .../state_v312_patch1/state_best.pt --split test --device npu:0
 ```
 
-详见 [`artifacts/v3.1.2_patch1/LIST.md`](artifacts/v3.1.2_patch1/LIST.md)。
+详见 [`../../label_handler/ontology_v2/freeze/v3.1.2/CHANGELOG_v3_to_v3.1.2.md`](../../label_handler/ontology_v2/freeze/v3.1.2/CHANGELOG_v3_to_v3.1.2.md)。

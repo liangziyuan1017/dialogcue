@@ -1,35 +1,33 @@
-# Multihead State Training (v3.1.2)
+# Bert_training
 
-独立交付分支：仅含 **ontology v3.1.2 冻结产物** 与 **multihead 建库 / 训练 / 评估** 生效代码。  
-无 pipeline 旧栈、无归档迁移脚本、无本地 data/checkpoint。
+独立训练分支：ontology v3.1.2-patch1 + multihead Fact + **multitask_v1**（Fact/Emotion/Willingness）。
+
+与 `main`（SCBGE）无共同产品代码；对接见 `training/multitask_v1/docs/SCBGE_INTEGRATION.md`。
 
 ## 布局
 
 ```
-label_handler/ontology_v2/          # 训练本体 + 知识本体 + freeze 镜像
-label_handler/fact/raw_to_trainable_mapping.yaml  # 可选：重新 export 时 legacy bridge
-training/multihead/
-  configs/                          # schema / map / overrides / build / train
-  scripts/                          # export → audit → build → train → eval（仅 5 个）
-  src/                              # 自包含 runtime
-  docs/DESIGN_v3.1.1.md             # 架构审阅
-  artifacts/v3.1.2_freeze/          # 冻结交付包 + CHANGELOG
+label_handler/ontology_v2/     # 训练/知识本体 + freeze/v3.1.2 唯一快照
+training/multihead/            # Fact 19-head 建库/训练/评估（schema 供 multitask 只读）
+training/multitask_v1/         # 多任务主线 + F008 适配
 ```
 
-## 命令（仓库根目录）
+## 常用命令
 
 ```bash
-python training/multihead/scripts/export_raw_to_multihead.py
-python training/multihead/scripts/audit_v31_consistency.py
-python training/multihead/scripts/build_state_dataset.py --config training/multihead/configs/build_state_dataset.yaml
-python training/multihead/scripts/train_state.py --config training/multihead/configs/train_state.yaml
-python training/multihead/scripts/eval_state.py --ckpt training/multihead/checkpoints/state_v31/state_best.pt --split test
-```
+# multitask（推荐）
+python training/multitask_v1/scripts/train_multitask.py \
+  --config training/multitask_v1/configs/train_multitask.yaml --calibrate
 
-全量机还需：编码器权重（见 `configs/train_state.yaml` 的 `model_name`）、建库输入数据路径、以及（训练时）可写的 `data/state` / `checkpoints` 目录。
+# multihead Fact-only（legacy 对照）
+python training/multihead/scripts/train_state.py \
+  --config training/multihead/configs/train_state.yaml
+```
 
 ## 文档
 
+- `training/multitask_v1/README.md`
+- `training/multitask_v1/docs/SCBGE_INTEGRATION.md`
 - `training/multihead/README.md`
-- `training/multihead/artifacts/v3.1.2_freeze/CHANGELOG_v3_to_v3.1.2.md`
-- `label_handler/ontology_v2/README.md`
+- `training/multihead/artifacts/INDEX.md`（精简说明 / 已删除冗余清单）
+- `label_handler/ontology_v2/freeze/v3.1.2/CHANGELOG_v3_to_v3.1.2.md`
