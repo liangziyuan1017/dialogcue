@@ -1,9 +1,8 @@
 # Ontology 演进：v3 → v3.1.2
 
 **冻结日：** 2026-08-04  
-**当前状态：** `ontology ready for model validation`（非 perfect）  
-**交付包：** `training/multihead/artifacts/v3.1.2_freeze/`  
-**镜像：** `label_handler/ontology_v2/freeze/v3.1.2/`
+**当前状态：** live 已推进至 `training_ontology_v3.1.2-patch1`（见仓库根 ontology）  
+**本文档：** 历史演进说明（YAML 快照已从 tip 移除，仅保留本 CHANGELOG + MANIFEST）
 
 ---
 

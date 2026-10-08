@@ -1,33 +1,16 @@
-# Ontology Freeze v3.1.2
+# Freeze v3.1.2（文档-only）
 
-**Status:** frozen (2026-08-04)  
-**Purpose:** delivery package for full rebuild + model validation (not further semantic migration).
+本目录**不再存放**与 `configs/` / live ontology 重复的 YAML 快照。
 
-## Canonical files (use these)
-
-| File | Role |
+| 保留 | 说明 |
 |------|------|
-| `training_ontology_v3.1.2.yaml` | Train ontology (heads / include_raw / definitions) |
-| `raw_to_multihead.yaml` | **Runtime** raw → multihead map |
-| `raw_to_trainable_mapping.yaml` | Flattened delivery view (raw → primary train_label) |
-| `raw_to_multihead_overrides.yaml` | Explicit drops / bridge blocks |
-| `schema_v3.1.yaml` | 19-head schema |
-| `annotation_policy_v3.1.2.yaml` | Window scope + head evidence rules |
-| `proposed_ontology.yaml` | Knowledge ontology (47 facts) |
-| `MANIFEST.json` | Checksums + counts |
+| [`CHANGELOG_v3_to_v3.1.2.md`](CHANGELOG_v3_to_v3.1.2.md) | v3 → v3.1.2 变更说明 |
+| [`MANIFEST.json`](MANIFEST.json) | 冻结时 checksum 记录（历史对照） |
 
-## Live working copies (same freeze)
+**当前生效（patch1）请用：**
 
-- `label_handler/ontology_v2/training_ontology_v3.yaml` (status=frozen)
-- `training/multihead/configs/raw_to_multihead.yaml`
+- `label_handler/ontology_v2/training_ontology_v3.yaml`
+- `label_handler/ontology_v2/proposed_ontology.yaml`
+- `training/multihead/configs/{schema_v3.1,raw_to_multihead,annotation_policy_v3.1.2}.yaml`
 
-## Frozen heads
-
-- FinancialHardship (v3.1.2.1)
-- NegotiationRequest (v3.1.2.2)
-
-RC remains eval/calibration-open; do not block training.
-
-## Do not edit without new evidence
-
-Further FH/NR changes require boundary evidence + model diagnostics, not metric chasing.
+需要完整 baseline YAML 时，从 git 历史 `16a784c^` 或 `debt_collection-training-archive` 取回。

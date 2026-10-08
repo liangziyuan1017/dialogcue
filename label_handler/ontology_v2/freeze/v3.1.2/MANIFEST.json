@@ -1,63 +1,23 @@
 {
   "freeze_tag": "v3.1.2",
   "freeze_date": "2026-08-04",
-  "status": "frozen",
-  "paths": {
-    "freeze_dir": "training\\multihead\\artifacts\\v3.1.2_freeze",
-    "mirror_dir": "label_handler\\ontology_v2\\freeze\\v3.1.2",
-    "live_ontology": "label_handler\\ontology_v2\\training_ontology_v3.yaml",
-    "live_map": "training\\multihead\\configs\\raw_to_multihead.yaml"
+  "status": "docs_only",
+  "note": "YAML snapshots removed from Bert_training tip; live tree is training_ontology_v3.1.2-patch1 + multihead configs. Checksums below are historical (pre-slim).",
+  "live": {
+    "ontology": "label_handler/ontology_v2/training_ontology_v3.yaml",
+    "knowledge": "label_handler/ontology_v2/proposed_ontology.yaml",
+    "schema": "training/multihead/configs/schema_v3.1.yaml",
+    "map": "training/multihead/configs/raw_to_multihead.yaml",
+    "policy": "training/multihead/configs/annotation_policy_v3.1.2.yaml"
   },
-  "checksums": {
+  "docs": {
+    "changelog": "label_handler/ontology_v2/freeze/v3.1.2/CHANGELOG_v3_to_v3.1.2.md"
+  },
+  "historical_checksums_at_freeze": {
     "training_ontology_v3.1.2.yaml": "96d58f080a2d4750",
     "raw_to_multihead.yaml": "fd68f2824b0ad3e8",
     "raw_to_trainable_mapping.yaml": "bf1dd802b3fac715",
     "schema_v3.1.yaml": "036a8295fb52b669",
     "annotation_policy_v3.1.2.yaml": "7c85cc7242a2e2f2"
-  },
-  "summary": {
-    "n_raw_keys": 5926,
-    "n_mapped": 5780,
-    "n_dropped_intentional": 146,
-    "n_trainable_labels": 24,
-    "trainable_distribution_top30": {
-      "IdentityProcess.yes": 674,
-      "FinancialHardship.yes": 650,
-      "Income.unavailable": 639,
-      "NegotiationRequest.yes": 567,
-      "Commitment.committed": 527,
-      "Asset.available": 340,
-      "BankConstraint.yes": 308,
-      "FamilyBurden.yes": 257,
-      "DebtDispute.yes": 243,
-      "CognitiveSupport.yes": 230,
-      "Contactability.reachable": 227,
-      "Contactability.unreachable": 208,
-      "LegalProceeding.yes": 173,
-      "Grievance.yes": 154,
-      "Health.yes": 133,
-      "RepaymentCapability.partial": 128,
-      "ComplianceRisk.yes": 113,
-      "Responsibility.denying": 84,
-      "ObjectiveBlocker.yes": 35,
-      "Commitment.resistant": 27,
-      "Employment.disrupted": 22,
-      "Asset.unavailable": 18,
-      "Contactability.denied": 16,
-      "RepaymentCapability.insufficient": 7
-    }
-  },
-  "map_stats": {
-    "n_train_labels": 22,
-    "n_include_raw_edges": 1018,
-    "n_absorbed_edges": 58,
-    "n_denied_edges": 16,
-    "n_override_raws": 149,
-    "n_legacy_bridge_raws": 5745,
-    "n_eval_only_labels": 1,
-    "n_raw_keys": 5926,
-    "n_multi_head_raws": 0,
-    "n_same_head_conflicts": 0,
-    "n_dropped_invalid_vs_schema": 0
   }
 }

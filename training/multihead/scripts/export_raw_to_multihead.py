@@ -22,6 +22,7 @@ MH = REPO / "training" / "multihead"
 DEFAULT_ONT = REPO / "label_handler" / "ontology_v2" / "training_ontology_v3.yaml"
 DEFAULT_PROPOSED = REPO / "label_handler" / "ontology_v2" / "proposed_ontology.yaml"
 DEFAULT_OVERRIDES = MH / "configs" / "raw_to_multihead_overrides.yaml"
+# Optional Stage2 bridge; tip no longer ships this file (omit --legacy to skip).
 DEFAULT_LEGACY = REPO / "label_handler" / "fact" / "raw_to_trainable_mapping.yaml"
 DEFAULT_OUT = MH / "configs" / "raw_to_multihead.yaml"
 DEFAULT_SCHEMA = MH / "configs" / "schema_v3.1.yaml"

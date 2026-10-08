@@ -144,7 +144,7 @@ rules:
       Sticky state via merge(previous_memory, observable); not Softmax supervision.
 
 related:
-  design: docs/DESIGN_v3.1.1.md
+  design: label_handler/ontology_v2/freeze/v3.1.2/CHANGELOG_v3_to_v3.1.2.md
   build_change: artifacts/v3.1.2_migration/BUILD_LABEL_SCOPE_CHANGE.md
   semantic_change: artifacts/v3.1.2_migration/SEMANTIC_P0_MIGRATION.md
   migration_log: artifacts/v3.1.2_migration/migration_log_v3.1.2.csv

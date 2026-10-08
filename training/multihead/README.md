@@ -3,8 +3,8 @@
 Fact 19-head 建库 / 训练 / 评估。多任务主线见 [`../multitask_v1/`](../multitask_v1/)。
 
 **生效配置：** `configs/`（已含 patch1）  
-**冻结快照：** [`../../label_handler/ontology_v2/freeze/v3.1.2/`](../../label_handler/ontology_v2/freeze/v3.1.2/)  
-**精简说明：** [`artifacts/INDEX.md`](artifacts/INDEX.md)（历史 zip/拷贝包已从本分支移除）
+**演进说明：** [`../../label_handler/ontology_v2/freeze/v3.1.2/CHANGELOG_v3_to_v3.1.2.md`](../../label_handler/ontology_v2/freeze/v3.1.2/CHANGELOG_v3_to_v3.1.2.md)  
+**精简说明：** [`artifacts/INDEX.md`](artifacts/INDEX.md)
 
 ## 训练第一原则
 
@@ -14,8 +14,7 @@ Fact 19-head 建库 / 训练 / 评估。多任务主线见 [`../multitask_v1/`](
 **建库标签范围（v3.1.2）：** Softmax 标签只来自 **与输入文本相同的近窗 `turn_ids`**（`label_scope=window`）。  
 累计对话 memory **不**再作为训练监督；长期粘性状态在推理侧 `merge`。
 
-**审阅设计文档：** [`docs/DESIGN_v3.1.1.md`](docs/DESIGN_v3.1.1.md) + `configs/annotation_policy_v3.1.2.yaml`  
-过时备忘：[`docs/archive/`](docs/archive/)
+**策略文档：** `configs/annotation_policy_v3.1.2.yaml` + 上表 CHANGELOG  
 
 ## LIVE 脚本
 
