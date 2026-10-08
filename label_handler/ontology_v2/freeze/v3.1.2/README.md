@@ -13,4 +13,4 @@
 - `label_handler/ontology_v2/proposed_ontology.yaml`
 - `training/multihead/configs/{schema_v3.1,raw_to_multihead,annotation_policy_v3.1.2}.yaml`
 
-需要完整 baseline YAML 时，从 git 历史 `16a784c^` 或 `debt_collection-training-archive` 取回。
+需要完整 baseline YAML 时，从 git 历史 `16a784c^` 或 `dialogcue-training-archive` 取回。

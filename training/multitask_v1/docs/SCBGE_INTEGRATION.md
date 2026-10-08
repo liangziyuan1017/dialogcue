@@ -78,7 +78,7 @@ Willingness / Emotion 词表已与 main 文档示例对齐。Fact 组名通过 Y
 
 假设：
 
-- Bert_training 仓：`/path/to/debt_collection`（本分支）
+- Bert_training 仓：`/path/to/dialogcue`（本分支）
 - main 仓 / 同仓 main 工作树：`/path/to/scbge_main`
 - ckpt 目录：`.../checkpoints/multitask_v1/`
 
@@ -101,7 +101,7 @@ extraction:
   bert:
     model_dir: "/path/to/checkpoints/multitask_v1"   # 或 multitask_best.pt
     device: auto          # cpu | cuda | mps | npu:0
-    multitask_root: "/path/to/debt_collection/training/multitask_v1"
+    multitask_root: "/path/to/dialogcue/training/multitask_v1"
     # 可选：
     # fact_map_path: ".../configs/f008_fact_group_map.yaml"
     # thresholds_path: ".../thresholds.json"

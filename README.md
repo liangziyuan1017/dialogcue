@@ -1,8 +1,8 @@
-# Bert_training
+# DialogCue — Bert_training
 
-独立训练分支：ontology v3.1.2-patch1 + multihead Fact + **multitask_v1**（Fact/Emotion/Willingness）。
+独立训练分支（仓库：[dialogcue](https://github.com/liangziyuan1017/dialogcue)）：ontology v3.1.2-patch1 + multihead Fact + **multitask_v1**（Fact/Emotion/Willingness）。
 
-与 `main`（SCBGE）无共同产品代码；对接见 `training/multitask_v1/docs/SCBGE_INTEGRATION.md`。
+与 `main`（DialogCue / SCBGE 推荐引擎）对接见 `training/multitask_v1/docs/SCBGE_INTEGRATION.md`。
 
 ## 布局
 
